@@ -7,7 +7,7 @@ export default function Dropdown({ id, value, onChange, label, list }) {
       <FormControl fullWidth>
         <InputLabel>{label}</InputLabel>
         <Select id={id} value={value} label={label} onChange={onChange}>
-          {{ list }.map((item, index) => (
+          {list.map((item, index) => (
             <MenuItem key={index} value={item}>
               {item}
             </MenuItem>

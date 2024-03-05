@@ -35,19 +35,8 @@ export default function AdminConfigurationHome() {
       >
         Create New User
       </Button>
-      {/* <Grid item xs={12}>
-        <FormControl fullWidth>
-          <InputLabel>Existing Users</InputLabel>
-          <Select required id="userList" label="Existing Users">
-            {list.map((item, index) => (
-              <MenuItem key={index} value={item}>
-                {item.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Grid> */}
       <Grid item xs={12}>
+        <h3>Existing Users</h3>
         {list.map((item, index) => (
           <li key={index}>{item.name}</li>
         ))}

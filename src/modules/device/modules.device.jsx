@@ -4,7 +4,7 @@ export default function Device() {
     const list=[1,2,3,4]
   return (
     <div>
-      <Dropdown id={'abc'} list={list} value={"Select One Menu"}/>
+      <Dropdown id={'abc'} list={list} />
     </div>
   )
 }

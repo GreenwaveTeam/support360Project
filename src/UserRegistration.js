@@ -244,30 +244,6 @@ export default function UserRegistration() {
                   onChange={handleInputChange}
                 />
               </Grid>
-              {/* <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="supportStartDate"
-                  label="Support Start Date"
-                  id="supportStartDate"
-                  autoComplete="supportStartDate"
-                  value={formData.supportStartDate}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="supportEndDate"
-                  label="Support End Date"
-                  id="supportEndDate"
-                  autoComplete="supportEndDate"
-                  value={formData.supportEndDate}
-                  onChange={handleInputChange}
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker

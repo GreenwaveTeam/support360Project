@@ -4,8 +4,8 @@ import "./App.css";
 import Textfield from "./components/textfield/textfield.component";
 import Device from "./modules/device/modules.device";
 import NavigationArea from "./components/navigationbar/navigationbar.component";
-import AdminConfigurationHome from "./components/AdminConfigurationHome";
-import UserRegistration from "./components/UserRegistration";
+import AdminConfigurationHome from "./AdminConfigurationHome";
+import UserRegistration from "./UserRegistration";
 
 function App() {
   const urllist = [

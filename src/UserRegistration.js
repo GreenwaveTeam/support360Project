@@ -268,7 +268,7 @@ export default function UserRegistration() {
                   onChange={handleInputChange}
                 />
               </Grid> */}
-              <Grid item>
+              <Grid item xs={12}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Support Start Date"
@@ -277,11 +277,12 @@ export default function UserRegistration() {
                       setFormData({ ...formData, supportStartDate: startDate })
                     }
                     format="DD/MM/YYYY"
+                    slotProps={{ textField: { fullWidth: true } }}
                   />
                 </LocalizationProvider>
               </Grid>
               <Grid item xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} fullWidth>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Support End Date"
                     value={formData.supportEndDate}
@@ -289,13 +290,10 @@ export default function UserRegistration() {
                       setFormData({ ...formData, supportEndDate: endDate })
                     }
                     format="DD/MM/YYYY"
-                    // renderInput={(params) => (
-                    //   <TextField {...params} fullWidth />
-                    // )}
+                    slotProps={{ textField: { fullWidth: true } }}
                   />
                 </LocalizationProvider>
               </Grid>
-
               <Grid item xs={12}>
                 <TextField
                   required

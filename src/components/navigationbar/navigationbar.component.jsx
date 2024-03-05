@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import BreadCrumbs from './BreadCrumbs';
+import BreadCrumbs from '../breadcrumbs/breadcrumbs.component';
 
 export default function NavigationArea({urllist,handleOnClick}) {
   return (

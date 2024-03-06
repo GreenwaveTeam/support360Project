@@ -4,7 +4,7 @@ import "./App.css";
 import Textfield from "./components/textfield/textfield.component";
 import Device from "./modules/device/modules.device";
 import NavigationArea from "./components/navigationbar/navigationbar.component";
-import AdminConfigurationHome from "./AdminConfigurationHome";
+import AdminConfigurationHome from "./UserConfigurationHome";
 import UserRegistration from "./UserRegistration";
 
 function App() {

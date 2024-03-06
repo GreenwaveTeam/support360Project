@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Button, Grid } from "@mui/material";
+import { Link } from "react-router-dom";
 
-export default function AdminConfigurationHome() {
+export default function UserConfigurationHome() {
   const [list, setList] = useState([]);
 
   useEffect(() => {
@@ -38,7 +39,12 @@ export default function AdminConfigurationHome() {
       <Grid item xs={12}>
         <h3>Existing Users</h3>
         {list.map((item, index) => (
-          <li key={index}>{item.name}</li>
+          <Link
+            to={`http://localhost:8081/users/user/${item.userID}`}
+            key={index}
+          >
+            <li key={index}>{item.name}</li>
+          </Link>
         ))}
       </Grid>
     </>

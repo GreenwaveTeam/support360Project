@@ -20,10 +20,8 @@ function App() {
     <Router>
       <div className="App">
         <NavigationArea urllist={urllist} handleOnClick={onclick} />
-        <h1>qwerty</h1>
-        <Textfield id={"textfieldId"} value={"hello there"} />
-        <Device />
         <Routes>
+          <Route path="/device" element={<Device />} />
           <Route path="/ad" element={<UserConfigurationHome />} />
           <Route path="/UserRegistration" element={<UserRegistration />} />
           <Route path="/abc" element={<AdminPage />} />

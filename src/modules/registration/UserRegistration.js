@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import bcrypt from "bcryptjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -21,15 +21,14 @@ import {
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 
 export default function UserRegistration() {
-  const [cnfpass, setCnfpass] = useState("");
   const [formData, setFormData] = useState({
-    userID: "6543",
+    userID: "",
     name: "",
     designation: "",
     email: "",
     password: "",
     phoneNumber: "",
-    plantID: "tewyguhs",
+    plantID: "",
     plantName: "",
     address: "",
     business: "",
@@ -39,11 +38,29 @@ export default function UserRegistration() {
     accountOwnerCustomer: "",
     accountOwnerGW: "",
   });
+  const [cnfpass, setCnfpass] = useState("");
   const [showError, setShowError] = useState(false);
+  const [plantList, setPlantList] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const generateUserID = () => {
+    if (formData.plantName && formData.name) {
+      const plantFirstWord = formData.plantName.split(" ")[0].toLowerCase;
+      const userFirstName = formData.name.split(" ")[0].toLowerCase;
+      const userID = `${plantFirstWord}_${userFirstName}`;
+      setFormData((prevData) => ({
+        ...prevData,
+        userID: userID.toLowerCase(),
+      }));
+    }
   };
 
   const handleDesignationChange = (event) => {
@@ -51,8 +68,30 @@ export default function UserRegistration() {
     setFormData({ ...formData, designation: value });
   };
 
+  const handlePhoneNumberChange = (event) => {
+    const { value } = event.target;
+    if (!isNaN(value) && value.length <= 10) {
+      setFormData({ ...formData, phoneNumber: value });
+    }
+  };
+
   const checkPassword = async () => {
     return await bcrypt.compare(formData.password, cnfpass);
+  };
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:8081/plants/", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      const data = await response.json();
+      setPlantList(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -189,14 +228,13 @@ export default function UserRegistration() {
                   fullWidth
                   name="phoneNumber"
                   label="Phone Number"
-                  type="number"
                   id="phoneNumber"
                   autoComplete="phoneNumber"
                   value={formData.phoneNumber}
-                  onChange={handleInputChange}
+                  onChange={handlePhoneNumberChange}
                 />
               </Grid>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -207,6 +245,43 @@ export default function UserRegistration() {
                   value={formData.plantName}
                   onChange={handleInputChange}
                 />
+              </Grid> */}
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel>Plant Name</InputLabel>
+                  <Select
+                    required
+                    id="plantName"
+                    value={formData.plantName}
+                    label="Plant Name"
+                    onChange={(event) => {
+                      const { value } = event.target;
+                      for (let i of plantList) {
+                        if (i.plantName === value) {
+                          setFormData({
+                            ...formData,
+                            plantID: i.plantID,
+                            plantName: value,
+                          });
+                          console.log(
+                            "plantName : ",
+                            value,
+                            " : plantID : ",
+                            i.plantID
+                          );
+                          return;
+                        }
+                      }
+                    }}
+                    name="plantName"
+                  >
+                    {plantList.map((p) => (
+                      <MenuItem key={p.plantID} value={p.plantName}>
+                        {p.plantName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <TextField

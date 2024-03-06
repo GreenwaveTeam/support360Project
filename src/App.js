@@ -6,6 +6,7 @@ import Device from "./modules/device/modules.device";
 import NavigationArea from "./components/navigationbar/navigationbar.component";
 import AdminConfigurationHome from "./UserConfigurationHome";
 import UserRegistration from "./UserRegistration";
+import AdminPage from "./modules/homepages/AdminPage";
 
 function App() {
   const urllist = [

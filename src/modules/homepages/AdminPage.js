@@ -9,20 +9,20 @@ const AdminPage = () => {
       direction="column"
       justifyContent="center"
       alignItems="center"
-      //   style={{ height: "100vh" }}
+      marginTop={"200px"}
     >
-      <Grid item xs={12}>
-        <Button variant="contained" color="primary">
+      <Grid item width={"70vw"}>
+        <Button variant="contained" color="primary" fullWidth>
           Application
         </Button>
       </Grid>
-      <Grid item xs={12}>
-        <Button variant="contained" color="primary">
-          BDevice
+      <Grid item width={"70vw"}>
+        <Button variant="contained" color="primary" fullWidth>
+          Device
         </Button>
       </Grid>
-      <Grid item xs={12}>
-        <Button variant="contained" color="primary">
+      <Grid item width={"70vw"}>
+        <Button variant="contained" color="primary" fullWidth>
           Infrastructure
         </Button>
       </Grid>

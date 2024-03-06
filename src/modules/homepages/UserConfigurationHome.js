@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
+import { CenterFocusStrong } from "@mui/icons-material";
 
 export default function UserConfigurationHome() {
   const [list, setList] = useState([]);
@@ -35,7 +36,7 @@ export default function UserConfigurationHome() {
       >
         Create New User
       </Button>
-      <Grid item xs={12}>
+      <Grid item xs={12} justifyContent={"center"}>
         <h3>Existing Users</h3>
         {list.map((item, index) => (
           <Link
@@ -44,14 +45,21 @@ export default function UserConfigurationHome() {
             style={{ textDecoration: "none", color: "inherit" }}
             key={index}
           >
-            <ul style={{ listStyleType: "none" }}>
-              <li
-                style={{ textDecoration: "none", color: "inherit" }}
-                key={index}
-              >
-                {item.name}
-              </li>
-            </ul>
+            <div
+              style={{
+                border: "2px solid grey",
+                borderRadius: "20px",
+                color: "inherit",
+                listStyleType: "none",
+                marginBottom: "20px",
+                padding: "7px",
+                backgroundColor: "lightgray",
+                alignItems: "center",
+              }}
+              key={index}
+            >
+              {item.name}
+            </div>
           </Link>
         ))}
       </Grid>

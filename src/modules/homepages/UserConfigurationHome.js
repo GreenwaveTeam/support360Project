@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
-import { CenterFocusStrong } from "@mui/icons-material";
 
 export default function UserConfigurationHome() {
   const [list, setList] = useState([]);

@@ -4,8 +4,9 @@ import "./App.css";
 import Textfield from "./components/textfield/textfield.component";
 import Device from "./modules/device/modules.device";
 import NavigationArea from "./components/navigationbar/navigationbar.component";
-import AdminConfigurationHome from "./UserConfigurationHome";
-import UserRegistration from "./UserRegistration";
+import AdminConfigurationHome from "./modules/homepages/UserConfigurationHome";
+import UserRegistration from "./modules/registration/UserRegistration";
+import AdminPage from "./modules/homepages/AdminPage";
 
 function App() {
   const urllist = [
@@ -25,6 +26,7 @@ function App() {
         <Routes>
           <Route path="/ad" element={<AdminConfigurationHome />} />
           <Route path="/UserRegistration" element={<UserRegistration />} />
+          <Route path="/abc" element={<AdminPage />} />
         </Routes>
       </div>
     </Router>

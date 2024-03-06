@@ -40,7 +40,8 @@ export default function UserConfigurationHome() {
         <h3>Existing Users</h3>
         {list.map((item, index) => (
           <Link
-            to={`http://localhost:8081/users/user/${item.userID}`}
+            // to={`http://localhost:8081/users/user/${item.userID}`}
+            to={`http://localhost:3000/abc`}
             key={index}
           >
             <li key={index}>{item.name}</li>

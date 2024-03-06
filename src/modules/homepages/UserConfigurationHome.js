@@ -42,9 +42,17 @@ export default function UserConfigurationHome() {
           <Link
             // to={`http://localhost:8081/users/user/${item.userID}`}
             to={`http://localhost:3000/abc`}
+            style={{ textDecoration: "none", color: "inherit" }}
             key={index}
           >
-            <li key={index}>{item.name}</li>
+            <ul style={{ listStyleType: "none" }}>
+              <li
+                style={{ textDecoration: "none", color: "inherit" }}
+                key={index}
+              >
+                {item.name}
+              </li>
+            </ul>
           </Link>
         ))}
       </Grid>

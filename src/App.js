@@ -6,6 +6,7 @@ import Device from "./modules/device/modules.device";
 import NavigationArea from "./components/navigationbar/navigationbar.component";
 import AdminConfigurationHome from "./AdminConfigurationHome";
 import UserRegistration from "./UserRegistration";
+import CustomTable from "./components/table/table.component";
 
 function App() {
   const urllist = [
@@ -28,6 +29,7 @@ function App() {
         </Routes>
       </div>
     </Router>
+    // <CustomTable></CustomTable>
   );
 }
 

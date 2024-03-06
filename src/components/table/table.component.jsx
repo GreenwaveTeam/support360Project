@@ -5,6 +5,22 @@ export default function CustomTable ({tableheader,rows}) {
     // useEffect(() => {
     //     console.log('CustomTable Rendered')
     //   }, [])
+
+    // const customobj=[
+    //     {
+    //         'name':'Suraj',
+    //         'age':'22'
+    //     }
+    //     ,
+    //     {
+    //         'name':'Suraj12',
+    //         'age':'22'
+    //     },
+    //     {
+    //         'name':'Suraj32',
+    //         'age':'22'
+    //     }
+    // ]
   return (
     <div>
       <TableContainer>
@@ -16,16 +32,18 @@ export default function CustomTable ({tableheader,rows}) {
                 </TableCell>
             </TableRow>
         </TableHead>
+        <br/>
+        <br/>
         <TableBody>
-            {rows.map((row,index)=>(
-
-                <TableRow>
-                    
-                </TableRow>
-
+    {rows.map((row, index) => (
+        <TableRow key={index}>
+            {Object.keys(row).map((key) => (
+                <TableCell key={key}>{row[key]}</TableCell>
             ))}
-            
-        </TableBody>
+        </TableRow>
+    ))}
+</TableBody>
+
         </Table>       
      </TableContainer> 
     </div>

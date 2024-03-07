@@ -19,7 +19,6 @@ export default function UserConfigurationHome() {
       });
       const data = await response.json();
       setList(data);
-      console.log("list : ", list);
     } catch (error) {
       console.log(error);
     }

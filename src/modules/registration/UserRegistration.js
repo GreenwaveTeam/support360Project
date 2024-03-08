@@ -6,7 +6,6 @@ import {
   Avatar,
   CssBaseline,
   Button,
-  TextField,
   Grid,
   Box,
   Typography,
@@ -19,6 +18,8 @@ import {
   Alert,
 } from "@mui/material";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
+import Textfield from "../../components/textfield/textfield.component";
+import Dropdown from "../../components/dropdown/dropdown.component";
 
 export default function UserRegistration() {
   const [formData, setFormData] = useState({
@@ -181,8 +182,7 @@ export default function UserRegistration() {
           <Box component="table" noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField
-                  autoComplete="name"
+                <Textfield
                   name="name"
                   required
                   fullWidth
@@ -194,7 +194,7 @@ export default function UserRegistration() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   autoComplete="userID"
                   name="userID"
                   required
@@ -206,7 +206,7 @@ export default function UserRegistration() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth>
+                {/* <FormControl fullWidth>
                   <InputLabel>Designation</InputLabel>
                   <Select
                     required
@@ -220,10 +220,17 @@ export default function UserRegistration() {
                     <MenuItem value={"Twenty"}>Twenty</MenuItem>
                     <MenuItem value={"Thirty"}>Thirty</MenuItem>
                   </Select>
-                </FormControl>
+                </FormControl> */}
+                <Dropdown
+                  id="designation"
+                  value={formData.designation}
+                  label="Designation"
+                  onChange={handleDesignationChange}
+                  list={["Ten", "Twenty", "Thirty"]}
+                />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   id="email"
@@ -236,7 +243,7 @@ export default function UserRegistration() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   name="password"
@@ -249,7 +256,7 @@ export default function UserRegistration() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   name="confirmPassword"
@@ -271,7 +278,7 @@ export default function UserRegistration() {
                 </Stack>
               )}
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   name="phoneNumber"
@@ -285,7 +292,7 @@ export default function UserRegistration() {
               <Grid item xs={12}>
                 {showPlantTextField ? (
                   <>
-                    <TextField
+                    <Textfield
                       required
                       style={{ width: "40%" }}
                       name="plantName"
@@ -294,7 +301,7 @@ export default function UserRegistration() {
                       value={newPlantName.plantName}
                       onChange={handlenewPlantNameInputChange}
                     />
-                    <TextField
+                    <Textfield
                       required
                       style={{ width: "40%" }}
                       name="plantID"
@@ -340,7 +347,7 @@ export default function UserRegistration() {
                   </>
                 ) : (
                   <>
-                    <FormControl style={{ width: "40%" }}>
+                    {/* <FormControl style={{ width: "40%" }}>
                       <InputLabel>Plant Name</InputLabel>
                       <Select
                         required
@@ -368,8 +375,28 @@ export default function UserRegistration() {
                           </MenuItem>
                         ))}
                       </Select>
-                    </FormControl>
-                    <TextField
+                    </FormControl> */}
+                    <Dropdown
+                      style={{ width: "40%" }}
+                      id="plantName"
+                      value={formData.plantName}
+                      label="Plant Name"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        for (let i of plantList) {
+                          if (i.plantName === value) {
+                            setFormData({
+                              ...formData,
+                              plantID: i.plantID,
+                              plantName: value,
+                            });
+                            return;
+                          }
+                        }
+                      }}
+                      list={plantList.map((p) => p.plantName)}
+                    />
+                    <Textfield
                       required
                       style={{ width: "40%" }}
                       name="plantID"
@@ -394,7 +421,7 @@ export default function UserRegistration() {
                 )}
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   name="address"
@@ -406,7 +433,7 @@ export default function UserRegistration() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   name="division"
@@ -418,7 +445,7 @@ export default function UserRegistration() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   name="customerName"
@@ -471,7 +498,7 @@ export default function UserRegistration() {
                 </Stack>
               )}
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   name="accountOwnerCustomer"
@@ -483,7 +510,7 @@ export default function UserRegistration() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <Textfield
                   required
                   fullWidth
                   name="accountOwnerGW"

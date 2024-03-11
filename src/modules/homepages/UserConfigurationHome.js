@@ -28,14 +28,17 @@ export default function UserConfigurationHome() {
       });
       const data = await response.json();
       setList(data);
-      console.log(data);
-      for (let i of data) {
-        console.log(i.userID, i.email, i.name);
-      }
     } catch (error) {
       console.log(error);
     }
   };
+
+  // const handleEdit = (user) => {
+  //   history.push({
+  //     pathname: "/UserRegistration",
+  //     state: { user },
+  //   });
+  // };
 
   return (
     <>
@@ -53,33 +56,36 @@ export default function UserConfigurationHome() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>User ID</TableCell>
-                <TableCell>Edit</TableCell>
-                <TableCell>Delete</TableCell>
+                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Email</TableCell>
+                <TableCell align="center">User ID</TableCell>
+                <TableCell align="center">Edit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {list.map((item, index) => (
                 <TableRow key={index}>
-                  <TableCell>
+                  <TableCell align="center">{item.name}</TableCell>
+                  <TableCell align="center">{item.email}</TableCell>
+                  <TableCell align="center">{item.userID}</TableCell>
+                  <TableCell align="center">
                     <Link
-                      to={`http://localhost:3000/abc`}
+                      to={`/UserRegistration/${item.userID}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
-                      {item.name}
+                      <Button
+                        variant="contained"
+                        color="info"
+                        style={{ width: "20px", borderRadius: "50px" }}
+                      >
+                        Edit
+                      </Button>
                     </Link>
-                  </TableCell>
-                  <TableCell>{item.email}</TableCell>
-                  <TableCell>{item.userID}</TableCell>
-                  <TableCell>
-                    <Button variant="outlined" color="primary">
-                      Edit
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <Button variant="outlined" color="secondary">
+                    <Button
+                      variant="contained"
+                      color="error"
+                      style={{ width: "20px", borderRadius: "50px" }}
+                    >
                       Delete
                     </Button>
                   </TableCell>

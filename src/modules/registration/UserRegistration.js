@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import bcrypt from "bcryptjs";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   Avatar,
   CssBaseline,
@@ -16,8 +14,12 @@ import {
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
+import Datepicker from "../../components/datepicker/datepicker.component";
+import { useParams } from "react-router-dom";
+import dayjs from "dayjs";
 
 export default function UserRegistration() {
+  const { userID } = useParams();
   const [formData, setFormData] = useState({
     userID: "",
     name: "",
@@ -46,10 +48,12 @@ export default function UserRegistration() {
   const [plantList, setPlantList] = useState([]);
   const [showPlantTextField, setShowPlantTextField] = useState(false);
   const [hideBtn, setHideBtn] = useState(false);
+  const [userExist, setUserExist] = useState(false);
 
   useEffect(() => {
     fetchData();
-  }, [newPlantName.plantName]);
+    fetchExistingUser();
+  }, []);
 
   const handleAddPlantClick = () => {
     setShowPlantTextField(true);
@@ -96,6 +100,97 @@ export default function UserRegistration() {
     }
   };
 
+  function convertDateFormat(dateString) {
+    const [year, month, day] = dateString.split("-");
+    return `${day}-${month}-${year}`;
+  }
+
+  // const checkExixtingUser = async () => {
+  //   // const { userID } = useParams;
+  //   for (let i of userList) {
+  //     // if (i.userID === userID) {
+  //     //   setFormData(i);
+  //     // }
+  //     console.log("i.userID", i.userID);
+  //   }
+  // };
+
+  // const checkExistingUser = async () => {
+  //   const { userID } = useParams;
+  //   for (let i of userList) {
+  //     if (i.userID === userID) {
+  //       setFormData({
+  //         userID: i.userID,
+  //         name: i.name,
+  //         designation: i.designation,
+  //         email: i.email,
+  //         password: i.password,
+  //         phoneNumber: i.phoneNumber,
+  //         plantID: i.plantID,
+  //         plantName: i.plantName,
+  //         address: i.address,
+  //         division: i.division,
+  //         customerName: i.customerName,
+  //         supportStartDate: i.supportStartDate,
+  //         supportEndDate: i.supportEndDate,
+  //         accountOwnerCustomer: i.accountOwnerCustomer,
+  //         accountOwnerGW: i.accountOwnerGW,
+  //       });
+  //     }
+  //     console.log("i.userID", i.userID);
+  //   }
+  // };
+
+  const fetchExistingUser = async () => {
+    try {
+      const response = await fetch("http://localhost:8081/users/", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      const data = await response.json();
+      console.log("data : ", data);
+      checkExistingUser(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const checkExistingUser = (data) => {
+    for (let i of data) {
+      if (i.userID === userID) {
+        setUserExist(true);
+        setFormData((prevData) => ({
+          ...prevData,
+          userID: i.userID,
+          name: i.name,
+          designation: i.designation,
+          email: i.email,
+          password: i.password,
+          phoneNumber: i.phoneNumber,
+          plantID: i.plantID,
+          plantName: i.plantName,
+          address: i.address,
+          division: i.division,
+          customerName: i.customerName,
+          supportStartDate: dayjs(
+            convertDateFormat(i.supportStartDate),
+            "DD-MM-YYYY"
+          ),
+          supportEndDate: dayjs(
+            convertDateFormat(i.supportEndDate),
+            "DD-MM-YYYY"
+          ),
+          accountOwnerCustomer: i.accountOwnerCustomer,
+          accountOwnerGW: i.accountOwnerGW,
+        }));
+      }
+    }
+  };
+
+  console.log("formData", formData);
+
   const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:8081/plants/", {
@@ -134,26 +229,23 @@ export default function UserRegistration() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // try {
-    //   const response = await fetch("http://localhost:8081/users/user", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(formDataWithChangedPassword),
-    //   });
-    //   if (response.created) {
-    //     console.log("User registered successfully");
-    //   } else {
-    //     console.error("Failed to register user");
-    //   }
-    //   console.log(
-    //     "formDataWithChangedPassword : ",
-    //     formDataWithChangedPassword
-    //   );
-    // } catch (error) {
-    //   console.error("Error:", error);
-    // }
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.created) {
+        console.log("User registered successfully");
+      } else {
+        console.error("Failed to register user");
+      }
+      console.log("formDataWithChangedPassword : ", formData);
+    } catch (error) {
+      console.error("Error:", error);
+    }
     console.log("formData : ", formData);
   };
 
@@ -222,7 +314,8 @@ export default function UserRegistration() {
                   value={formData.designation}
                   label="Designation"
                   onChange={handleDesignationChange}
-                  list={["Ten", "Twenty", "Thirty"]}
+                  list={["Operator", "Supervisor", "Lab Tester"]}
+                  fullWidth
                 />
               </Grid>
               <Grid item xs={12}>
@@ -453,7 +546,7 @@ export default function UserRegistration() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Support Start Date"
                     value={formData.supportStartDate}
@@ -463,25 +556,32 @@ export default function UserRegistration() {
                     format="DD/MM/YYYY"
                     slotProps={{ textField: { fullWidth: true } }}
                   />
-                </LocalizationProvider>
+                </LocalizationProvider> */}
+                <Datepicker
+                  label="Support Start Date"
+                  value={formData.supportStartDate}
+                  onChange={(startDate) =>
+                    setFormData({ ...formData, supportStartDate: startDate })
+                  }
+                  format="DD-MM-YYYY"
+                  slotProps={{ textField: { fullWidth: true } }}
+                />
               </Grid>
               <Grid item xs={12}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Support End Date"
-                    value={formData.supportEndDate}
-                    onChange={(endDate) => {
-                      if (endDate < formData.supportEndDate) {
-                        setShowDateError(true);
-                      } else {
-                        setShowDateError(false);
-                        setFormData({ ...formData, supportEndDate: endDate });
-                      }
-                    }}
-                    format="DD/MM/YYYY"
-                    slotProps={{ textField: { fullWidth: true } }}
-                  />
-                </LocalizationProvider>
+                <Datepicker
+                  label="Support End Date"
+                  value={formData.supportEndDate}
+                  onChange={(endDate) => {
+                    if (endDate < formData.supportEndDate) {
+                      setShowDateError(true);
+                    } else {
+                      setShowDateError(false);
+                      setFormData({ ...formData, supportEndDate: endDate });
+                    }
+                  }}
+                  format="DD-MM-YYYY"
+                  slotProps={{ textField: { fullWidth: true } }}
+                />
               </Grid>
               {showDateError && (
                 <Stack
@@ -518,14 +618,25 @@ export default function UserRegistration() {
                 />
               </Grid>
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Register User
-            </Button>
+            {userExist ? (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Update User
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Register User
+              </Button>
+            )}
           </Box>
         </form>
       </Box>

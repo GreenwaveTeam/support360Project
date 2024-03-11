@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Textfield from "./components/textfield/textfield.component";
 import Device from "./modules/device/modules.device";
 import NavigationArea from "./components/navigationbar/navigationbar.component";
 import AdminPage from "./modules/homepages/AdminPage";
@@ -23,6 +22,10 @@ function App() {
         <Routes>
           <Route path="/device" element={<Device />} />
           <Route path="/ad" element={<UserConfigurationHome />} />
+          <Route
+            path="/UserRegistration/:userID"
+            element={<UserRegistration />}
+          />
           <Route path="/UserRegistration" element={<UserRegistration />} />
           <Route path="/abc" element={<AdminPage />} />
         </Routes>

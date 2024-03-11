@@ -9,6 +9,7 @@ export default function Textfield({
   name,
   fullWidth,
   style,
+  type,
 }) {
   return (
     <>
@@ -16,6 +17,7 @@ export default function Textfield({
         id={id}
         value={value}
         onChange={onChange}
+        type={type}
         label={label}
         name={name}
         fullWidth={fullWidth}

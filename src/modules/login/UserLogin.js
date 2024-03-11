@@ -12,6 +12,8 @@ import {
 import Textfield from "../../components/textfield/textfield.component";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import { useNavigate } from "react-router-dom";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 export default function UserLogin() {
   const [userID, setUserID] = useState("");
@@ -35,6 +37,11 @@ export default function UserLogin() {
     accountOwnerGW: "",
   });
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleShowPasswordClick = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
   useEffect(() => {
     fetchExistingUser();
@@ -79,7 +86,7 @@ export default function UserLogin() {
           <HowToRegTwoToneIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          User Registration Page
+          User Login Page
         </Typography>
         <form>
           <Box component="table" noValidate sx={{ mt: 3 }}>
@@ -106,7 +113,25 @@ export default function UserLogin() {
                   label="Password"
                   value={password}
                   onChange={handlePasswordInputChange}
+                  style={{ width: "80%" }}
+                  type={showPassword ? "text" : "password"}
                 />
+                <Button
+                  id="showpasswoed"
+                  onClick={handleShowPasswordClick}
+                  style={{
+                    width: "10%",
+                    height: "56px",
+                  }}
+                  variant="contained"
+                  color="inherit"
+                >
+                  {showPassword ? (
+                    <VisibilityOffOutlinedIcon />
+                  ) : (
+                    <VisibilityOutlinedIcon />
+                  )}
+                </Button>
               </Grid>
             </Grid>
           </Box>

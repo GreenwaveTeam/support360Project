@@ -17,6 +17,8 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useParams } from "react-router-dom";
 import dayjs from "dayjs";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 export default function UserRegistration() {
   const { userID } = useParams();
@@ -354,12 +356,15 @@ export default function UserRegistration() {
                   style={{
                     width: "10%",
                     height: "56px",
-                    borderRadius: "50px",
                   }}
                   variant="contained"
-                  color="error"
+                  color="inherit"
                 >
-                  {showPassword ? "Hide Password" : "Show Password"}
+                  {showPassword ? (
+                    <VisibilityOffOutlinedIcon />
+                  ) : (
+                    <VisibilityOutlinedIcon />
+                  )}
                 </Button>
               </Grid>
               <Grid item xs={12}>

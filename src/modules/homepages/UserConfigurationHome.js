@@ -10,10 +10,11 @@ import {
   TableRow,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
 export default function UserConfigurationHome() {
   const [list, setList] = useState([]);
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -32,6 +33,40 @@ export default function UserConfigurationHome() {
       console.log(error);
     }
   };
+
+  // async function deleteUserByUserID(e) {
+  //   try {
+  //     const response = await fetch(`http://localhost:8081/users/user/${e}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         Accept: "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     console.log("data : ", data);
+  //     setList((prevList) => {
+  //       prevList.filter((item) => item.userID !== e);
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+  async function deleteUserByUserID(e) {
+    try {
+      const response = await fetch(`http://localhost:8081/users/user/${e}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+        },
+      });
+      const data = await response.ok;
+      console.log("data : ", data);
+      setList((prevList) => prevList.filter((item) => item.userID !== e));
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   // const handleEdit = (user) => {
   //   history.push({
@@ -63,34 +98,38 @@ export default function UserConfigurationHome() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {list.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell align="center">{item.name}</TableCell>
-                  <TableCell align="center">{item.email}</TableCell>
-                  <TableCell align="center">{item.userID}</TableCell>
-                  <TableCell align="center">
-                    <Link
-                      to={`/UserRegistration/${item.userID}`}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
+              {list &&
+                list.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell align="center">{item.name}</TableCell>
+                    <TableCell align="center">{item.email}</TableCell>
+                    <TableCell align="center">{item.userID}</TableCell>
+                    <TableCell align="center">
+                      <Link
+                        to={`/UserRegistration/${item.userID}`}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        <Button
+                          variant="contained"
+                          color="info"
+                          style={{ width: "20px", borderRadius: "50px" }}
+                        >
+                          <BorderColorOutlinedIcon />
+                        </Button>
+                      </Link>
                       <Button
                         variant="contained"
-                        color="info"
+                        color="error"
                         style={{ width: "20px", borderRadius: "50px" }}
+                        onClick={(e) => {
+                          deleteUserByUserID(item.userID);
+                        }}
                       >
-                        Edit
+                        <DeleteForeverOutlinedIcon />
                       </Button>
-                    </Link>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      style={{ width: "20px", borderRadius: "50px" }}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

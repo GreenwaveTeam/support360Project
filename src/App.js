@@ -6,7 +6,7 @@ import NavigationArea from "./components/navigationbar/navigationbar.component";
 import AdminPage from "./modules/homepages/AdminPage";
 import UserConfigurationHome from "./modules/homepages/UserConfigurationHome";
 import UserRegistration from "./modules/registration/UserRegistration";
-import UserLogin from "./modules/login/UserLogin";
+import UserLogin from "./modules/login/userLogin";
 
 function App() {
   const urllist = [

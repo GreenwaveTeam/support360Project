@@ -49,6 +49,11 @@ export default function UserRegistration() {
   const [showPlantTextField, setShowPlantTextField] = useState(false);
   const [hideBtn, setHideBtn] = useState(false);
   const [userExist, setUserExist] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleShowPasswordClick = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
   useEffect(() => {
     fetchData();
@@ -334,15 +339,28 @@ export default function UserRegistration() {
               <Grid item xs={12}>
                 <Textfield
                   required
-                  fullWidth
+                  style={{ width: "90%" }}
                   name="password"
                   label="Password"
-                  // type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   // autoComplete="new-password"
                   value={pass}
                   onChange={hashedPasswordChange}
                 />
+                <Button
+                  id="showpasswoed"
+                  onClick={handleShowPasswordClick}
+                  style={{
+                    width: "10%",
+                    height: "56px",
+                    borderRadius: "50px",
+                  }}
+                  variant="contained"
+                  color="error"
+                >
+                  {showPassword ? "Hide Password" : "Show Password"}
+                </Button>
               </Grid>
               <Grid item xs={12}>
                 <Textfield

@@ -6,6 +6,7 @@ import NavigationArea from "./components/navigationbar/navigationbar.component";
 import AdminPage from "./modules/homepages/AdminPage";
 import UserConfigurationHome from "./modules/homepages/UserConfigurationHome";
 import UserRegistration from "./modules/registration/UserRegistration";
+import UserLogin from "./modules/login/UserLogin";
 
 function App() {
   const urllist = [
@@ -27,6 +28,7 @@ function App() {
             element={<UserRegistration />}
           />
           <Route path="/UserRegistration" element={<UserRegistration />} />
+          <Route path="/login" element={<UserLogin />} />
           <Route path="/abc" element={<AdminPage />} />
         </Routes>
       </div>

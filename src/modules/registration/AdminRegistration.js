@@ -135,27 +135,12 @@ export default function AdminRegistration() {
         setUserExist(true);
         setFormData((prevData) => ({
           ...prevData,
-          userID: i.userID,
+          adminID: i.adminID,
           name: i.name,
           designation: i.designation,
           email: i.email,
           password: i.password,
           phoneNumber: i.phoneNumber,
-          plantID: i.plantID,
-          plantName: i.plantName,
-          address: i.address,
-          division: i.division,
-          customerName: i.customerName,
-          supportStartDate: dayjs(
-            convertDateFormat(i.supportStartDate),
-            "DD-MM-YYYY"
-          ),
-          supportEndDate: dayjs(
-            convertDateFormat(i.supportEndDate),
-            "DD-MM-YYYY"
-          ),
-          accountOwnerCustomer: i.accountOwnerCustomer,
-          accountOwnerGW: i.accountOwnerGW,
         }));
       }
     }

@@ -7,7 +7,7 @@ import AdminPage from "./modules/homepages/AdminPage";
 import UserConfigurationHome from "./modules/homepages/UserConfigurationHome";
 import UserRegistration from "./modules/registration/UserRegistration";
 import UserLogin from "./modules/login/UserLogin";
-import AdminRegistration from "./modules/registration/AdminRegistration";
+import AdminRegistration from "./modules/registration/modules.registration.adminRegistration.component";
 import AdminLogin from "./modules/login/AdminLogin";
 
 function App() {

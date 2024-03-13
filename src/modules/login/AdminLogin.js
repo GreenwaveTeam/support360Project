@@ -15,26 +15,17 @@ import { useNavigate } from "react-router-dom";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
-export default function UserLogin() {
-  const [userID, setUserID] = useState("");
+export default function AdminLogin() {
+  const [adminID, setAdminID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [allUser, setAllUser] = useState({
-    userID: "",
+  const [allAdmin, setAllAdmin] = useState({
+    adminID: "",
     name: "",
-    designation: "",
+    role: "",
     email: "",
     password: "",
     phoneNumber: "",
-    plantID: "",
-    plantName: "",
-    address: "",
-    division: "",
-    customerName: "",
-    supportStartDate: "",
-    supportEndDate: "",
-    accountOwnerCustomer: "",
-    accountOwnerGW: "",
   });
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -44,12 +35,12 @@ export default function UserLogin() {
   };
 
   useEffect(() => {
-    fetchExistingUser();
+    fetchExistingAdmin();
   }, []);
 
-  const fetchExistingUser = async () => {
+  const fetchExistingAdmin = async () => {
     try {
-      const response = await fetch("http://localhost:8081/users/", {
+      const response = await fetch("http://localhost:8081/admins/", {
         method: "GET",
         headers: {
           Accept: "application/json",
@@ -57,14 +48,14 @@ export default function UserLogin() {
       });
       const data = await response.json();
       console.log("data : ", data);
-      setAllUser(data);
+      setAllAdmin(data);
     } catch (error) {
-      console.error("Error fetching user list:", error);
+      console.error("Error fetching admin list:", error);
     }
   };
 
-  const handleUserIDInputChange = (event) => {
-    setUserID(event.target.value);
+  const handleAdminIDInputChange = (event) => {
+    setAdminID(event.target.value);
   };
 
   const handlePasswordInputChange = (event) => {
@@ -86,21 +77,21 @@ export default function UserLogin() {
           <HowToRegTwoToneIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          User Login Page
+          Admin Login Page
         </Typography>
         <form>
           <Box component="table" noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Textfield
-                  autoComplete="userID"
-                  name="userID"
+                  autoComplete="adminID"
+                  name="adminID"
                   required
                   fullWidth
-                  id="userID"
-                  label="User ID"
-                  value={userID}
-                  onChange={handleUserIDInputChange}
+                  id="adminID"
+                  label="Admin ID"
+                  value={adminID}
+                  onChange={handleAdminIDInputChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -148,18 +139,18 @@ export default function UserLogin() {
             variant="contained"
             onClick={async (event) => {
               event.preventDefault();
-              console.log("allUser : ", allUser);
-              for (let i of allUser) {
+              console.log("allAdmin : ", allAdmin);
+              for (let i of allAdmin) {
                 if (
-                  i.userID === userID &&
+                  i.adminID === adminID &&
                   bcrypt.compare(password, i.password)
                 ) {
-                  navigate(`/abc/${i.userID}`, {
-                    state: { userName: i.name },
+                  navigate(`/ad/${i.adminID}`, {
+                    state: { adminName: i.name },
                   });
                   return;
                 } else {
-                  setError("UserID or Password and not Matching ! ");
+                  setError("AdminID or Password and not Matching ! ");
                 }
               }
             }}

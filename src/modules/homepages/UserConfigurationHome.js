@@ -8,16 +8,27 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 
 export default function UserConfigurationHome() {
+  // const { adminID } = useParams();
+  // const location = useLocation();
+  // const [adminName, setUserName] = useState("");
+
   const [list, setList] = useState([]);
+
   useEffect(() => {
     fetchData();
+    // const { adminName } = location.state || (" UserID : ", adminID);
+    // if (adminName) {
+    //   setUserName(adminName);
+    // }
   }, []);
+  // console.log("adminName : ", adminName);
 
   const fetchData = async () => {
     try {
@@ -29,6 +40,7 @@ export default function UserConfigurationHome() {
       });
       const data = await response.json();
       setList(data);
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -36,7 +48,7 @@ export default function UserConfigurationHome() {
 
   // async function deleteUserByUserID(e) {
   //   try {
-  //     const response = await fetch(`http://localhost:8081/users/user/${e}`, {
+  //     const response = await fetch(`http://localhost:8081/admins/admin/${e}`, {
   //       method: "DELETE",
   //       headers: {
   //         Accept: "application/json",
@@ -45,7 +57,7 @@ export default function UserConfigurationHome() {
   //     const data = await response.json();
   //     console.log("data : ", data);
   //     setList((prevList) => {
-  //       prevList.filter((item) => item.userID !== e);
+  //       prevList.filter((item) => item.adminID !== e);
   //     });
   //   } catch (error) {
   //     console.log(error);
@@ -62,21 +74,24 @@ export default function UserConfigurationHome() {
       });
       const data = await response.ok;
       console.log("data : ", data);
-      setList((prevList) => prevList.filter((item) => item.userID !== e));
+      setList((prevList) => prevList.filter((item) => item.adminID !== e));
     } catch (error) {
       console.log(error);
     }
   }
 
-  // const handleEdit = (user) => {
+  // const handleEdit = (admin) => {
   //   history.push({
   //     pathname: "/UserRegistration",
-  //     state: { user },
+  //     state: { admin },
   //   });
   // };
 
   return (
     <>
+      <Typography component="h1" variant="h5">
+        {/* Welcome {adminName} */}
+      </Typography>
       <Button
         type="submit"
         variant="contained"
@@ -109,24 +124,18 @@ export default function UserConfigurationHome() {
                         to={`/UserRegistration/${item.userID}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
-                        <Button
-                          variant="contained"
-                          color="info"
-                          style={{ width: "20px", borderRadius: "50px" }}
-                        >
-                          <BorderColorOutlinedIcon />
-                        </Button>
+                        <BorderColorOutlinedIcon color="primary" />
                       </Link>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        style={{ width: "20px", borderRadius: "50px" }}
-                        onClick={(e) => {
-                          deleteUserByUserID(item.userID);
-                        }}
+                      <Link
+                        style={{ textDecoration: "none", color: "inherit" }}
                       >
-                        <DeleteForeverOutlinedIcon />
-                      </Button>
+                        <DeleteForeverOutlinedIcon
+                          color="error"
+                          onClick={(e) => {
+                            deleteUserByUserID(item.adminID);
+                          }}
+                        />
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))}

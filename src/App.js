@@ -7,6 +7,8 @@ import AdminPage from "./modules/homepages/AdminPage";
 import UserConfigurationHome from "./modules/homepages/UserConfigurationHome";
 import UserRegistration from "./modules/registration/UserRegistration";
 import UserLogin from "./modules/login/UserLogin";
+import AdminRegistration from "./modules/registration/AdminRegistration";
+import AdminLogin from "./modules/login/AdminLogin";
 
 function App() {
   const urllist = [
@@ -22,13 +24,21 @@ function App() {
         <NavigationArea urllist={urllist} handleOnClick={onclick} />
         <Routes>
           <Route path="/device" element={<Device />} />
+          <Route path="/ad/:adminID" element={<UserConfigurationHome />} />
           <Route path="/ad" element={<UserConfigurationHome />} />
           <Route
             path="/UserRegistration/:userID"
             element={<UserRegistration />}
           />
           <Route path="/UserRegistration" element={<UserRegistration />} />
+          <Route
+            path="/AdminRegistration/:adminID"
+            element={<AdminRegistration />}
+          />
+          <Route path="/AdminRegistration" element={<AdminRegistration />} />
           <Route path="/login" element={<UserLogin />} />
+          <Route path="/adminlogin" element={<AdminLogin />} />
+          <Route path="/abc/:userID" element={<AdminPage />} />
           <Route path="/abc" element={<AdminPage />} />
         </Routes>
       </div>

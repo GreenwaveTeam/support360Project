@@ -15,7 +15,7 @@ import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
 import Datepicker from "../../components/datepicker/datepicker.component";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
@@ -52,6 +52,7 @@ export default function UserRegistration() {
   const [hideBtn, setHideBtn] = useState(false);
   const [userExist, setUserExist] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -79,7 +80,6 @@ export default function UserRegistration() {
   const handlenewPlantNameInputChange = (event) => {
     const { name, value } = event.target;
     setNewPlantName({ ...newPlantName, [name]: value });
-    console.log(name, value);
   };
 
   const handleDesignationChange = (event) => {
@@ -95,11 +95,9 @@ export default function UserRegistration() {
   };
 
   const confirmPassword = async (e) => {
-    const confirmPass = e.target.value;
-    setCnfpass(confirmPass);
     const hashedPassword = await bcrypt.hash(pass, 10);
     setFormData({ ...formData, password: hashedPassword });
-    const passwordsMatch = await bcrypt.compare(confirmPass, hashedPassword);
+    const passwordsMatch = await bcrypt.compare(e, hashedPassword);
     if (!passwordsMatch) {
       setShowPasswordError(true);
     } else {
@@ -157,7 +155,6 @@ export default function UserRegistration() {
         },
       });
       const data = await response.json();
-      console.log("data : ", data);
       checkExistingUser(data);
     } catch (error) {
       console.error("Error fetching user list:", error);
@@ -174,7 +171,7 @@ export default function UserRegistration() {
           name: i.name,
           designation: i.designation,
           email: i.email,
-          password: i.password,
+          // password: i.password,
           phoneNumber: i.phoneNumber,
           plantID: i.plantID,
           plantName: i.plantName,
@@ -195,8 +192,6 @@ export default function UserRegistration() {
       }
     }
   };
-
-  console.log("formData", formData);
 
   const fetchData = async () => {
     try {
@@ -222,14 +217,40 @@ export default function UserRegistration() {
         },
         body: JSON.stringify(newPlantName),
       });
-      if (response.created) {
-        console.log("Plant Added successfully");
+      if (response.ok) {
+        console.log("Plant Added successfully : ", newPlantName);
       } else {
         console.error("Failed to Add Plant");
       }
-      console.log("newPlantName : ", newPlantName);
     } catch (error) {
       console.error("Error:", error);
+    }
+    fetchData();
+  };
+
+  const handleUpdate = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch(
+        `http://localhost:8081/users/user/${formData.userID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      if (response.ok) {
+        console.log("User Updated successfully");
+        navigate(`/abc/${formData.userID}`, {
+          state: { userName: formData.name },
+        });
+      } else {
+        console.error("Failed to update user");
+      }
+    } catch (error) {
+      console.error("Error : ", error);
     }
   };
 
@@ -244,16 +265,17 @@ export default function UserRegistration() {
         },
         body: JSON.stringify(formData),
       });
-      if (response.created) {
+      if (response.ok) {
         console.log("User registered successfully");
+        navigate(`/abc/${formData.userID}`, {
+          state: { userName: formData.name },
+        });
       } else {
         console.error("Failed to register user");
       }
-      console.log("formDataWithChangedPassword : ", formData);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error : ", error);
     }
-    console.log("formData : ", formData);
   };
 
   return (
@@ -273,8 +295,8 @@ export default function UserRegistration() {
         <Typography component="h1" variant="h5">
           User Registration Page
         </Typography>
-        <form onSubmit={handleSubmit}>
-          <Box component="table" noValidate sx={{ mt: 3 }}>
+        <form>
+          <Box noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Textfield
@@ -338,57 +360,79 @@ export default function UserRegistration() {
                   onChange={handleFormdataInputChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  style={{ width: "90%" }}
-                  name="password"
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  // autoComplete="new-password"
-                  value={pass}
-                  onChange={hashedPasswordChange}
-                />
-                <Button
-                  id="showpasswoed"
-                  onClick={handleShowPasswordClick}
-                  style={{
-                    width: "10%",
-                    height: "56px",
-                  }}
-                  variant="contained"
-                  color="inherit"
-                >
-                  {showPassword ? (
-                    <VisibilityOffOutlinedIcon />
-                  ) : (
-                    <VisibilityOutlinedIcon />
+              {!userExist && (
+                <Grid item xs={12}>
+                  <Textfield
+                    required
+                    style={{ width: "90%" }}
+                    name="password"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    // autoComplete="new-password"
+                    value={pass}
+                    onChange={hashedPasswordChange}
+                  />
+                  <Button
+                    id="showpasswoed"
+                    onClick={handleShowPasswordClick}
+                    style={{
+                      width: "10%",
+                      height: "56px",
+                    }}
+                    variant="contained"
+                    color="inherit"
+                  >
+                    {showPassword ? (
+                      <VisibilityOffOutlinedIcon />
+                    ) : (
+                      <VisibilityOutlinedIcon />
+                    )}
+                  </Button>
+                </Grid>
+              )}
+              {!userExist && (
+                <Grid item xs={12}>
+                  <Textfield
+                    required
+                    fullWidth
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    type="password"
+                    id="confirmPassword"
+                    value={cnfpass}
+                    onBlur={(e) => confirmPassword(e.target.value)}
+                    onChange={(e) => {
+                      const confirmPass = e.target.value;
+                      setCnfpass(confirmPass);
+                    }}
+                  />
+                  {showPasswordError && (
+                    <Stack
+                      sx={{ display: "flex", justifyContent: "right" }}
+                      spacing={2}
+                    >
+                      <Alert variant="filled" severity="error">
+                        Password Does Not Match
+                      </Alert>
+                    </Stack>
                   )}
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  // type="password"
-                  id="confirmPassword"
-                  value={cnfpass}
-                  onChange={(e) => confirmPassword(e)}
-                />
-              </Grid>
-              {showPasswordError && (
-                <Stack
-                  sx={{ display: "flex", justifyContent: "right" }}
-                  spacing={2}
+                </Grid>
+              )}
+              {/* {showPasswordError && (
+                <Box
+                  sx={{
+                    position: "fixed",
+                    top: "10px",
+                    right: "10px",
+                    zIndex: 9999,
+                  }}
                 >
                   <Alert variant="filled" severity="error">
                     Password Does Not Match
                   </Alert>
-                </Stack>
-              )}
+                </Box>
+              )} */}
               <Grid item xs={12}>
                 <Textfield
                   required
@@ -647,6 +691,7 @@ export default function UserRegistration() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={handleUpdate}
               >
                 Update User
               </Button>
@@ -656,6 +701,7 @@ export default function UserRegistration() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={handleSubmit}
               >
                 Register User
               </Button>

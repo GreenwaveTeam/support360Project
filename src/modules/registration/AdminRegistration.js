@@ -14,28 +14,33 @@ import {
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
-import Datepicker from "../../components/datepicker/datepicker.component";
-import { useParams } from "react-router-dom";
-import dayjs from "dayjs";
+import { useNavigate, useParams } from "react-router-dom";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 
 export default function AdminRegistration() {
-  const { userID } = useParams();
+  const { adminID } = useParams();
   const [formData, setFormData] = useState({
     adminID: "",
     name: "",
     email: "",
     password: "",
-    designation: "",
+    role: "",
     phoneNumber: "",
   });
   const [cnfpass, setCnfpass] = useState("");
   const [pass, setPass] = useState("");
   const [showPasswordError, setShowPasswordError] = useState(false);
-  const [hideBtn, setHideBtn] = useState(false);
-  const [userExist, setUserExist] = useState(false);
+  const [adminExist, setAdminExist] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+
+  const handleShowPasswordClick = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
 
   useEffect(() => {
-    fetchExistingUser();
+    fetchExistingAdmin();
   }, []);
 
   const hashedPasswordChange = (e) => {
@@ -47,9 +52,9 @@ export default function AdminRegistration() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleDesignationChange = (event) => {
+  const handleRoleChange = (event) => {
     const { value } = event.target;
-    setFormData({ ...formData, designation: value });
+    setFormData({ ...formData, role: value });
   };
 
   const handlePhoneNumberChange = (event) => {
@@ -72,48 +77,7 @@ export default function AdminRegistration() {
     }
   };
 
-  function convertDateFormat(dateString) {
-    const [year, month, day] = dateString.split("-");
-    return `${day}-${month}-${year}`;
-  }
-
-  // const checkExixtingUser = async () => {
-  //   // const { userID } = useParams;
-  //   for (let i of userList) {
-  //     // if (i.userID === userID) {
-  //     //   setFormData(i);
-  //     // }
-  //     console.log("i.userID", i.userID);
-  //   }
-  // };
-
-  // const checkExistingUser = async () => {
-  //   const { userID } = useParams;
-  //   for (let i of userList) {
-  //     if (i.userID === userID) {
-  //       setFormData({
-  //         userID: i.userID,
-  //         name: i.name,
-  //         designation: i.designation,
-  //         email: i.email,
-  //         password: i.password,
-  //         phoneNumber: i.phoneNumber,
-  //         plantID: i.plantID,
-  //         plantName: i.plantName,
-  //         address: i.address,
-  //         division: i.division,
-  //         customerName: i.customerName,
-  //         supportStartDate: i.supportStartDate,
-  //         supportEndDate: i.supportEndDate,
-  //         accountOwnerCustomer: i.accountOwnerCustomer,
-  //         accountOwnerGW: i.accountOwnerGW,
-  //       });
-  //     }
-  //     console.log("i.userID", i.userID);
-  //   }
-  // };
-
-  const fetchExistingUser = async () => {
+  const fetchExistingAdmin = async () => {
     try {
       const response = await fetch("http://localhost:8081/admins/", {
         method: "GET",
@@ -122,53 +86,76 @@ export default function AdminRegistration() {
         },
       });
       const data = await response.json();
-      console.log("data : ", data);
-      checkExistingUser(data);
+      checkExistingAdmin(data);
     } catch (error) {
-      console.error("Error fetching user list:", error);
+      console.error("Error fetching Admin list:", error);
     }
   };
 
-  const checkExistingUser = (data) => {
+  const checkExistingAdmin = (data) => {
     for (let i of data) {
-      if (i.userID === userID) {
-        setUserExist(true);
+      if (i.adminID === adminID) {
+        setAdminExist(true);
         setFormData((prevData) => ({
           ...prevData,
           adminID: i.adminID,
           name: i.name,
-          designation: i.designation,
           email: i.email,
           password: i.password,
+          role: i.role,
           phoneNumber: i.phoneNumber,
         }));
       }
     }
   };
 
-  console.log("formData", formData);
+  const handleUpdate = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch(
+        `http://localhost:8081/admins/admin/${formData.adminID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      if (response.ok) {
+        console.log("admin Updated successfully");
+        navigate(`/ad/${formData.adminID}`, {
+          state: { adminName: formData.name },
+        });
+      } else {
+        console.error("Failed to update admin");
+      }
+    } catch (error) {
+      console.error("Error : ", error);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch("http://localhost:8081/admins/admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-      if (response.created) {
-        console.log("User registered successfully");
+      if (response.ok) {
+        console.log("Admin registered successfully");
+        navigate(`/ad/${formData.adminID}`, {
+          state: { adminName: formData.name },
+        });
       } else {
-        console.error("Failed to register user");
+        console.error("Failed to register Admin");
       }
-      console.log("formDataWithChangedPassword : ", formData);
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error : ", error);
     }
-    console.log("formData : ", formData);
   };
 
   return (
@@ -186,10 +173,10 @@ export default function AdminRegistration() {
           <HowToRegTwoToneIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          User Registration Page
+          admin Registration Page
         </Typography>
-        <form onSubmit={handleSubmit}>
-          <Box component="table" noValidate sx={{ mt: 3 }}>
+        <form>
+          <Box noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Textfield
@@ -205,38 +192,23 @@ export default function AdminRegistration() {
               </Grid>
               <Grid item xs={12}>
                 <Textfield
-                  autoComplete="userID"
-                  name="userID"
+                  autoComplete="adminID"
+                  name="adminID"
                   required
                   fullWidth
-                  id="userID"
-                  label="User ID"
-                  value={formData.userID}
+                  id="adminID"
+                  label="Admin ID"
+                  value={formData.adminID}
                   onChange={handleFormdataInputChange}
                 />
               </Grid>
               <Grid item xs={12}>
-                {/* <FormControl fullWidth>
-                  <InputLabel>Designation</InputLabel>
-                  <Select
-                    required
-                    id="designation"
-                    value={formData.designation}
-                    label="Designation"
-                    onChange={handleDesignationChange}
-                  >
-                    <MenuItem value={""}>Select</MenuItem>
-                    <MenuItem value={"Ten"}>Ten</MenuItem>
-                    <MenuItem value={"Twenty"}>Twenty</MenuItem>
-                    <MenuItem value={"Thirty"}>Thirty</MenuItem>
-                  </Select>
-                </FormControl> */}
                 <Dropdown
-                  id="designation"
-                  value={formData.designation}
-                  label="Designation"
-                  onChange={handleDesignationChange}
-                  list={["Ten", "Twenty", "Thirty"]}
+                  id="role"
+                  value={formData.role}
+                  label="Role"
+                  onChange={handleRoleChange}
+                  list={["Manager", "Developer", "Support Team"]}
                   fullWidth
                 />
               </Grid>
@@ -253,32 +225,62 @@ export default function AdminRegistration() {
                   onChange={handleFormdataInputChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  // type="password"
-                  id="password"
-                  // autoComplete="new-password"
-                  value={pass}
-                  onChange={hashedPasswordChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  // type="password"
-                  id="confirmPassword"
-                  value={cnfpass}
-                  onChange={(e) => confirmPassword(e)}
-                />
-              </Grid>
-              {showPasswordError && (
+              {!adminExist && (
+                <Grid item xs={12}>
+                  <Textfield
+                    required
+                    style={{ width: "90%" }}
+                    name="password"
+                    label="Password"
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    // autoComplete="new-password"
+                    value={pass}
+                    onChange={hashedPasswordChange}
+                  />
+                  <Button
+                    id="showpasswoed"
+                    onClick={handleShowPasswordClick}
+                    style={{
+                      width: "10%",
+                      height: "56px",
+                    }}
+                    variant="contained"
+                    color="inherit"
+                  >
+                    {showPassword ? (
+                      <VisibilityOffOutlinedIcon />
+                    ) : (
+                      <VisibilityOutlinedIcon />
+                    )}
+                  </Button>
+                </Grid>
+              )}
+              {!adminExist && (
+                <Grid item xs={12}>
+                  <Textfield
+                    required
+                    fullWidth
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    type="password"
+                    id="confirmPassword"
+                    value={cnfpass}
+                    onChange={(e) => confirmPassword(e)}
+                  />
+                  {showPasswordError && (
+                    <Stack
+                      sx={{ display: "flex", justifyContent: "right" }}
+                      spacing={2}
+                    >
+                      <Alert variant="filled" severity="error">
+                        Password Does Not Match
+                      </Alert>
+                    </Stack>
+                  )}
+                </Grid>
+              )}
+              {/* {showPasswordError && (
                 <Stack
                   sx={{ display: "flex", justifyContent: "right" }}
                   spacing={2}
@@ -287,7 +289,7 @@ export default function AdminRegistration() {
                     Password Does Not Match
                   </Alert>
                 </Stack>
-              )}
+              )} */}
               <Grid item xs={12}>
                 <Textfield
                   required
@@ -301,14 +303,15 @@ export default function AdminRegistration() {
                 />
               </Grid>
             </Grid>
-            {userExist ? (
+            {adminExist ? (
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={handleUpdate}
               >
-                Update User
+                Update Admin
               </Button>
             ) : (
               <Button
@@ -316,8 +319,9 @@ export default function AdminRegistration() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
+                onClick={handleSubmit}
               >
-                Register User
+                Register Admin
               </Button>
             )}
           </Box>

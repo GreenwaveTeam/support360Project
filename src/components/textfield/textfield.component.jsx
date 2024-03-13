@@ -10,6 +10,7 @@ export default function Textfield({
   fullWidth,
   style,
   type,
+  onBlur,
 }) {
   return (
     <>
@@ -22,6 +23,7 @@ export default function Textfield({
         name={name}
         fullWidth={fullWidth}
         style={style}
+        onBlur={onBlur}
       />
     </>
   );

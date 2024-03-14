@@ -9,6 +9,7 @@ import UserRegistration from "./modules/registration/UserRegistration";
 import UserLogin from "./modules/login/UserLogin";
 import AdminRegistration from "./modules/registration/modules.registration.adminRegistration.component";
 import AdminLogin from "./modules/login/AdminLogin";
+// import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
 function App() {
   const urllist = [
@@ -23,6 +24,7 @@ function App() {
       <div className="App">
         <NavigationArea urllist={urllist} handleOnClick={onclick} />
         <Routes>
+          {/* <Route path="/xyz" element={<AddInfrastructureIssue />} /> */}
           <Route path="/device" element={<Device />} />
           <Route path="/ad/:adminID" element={<UserConfigurationHome />} />
           <Route path="/ad" element={<UserConfigurationHome />} />

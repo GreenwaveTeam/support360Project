@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
   Table,
   TableBody,
@@ -8,11 +13,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
   Typography,
 } from "@mui/material";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import Textfield from "../../components/textfield/textfield.component";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
+import { CategoryOutlined } from "@mui/icons-material";
 
 export default function UserConfigurationHome() {
   // const { adminID } = useParams();
@@ -20,6 +30,9 @@ export default function UserConfigurationHome() {
   // const [adminName, setUserName] = useState("");
 
   const [list, setList] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filteredRows, setFilteredRows] = useState(list);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
 
   useEffect(() => {
     fetchData();
@@ -40,6 +53,7 @@ export default function UserConfigurationHome() {
       });
       const data = await response.json();
       setList(data);
+      setFilteredRows(data);
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -74,7 +88,7 @@ export default function UserConfigurationHome() {
       });
       const data = await response.ok;
       console.log("data : ", data);
-      setList((prevList) => prevList.filter((item) => item.adminID !== e));
+      setList((prevList) => prevList.filter((item) => item.userID !== e));
     } catch (error) {
       console.log(error);
     }
@@ -86,6 +100,27 @@ export default function UserConfigurationHome() {
   //     state: { admin },
   //   });
   // };
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+    console.log("Search => ", event.target.value);
+    const currentSearch = event.target.value;
+    console.log("Search => ", search);
+    if (currentSearch === "" || currentSearch.length === 0) {
+      setFilteredRows(list);
+    } else {
+      const updatedRows = [...list];
+      const filteredRows = updatedRows.filter((list) =>
+        list.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
+      );
+      console.log("Filtered Rows => ", filteredRows);
+      setFilteredRows(filteredRows);
+    }
+  };
+
+  const handleDelete = (userID) => {
+    setOpenDeleteDialog(true);
+  };
 
   return (
     <>
@@ -104,6 +139,54 @@ export default function UserConfigurationHome() {
         <h3>Existing Users</h3>
         <TableContainer>
           <Table>
+            <TableRow>
+              <TableCell
+                colSpan={4}
+                sx={{
+                  textAlign: "center",
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                  backgroundColor: "#B5C0D0",
+                  lineHeight: 4,
+                }}
+              >
+                <Textfield
+                  onChange={(e) => handleSearchChange(e)}
+                  variant={"outlined"}
+                  size="small"
+                  label={
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <SearchOutlinedIcon style={{ marginRight: "5px" }} />
+                      Search...
+                    </div>
+                  }
+                  value={search}
+                  sx={{
+                    marginLeft: "5px",
+                    width: "200px",
+                    // Set the background color to white
+                  }}
+                  //   InputProps={{
+                  //     startAdornment: (
+                  //         <InputAdornment position="start">
+                  //             <SearchOutlinedIcon />
+                  //         </InputAdornment>
+                  //     ),
+                  // }}
+                />
+                <Tooltip title="Clear">
+                  <Button
+                    onClick={() => {
+                      setSearch("");
+                      setFilteredRows(list);
+                    }}
+                    style={{ color: "black" }}
+                  >
+                    <DisabledByDefaultRoundedIcon />
+                  </Button>
+                </Tooltip>
+              </TableCell>
+            </TableRow>
             <TableHead>
               <TableRow>
                 <TableCell align="center">Name</TableCell>
@@ -113,32 +196,66 @@ export default function UserConfigurationHome() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {list &&
-                list.map((item, index) => (
-                  <TableRow key={index}>
-                    <TableCell align="center">{item.name}</TableCell>
-                    <TableCell align="center">{item.email}</TableCell>
-                    <TableCell align="center">{item.userID}</TableCell>
-                    <TableCell align="center">
-                      <Link
-                        to={`/UserRegistration/${item.userID}`}
-                        style={{ textDecoration: "none", color: "inherit" }}
+              {filteredRows.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell align="center">{item.name}</TableCell>
+                  <TableCell align="center">{item.email}</TableCell>
+                  <TableCell align="center">{item.userID}</TableCell>
+                  <TableCell align="center">
+                    <Link
+                      to={`/UserRegistration/${item.userID}`}
+                      style={{ textDecoration: "none", color: "inherit" }}
+                    >
+                      <BorderColorOutlinedIcon color="primary" />
+                    </Link>
+                    <Link style={{ textDecoration: "none", color: "inherit" }}>
+                      <DeleteForeverOutlinedIcon
+                        color="error"
+                        // onClick={(e) => {
+                        //   deleteUserByUserID(item.adminID);
+                        // }}
+                        onClick={(e) => handleDelete(item.userID)}
+                      />
+                    </Link>
+                    <>
+                      <Dialog
+                        open={openDeleteDialog}
+                        onClose={() => setOpenDeleteDialog(false)}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
                       >
-                        <BorderColorOutlinedIcon color="primary" />
-                      </Link>
-                      <Link
-                        style={{ textDecoration: "none", color: "inherit" }}
-                      >
-                        <DeleteForeverOutlinedIcon
-                          color="error"
-                          onClick={(e) => {
-                            deleteUserByUserID(item.adminID);
-                          }}
-                        />
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        <DialogTitle id="alert-dialog-title">
+                          {"Delete User?"}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="alert-dialog-description">
+                            Are you sure you want to delete this user :{" "}
+                            {item.userID} ?
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => setOpenDeleteDialog(false)}
+                            color="primary"
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              deleteUserByUserID(item.userID);
+                              setOpenDeleteDialog(false);
+                            }}
+                            color="error"
+                            autoFocus
+                          >
+                            Delete
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>

@@ -3,12 +3,13 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Device from "./modules/device/modules.device";
 import NavigationArea from "./components/navigationbar/navigationbar.component";
-import AdminPage from "./modules/homepages/AdminPage";
+import AdminPage from "./modules/configurationpages/AdminPage";
 import UserConfigurationHome from "./modules/homepages/UserConfigurationHome";
 import UserRegistration from "./modules/registration/UserRegistration";
 import UserLogin from "./modules/login/UserLogin";
 import AdminRegistration from "./modules/registration/modules.registration.adminRegistration.component";
 import AdminLogin from "./modules/login/AdminLogin";
+import UserHome from "./modules/homepages/UserHome";
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
 function App() {
@@ -37,8 +38,10 @@ function App() {
             path="/AdminRegistration/:adminID"
             element={<AdminRegistration />}
           />
+          <Route path="/UserHome" element={<UserHome />} />
+          <Route path="/UserHome/:userID" element={<UserHome />} />
           <Route path="/AdminRegistration" element={<AdminRegistration />} />
-          <Route path="/login" element={<UserLogin />} />
+          <Route path="/userlogin" element={<UserLogin />} />
           <Route path="/adminlogin" element={<AdminLogin />} />
           <Route path="/abc/:userID" element={<AdminPage />} />
           <Route path="/abc" element={<AdminPage />} />

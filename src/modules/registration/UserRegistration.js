@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import bcrypt from "bcryptjs";
 import {
   Avatar,
   CssBaseline,
@@ -95,9 +94,10 @@ export default function UserRegistration() {
   };
 
   const confirmPassword = async (e) => {
-    const hashedPassword = await bcrypt.hash(pass, 10);
-    setFormData({ ...formData, password: hashedPassword });
-    const passwordsMatch = await bcrypt.compare(e, hashedPassword);
+    // const hashedPassword = await bcrypt.hash(pass, 10);
+    // setFormData({ ...formData, password: hashedPassword });
+    // const passwordsMatch = await bcrypt.compare(e, hashedPassword);
+    const passwordsMatch = pass === e;
     if (!passwordsMatch) {
       setShowPasswordError(true);
     } else {

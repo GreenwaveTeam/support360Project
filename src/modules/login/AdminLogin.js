@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import bcrypt from "bcryptjs";
 import {
   Avatar,
   CssBaseline,
@@ -14,6 +13,7 @@ import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import { useNavigate } from "react-router-dom";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import { login } from "../helper/AuthService";
 
 export default function AdminLogin() {
   const [adminID, setAdminID] = useState("");
@@ -133,7 +133,7 @@ export default function AdminLogin() {
           </Typography>
         )}
         <Grid item xs={12}>
-          <Button
+          {/* <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -152,6 +152,26 @@ export default function AdminLogin() {
                 } else {
                   setError("AdminID or Password and not Matching ! ");
                 }
+              }
+            }}
+          >
+            Login
+          </Button> */}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            onClick={async (event) => {
+              event.preventDefault();
+              console.log("allUser : ", allAdmin);
+              const loggedIn = await login(adminID, password);
+              if (loggedIn) {
+                navigate(`/abc/${adminID}`, {
+                  // state: { userName: i.name },
+                });
+                return;
+              } else {
+                setError("Failed to login.");
               }
             }}
           >

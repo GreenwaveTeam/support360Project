@@ -1,5 +1,5 @@
+import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
-import bcrypt from "bcryptjs";
 import {
   Avatar,
   CssBaseline,
@@ -14,28 +14,13 @@ import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import { useNavigate } from "react-router-dom";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import { login } from "../helper/AuthService";
 
 export default function UserLogin() {
   const [userID, setUserID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [allUser, setAllUser] = useState({
-    userID: "",
-    name: "",
-    designation: "",
-    email: "",
-    password: "",
-    phoneNumber: "",
-    plantID: "",
-    plantName: "",
-    address: "",
-    division: "",
-    customerName: "",
-    supportStartDate: "",
-    supportEndDate: "",
-    accountOwnerCustomer: "",
-    accountOwnerGW: "",
-  });
+  const [allUser, setAllUser] = useState([]);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -142,7 +127,7 @@ export default function UserLogin() {
           </Typography>
         )}
         <Grid item xs={12}>
-          <Button
+          {/* <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -161,6 +146,26 @@ export default function UserLogin() {
                 } else {
                   setError("UserID or Password and not Matching ! ");
                 }
+              }
+            }}
+          >
+            Login
+          </Button> */}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            onClick={async (event) => {
+              event.preventDefault();
+              console.log("allUser : ", allUser);
+              const loggedIn = await login(userID, password);
+              if (loggedIn) {
+                navigate(`/abc/${userID}`, {
+                  // state: { userName: name },
+                });
+                return;
+              } else {
+                setError("Failed to login.");
               }
             }}
           >

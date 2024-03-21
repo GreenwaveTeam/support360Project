@@ -49,6 +49,7 @@ export default function UserConfigurationHome() {
         method: "GET",
         headers: {
           Accept: "application/json",
+          Authorization: localStorage.setItem("token"),
         },
       });
       const data = await response.json();

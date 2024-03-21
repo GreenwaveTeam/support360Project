@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Avatar,
   CssBaseline,
@@ -10,49 +10,48 @@ import {
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
-import { useNavigate } from "react-router-dom";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-import { login } from "../helper/AuthService";
+import { isAuthenticated, login } from "../helper/AuthService";
+import { jwtDecode } from "jwt-decode";
 
 export default function AdminLogin() {
   const [adminID, setAdminID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [allAdmin, setAllAdmin] = useState({
-    adminID: "",
-    name: "",
-    role: "",
-    email: "",
-    password: "",
-    phoneNumber: "",
-  });
-  const navigate = useNavigate();
+  // const [allAdmin, setAllAdmin] = useState({
+  //   adminID: "",
+  //   name: "",
+  //   role: "",
+  //   email: "",
+  //   password: "",
+  //   phoneNumber: "",
+  // });
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  useEffect(() => {
-    fetchExistingAdmin();
-  }, []);
+  // useEffect(() => {
+  //   fetchExistingAdmin();
+  // }, []);
 
-  const fetchExistingAdmin = async () => {
-    try {
-      const response = await fetch("http://localhost:8081/admins/", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      const data = await response.json();
-      console.log("data : ", data);
-      setAllAdmin(data);
-    } catch (error) {
-      console.error("Error fetching admin list:", error);
-    }
-  };
+  // const fetchExistingAdmin = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:8081/admins/", {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     console.log("data : ", data);
+  //     setAllAdmin(data);
+  //   } catch (error) {
+  //     console.error("Error fetching admin list:", error);
+  //   }
+  // };
 
   const handleAdminIDInputChange = (event) => {
     setAdminID(event.target.value);
@@ -61,6 +60,11 @@ export default function AdminLogin() {
   const handlePasswordInputChange = (event) => {
     setPassword(event.target.value);
   };
+
+  if (isAuthenticated) {
+    const jsonResponse = jwtDecode(localStorage.getItem("token"));
+    console.log("jsonResponse : ", jsonResponse);
+  }
 
   return (
     <Container component="main" maxWidth="md">
@@ -163,12 +167,12 @@ export default function AdminLogin() {
             variant="contained"
             onClick={async (event) => {
               event.preventDefault();
-              console.log("allUser : ", allAdmin);
+              // console.log("allUser : ", allAdmin);
               const loggedIn = await login(adminID, password);
               if (loggedIn) {
-                navigate(`/abc/${adminID}`, {
-                  // state: { userName: i.name },
-                });
+                // navigate(`/abc/${adminID}`, {
+                //   // state: { userName: i.name },
+                // });
                 return;
               } else {
                 setError("Failed to login.");

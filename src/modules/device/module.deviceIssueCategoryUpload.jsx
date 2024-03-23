@@ -111,7 +111,7 @@ const DeviceCategory = () => {
   
   const handleRedirect = (category) => {
     const categoryname = category.categoryname;
-    console.log(category.categoryname);
+    console.log("Category==========>"+category.categoryname);
     navigate(`/Device/Category/Issue`, {
       state: { issuelist: category.issuelist, categoryname: category.categoryname },
     });

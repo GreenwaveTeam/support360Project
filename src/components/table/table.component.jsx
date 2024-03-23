@@ -167,10 +167,12 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
           }
         });
         if (countChange === 0) {
-          setSnackbarText('No changes are made');
-          setsnackbarSeverity('error');
-          setOpen(true);
-          checkError = true;
+          // setSnackbarText('No changes are made');
+          // setsnackbarSeverity('error');
+          // setOpen(true);
+          setEditRowIndex(null)
+          setUpdatedRow(null)
+           checkError = true;
         }
       }
     });
@@ -209,9 +211,9 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {columns.map((column) => (
+                {columns.map((column,index) => (
                   <TableCell
-                    key={column.id}
+                    key={index}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
                   >
@@ -249,12 +251,12 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
-                    <TableRow hover tabIndex={-1} key={row.code}>
+                    <TableRow hover tabIndex={-1} key={index}>
                       {columns.map((column) => {
                         const value = row[column.id]
                         let updatedValue = updatedRow!== null ? updatedRow[column.id] : row[column.id];
                         return (
-                          <TableCell key={column.label} align={column.align}>
+                          <TableCell key={column.id} align={column.align}>
                             {editRowIndex !== index && (
                               column.id===redirectColumn) &&(
                                 <Typography onClick={()=>handleRedirect(row)}>

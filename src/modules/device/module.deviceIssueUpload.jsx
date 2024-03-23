@@ -25,7 +25,7 @@ const DeviceIssue = () => {
   const plantid='P009'
   //const history=useHis
   const location = useLocation();
-  const { categoryname } = location.state.categoryname;
+  const categoryname  = location.state.categoryname;
   console.log("Category:  ", categoryname);
   const issues = location.state.issuelist;
   const [issueList, setIssueList] = useState(issues);

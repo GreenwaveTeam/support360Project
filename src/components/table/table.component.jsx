@@ -7,21 +7,21 @@ export default function CustomTable ({tableheader,rows}) {
     //     console.log('CustomTable Rendered')
     //   }, [])
 
-    const customobj=[
-        {
-            'name':'Suraj',
-            'age':'22'
-        }
-        ,
-        {
-            'name':'Suraj12',
-            'age':'22'
-        },
-        {
-            'name':'Suraj32',
-            'age':'22'
-        }
-    ]
+    // const customobj=[
+    //     {
+    //         'name':'Sam',
+    //         'age':'22'
+    //     }
+    //     ,
+    //     {
+    //         'name':'Arjun',
+    //         'age':'22'
+    //     },
+    //     {
+    //         'name':'John',
+    //         'age':'22'
+    //     }
+    // ]
   return (
     <div>
       <TableContainer>
@@ -36,7 +36,7 @@ export default function CustomTable ({tableheader,rows}) {
         <br/>
         <br/>
         <TableBody>
-    {customobj.map((row, index) => (
+    {rows.map((row, index) => (
         <TableRow key={index}>
             {Object.keys(row).map((key) => (
                 <TableCell key={key}>

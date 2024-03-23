@@ -1,0 +1,19 @@
+/* customStyle.css */
+
+.Critical {
+    color: #B80000 !important; 
+    font-weight: bold !important; 
+  }
+  
+  .Major {
+    color: #610C9F !important;
+    font-weight: bold !important; 
+  }
+  
+  .Minor {
+    color: #1B3C73 !important;
+    font-weight: bold !important; 
+  }
+  
+ 
+  

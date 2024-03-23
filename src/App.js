@@ -10,6 +10,7 @@ import UserLogin from "./modules/login/UserLogin";
 import AdminRegistration from "./modules/registration/modules.registration.adminRegistration.component";
 import AdminLogin from "./modules/login/AdminLogin";
 import UserHome from "./modules/homepages/UserHome";
+import ApplicationUser from "./modules/application/modules.application";
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
 function App() {
@@ -45,6 +46,8 @@ function App() {
           <Route path="/adminlogin" element={<AdminLogin />} />
           <Route path="/abc/:userID" element={<AdminPage />} />
           <Route path="/abc" element={<AdminPage />} />
+          {/* Application Report */}
+          <Route path="/user/ReportApplication" element={ <ApplicationUser/>}/>
         </Routes>
       </div>
     </Router>

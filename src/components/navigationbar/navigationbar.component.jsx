@@ -9,8 +9,8 @@ import BreadCrumbs from '../breadcrumbs/breadcrumbs.component';
 export default function NavigationArea({urllist,handleOnClick}) {
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="relative">
-        <Toolbar>
+      <AppBar position="relative" sx={{backgroundColor:'#F3F8FF '}} >
+        <Toolbar sx={{color:'black'}}>
           <IconButton
             size="large"
             edge="start"

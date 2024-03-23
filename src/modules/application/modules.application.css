@@ -1,0 +1,61 @@
+.tab
+{
+    border: 1 ;
+    display: flex  ;
+    justify-content: center   ;
+    align-items: center ;
+    border-radius: 10px ;
+    background-color: #eeee ;
+}
+
+.mainPage {
+    box-shadow: 0px 3px 5px black ;
+    border-radius: 10px ;
+}
+
+.overviewTable
+{
+       max-height: "400px" ;
+       max-width: "1200px" ;
+       overflow-y: "auto" ;
+       box-shadow:  "0px 4px 8px black" ;
+       border-radius: "10px" ;
+ }
+
+ .floating-div {
+    font-weight: bold;
+    color: red;
+    margin-top: 5px;
+    animation-name: floating;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+.floating-div-text{
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+@keyframes floating {
+    0% { transform: translate(0, 0px); }
+    50% { transform: translate(0, 10px); }
+    100% { transform: translate(0, -0px); }   
+}
+
+.img-style {
+    border-radius: 10px;
+    height: 100%;
+    width: 100%;
+}
+
+.paper-img-style
+{
+    width: 95%;
+    height: 95%;
+    margin: auto;
+    border-radius: 40px;
+
+}

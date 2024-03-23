@@ -43,10 +43,11 @@ import { motion } from "framer-motion";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material/styles";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import Dropdown from "../../components/dropdown/dropdown.component";
-import Textfield from "../../components/textfield/textfield.component";
-import AnimatedPage from "../../components/animation_/AnimatedPage";
+
+import AnimatedPage from "../../../components/animation_/AnimatedPage";
 import './modules.application.css'
+import Dropdown from "../../../components/dropdown/dropdown.component";
+import Textfield from "../../../components/textfield/textfield.component";
 
 export default function ApplicationUser() {
   const [value, setValue] = useState("");

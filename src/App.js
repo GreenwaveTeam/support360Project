@@ -14,6 +14,7 @@ import DeviceIssueUpload from "./modules/device/module.deviceIssueUpload"
 import ApplicationConfiguration from "./modules/application/module.applicationConfiguration"
 import ModuleConfiguration from "./modules/application/module.moduleConfiguration";
 import ModuleUpload from "./modules/application/module.moduleUpload";
+import Sample from "./modules/device/module.samplemodule"
 
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
@@ -54,6 +55,7 @@ function App() {
           <Route path="/Application/Modules" element={<ModuleConfiguration/>} />
           <Route path="/Application/Module" element={<ModuleUpload/>} />
           <Route path="/abc" element={<AdminPage />} />
+          <Route path="/sample" element={<Sample />} />
         </Routes>
       </div>
     </Router>

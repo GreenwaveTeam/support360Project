@@ -19,6 +19,7 @@ import axios from 'axios';
 
 
 export default function ModuleConfiguration() {
+  const plantid='P009'
     const [open, setOpen] = useState(false);
     const [application_name,setApplication_name]=useState(null)
     const [dialogPopup, setDialogPopup] = useState(false);
@@ -49,7 +50,7 @@ export default function ModuleConfiguration() {
   ];useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:9080/application/admin/P009');
+        const response = await axios.get(`http://localhost:9080/application/admin/${plantid}`);
         const moduleData = response.data;
         setData(moduleData);
         setFilteredRows(moduleData)
@@ -79,7 +80,7 @@ export default function ModuleConfiguration() {
       //   if (result.isConfirmed) {
       //     const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
       //     setData(updatedCategories);
-           axios.delete('http://localhost:9080/application/admin/P009/'+rowData);
+           axios.delete(`http://${plantid}:9080/application/admin/${plantid}/`+rowData);
       //   }
       // });
       };
@@ -88,7 +89,7 @@ export default function ModuleConfiguration() {
           console.log("applicationedit===>"+JSON.stringify(rowData))
           try {
             // Here requestData contains entire module data including module_image
-            const response = await axios.put('http://localhost:9080/application/admin/P009/'+prev.application_name, rowData);
+            const response = await axios.put(`http://localhost:9080/application/admin/${plantid}/`+prev.application_name, rowData);
             console.log("Posted data")
           } catch (error) {
             console.error('Error:', error);

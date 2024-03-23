@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
+import { Box, MenuItem, Button, Container } from '@mui/material';
 
 /*Navigation Pane*/
 import Sidebar from '../../components/navigation/sidebar/sidebar';
@@ -8,11 +9,12 @@ import Topbar from '../../components/navigation/topbar/topbar';
 import Main from '../../components/navigation/mainbody/mainbody';
 import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
 
-import { Box, MenuItem, Button, Container } from '@mui/material';
+
 /*Custom Components*/
 import Table from '../../components/table/table.component'
 import DialogBox from "../../components/dialog/dialog.component";
 import TextField from "../../components/textfield/textfield.component";
+import Dropdown from "../../components/dropdown/dropdown.component";
 
 
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
@@ -20,6 +22,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 
 const DeviceIssue = () => {
   const [open, setOpen] = useState(false);
+  const plantid='P009'
   //const history=useHis
   const location = useLocation();
   const { categoryname } = location.state.categoryname;
@@ -68,10 +71,10 @@ const DeviceIssue = () => {
         try {
           const requestData = {
             issuecategoryname: categoryname,
-            plantid: 'P009',
+            plantid: plantid,
             issueList: [{issuename: issueName, severity: severity }]
           };
-          const response = await axios.post('http://localhost:9080/device/admin/P009/categories/'+categoryname, requestData, {
+          const response = await axios.post(`http://localhost:9080/device/admin/${plantid}/categories/`+categoryname, requestData, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -89,11 +92,11 @@ const DeviceIssue = () => {
         try {
           const requestData = {
             issuecategoryname: categoryname,
-            plantid: 'P009',
+            plantid: plantid,
             issueList: [{issuename: rowData.issuename, severity: rowData.severity }]
           };
           console.log("Edit Issue called")
-          const response = await axios.put('http://localhost:9080/device/admin/P009/categories/'+categoryname+'/'+prev.issuename, requestData, {
+          const response = await axios.put(`http://localhost:9080/device/admin/${plantid}/categories/categoryname/`+prev.issuename, requestData, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -109,7 +112,7 @@ const DeviceIssue = () => {
       
         try {
           
-          const response = await axios.delete('http://localhost:9080/device/admin/P009/categories/'+categoryname+'/'+issuename)
+          const response = await axios.delete(`http://localhost:9080/device/admin/${plantid}/categories/`+categoryname+'/'+issuename)
         } catch (error) {
           console.error('Error:', error);
         }
@@ -189,11 +192,8 @@ const DeviceIssue = () => {
             </CustomDropdown>*/}
             
               <TextField label={'Issue Name'} id="issue"  value={issueName} onChange={(e) => setIssueName(e.target.value)} />&nbsp;&nbsp;
-              <TextField label={'Severity'} select value={severity} onChange={(e) => setSeverity(e.target.value)}>
-                <MenuItem value="Critical">Critical</MenuItem>
-                <MenuItem value="Major">Major</MenuItem>
-                <MenuItem value="Minor">Minor</MenuItem>
-              </TextField>&nbsp; &nbsp;
+              <Dropdown label={'Severity'}  value={severity} onChange={(e) => setSeverity(e.target.value)} list={["Critical","Major","Minor"]}/>
+              
               <Button
               color="primary"
               variant="contained"

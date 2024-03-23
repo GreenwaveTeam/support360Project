@@ -21,11 +21,11 @@ import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.
 import Table from '../../components/table/table.component'
 import DialogBox from "../../components/dialog/dialog.component";
 import TextField from "../../components/textfield/textfield.component";
+import Dropdown from '../../components/dropdown/dropdown.component';
 
 
 const Application = () => {
   const [open, setOpen] = useState(false);
-  
   const [selection, setSelection] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedAreas, setSelectedAreas] = useState([]);
@@ -38,6 +38,7 @@ const Application = () => {
   const [issues,setissues]=useState([])
   const [dialogMessage,setDialogMessage]=useState(null)
   const [categories,setCategories]=useState([])
+  const plantid='P009'
   const columns=[
     {
       "id": "issuename",
@@ -100,7 +101,7 @@ const handleAddCategory=()=>{
 		console.log("Handle delete")
 		//console.log("Row data==>"+JSON.stringify(rowData))
 		
-		await axios.delete(`http://localhost:9080/application/admin/P009/`+application_name+'/'+module_Name+'/'+categoryname+'/'+prev.issuename);
+		await axios.delete(`http://localhost:9080/application/admin/${plantid}/`+application_name+'/'+module_Name+'/'+categoryname+'/'+prev.issuename);
 		if (selection) {
 			const details = {
 				left: selection.left,
@@ -112,7 +113,7 @@ const handleAddCategory=()=>{
 			};
 			
 			const requestData = {
-				plant_id: 'P009',
+				plant_id: '${plantid}',
 				application_name: application_name,
 				
 				modulelist: [{modulename: module_Name, moduleimage: Array.from(selectedByteArray), issueslist: [details] }],
@@ -140,7 +141,7 @@ const handleAddCategory=()=>{
 	
   const handleDeleteIssue=async(rowData)=>{
     console.log("Handle delete")
-		await axios.delete('http://localhost:9080/application/admin/P009/'+application_name+'/'+module_Name+'/'+categoryname+'/'+rowData.issuename);
+		await axios.delete('http://localhost:9080/application/admin/${plantid}/'+application_name+'/'+module_Name+'/'+categoryname+'/'+rowData.issuename);
 
   }
   const handleFileChange = (event) => {
@@ -185,7 +186,7 @@ const handleAddCategory=()=>{
       try{e.stopPropagation(); 
       setSelectedAreas(prev => prev.filter((areatodel, index) => areatodel.categoryname!==area.categoryname));
       setCategories(prev => prev.filter(category => category !== area.categoryname));
-      const response =  axios.delete(`http://localhost:9080/application/admin/P009/${application_name}/${module_Name}/${area.categoryname}`);
+      const response =  axios.delete(`http://localhost:9080/application/admin/${plantid}/${application_name}/${module_Name}/${area.categoryname}`);
 			// Optionally, update the UI or perform any additional actions after successful deletion
       Swal.fire({
         title: "Deleted!",
@@ -327,7 +328,7 @@ const handleAddCategory=()=>{
       setSelectedAreas([...selectedAreas, detail]);
       console.log(selectedAreas)
       const requestData = {
-				plant_id: 'P009',
+				plant_id: '${plantid}',
 				application_name: application_name,
 				
 				modulelist: [{modulename: module_Name, moduleimage: Array.from(selectedByteArray), issueslist: [details] }],
@@ -376,7 +377,7 @@ const handleAddCategory=()=>{
          return
       }
       const requestData = {
-        plant_id: 'P009',
+        plant_id: '${plantid}',
         application_name: application_name,
         module_name:module_Name,
         selectedFile:selectedFile,
@@ -591,16 +592,12 @@ const handleAddCategory=()=>{
                       onChange={(e) => setIssueName(e.target.value)}
                     />
                     &nbsp;&nbsp;
-                    <TextField
+                    <Dropdown
                       label={'Severity'}
-                      select
                       value={severity}
-                      onChange={(e) => setSeverity(e.target.value)}
-                    >
-                      <MenuItem value="Critical">Critical</MenuItem>
-                      <MenuItem value="Major">Major</MenuItem>
-                      <MenuItem value="Minor">Minor</MenuItem>
-                    </TextField>
+                      onChange={(e) => setSeverity(e.target.value)} list={["Critical","Major","Minor"]}
+                    />
+                     
                     &nbsp;&nbsp;
                     <Button
                       color="primary"

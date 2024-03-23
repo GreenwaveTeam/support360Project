@@ -22,9 +22,11 @@ import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.
 import Table from '../../components/table/table.component'
 import DialogBox from "../../components/dialog/dialog.component";
 import TextField from "../../components/textfield/textfield.component";
+import Dropdown from "../../components/dropdown/dropdown.component";
 
 
 const ModuleConfigure = () => {
+	const plantid='P009'
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState('1');
 	const [showPopup, setShowPopup] = useState(false);
@@ -148,7 +150,7 @@ const ModuleConfigure = () => {
 			setSelectedAreas(prev => prev.filter((areatodel, index) => areatodel.categoryname!==categoryName));
       		setCategories(prev => prev.filter(category => category !== area.categoryName));
 			console.log("Data=====>"+moduleName)
-			const response =axios.delete(`http://localhost:9080/application/admin/P009/${data.application_name}/${moduleName}/${categoryName}`);
+			const response =axios.delete(`http://localhost:9080/application/admin/${plantid}/${data.application_name}/${moduleName}/${categoryName}`);
 			// Optionally, update the UI or perform any additional actions after successful deletion
 			Swal.fire({
 				title: "Deleted!",
@@ -213,7 +215,7 @@ const ModuleConfigure = () => {
 			};
 			console.log(moduleData)
 			const requestData = {
-				plant_id: 'P009',
+				plant_id: plantid,
 				application_name: data.application_name,
 				
 				modulelist: [{modulename: moduleData.modulename, moduleimage: moduleData.moduleimage, issueslist: [details] }],
@@ -262,17 +264,17 @@ const ModuleConfigure = () => {
     setIssues([])
 	};
 	const handleDeleteIssue = async(issuename) => {
-		const url='http://localhost:9080/application/admin/P009/'+data.application_name+'/'+module_Name+'/'+categoryname+'/'+issuename
+		const url=`http://localhost:9080/application/admin/${plantid}/`+data.application_name+'/'+module_Name+'/'+categoryname+'/'+issuename
 		console.log("Handle delete==>"+url)
 		await axios.delete(url);
 	  };
 	  const handleEditIssue = async(prev,rowData) => {
 		console.log("Handle delete")
 		//console.log("Row data==>"+JSON.stringify(rowData))
-		const url='http://localhost:9080/application/admin/P009/'+data.application_name+'/'+module_Name+'/'+categoryname+'/'+rowData.issuename
+		const url=`http://localhost:9080/application/admin/${plantid}/`+data.application_name+'/'+module_Name+'/'+categoryname+'/'+rowData.issuename
 		console.log("Handle delete==>"+url)
 		
-		await axios.delete(`http://localhost:9080/application/admin/P009/${data.application_name}/${module_Name}/${categoryname}/${prev.issuename}`);
+		await axios.delete(`http://localhost:9080/application/admin/${plantid}/${data.application_name}/${module_Name}/${categoryname}/${prev.issuename}`);
 		if (selection) {
 			const details = {
 				left: selection.left,
@@ -284,7 +286,7 @@ const ModuleConfigure = () => {
 			};
 			
 			const requestData = {
-				plant_id: 'P009',
+				plant_id: plantid,
 				application_name: data.application_name,
 				
 				modulelist: [{modulename: currentModule.modulename, moduleimage: currentModule.moduleimage, issueslist: [details] }],
@@ -520,16 +522,12 @@ const ModuleConfigure = () => {
 														onChange={(e) => setIssueName(e.target.value)}
 													/>
 													&nbsp;&nbsp;
-													<TextField
+													<Dropdown
 														label={'Severity'}
 														select
-														value={severity}
+														value={severity} list={["Critical","Major","Minor"]}
 														onChange={(e) => setSeverity(e.target.value)}
-													>
-														<MenuItem value="Critical">Critical</MenuItem>
-														<MenuItem value="Major">Major</MenuItem>
-														<MenuItem value="Minor">Minor</MenuItem>
-													</TextField>
+													/>
 													&nbsp;&nbsp;
 													<Button
 														color="primary"

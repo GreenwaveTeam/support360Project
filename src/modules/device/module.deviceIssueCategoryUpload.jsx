@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const DeviceCategory = () => {
+  const plantid='P009'
   const [open, setOpen] = useState(false);
   const [categorylist, setCategorylist] = useState([]);
   const [categoryName, setCategoryName] = useState('');
@@ -45,7 +46,7 @@ const DeviceCategory = () => {
     const fetchData = async () => {
       try {
         // Make the API call to fetch data
-        const response = await axios.get('http://localhost:9080/device/admin/P009/categories');
+        const response = await axios.get(`http://localhost:9080/device/admin/${plantid}/categories`);
         
         // Extract data from the response
         const data = await response.data;
@@ -98,7 +99,7 @@ const DeviceCategory = () => {
 
   const handleDeleteClick = async (rowData) => {
     
-    axios.delete('http://localhost:9080/device/admin/P009/categories/' + rowData);
+    axios.delete(`http://localhost:9080/device/admin/${plantid}/categories/` + rowData);
     
     };
   
@@ -121,11 +122,11 @@ const DeviceCategory = () => {
     if (updatedCategory.issuelist !== null) {
       const requestData = {
         issuecategoryname: updatedCategory.categoryname,
-        plantid: 'P009',
+        plantid: plantid,
         issueList: updatedCategory.issuelist
       };
       try {
-        const response = await axios.put('http://localhost:9080/device/admin/P009/categories/' + selectedCategory.categoryname, requestData, {
+        const response = await axios.put(`http://localhost:9080/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
           headers: {
             'Content-Type': 'application/json',
           },

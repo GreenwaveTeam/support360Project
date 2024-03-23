@@ -102,7 +102,7 @@ export default function ModuleConfiguration() {
     
     const handleRedirect=(appdata)=>{
       console.log(appdata)
-      navigate(`/Application/ModuleConfigure`, {
+      navigate(`/Application/Modules`, {
         state: { application_data:appdata},
       });
     }

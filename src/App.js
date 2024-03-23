@@ -59,12 +59,8 @@ function App() {
           <Route path="/Application/Modules" element={<ModuleConfiguration/>} />
           <Route path="/Application/Module" element={<ModuleUpload/>} />
           <Route path="/abc" element={<AdminPage />} />
-<<<<<<< HEAD
           {/* Application Report */}
           <Route path="/user/ReportApplication" element={ <ApplicationUser/>}/>
-=======
-          <Route path="/sample" element={<Sample />} />
->>>>>>> 866e4ceeada7d1affd3604711af64efa193650ac
         </Routes>
       </div>
     </Router>

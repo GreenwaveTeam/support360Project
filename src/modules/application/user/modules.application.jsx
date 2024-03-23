@@ -1580,11 +1580,7 @@ export default function ApplicationUser() {
                 >
                   {tabsmoduleNames.map((module, index) => (
                     <Tab
-                      sx={{
-                        fontWeight: "bold",
-                        color: "#000000",
-                        fontSize: "12px",
-                      }}
+                      className="tab-names"
                       label={module}
                       value={module}
                       key={index}
@@ -1714,13 +1710,14 @@ export default function ApplicationUser() {
                         >
                           {area.edited && (
                             <CheckCircleIcon
-                              style={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                color: "#66FF00",
-                              }}
+                              // style={{
+                              //   position: "absolute",
+                              //   top: "50%",
+                              //   left: "50%",
+                              //   transform: "translate(-50%, -50%)",
+                              //   color: "#66FF00",
+                              // }}
+                              className="check-icon"
                               fontSize="small"
                               // onClick={(e) => {
                               //   e.stopPropagation();
@@ -1936,7 +1933,7 @@ export default function ApplicationUser() {
               }}
              
             /> */}
-
+                      {/* This  has to be made from scratch because it has Search component */}
                       <TextField
                         id={"user-issues-dropdown"}
                         onChange={(e) => handleDropdownSearch(e)}

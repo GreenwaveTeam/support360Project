@@ -8,6 +8,13 @@
     background-color: #eeee ;
 }
 
+.tab-names
+{
+    font-weight: bold;
+    color: #000000;
+    font-size: 12px;
+}
+
 .mainPage {
     box-shadow: 0px 3px 5px black ;
     border-radius: 10px ;
@@ -57,5 +64,15 @@
     height: 95%;
     margin: auto;
     border-radius: 40px;
+
+}
+
+.check-icon
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: #66FF00;
+    transform:translate(-50%, -50%)
 
 }

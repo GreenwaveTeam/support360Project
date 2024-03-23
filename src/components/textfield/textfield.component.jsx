@@ -14,7 +14,8 @@ export default function Textfield({
   variant,
   error,
   helperText,
-  size
+  size,
+  InputProps
 }) {
   return (
     <>
@@ -32,6 +33,7 @@ export default function Textfield({
         error={error} 
         helperText= {helperText}
         size={size}
+        InputProps={InputProps}
       />
     </>
   );

@@ -1,18 +1,25 @@
-import Textfield from "../../components/textfield/textfield.component";
-import Dropdown from "../../components/dropdown/dropdown.component";
 // import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import React, { useState, useEffect } from 'react';
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+
+/*Navigation Pane*/
 import Sidebar from '../../components/navigation/sidebar/sidebar';
 import Topbar from '../../components/navigation/topbar/topbar';
-import { Box, Dialog, DialogTitle, DialogContent, DialogActions, Typography, Container } from '@mui/material';
 import Main from '../../components/navigation/mainbody/mainbody';
 import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
-import { useNavigate } from 'react-router-dom';
-import DialogBox from "../../components/dialog/dialog.component";
-import axios from 'axios';
+
+/*Custom Components */
 import Table from '../../components/table/table.component'
+import DialogBox from "../../components/dialog/dialog.component";
+import Textfield from "../../components/textfield/textfield.component";
+import Dropdown from "../../components/dropdown/dropdown.component";
+
+
+import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import { Box, Container } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+
+import axios from 'axios';
 
 const DeviceCategory = () => {
   const [open, setOpen] = useState(false);
@@ -104,7 +111,7 @@ const DeviceCategory = () => {
   const handleRedirect = (category) => {
     const categoryname = category.categoryname;
     console.log(category.categoryname);
-    navigate(`/${categoryname}/Issue`, {
+    navigate(`/Device/Category/Issue`, {
       state: { issuelist: category.issuelist, categoryname: category.categoryname },
     });
   };

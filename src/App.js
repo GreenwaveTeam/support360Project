@@ -10,6 +10,9 @@ import AdminRegistration from "./modules/registration/modules.registration.admin
 import AdminLogin from "./modules/login/AdminLogin";
 import UserHome from "./modules/homepages/UserHome";
 import DeviceIssueCategoryUpload from "./modules/device/module.deviceIssueCategoryUpload"
+import DeviceIssueUpload from "./modules/device/module.deviceIssueUpload"
+import ApplicationConfiguration from "./modules/application/module.applicationConfiguration"
+
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
 function App() {
@@ -44,6 +47,8 @@ function App() {
           <Route path="/adminlogin" element={<AdminLogin />} />
           <Route path="/abc/:userID" element={<AdminPage />} />
           <Route path="/Device/Category" element={<DeviceIssueCategoryUpload />} />
+          <Route path="/Device/Category/Issue" element={<DeviceIssueUpload />} />
+          <Route path="/Application" element={<ApplicationConfiguration/>} />
           <Route path="/abc" element={<AdminPage />} />
         </Routes>
       </div>

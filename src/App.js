@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Device from "./modules/device/modules.device";
-import NavigationArea from "./components/navigationbar/navigationbar.component";
 import AdminPage from "./modules/configurationpages/AdminPage";
 import UserConfigurationHome from "./modules/homepages/UserConfigurationHome";
 import UserRegistration from "./modules/registration/UserRegistration";
@@ -10,6 +9,7 @@ import UserLogin from "./modules/login/UserLogin";
 import AdminRegistration from "./modules/registration/modules.registration.adminRegistration.component";
 import AdminLogin from "./modules/login/AdminLogin";
 import UserHome from "./modules/homepages/UserHome";
+import DeviceIssueCategoryUpload from "./modules/device/module.deviceIssueCategoryUpload"
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
 function App() {
@@ -23,7 +23,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <NavigationArea urllist={urllist} handleOnClick={onclick} />
         <Routes>
           {/* <Route path="/xyz" element={<AddInfrastructureIssue />} /> */}
           <Route path="/device" element={<Device />} />
@@ -44,6 +43,7 @@ function App() {
           <Route path="/userlogin" element={<UserLogin />} />
           <Route path="/adminlogin" element={<AdminLogin />} />
           <Route path="/abc/:userID" element={<AdminPage />} />
+          <Route path="/Device/Category" element={<DeviceIssueCategoryUpload />} />
           <Route path="/abc" element={<AdminPage />} />
         </Routes>
       </div>

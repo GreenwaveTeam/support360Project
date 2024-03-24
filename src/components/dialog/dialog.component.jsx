@@ -3,7 +3,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 
-export default function DialogBox({ openPopup, setOpenPopup, dialogMessage }) {
+export default function DialogBox({ openPopup, setOpenPopup, dialogMessage,snackbarSeverity }) {
   const handleClosePopup = () => {
     setOpenPopup(false);
   };
@@ -13,6 +13,7 @@ export default function DialogBox({ openPopup, setOpenPopup, dialogMessage }) {
     <Snackbar
       open={openPopup}
       autoHideDuration={1000}
+      
       onClose={handleClosePopup}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Positioning top right
       className="custom-snackbar" // Apply custom CSS class
@@ -21,7 +22,7 @@ export default function DialogBox({ openPopup, setOpenPopup, dialogMessage }) {
         elevation={6}
         variant="filled"
         onClose={handleClosePopup}
-        severity="error" // You can adjust severity based on your requirement
+        severity={snackbarSeverity!==null?snackbarSeverity:"error"} // You can adjust severity based on your requirement
         sx={{ width: '100%' }}
       >
         {dialogMessage}

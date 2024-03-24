@@ -10,6 +10,12 @@ import AdminRegistration from "./modules/registration/modules.registration.admin
 import AdminLogin from "./modules/login/AdminLogin";
 import UserHome from "./modules/homepages/UserHome";
 import ApplicationUser from "./modules/application/user/modules.application";
+import DeviceIssueCategoryUpload from './modules/device/module.deviceIssueCategoryUpload'
+import DeviceIssueUpload from './modules/device/module.deviceIssueUpload'
+import ApplicationConfiguration from './modules/application/module.applicationConfiguration'
+import ModuleConfiguration from './modules/application/module.moduleConfiguration'
+import ModuleUpload from './modules/application/module.moduleUpload'
+
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
 function App() {
@@ -43,11 +49,11 @@ function App() {
           <Route path="/userlogin" element={<UserLogin />} />
           <Route path="/adminlogin" element={<AdminLogin />} />
           <Route path="/abc/:userID" element={<AdminPage />} />
-          {/* <Route path="/Device/Category" element={<DeviceIssueCategoryUplo />} />
+           <Route path="/Device/Category" element={<DeviceIssueCategoryUpload />} />
           <Route path="/Device/Category/Issue" element={<DeviceIssueUpload />} />
           <Route path="/Application" element={<ApplicationConfiguration/>} />
           <Route path="/Application/Modules" element={<ModuleConfiguration/>} />
-          <Route path="/Application/Module" element={<ModuleUpload/>} /> */}
+          <Route path="/Application/Module" element={<ModuleUpload/>} /> 
           <Route path="/abc" element={<AdminPage />} />
           {/* Application Report */}
           <Route path="/user/ReportApplication" element={ <ApplicationUser/>}/>

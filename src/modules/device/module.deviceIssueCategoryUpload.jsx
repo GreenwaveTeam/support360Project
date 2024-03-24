@@ -98,11 +98,22 @@ const DeviceCategory = () => {
   };
 
   const handleDeleteClick = async (rowData) => {
-    
-    axios.delete(`http://localhost:9080/device/admin/${plantid}/categories/` + rowData);
-    
+    console.log("Handle del")
+    // Create a request body object
+    const requestBody = {
+        plantid: plantid,
+        categoryname: rowData.categoryname
     };
-  
+
+    try {
+        // Send requestBody as request body in the DELETE request
+        await axios.delete('http://localhost:9080/device/admin/categories', { data: requestBody });
+    } catch (error) {
+        console.error('Error:', error);
+        // Handle errors, such as displaying an error message to the user
+    }
+};
+
   const handleInputChange = (e) => {
     const { value } = e.target;
     setEditedValue(value); // Update input value
@@ -117,7 +128,7 @@ const DeviceCategory = () => {
     });
   };
 
-  const addIssueCategory = async (selectedCategory, updatedCategory) => {
+  const editCategory = async (selectedCategory, updatedCategory) => {
     console.log("Save to database method called")
     if (updatedCategory.issuelist !== null) {
       const requestData = {
@@ -217,7 +228,7 @@ const DeviceCategory = () => {
           
           
             <Table rows={categorylist} columns={columns} setRows={setCategorylist}
-            savetoDatabse={addIssueCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteIssueCategory={handleDeleteClick}/>
+            savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}/>
           </Container>
           {/* </Box> */}
         </div>

@@ -107,13 +107,17 @@ const DeviceIssue = () => {
         }
       
     };
-    const deleteIssueCategory = async (issuename) => {
+    const deleteIssueCategory = async (rowdata) => {
       console.log("useEffectIssue")
-      
+      const requestBody={ 
+        plantid: plantid,
+        categoryname: categoryname,
+        issuename: rowdata.issuename
+    } 
         try {
           
-          const response = await axios.delete(`http://localhost:9080/device/admin/${plantid}/categories/`+categoryname+'/'+issuename)
-        } catch (error) {
+          const response = await axios.delete('http://localhost:9080/device/admin/categories/issue', {data: requestBody}
+    );} catch (error) {
           console.error('Error:', error);
         }
       

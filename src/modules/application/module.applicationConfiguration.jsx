@@ -68,7 +68,7 @@ export default function ModuleConfiguration() {
 
     }
     const handleDeleteClick=async(rowData)=>{
-      // Swal.fire({
+      try{// Swal.fire({
       //   title: "Are you sure?",
       //   text: "You won't be able to revert this!",
       //   icon: "warning",
@@ -80,22 +80,36 @@ export default function ModuleConfiguration() {
       //   if (result.isConfirmed) {
       //     const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
       //     setData(updatedCategories);
-           axios.delete(`http://${plantid}:9080/application/admin/${plantid}/`+rowData);
+      const requestBody = {
+        plant_id: plantid,
+        application_name: rowData.application_name
+        // Add other properties from rowData if needed
+      };     
+      console.log("Request body=>"+JSON.stringify(requestBody))
+      axios.delete(`http://localhost:9080/application/admin/plantid/applicationname`,{ data: requestBody });
       //   }
       // });
+    }
+    catch( e){
+      console.log("Exception:"+e)
+    }
       };
-    const handleSaveClick=async(prev,rowData)=>{
-        
-          console.log("applicationedit===>"+JSON.stringify(rowData))
-          try {
-            // Here requestData contains entire module data including module_image
-            const response = await axios.put(`http://localhost:9080/application/admin/${plantid}/`+prev.application_name, rowData);
-            console.log("Posted data")
-          } catch (error) {
-            console.error('Error:', error);
-          }
-        
-      };
+    const handleSaveClick = async (prev, rowData) => {
+  console.log("applicationedit===>" + JSON.stringify(rowData));
+  
+  // Create a request body object
+  
+
+  try {
+    // Send requestBody as request body in the PUT request
+    const response = await axios.put(`http://localhost:9080/application/admin/${plantid}/${prev.application_name}`, rowData);
+    console.log("Posted data");
+  } catch (error) {
+    console.error('Error:', error);
+    // Handle errors, such as displaying an error message to the user
+  }
+};
+
     
     const handleEditCancel=()=>{
 

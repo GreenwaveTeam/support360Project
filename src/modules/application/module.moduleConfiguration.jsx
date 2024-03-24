@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Box, MenuItem, Button, Container, Dialog } from '@mui/material';
+import { Box, MenuItem, Button, Container, Dialog, Typography } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import axios from 'axios';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import { TabPanel } from '@mui/lab';
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { json, useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
 
 /*Navigation Pane*/
@@ -37,6 +37,7 @@ const ModuleConfigure = () => {
 	const [categoryname, setCategoryname] = useState('');
 	const [dialogPopup, setDialogPopup] = useState(false);
 	const [dialogMessage, setDialogMessage] = useState('');
+	const [snackbarSeverity,setsnackbarSeverity]=useState(null)
 	const [isDataChanged, setDataChanged] = useState(1);
 	const location = useLocation();
 	const [data, setData] = useState(location.state.application_data);
@@ -46,7 +47,6 @@ const ModuleConfigure = () => {
 	const [categorySubmitted,setCategorySubmitted]=useState(false)
 	const[categories,setCategories]=useState([])
 	const [currentModule,setCurrentModule]=useState(data.modulelist[0])
-	console.log("Current module==>"+JSON.stringify(currentModule))
 	const columns=[
 		{
 		  "id": "issuename",
@@ -68,6 +68,7 @@ const ModuleConfigure = () => {
   console.log(categoryname)
   if(categories.includes(categoryname)){
     setDialogPopup(true);
+	setsnackbarSeverity('error')
     setDialogMessage("Category Name already Exists")
     setCategorySubmitted(false)
 		
@@ -132,9 +133,17 @@ const ModuleConfigure = () => {
 		setIssues(area.issues);
 		setCategoryname(area.categoryname);
 		setCategorySubmitted(true)
+		console.log("Area=====>"+JSON.stringify(area.issues))
 	};
 
 	const handleDeleteArea = async (moduleName, categoryName, area) => {
+		const requestBody = {
+			plant_id: plantid,
+			application_name: data.application_name,
+			moduleName: moduleName,
+			categoryname: categoryName
+		};
+	
 		Swal.fire({
 			title: "Are you sure?",
 			text: "You won't be able to revert this!",
@@ -143,27 +152,31 @@ const ModuleConfigure = () => {
 			confirmButtonColor: "#3085d6",
 			cancelButtonColor: "#d33",
 			confirmButtonText: "Yes, delete it!"
-		  }).then((result) => {
+		}).then(async (result) => {
 			if (result.isConfirmed) {
-			try {
-			
-			setSelectedAreas(prev => prev.filter((areatodel, index) => areatodel.categoryname!==categoryName));
-      		setCategories(prev => prev.filter(category => category !== area.categoryName));
-			console.log("Data=====>"+moduleName)
-			const response =axios.delete(`http://localhost:9080/application/admin/${plantid}/${data.application_name}/${moduleName}/${categoryName}`);
-			// Optionally, update the UI or perform any additional actions after successful deletion
-			Swal.fire({
-				title: "Deleted!",
-				text: "Your file has been deleted.",
-				icon: "success"
-			  });
-		} catch (error) {
-			console.error('Error deleting data:', error);
-			// Handle errors, such as displaying an error message to the user
-		}
-	}
-	});
+				try {
+					console.log("Data=====>" + moduleName);
+					const response = await axios.delete('http://localhost:9080/application/admin/plant_id/application/module/category', { data: requestBody });
+					// Optionally, update the UI or perform any additional actions after successful deletion
+					setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== categoryName));
+					setCategories(prev => prev.filter(category => category !== area.categoryName));
+					
+					setDialogPopup(true);
+					setsnackbarSeverity("success")
+    				setDialogMessage("Your area has been deleted")
+				} catch (error) {
+					console.error('Error deleting data:', error.response ? error.response.data : error.message);
+					// Handle errors, such as displaying an error message to the user
+					
+					setsnackbarSeverity("error")
+					setDialogPopup(true);
+    				
+    				setDialogMessage("Database error")
+				}
+			}
+		});
 	};
+	
 
 	const handleAddIssue = (event,moduleData) => {
 		event.preventDefault()
@@ -179,12 +192,13 @@ const ModuleConfigure = () => {
   if(issueExists(issues, 'issuename', issueName))
   {
     console.log("Issue===>"+issueExists+JSON.stringify(issues))
+	setsnackbarSeverity('error')
     setDialogPopup(true);
     setDialogMessage("Issue Name already exists")
     return
   }
   if(issueName===null|| severity===null||issueName.trim()==='' || severity.trim===''){
-	
+		setsnackbarSeverity('error')
 		setDialogPopup(true);
 		setDialogMessage('Please provide both issue name and severity.');
 		return 
@@ -244,12 +258,14 @@ const ModuleConfigure = () => {
 
 	const checkInput = (input) => {
 		if (!input || !input.trim()) {
+			setsnackbarSeverity('error')
 			setDialogPopup(true);
 			setDialogMessage('Empty string is not allowed');
 			return true;
 		}
 		const regex = /[^A-Za-z0-9 _]/;
 		if (regex.test(input.trim())) {
+			setsnackbarSeverity('error')
 			setDialogPopup(true);
 			setDialogMessage('Special characters are not allowed');
 			return true;
@@ -263,18 +279,47 @@ const ModuleConfigure = () => {
     setCategorySubmitted(false)
     setIssues([])
 	};
-	const handleDeleteIssue = async(issuename) => {
-		const url=`http://localhost:9080/application/admin/${plantid}/`+data.application_name+'/'+module_Name+'/'+categoryname+'/'+issuename
-		console.log("Handle delete==>"+url)
-		await axios.delete(url);
-	  };
+	const handleDeleteIssue = async (rowdata) => {
+		const requestBody = {
+			plant_id: plantid,
+			application_name: data.application_name,
+			moduleName: module_Name,
+			categoryname: categoryname,
+			issuename: rowdata.issuename
+		};
+	
+		console.log("Handle delete==>", requestBody);
+	
+		try {
+			await axios.delete('http://localhost:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
+			const detail = {
+				left: selection.left,
+				top: selection.top,
+				width: selection.width,
+				height: selection.height,
+				categoryname: categoryname,
+				issues: issues.filter(issue => issue.issuename !== rowdata.issuename),
+			};
+			console.log("Detail====>"+JSON.stringify(detail))
+			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
+
+		} catch (error) {
+			console.error('Error deleting issue:', error.response ? error.response.data : error.message);
+			// Handle errors, such as displaying an error message to the user
+		}
+	};
 	  const handleEditIssue = async(prev,rowData) => {
-		console.log("Handle delete")
-		//console.log("Row data==>"+JSON.stringify(rowData))
-		const url=`http://localhost:9080/application/admin/${plantid}/`+data.application_name+'/'+module_Name+'/'+categoryname+'/'+rowData.issuename
-		console.log("Handle delete==>"+url)
+		const deleteRequestBody = {
+			plant_id: plantid,
+			application_name: data.application_name,
+			moduleName: module_Name,
+			categoryname: categoryname,
+			issuename: prev.issuename
+		  };
+		  
+		  await axios.delete('http://localhost:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
+		  
 		
-		await axios.delete(`http://localhost:9080/application/admin/${plantid}/${data.application_name}/${module_Name}/${categoryname}/${prev.issuename}`);
 		if (selection) {
 			const details = {
 				left: selection.left,
@@ -298,10 +343,11 @@ const ModuleConfigure = () => {
 				width: selection.width,
 				height: selection.height,
 				categoryname: categoryname,
-				issues: [...issues,{issuename: issueName, severity: severity }],
+				issues: issues.filter(issue => issue.issuename !== prev.issuename).concat({issuename: rowData.issuename, severity: rowData.severity}),
 			};
-			setSelectedAreas([...selectedAreas, detail]);
-      
+			console.log("Detail====>"+JSON.stringify(detail))
+			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
+
 			try {
 				// Here requestData contains entire module data including module_image
 				const response = await axios.post('http://localhost:9080/application/admin/plant_id/application_name/moduleName', requestData);
@@ -346,6 +392,7 @@ const ModuleConfigure = () => {
 			const overlaps = handleOverlapCheck(detailsToCheckOverlap);
 
 			if (overlaps) {
+				setsnackbarSeverity('error')
 				setDialogPopup(true);
 				console.log("Overlapped")
 				setDialogMessage("Overlap is strictly restricted")
@@ -464,98 +511,114 @@ const ModuleConfigure = () => {
 									</Box>
 									{/* Render the pop-up */}
 									{showPopup && selection && (
-										<Dialog open={showPopup} 
-										onClose={handleClosePopupForm}
-								// 		 boxShadow={3} p={3} borderRadius={10} 
-								// 			sx={{
-								// 				position: 'fixed',
-								// 				left: '50%',
-        						// 		transform: 'translate(-50%)',
-								// 				width:'50%',
-								// 				top:'10%',
-								// 				backgroundColor:'white',
-								// 				 // Specify the thickness and color of the border
-    							// 				padding: '20px',
-								// 				overflowY: 'auto', // Enable vertical scrolling
-								// 				height: '90%', // Adjust as needed
-								// 				padding: '10px',
-								// 				 boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-								// 				 // Semi-transparent black
-                				// //zIndex: 999, // Ensure the overlay is above other content
-								// 			}}
-										>
-											<Container style={{ margin:'5%' }}>
-											<Box className="addIssue">
-											<CloseIcon style={{ cursor: 'pointer', marginRight: 'auto' }}onClick={handleClosePopupForm} />
-													
-												<form onSubmit={(event) => { handleAddIssue(event,module) }}>
-													{!categorySubmitted && (
-														<Box sx={{display:'flex', flexDirection:'column'}}>
-													<TextField
-														label={'Category Name'}
-														id="issue"
-														value={categoryname}
-														onChange={(e) => {
-															setCategoryname(e.target.value);
-														}}
-													/>&nbsp;&nbsp;
-													<Button
-														color="primary"
-														variant="contained"
-														onClick={handleAddCategory}
-														>
-														Add&nbsp;
-														<AddCircleOutlineOutlinedIcon
-															fontSize="large"
-															sx={{ color: "white" }}
-														></AddCircleOutlineOutlinedIcon>
-													</Button>
-													</Box>
-													)}
-													{categorySubmitted && (
-														<>
-													<Box sx={{display :'flex', flexDirection:'row'}}>	
-													<TextField
-														label={'Issue Name'}
-														id="issue"
-														value={issueName}
-														onChange={(e) => setIssueName(e.target.value)}
+										<Box
+										sx={{
+												display: showPopup ? 'block' : 'none',
+												position: 'fixed',
+												left: '50%',
+												transform: 'translate(-50%)',
+												width: '30%',
+												top: '20%',
+												bottom:'10%',
+												backgroundColor: 'white',
+												padding: '20px',
+												overflow:'auto',
+												height: 'auto', 
+												boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
+												zIndex: 999, // Ensure the box is above other content
+											}}
+									   >
+										<Container style={{ margin: '5%' }}>
+										  <Box className="addIssue">
+											<CloseIcon
+											  style={{ cursor: 'pointer', marginRight: 'auto' }}
+											  onClick={handleClosePopupForm}
+											/>
+											<form onSubmit={(event) => { handleAddIssue(event,module) }}>
+											  {!categorySubmitted && (
+												<Box sx={{ display: 'flex', flexDirection: 'column' }}>
+												  <TextField
+													label={'Category Name'}
+													id="issue"
+													value={categoryname}
+													onChange={(e) => {
+													  setCategoryname(e.target.value);
+													}}
+												  />&nbsp;&nbsp;
+												  <Button
+													color="primary"
+													variant="contained"
+													onClick={handleAddCategory}
+												  >
+													Add&nbsp;
+													<AddCircleOutlineOutlinedIcon
+													  fontSize="large"
+													  sx={{ color: 'white' }}
+													/>
+												  </Button>
+												</Box>
+											  )}
+											  {categorySubmitted && (
+												<>
+												  <Typography
+													variant="h6"
+													color="textSecondary"
+													component="h2"
+													gutterBottom
+													fontWeight={900}
+												>
+													Current Category Name ➥ &nbsp;
+													<span style={{ color: "red" }}>{categoryname}</span>
+												</Typography>
+												<Box sx={{ display: 'flex', flexDirection: 'row' }}>
+												  <TextField
+													  label={'Issue Name'}
+													  id="issue"
+													  value={issueName}
+													  onChange={(e) => setIssueName(e.target.value)}
 													/>
 													&nbsp;&nbsp;
 													<Dropdown
-														label={'Severity'}
-														select
-														value={severity} list={["Critical","Major","Minor"]}
-														onChange={(e) => setSeverity(e.target.value)}
+													  label={'Severity'}
+													  select
+													  value={severity}
+													  list={["Critical","Major","Minor"]}
+													  onChange={(e) => setSeverity(e.target.value)}
 													/>
 													&nbsp;&nbsp;
 													<Button
-														color="primary"
-														variant="contained"
-														type='submit'
-														>
-														Add&nbsp;
-														<AddCircleOutlineOutlinedIcon
-															fontSize="large"
-															sx={{ color: "white" }}
-														></AddCircleOutlineOutlinedIcon>
-														</Button>
-														
-													</Box>
-													<Table rows={issues} setRows={setIssues} savetoDatabse={handleEditIssue} deleteFromDatabase={handleDeleteIssue} columns={columns}/>
-													</>
-													)}
-												</form>
-											</Box>
-											</Container>
-										</Dialog>
+													  color="primary"
+													  variant="contained"
+													  type='submit'
+													>
+													  Add&nbsp;
+													  <AddCircleOutlineOutlinedIcon
+														fontSize="large"
+														sx={{ color: 'white' }}
+													  />
+													</Button>
+												  </Box>
+												  <Table
+													rows={issues}
+													setRows={setIssues}
+													savetoDatabse={handleEditIssue}
+													deleteFromDatabase={handleDeleteIssue}
+													columns={columns}
+												  />
+												</>
+											  )}
+											</form>
+										  </Box>
+										</Container>
+									  </Box>
+									  
 									)}
 								</TabPanel>
 							))}
 						</TabContext>
 					)}
 				</Box>
-				<DialogBox openPopup={dialogPopup} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
+				<DialogBox openPopup={dialogPopup} snackbarSeverity={snackbarSeverity} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
 			</Main>
 		</Box>
 	);

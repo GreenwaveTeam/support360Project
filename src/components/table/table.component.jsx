@@ -215,7 +215,7 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
                   <TableCell
                     key={index}
                     align={column.align}
-                    style={{ minWidth: column.minWidth }}
+                    //style={{ minWidth: column.minWidth }}
                   >
                     {column.label}
                   </TableCell>

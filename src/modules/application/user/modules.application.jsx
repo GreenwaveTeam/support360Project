@@ -25,6 +25,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
+  TableHead,
   TableRow,
   TextField,
   Tooltip,
@@ -2042,7 +2043,7 @@ export default function ApplicationUser() {
       > */}
 
                   <Divider />
-                  {tableIssuesForCurrentDiv.length !== 0 && (
+                  {/* {tableIssuesForCurrentDiv.length !== 0 && ( */}
                     <div
                       style={{
                         maxHeight: "200px",
@@ -2088,13 +2089,36 @@ export default function ApplicationUser() {
                                   </div>
                                 }
                                 style={{
-                                  width: "50%",
+                                  width: "80%",
                                 }}
                               />
                             </TableCell>
                             {/* <TableCell>Action</TableCell> */}
                           </TableRow>
-                          {tableIssuesForCurrentDiv.map((item, index) => (
+                         
+                            <TableRow>
+                              <TableCell sx={{width:'60%',fontWeight:'bold', backgroundColor: "#B5C0D0" }}>
+                                Issue
+                              </TableCell>
+                              <TableCell sx={{width:'10%',fontWeight:'bold', backgroundColor: "#B5C0D0" }}>
+                                Severity
+                              </TableCell>
+                              <TableCell align="center"  sx={{width:'20%',fontWeight:'bold', backgroundColor: "#B5C0D0" }}>
+                                Remarks
+                              </TableCell>
+                              <TableCell align="center" sx={{width:'10%',fontWeight:'bold', backgroundColor: "#B5C0D0" }}>
+                                Actions
+                              </TableCell>
+                            </TableRow>
+                         
+
+                          {tableIssuesForCurrentDiv.length===0&&
+                          <TableRow>
+                            <TableCell>
+                              No issues added...
+                            </TableCell>
+                            </TableRow>}
+                          {tableIssuesForCurrentDiv.length>0&&tableIssuesForCurrentDiv.map((item, index) => (
                             <TableRow key={index}>
                               <TableCell>
                                 {" "}
@@ -2150,7 +2174,8 @@ export default function ApplicationUser() {
                         </TableBody>
                       </Table>
                     </div>
-                  )}
+                  
+                  {/* )} */}
 
                   <br />
                 </div>

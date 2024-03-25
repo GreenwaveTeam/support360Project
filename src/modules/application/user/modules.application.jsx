@@ -25,9 +25,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
-  TextField,
   Tooltip,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -49,6 +47,7 @@ import AnimatedPage from "../../../components/animation_/AnimatedPage";
 import './modules.application.css'
 import Dropdown from "../../../components/dropdown/dropdown.component";
 import Textfield from "../../../components/textfield/textfield.component";
+
 
 export default function ApplicationUser() {
   const [value, setValue] = useState("");
@@ -1784,7 +1783,7 @@ export default function ApplicationUser() {
                         padding: "10px",
                       }}
                     >
-                      <TextField
+                      <Textfield
                         id="user-misc-issue"
                         label={
                           <span
@@ -1812,7 +1811,7 @@ export default function ApplicationUser() {
                         }}
                       />
 
-                      <TextField
+                      <Textfield
                         id="user-misc-remarks"
                         label={
                           <span
@@ -1935,7 +1934,7 @@ export default function ApplicationUser() {
              
             /> */}
                       {/* This  has to be made from scratch because it has Search component */}
-                      <TextField
+                      <Textfield
                         id={"user-issues-dropdown"}
                         onChange={(e) => handleDropdownSearch(e)}
                         // onChange={(e) =>{e.stopPropagation();
@@ -2009,7 +2008,7 @@ export default function ApplicationUser() {
                     error={severityError}
                   ></Dropdown>
                   &nbsp;&nbsp;
-                  <TextField
+                  <Textfield
                     id="user-remarks"
                     label={
                       <span style={{ fontSize: "14px", fontWeight: "bold" }}>

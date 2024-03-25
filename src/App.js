@@ -15,6 +15,8 @@ import DeviceIssueUpload from './modules/device/module.deviceIssueUpload'
 import ApplicationConfiguration from './modules/application/module.applicationConfiguration'
 import ModuleConfiguration from './modules/application/module.moduleConfiguration'
 import ModuleUpload from './modules/application/module.moduleUpload'
+import ConfigureInfrastructure from "./modules/infrastructure/module.configureInfrastructure";
+import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
@@ -55,8 +57,11 @@ function App() {
           <Route path="/Application/Modules" element={<ModuleConfiguration/>} />
           <Route path="/Application/Module" element={<ModuleUpload/>} /> 
           <Route path="/abc" element={<AdminPage />} />
-          {/* Application Report */}
+            {/* Application Report */}
           <Route path="/user/ReportApplication" element={ <ApplicationUser/>}/>
+          {/* Admin Infrastructure */}
+          <Route path="/admin/infrastructure/configureInfrastructure" element={ <ConfigureInfrastructure/>}/>
+          <Route  path="/admin/infrastructure/addIssues" element={ <AddInfrastructureIssue/>}/>
         </Routes>
       </div>
     </Router>

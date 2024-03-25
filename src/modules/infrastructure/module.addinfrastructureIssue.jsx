@@ -8,64 +8,24 @@ import {
   Alert,
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Fade,
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Paper,
-  Radio,
-  RadioGroup,
-  Select,
   Snackbar,
-  TablePagination,
-  TextField,
-  Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
-import { Container, flexbox, lineHeight } from "@mui/system";
+import { Container } from "@mui/system";
 //import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
-import CheckIcon from "@mui/icons-material/Check";
-import CancelIcon from "@mui/icons-material/Cancel";
 // import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 // import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { useHistory, useLocation } from "react-router-dom";
-import Swal from "sweetalert2";
-import EditAttributesOutlinedIcon from "@mui/icons-material/EditAttributesOutlined";
-import { green } from "@mui/material/colors";
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-import AnimatedPage from "../AnimatedPage";
-import { motion } from "framer-motion";
-import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CategoryOutlined from "@mui/icons-material/CategoryOutlined";
-import CustomDropdown from "./CustomDropDown";
-import CustomTextfield from "./CustomTextfield";
-import DisabledByDefaultRoundedIcon from '@mui/icons-material/DisabledByDefaultRounded';
+import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
+import Swal from "sweetalert2";
+
+import Dropdown from "../../components/dropdown/dropdown.component";
+import CustomTable from "../../components/table/table.component";
+import Textfield from "../../components/textfield/textfield.component";
+import AnimatedPage from "../../components/animation_/AnimatedPage";
+
 
 export default function AddInfrastructureIssue() {
   //********************* Data ********************
@@ -103,6 +63,7 @@ export default function AddInfrastructureIssue() {
   const [addSeverity, setAddSeverity] = useState("");
   const [addIssueError, setAddissueError] = useState(false);
   const [dropDownError, setDropdownError] = useState(false);
+  const [clearVisible,setClearVisible] =useState(false)
 
   //for snackbar alert
   const [snackbarText, setSnackbarText] = useState("Data saved !");
@@ -133,11 +94,17 @@ const deletedataDb=async (issue)=>
 {
   console.log("Issue to be deleted => ",issue)
   try{
+    const plantID=plantId.toString();
     // const currentIP=`http://192.168.7.18:8082/infrastructure/admin/${plantId}/${inf}/${issue}`
     // console.log('IP => ',currentIP);
-    const response= await fetch(`http://localhost:8082/infrastructure/admin/${plantId}/${inf}/${issue}`,{
+    const response= await fetch(`http://localhost:8082/infrastructure/admin/issue`,{
         method:'DELETE',
-        headers:{'Content-Type':'application/json'}
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          plantID:plantID,
+          infrastructureName:inf,
+          issue:issue
+        })
 
     })
     if(response.ok)
@@ -151,6 +118,7 @@ const deletedataDb=async (issue)=>
       setSnackbarText("Deleted successfully !");
       setsnackbarSeverity("success");
       setOpen(true);
+      return true;
     }
     if (!response.ok) {
       throw new Error("Failed to delete data");
@@ -161,29 +129,28 @@ const deletedataDb=async (issue)=>
       setsnackbarSeverity("error")
       setSnackbarText("Database Error !")
       setOpen(true)
+      return false;
       
   }
 }
 
 
 
-const saveEditedDataDb=async (newdata,prev_issue,new_rows)=>
+const saveEditedDataDb=async (newdata,prev_issue,new_rows,foundRow,editedValue,editedSeverity)=>
 {
   try{
-      console.log('prev_issue => ',prev_issue);
+      console.log('prev_issue => ',prev_issue); // Remember the main reference will change even if you try to change the current object values
       console.log('row_data => ',newdata);
+      console.log("new Issue",newdata.issue_name)
+      console.log("new Severity => ",newdata.severity);
       const json_data = {
-        "plant_id": `${plantId}`,
-        "infraDetails": [
-          {
-            "infrastructure_name": `${inf}`,
-            "issues": [
-              newdata
-            ]
-          }
-        ]
+      "plantID":plantId.toString(),
+      "infrastructure_name":inf,
+      "prev_issue":prev_issue,
+      "new_issue":editedValue.trim(),
+      "new_severity":editedSeverity
       };
-      const response= await fetch(`http://localhost:8082/infrastructure/admin/${plantId}/${inf}/issues/${prev_issue}`,{
+      const response= await fetch(`http://localhost:8082/infrastructure/admin/issues`,{
         method:'PUT',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(json_data)
@@ -191,16 +158,19 @@ const saveEditedDataDb=async (newdata,prev_issue,new_rows)=>
     if(response.ok)
     {
       console.log('Data has been updated successfully ! ')
-      newdata.edited = true;
+      foundRow.issue_name = editedValue;
+      foundRow.severity = editedSeverity;
+     // newdata.edited = true;
       setRows(new_rows);
       setFilteredRows(new_rows);
       console.log("Final array  => ",new_rows);
       setSearch("");
-      setOpen(true);
+      // setOpen(true);
   
       // Resetting man !!
       setEditRowIndex(null);
       setEditValue("");
+      return true;
     }
     if (!response.ok) {
       throw new Error("Failed to fetch data");
@@ -217,6 +187,8 @@ const saveEditedDataDb=async (newdata,prev_issue,new_rows)=>
     setSnackbarText("Database Error !")
     setsnackbarSeverity("error")
     setOpen(true)
+    console.log('Current row values  are : ', filteredRows)
+    return false;
     
   }
 }
@@ -245,7 +217,7 @@ const saveInfrastructureDetails=async (data) => {
     };
     console.log('Json-Data => ',JSON.stringify(json_data));
     
-   const response= await fetch(`http://localhost:8082/infrastructure/admin/${plantId}`,{
+   const response= await fetch(`http://localhost:8082/infrastructure/admin`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(json_data)
@@ -352,7 +324,9 @@ const handleRowsPerPage = (event) => {
     }
   };
 
-  const handleDeleteClick = (index, issue_name) => {
+  const handleDeleteClick = (row) => {
+    console.log('handleDeleteClick() called')
+    console.log('Row to delete => ',row.issue_name)
     Swal.fire({
       title: "Do you really want to delete ? ",
       showDenyButton: true,
@@ -363,7 +337,7 @@ const handleRowsPerPage = (event) => {
       if (result.isConfirmed) {
         // Swal.fire("Saved!", "", "success");
 
-        deletedataDb(issue_name);
+        deletedataDb(row.issue_name);
         
       }
     });
@@ -388,57 +362,64 @@ const handleRowsPerPage = (event) => {
     console.log("Current Edit Value =>", editValue);
   };
 
-  const handleSaveClick = (index, issue_name, selectedRow) => {
+  const handleSaveClick = async(selected_row,updated_row) => {
     //Updating by creating a shallow copy good !!
-    setSnackbarText("Changes are saved !");
-    setsnackbarSeverity("success");
-    console.log("Save clicked");
-    setEditRequire(false);
-    //updatedRows[index].issueName = editValue;
-    console.log("edited issue => " + editValue);
-    if (editValue.trim() === "") {
-      console.log("edit is blank");
-      setSnackbarText("Issues cannot be blank !");
-      setsnackbarSeverity("error");
-      setOpen(true);
+    // setSnackbarText("Changes are saved !");
+    // setsnackbarSeverity("success");
+    // console.log("Save clicked");
+    // setEditRequire(false);
+    // //updatedRows[index].issueName = editValue;
+    // console.log("edited issue => " + editValue);
+    // if (editValue.trim() === "") {
+    //   console.log("edit is blank");
+    //   setSnackbarText("Issues cannot be blank !");
+    //   setsnackbarSeverity("error");
+    //   setOpen(true);
 
-      setEditRequire(true);
+    //   setEditRequire(true);
 
-      return;
-    }
-    console.log("Current Edit Value => ",editValue)
-    const regex = /[^A-Za-z0-9 _]/;
-    if(regex.test(editValue.trim())) {
-      console.log("Special Characters found ! for => ",editValue)
-      setsnackbarSeverity("error")
-      setSnackbarText("Special Characters are not allowed ! ")
-      setEditRequire(true);
-      setOpen(true)
-      return ;
-    }
+    //   return;
+    // }
+    // console.log("Current Edit Value => ",editValue)
+    // const regex = /[^A-Za-z0-9 _]/;
+    // if(regex.test(editValue.trim())) {
+    //   console.log("Special Characters found ! for => ",editValue)
+    //   setsnackbarSeverity("error")
+    //   setSnackbarText("Special Characters are not allowed ! ")
+    //   setEditRequire(true);
+    //   setOpen(true)
+    //   return ;
+    // }
 
-    if (
-      rows.find(
-        (row) => row.issue_name.toLowerCase() === editValue.trim().toLowerCase()
-      ) &&
-      selectedRow.severity.toLowerCase() === onEditSeverity.trim().toLowerCase()
-    ) {
-      console.log("Issue already exists");
-      // setSnackbarText('This issue is already added');
-      // setsnackbarSeverity('error')
-      // setOpen(true)
-      setEditRowIndex(null);
-      return;
-    }
+    // if (
+    //   rows.find(
+    //     (row) => row.issue_name.toLowerCase() === editValue.trim().toLowerCase()
+    //   ) &&
+    //   selectedRow.severity.toLowerCase() === onEditSeverity.trim().toLowerCase()
+    // ) {
+    //   console.log("Issue already exists");
+    //   // setSnackbarText('This issue is already added');
+    //   // setsnackbarSeverity('error')
+    //   // setOpen(true)
+    //   setEditRowIndex(null);
+    //   return;
+    // }
 
+
+    console.log('selected_row : ',selected_row)
+    console.log('updated row : ',updated_row)
     const updatedRows = [...rows];
-    // updatedRows.find((row) => row.issue_name === issue_name).issue_name = editValue;
-    const foundRow = updatedRows.find((row) => row.issue_name === issue_name);
+    //console.log('Current =>',updatedRows)
+    //updatedRows.find((row) => row.issue_name === issue_name).issue_name = editValue;
+    const foundRow = updatedRows.find((row) => row.issue_name === selected_row.issue_name);
     if (foundRow) {
       const prev_issue=foundRow.issue_name;
-      foundRow.issue_name = editValue.trim();
-      foundRow.severity = onEditSeverity;
-      saveEditedDataDb(foundRow,prev_issue,updatedRows)
+      // foundRow.issue_name = editValue.trim();
+      // foundRow.severity = onEditSeverity;
+      const new_row_value=updated_row.issue_name;
+      const new_row_severity=updated_row.severity
+     const success= await saveEditedDataDb(foundRow,prev_issue,updatedRows,foundRow,new_row_value,new_row_severity)
+     return success;
      
     }
 
@@ -602,6 +583,14 @@ const handleRowsPerPage = (event) => {
     };
   }, []); //useEffect ends here
 
+
+  useEffect(()=>
+  {
+    //This useEffect is keeping track of the search whenever it is visible  or not
+    console.log('useEffect for search');
+    setClearVisible(search===''?false:true)
+  },[search])
+
   const Toast = Swal.mixin({
     toast: true,
     position: "top-end",
@@ -651,6 +640,20 @@ const handleRowsPerPage = (event) => {
     console.log("filtered rows => ", filteredRows);
     setFilteredRows(filteredRows);
   };
+
+  const handleAddIssueText = ((e)=>{
+    setAddissueError(false);
+      setAddIssue(e.target.value)
+      const currentAddedIssue=e.target.value;
+      const regex = /[^A-Za-z0-9 _]/;
+      if(regex.test(currentAddedIssue.trim())) {
+        setsnackbarSeverity("error")
+        setSnackbarText("Special Characters are not allowed ! ")
+        setAddissueError(true);
+        setOpen(true)
+        return ;
+      }
+  })
 
   //for framer motion
   const icon = {
@@ -714,6 +717,29 @@ const handleRowsPerPage = (event) => {
    "Minor"
   ];
 
+  const columns=[
+		{
+		  "id": "issue_name",
+		  "label": "Issue Name",
+		  "type": "textbox",
+		  "canRepeatSameValue":false
+		},
+		{
+		  "id": "severity",
+		  "label": "Severity",
+		  "type": "dropdown",
+		  "canRepeatSameValue":true,
+		  values:["Critical","Major","Minor"]
+		},
+	  ]  
+      const addIssueToCurrentCategory =( (selectedCategory, updatedCategory) => {
+      console.log("Save to database method called")
+      console.log('Selected category : ',selectedCategory)
+      console.log('Updated Category : ',updatedCategory)
+     const success= handleSaveClick(selectedCategory,updatedCategory)
+     return success;
+    })
+
  
   //************** Returned Component  **************
   return (
@@ -733,14 +759,14 @@ const handleRowsPerPage = (event) => {
                 gutterBottom
                 fontWeight={900}
               >
-                Current Issue Category Name ➥ &nbsp;
+                Current Infrastructure Category Name ➥ &nbsp;
                 <span style={{ color: "red" }}>{inf}</span>
               </Typography>
             </Box>
             <br />
             {/* issue name */}
-            <CustomTextfield
-              onChange={(e) => setAddIssue(e.target.value)}
+            <Textfield
+              onChange={(e) =>handleAddIssueText(e)}
               // sx={classes.txt}
               label={"Enter Issue Name"}
               variant={"outlined"}
@@ -788,14 +814,15 @@ const handleRowsPerPage = (event) => {
                 <b>Level of Severity</b>{" "}
               </FormHelperText>
             </FormControl> */}
-            <CustomDropdown
+            <Dropdown
               id={"add-severity"}
               value={addSeverity}
               onChange={(event) => handleAddSeverityChange(event)}
               list={customSeverity}
               label={"Severity"}
-              showerror={dropDownError}
-            ></CustomDropdown>
+              error={dropDownError}
+              style={{width:'110px'}}
+            ></Dropdown>
             &nbsp;&nbsp;
             {/* add icon */}
             <Button
@@ -820,324 +847,13 @@ const handleRowsPerPage = (event) => {
                 fill: { duration: 4, ease: [1, 0, 0.8, 1] },
               }}
             >
-              <TableContainer component={Paper} sx={{borderRadius:5}}>
-                <Table sx={{ minWidth: 500 }} aria-label="customized table">
-                  <TableBody>
-                    <TableRow>
-                      <TableCell
-                        colSpan={3}
-                        sx={{
-                          textAlign: "center",
-                          fontSize: "15px",
-                          fontWeight: "bold",
-                          backgroundColor: "#B5C0D0",
-                          lineHeight:4
-                        }}
-                      >
-                        <CategoryOutlined fontSize="small" />
-                        &nbsp; Added Issue List &nbsp; &nbsp;
-                        <CustomTextfield
-                          onChange={(e) => handleSearchChange(e)}
-                          variant={"outlined"}
-                          size="small"
-                          
-                          //placeholder='Search'
-                          label={
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <SearchOutlinedIcon
-                                style={{ marginRight: "5px" }}
-                              />
-                              Search...
-                            </div>
-                          }
-                          value={search}
-                          sx={{
-                            marginLeft: "5px",
-                            width: "200px",
-                            // Set the background color to white
-                          }}
-                          //   InputProps={{
-                          //     startAdornment: (
-                          //         <InputAdornment position="start">
-                          //             <SearchOutlinedIcon />
-                          //         </InputAdornment>
-                          //     ),
-                          // }}
-                        />
-                         <Tooltip title="Clear">
-                       <Button
-                       onClick={()=>
-                      {
-                        setSearch("");
-                        setFilteredRows(rows)
-                      }}
-                      style={{color:'black'}}
-                       >
-                        <DisabledByDefaultRoundedIcon/>
-                       </Button>
-                       </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow
-                      sx={{ backgroundColor: "#B5C0D0", fontWeight: "bold" }}
-                    >
-                      <TableCell sx={{ fontWeight: "bold" ,width:'40%'}}>Issues</TableCell>
-                      <TableCell sx={{ fontWeight: "bold", width:'40%',lineHeight: 5 }}>
-                        Severity
-                        &nbsp;&nbsp;
-                        {/* <FormControl sx={{ minWidth: 120 }} size="small">
-                          <InputLabel id="demo-simple-select-helper-label">
-                            Filter
-                          </InputLabel>
-
-                          <Select
-                            size="medium"
-                            labelId="demo-simple-select-helper-label"
-                            id="demo-simple-select-helper"
-                            value={filterSeverity}
-                            label="Severity"
-                            //style={{ color: severityColors[row.severity] || severityColors.minor ,fontWeight:'bold'}}
-                            onChange={(event) => handlefilter(event)}
-                            //error={dropDownError}
-                          >
-                           
-                            <MenuItem value={"all"}>All</MenuItem>
-                            <MenuItem
-                              sx={{ color: "#B80000", fontWeight: "bold" }}
-                              value={"critical"}
-                            >
-                              Critical
-                            </MenuItem>
-                            <MenuItem
-                              sx={{ color: "#610C9F", fontWeight: "bold" }}
-                              value={"major"}
-                            >
-                              Major
-                            </MenuItem>
-                            <MenuItem
-                              sx={{ color: "#1B3C73", fontWeight: "bold" }}
-                              value={"minor"}
-                            >
-                              Minor
-                            </MenuItem>
-                          </Select>
-                          
-                        </FormControl> */}
-                        <CustomDropdown
-                        id={"filter-severity"}
-                        label={"Filter"}
-                        value={filterSeverity}
-                        onChange={(event) => handlefilter(event)}
-                        list={customfilterList}
-                         >
-                        </CustomDropdown>
-                      </TableCell>
-                      <TableCell sx={{ fontWeight: "bold",width:'10%' }} align="center">Action</TableCell>
-                    </TableRow>
-                    {filteredRows && filteredRows
-                    .slice(page * rowperpage, page * rowperpage + rowperpage)
-                    .map((row, index) => (
-                      <TableRow key={index}>
-                        {/* <TableCell onClick={()=>handleClick(index)} sx={{display:'flex',alignItems:'center',justifyContent:'center'}}> */}
-                        <TableCell sx={{width:'40%'}}>
-                          {editRowIndex !== index && (
-                            <div style={{display:'flex'}}>
-                              {row.edited && (
-                                
-                                  <CheckCircleIcon
-                                    fontSize="small"
-                                    sx={{ color: "green" }}
-                                  />
-                                
-                              )}
-                              &nbsp;
-                              <Typography component="div">
-                                <Box
-                                  sx={{
-                                    lineHeight: "normal",
-                                    width: "300px",
-                                    wordWrap: "break-word",
-                                  }}
-                                >
-                                  {row.issue_name}
-                                </Box>
-                              </Typography>
-                            </div>
-                          )}
-                          {editRowIndex === index && (
-                            <div>
-                              <CustomTextfield
-                                // multiline
-                                // rows={4}
-                                label={"Issue"}
-                                value={editValue}
-                                onChange={(event) =>
-                                  setEditValue(event.target.value)
-                                }
-                                required
-                                error={editRequire}
-                              />
-                            </div>
-                          )}
-                        </TableCell>
-                        <TableCell sx={{width:'40%'}}>
-                          {editRowIndex !== index && (
-                            <div
-                              style={{
-                                color:
-                                  severityColors[row.severity.toLowerCase()] ||
-                                  severityColors.minor,
-                                fontWeight: "bold",
-                                fontSize: "medium",
-                              }}
-                            >
-                              &nbsp;{severityValues[row.severity.toLowerCase()]}
-                            </div>
-                          )}
-                          {editRowIndex === index && (
-                            <div>
-                              {/* <FormControl sx={{ minWidth: 120 }}>
-                                <InputLabel id="demo-simple-select-helper-label">
-                                  Severity
-                                </InputLabel>
-                                <Select
-                                  labelId="demo-simple-select-helper-label"
-                                  id="demo-simple-select-helper"
-                                  value={onEditSeverity}
-                                  label="Severity"
-                                  style={{
-                                    color:
-                                      severityColors[
-                                        row.severity.toLowerCase()
-                                      ] || severityColors.minor,
-                                    fontWeight: "bold",
-                                  }}
-                                  onChange={(event) =>
-                                    handleSeverityChange(
-                                      index,
-                                      row.issue_name,
-                                      event
-                                    )
-                                  }
-                                >
-                                  
-                                  <MenuItem
-                                    sx={{
-                                      color: "#B80000",
-                                      fontWeight: "bold",
-                                    }}
-                                    value={"critical"}
-                                  >
-                                    Critical
-                                  </MenuItem>
-                                  <MenuItem
-                                    sx={{
-                                      color: "#610C9F",
-                                      fontWeight: "bold",
-                                    }}
-                                    value={"major"}
-                                  >
-                                    Major
-                                  </MenuItem>
-                                  <MenuItem
-                                    sx={{
-                                      color: "#1B3C73",
-                                      fontWeight: "bold",
-                                    }}
-                                    value={"minor"}
-                                  >
-                                    Minor
-                                  </MenuItem>
-                                </Select>
-                                <FormHelperText>
-                                  <b>Level of Severity</b>{" "}
-                                </FormHelperText>
-                              </FormControl> */}
-                              <CustomDropdown
-                              id={"edit-dropdown"}
-                              label={"Severity"}
-                              onChange={(event) =>
-                                handleSeverityChange(
-                                  index,
-                                  row.issue_name,
-                                  event
-                                )
-                              }
-                              value={onEditSeverity}
-                              list={onEditseveritydropdown}
-                              >  
-                              </CustomDropdown>
-                            </div>
-                          )}
-                        </TableCell>
-
-                        <TableCell sx={{ width: "10%" }} align="right">
-                          <div style={{display:'flex'}}>
-                          {editRowIndex !== index && (
-                            <Tooltip TransitionComponent={Fade}  title="Edit">
-                            <Button
-                              onClick={() =>
-                                handleEditClick(row.issue_name, index, row)
-                              }
-                            >
-                              <EditIcon align="right" color="primary" />
-                            </Button>
-                            </Tooltip>
-                          )}
-
-                          {editRowIndex !== index && (
-                            <Tooltip TransitionComponent={Fade}  title="Delete">
-                            <Button
-                              onClick={() =>
-                                handleDeleteClick(index, row.issue_name)
-                              }
-                            >
-                              <DeleteIcon
-                                align="right"
-                                sx={{ color: "#FE2E2E" }}
-                              />
-                            </Button>
-                            </Tooltip>
-                          )}
-                          </div>
-                          {editRowIndex === index && (
-                           <div style={{display:'flex'}}>
-                              <Tooltip TransitionComponent={Fade}  title="Save">
-                              <Button
-                                onClick={() =>
-                                  handleSaveClick(index, row.issue_name, row)
-                                }
-                              >
-                                <CheckIcon color="primary" />
-                              </Button>
-                              </Tooltip>
-                              <Tooltip TransitionComponent={Fade}  title="Cancel">
-                              <Button
-                                onClick={() => handleCancelClick(index)}
-                              >
-                                <CancelIcon sx={{ color: "#FE2E2E" }} />
-                              </Button>
-                              </Tooltip>
-                            </div>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    rowsPerPage={rowperpage}
-                    page={page}
-                    count={rows.length}
-                    component="div"
-                    onPageChange={handlechangepage}
-                    onRowsPerPageChange={handleRowsPerPage}
-
-                ></TablePagination>
+              <CustomTable
+               rows={filteredRows}
+               columns={columns}
+               setRows={setFilteredRows}
+               savetoDatabse={addIssueToCurrentCategory}  deleteFromDatabase={handleDeleteClick} editActive={true} tablename={"Added Issues List"} redirectIconActive={false}
+               >
+                </CustomTable>
             </motion.div>
             <br />
             <center>

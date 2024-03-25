@@ -15,7 +15,9 @@ export default function Textfield({
   error,
   helperText,
   size,
-  InputProps
+  InputProps,
+  rows,
+  multiline
 }) {
   return (
     <>
@@ -34,6 +36,8 @@ export default function Textfield({
         helperText= {helperText}
         size={size}
         InputProps={InputProps}
+        rows={rows}
+        multiline={multiline}
       />
     </>
   );

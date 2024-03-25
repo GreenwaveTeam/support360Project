@@ -47,6 +47,7 @@ import AnimatedPage from "../../../components/animation_/AnimatedPage";
 import './modules.application.css'
 import Dropdown from "../../../components/dropdown/dropdown.component";
 import Textfield from "../../../components/textfield/textfield.component";
+import CustomTable from "../../../components/table/table.component";
 
 
 export default function ApplicationUser() {
@@ -103,6 +104,8 @@ export default function ApplicationUser() {
   const [miscellaneousSeverity, setmiscellaneousSeverity] = useState("");
 // const [ additionalMiscellaneousIssueArray,setAdditionalMiscellaneosIssueArray] = useState([]);
   const [miscellaneousRemarks, setmiscellaneousRemarks] = useState("");
+  const [additionalMiscellaneousError,setAdditionalMiscellaneousError]=useState(false)
+  const [additionalMiscellaneousSeverityError,setAdditionallMiscellaneousSeverityError]=useState(false)
 
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
@@ -1341,6 +1344,40 @@ export default function ApplicationUser() {
     console.log("handleAdditionalMiscellaneous() called");
     console.log("Current overview Table : ", overviewTableData);
     console.log("Current Module : ", value);
+    //Check for validations
+    setAdditionalMiscellaneousError(false)
+    setAdditionallMiscellaneousSeverityError(false)
+    if(miscellaneousInput===''&& miscellaneousSeverity==='')
+    {
+      setAdditionalMiscellaneousError(true)
+      setAdditionallMiscellaneousSeverityError(true)
+      setSnackbarSeverity('error')
+      setSnackbarText('Fill the required data ! ')
+      setMainAlert(true)
+      return;
+    }
+
+    if(miscellaneousInput==='')
+    {
+      setAdditionalMiscellaneousError(true)
+      setSnackbarSeverity('error')
+      setSnackbarText('Fill the required data ! ')
+      setMainAlert(true)
+      return;
+    }
+
+    if( miscellaneousSeverity==='')
+    {
+      setAdditionallMiscellaneousSeverityError(true)
+      setSnackbarSeverity('error')
+      setSnackbarText('Fill the required data ! ')
+      setMainAlert(true)
+      return;
+    }
+
+
+
+
     let overviewData = {};
     overviewData.module_name = value;
     overviewData.issue_name = miscellaneousInput;
@@ -1364,23 +1401,47 @@ export default function ApplicationUser() {
     setMainAlert(true);
   };
 
+  const columns=[
+    {
+      "id": "issue_name",
+      "label": "Issue Name",
+      "type": "textbox",
+      "canRepeatSameValue":false
+    },
+    {
+      "id": "severity",
+      "label": "Severity",
+      "type": "textbox",
+      "canRepeatSameValue":true,
+    //   values:["Critical","Major","Minor"]
+    },
+    {
+        "id": "remarks",
+        "label": "Remarks",
+        "type": "textbox",
+        "canRepeatSameValue":true,
+      //   values:["Critical","Major","Minor"]
+      },
+  ] 
+
+
   return (
     <div>
       <AnimatedPage>
         {/* <CustomDropDown>
     </CustomDropDown> */}
-          <Box
-            mt={2}
-            ml={2}
-            mr={2}
-            mb={2}
-            // sx={{
-            //   // typography: "body1",
-            //   boxShadow: "0px 3px 5px black",
-            //   borderRadius: "10px",
-            // }}
-            className='mainPage'
-          >
+        <Box
+          mt={2}
+          ml={2}
+          mr={2}
+          mb={2}
+          // sx={{
+          //   // typography: "body1",
+          //   boxShadow: "0px 3px 5px black",
+          //   borderRadius: "10px",
+          // }}
+          className="mainPage"
+        >
           <br></br>
           <center>
             <Dropdown
@@ -1571,7 +1632,7 @@ export default function ApplicationUser() {
                 //   justifyContent: "center", // Center the content horizontally
                 //   alignItems: "center", // Center the content vertically
                 // }}
-                className='tab'
+                className="tab"
               >
                 <Tabs
                   onChange={handleTabsChange}
@@ -1588,7 +1649,7 @@ export default function ApplicationUser() {
                   ))}
                 </Tabs>
               </Box>
-
+             
               <center>
                 <div
                   className="floating-div"
@@ -1626,8 +1687,11 @@ export default function ApplicationUser() {
                   </style> */}
                 </div>
               </center>
-
-              <br />
+              <br/>
+              <div style={{display:'flex',marginLeft:'40px'}}>
+                <CheckCircleIcon fontSize="small" sx={{color: '#66FF00'}}/>
+                <span> - * Indicates Issues have been added </span>
+              </div>
               <motion.div
                 variants={icon}
                 initial="hidden"
@@ -1655,7 +1719,7 @@ export default function ApplicationUser() {
                       //   margin: "auto",
                       //   borderRadius: "40px",
                       // }}
-                      className='paper-img-style'
+                      className="paper-img-style"
                     >
                       <img
                         src={`data:image/jpeg;base64,${mainData.module_image}`}
@@ -1667,7 +1731,7 @@ export default function ApplicationUser() {
                         //   // userSelect:'none',
                         //   // pointerEvents:'none'
                         // }}
-                      className="img-style"
+                        className="img-style"
                         // onClick={(e) => checkForDialog(e)}
                       />
                     </Paper>
@@ -1792,7 +1856,7 @@ export default function ApplicationUser() {
                             Miscellaneous Issue
                           </span>
                         }
-                        multiline
+                        multiline={true}
                         rows={3}
                         InputProps={{
                           style: {
@@ -1809,6 +1873,7 @@ export default function ApplicationUser() {
                           setMiscellaneousInput(e.target.value);
                           console.log("Miscellaneous Issue:", e.target.value);
                         }}
+                        error={additionalMiscellaneousError}
                       />
 
                       <Textfield
@@ -1837,6 +1902,7 @@ export default function ApplicationUser() {
                           setmiscellaneousRemarks(e.target.value);
                           console.log("Remarks:", e.target.value);
                         }}
+                       
                       />
 
                       <div style={{ marginBottom: "40px" }}>
@@ -1856,6 +1922,7 @@ export default function ApplicationUser() {
                             setmiscellaneousSeverity(e.target.value);
                             console.log(e.target.value);
                           }}
+                          error={additionalMiscellaneousSeverityError}
                         />
                         <Button
                           size="small"
@@ -2023,7 +2090,6 @@ export default function ApplicationUser() {
                     onChange={(e) => {
                       setRemarksInput(e.target.value);
                     }}
-            
                   />
                   &nbsp;&nbsp;
                   <IconButton
@@ -2042,138 +2108,27 @@ export default function ApplicationUser() {
       > */}
 
                   <Divider />
-                  {/* {tableIssuesForCurrentDiv.length !== 0 && ( */}
+                  {tableIssuesForCurrentDiv.length !== 0 && (
                     <div
                       style={{
-                        maxHeight: "200px",
+                        maxHeight: "400px",
                         overflowY: "auto",
                         boxShadow: "0px 4px 8px black",
                         borderRadius: "10px",
                       }}
                     >
-                      <Table sx={{ borderRadius: "100px" }}>
-                        <TableBody>
-                          <TableRow>
-                            <TableCell
-                              align="left"
-                              sx={{ width: "30%", backgroundColor: "#B5C0D0" }}
-                            >
-                              <b>Issues Added</b>
-                            </TableCell>
-                            <TableCell
-                              sx={{ width: "60%", backgroundColor: "#B5C0D0" }}
-                              colSpan={3}
-                            >
-                              <Textfield
-                                id={"table-search-issues"}
-                                variant={"outlined"}
-                                size={"small"}
-                                onChange={(e) => {
-                                  handleTableSearch(e);
-                                }}
-                                value={tableSearchText}
-                                label={
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    <SearchOutlinedIcon
-                                      style={{ marginRight: "5px" }}
-                                    />
-                                    <span style={{ fontSize: "12px" }}>
-                                      Search...
-                                    </span>
-                                  </div>
-                                }
-                                style={{
-                                  width: "80%",
-                                }}
-                              />
-                            </TableCell>
-                            {/* <TableCell>Action</TableCell> */}
-                          </TableRow>
-                         
-                            <TableRow>
-                              <TableCell sx={{width:'60%',fontWeight:'bold', backgroundColor: "#B5C0D0" }}>
-                                Issue
-                              </TableCell>
-                              <TableCell sx={{width:'10%',fontWeight:'bold', backgroundColor: "#B5C0D0" }}>
-                                Severity
-                              </TableCell>
-                              <TableCell align="center"  sx={{width:'20%',fontWeight:'bold', backgroundColor: "#B5C0D0" }}>
-                                Remarks
-                              </TableCell>
-                              <TableCell align="center" sx={{width:'10%',fontWeight:'bold', backgroundColor: "#B5C0D0" }}>
-                                Actions
-                              </TableCell>
-                            </TableRow>
-                         
-
-                          {tableIssuesForCurrentDiv.length===0&&
-                          <TableRow>
-                            <TableCell>
-                              No issues added...
-                            </TableCell>
-                            </TableRow>}
-                          {tableIssuesForCurrentDiv.length>0&&tableIssuesForCurrentDiv.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>
-                                {" "}
-                                <Box
-                                  sx={{
-                                    lineHeight: "normal",
-                                    width: " 100px",
-                                    wordWrap: "break-word",
-                                    fontSize: "medium",
-                                  }}
-                                >
-                                  {item.issue_name}
-                                </Box>
-                              </TableCell>
-                              <TableCell
-                                style={{
-                                  color:
-                                    severityColors[
-                                      item.severity.toLowerCase()
-                                    ] || severityColors.minor,
-                                  fontWeight: "bold",
-                                  fontSize: "medium",
-                                }}
-                              >
-                                {item.severity}
-                              </TableCell>
-                              <TableCell align="center">
-                                {" "}
-                                <Box
-                                  sx={{
-                                    lineHeight: "normal",
-                                    width: "100px",
-                                    wordWrap: "break-word",
-                                    fontSize: "medium",
-                                  }}
-                                >
-                                  {item.remarks}
-                                </Box>
-                              </TableCell>
-                              <TableCell align="right">
-                                {" "}
-                                <Button
-                                  onClick={() => handleDeleteTableClick(item)}
-                                >
-                                  <DeleteIcon
-                                    align="right"
-                                    sx={{ color: "#FE2E2E" }}
-                                  />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                      <CustomTable
+                        rows={tableIssuesForCurrentDiv}
+                        columns={columns}
+                        setRows={setTableIssuesForCurrentDiv}
+                        deleteFromDatabase={handleDeleteTableClick}
+                        editActive={false}
+                        tablename={"Added Issues"}
+                        redirectIconActive={false}
+                      ></CustomTable>
                     </div>
-                  
+                  )}
+
                   {/* )} */}
 
                   <br />

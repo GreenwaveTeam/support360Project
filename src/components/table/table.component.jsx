@@ -29,7 +29,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import dayjs from 'dayjs';
 import { useEffect, useState } from "react";
-import Datepicker from './DatePicker';
+import Datepicker from '../datepicker/datepicker.component';
+
 
 export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
@@ -240,7 +241,7 @@ useEffect(()=>
           //sx={{ borderRadius: 5, maxHeight: 440,maxWidth:1200 }}
           style={style}
         >
-          <Table  aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                 <TableCell

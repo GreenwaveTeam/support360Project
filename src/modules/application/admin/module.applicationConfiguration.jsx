@@ -69,7 +69,7 @@ export default function ModuleConfiguration() {
 
     }
     const handleDeleteClick=async(rowData)=>{
-      try{
+      
          Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -80,23 +80,27 @@ export default function ModuleConfiguration() {
         confirmButtonText: "Yes, delete it!"
       }).then((result) => {
         if (result.isConfirmed) {
+          try{ 
+              const requestBody = {
+                plant_id: plantid,
+                application_name: rowData.application_name 
+                // Add other properties from rowData if needed
+              };     
+              console.log("Request body=>"+JSON.stringify(requestBody))
+              axios.delete(`http://localhost:9080/application/admin/plantid/applicationname`,{ data: requestBody });
+             const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
+            setData(updatedCategories);
+          }catch(e)
+          {
+            console.log("Exception")
+          }
           
-      const requestBody = {
-        plant_id: plantid,
-        application_name: rowData.application_name 
-        // Add other properties from rowData if needed
-      };     
-      console.log("Request body=>"+JSON.stringify(requestBody))
-      axios.delete(`http://localhost:9080/application/admin/plantid/applicationname`,{ data: requestBody });
-         }
-       });
-       const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
-          setData(updatedCategories);
+
+        }})
+      
+       
     }
-    catch( e){
-      console.log("Exception:"+e)
-    }
-      };
+  
     const handleSaveClick = async (prev, rowData) => {
   console.log("applicationedit===>" + JSON.stringify(rowData));
   

@@ -3,16 +3,16 @@ import Button from '@mui/material/Button';
 import React, { useState, useEffect } from 'react';
 
 /*Navigation Pane*/
-import Sidebar from '../../components/navigation/sidebar/sidebar';
-import Topbar from '../../components/navigation/topbar/topbar';
-import Main from '../../components/navigation/mainbody/mainbody';
-import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
+import Sidebar from '../../../components/navigation/sidebar/sidebar';
+import Topbar from '../../../components/navigation/topbar/topbar';
+import Main from '../../../components/navigation/mainbody/mainbody';
+import DrawerHeader from '../../../components/navigation/drawerheader/drawerheader.component';
 
 /*Custom Components */
-import Table from '../../components/table/table.component'
-import DialogBox from "../../components/dialog/dialog.component";
-import Textfield from "../../components/textfield/textfield.component";
-import Dropdown from "../../components/dropdown/dropdown.component";
+import Table from '../../../components/table/table.component'
+import DialogBox from "../../../components/dialog/dialog.component";
+import Textfield from "../../../components/textfield/textfield.component";
+import Dropdown from "../../../components/dropdown/dropdown.component";
 
 
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
@@ -199,14 +199,14 @@ const DeviceCategory = () => {
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: 'Issue Category', pagelink: '/IssueCategory' }
+          { pageName: 'Device Issue Category', pagelink: '/Device/Category' }
         ]}
       />
       <Sidebar
         open={open}
         handleDrawerClose={handleDrawerClose}
         adminList={[
-          { pagename: 'Issue Category', pagelink: '/IssueCategory' },
+          { pagename: 'Device Issue Category', pagelink: '/Device/Category' },
           { pagename: 'Application', pagelink: '/Application' },
         ]}
         userList={['User Item 1', 'User Item 2', 'User Item 3']}
@@ -218,18 +218,18 @@ const DeviceCategory = () => {
           
         >
           <Container >
-            <form onSubmit={submitCategory}>
+            <form onSubmit={submitCategory} style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
               <Textfield
                 label={'Issue Category '}
                 id="issuecategory"
-                value={categoryName}
+                value={categoryName} style={{width:'200px'}}
                 onChange={(e) => setCategoryName(e.target.value)}
               />
-              &nbsp; &nbsp;
+              &nbsp;
 
-<Button
+            <Button
               color="primary"
-              variant="contained"
+              variant="contained" style={{width:'200px'}}
               type='submit'
             >
               Add &nbsp;
@@ -239,7 +239,7 @@ const DeviceCategory = () => {
               ></AddCircleOutlineOutlinedIcon>
             </Button>
             </form>
-          
+            &nbsp;&nbsp;
           
             <Table rows={categorylist} columns={columns} setRows={setCategorylist}
             savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick} 

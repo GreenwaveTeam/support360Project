@@ -10,8 +10,8 @@ import AdminRegistration from "./modules/registration/modules.registration.admin
 import AdminLogin from "./modules/login/AdminLogin";
 import UserHome from "./modules/homepages/UserHome";
 import ApplicationUser from "./modules/application/user/modules.application";
-import DeviceIssueCategoryUpload from './modules/device/module.deviceIssueCategoryUpload'
-import DeviceIssueUpload from './modules/device/module.deviceIssueUpload'
+import DeviceIssueCategoryUpload from './modules/device/admin/module.deviceIssueCategoryUpload'
+import DeviceIssueUpload from './modules/device/admin/module.deviceIssueUpload'
 import ApplicationConfiguration from './modules/application/admin/module.applicationConfiguration'
 import ModuleConfiguration from './modules/application/admin/module.moduleConfiguration'
 import ModuleUpload from './modules/application/admin/module.moduleUpload'

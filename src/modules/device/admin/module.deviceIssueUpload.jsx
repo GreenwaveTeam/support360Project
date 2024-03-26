@@ -4,17 +4,17 @@ import axios from 'axios';
 import { Box, MenuItem, Button, Container } from '@mui/material';
 import Swal from 'sweetalert2'
 /*Navigation Pane*/
-import Sidebar from '../../components/navigation/sidebar/sidebar';
-import Topbar from '../../components/navigation/topbar/topbar';
-import Main from '../../components/navigation/mainbody/mainbody';
-import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
+import Sidebar from '../../../components/navigation/sidebar/sidebar';
+import Topbar from '../../../components/navigation/topbar/topbar';
+import Main from '../../../components/navigation/mainbody/mainbody';
+import DrawerHeader from '../../../components/navigation/drawerheader/drawerheader.component';
 
 
 /*Custom Components*/
-import Table from '../../components/table/table.component'
-import DialogBox from "../../components/dialog/dialog.component";
-import TextField from "../../components/textfield/textfield.component";
-import Dropdown from "../../components/dropdown/dropdown.component";
+import Table from '../../../components/table/table.component'
+import DialogBox from "../../../components/dialog/dialog.component";
+import TextField from "../../../components/textfield/textfield.component";
+import Dropdown from "../../../components/dropdown/dropdown.component";
 
 
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
@@ -31,8 +31,8 @@ const DeviceIssue = () => {
   const [issueList, setIssueList] = useState(issues);
   const [filteredRows,setFilteredRows]=useState(issues)
   const urllist = [
-    { pageName: "Issue Category", pagelink: "/IssueCategory" },
-    { pageName: "Issue", pagelink: "/"+categoryname+"/Issue" }
+    { pageName: "Device Issue Category", pagelink: "/Device/Category" },
+    { pageName: "Device Issue", pagelink: "/"+categoryname+"/Device/Category/Issue" }
   ];
   const columns=[
     {
@@ -177,7 +177,7 @@ const DeviceIssue = () => {
       <Sidebar
         open={open}
         handleDrawerClose={handleDrawerClose}
-        adminList={[{ pagename: 'Issue Category', pagelink: '/IssueCategory' }, { pagename: 'Issue', pagelink: '/Issue' }]}
+        adminList={[{ pagename: 'Device Issue Category', pagelink: '/Device/Category' }, { pagename: 'Application', pagelink: '/Application' }]}
         userList={['User Item 1', 'User Item 2', 'User Item 3']}
       />
       <Main open={open}>
@@ -187,7 +187,7 @@ const DeviceIssue = () => {
         >
           <Box>
             <Container>
-            <form style={{display:'flex', flexDirection:'row',  alignContent:'center'}} onSubmit={submitIssue}>
+            <form style={{display:'flex', flexDirection:'column',  alignItems:'center'}} onSubmit={submitIssue}>
             {/* <CustomTextfield
               //onChange={(e) => setAddIssue(e.target.value)}
               // sx={classes.txt}
@@ -208,10 +208,10 @@ const DeviceIssue = () => {
               
             </CustomDropdown>*/}
             
-              <TextField label={'Issue Name'} id="issue"  value={issueName} onChange={(e) => setIssueName(e.target.value)} />&nbsp;&nbsp;
-              <Dropdown label={'Severity'}  value={severity} onChange={(e) => setSeverity(e.target.value)} list={["Critical","Major","Minor"]}/>
-              
-              <Button
+              <TextField label={'Issue Name'} id="issue" style={{width:'200px'}} value={issueName} onChange={(e) => setIssueName(e.target.value)} />
+              <Dropdown label={'Severity'}  value={severity} style={{width:'200px'}} onChange={(e) => setSeverity(e.target.value)} list={["Critical","Major","Minor"]}/>
+              &nbsp;&nbsp;
+              <Button style={{width:'200px'}}
               color="primary"
               variant="contained"
               type='submit'
@@ -228,6 +228,7 @@ const DeviceIssue = () => {
          */}
          </Container>
          </Box>
+         &nbsp;
           <Table rows={issueList} setRows={setIssueList} columns={columns} savetoDatabse={editIssueCategory} deleteFromDatabase={deleteIssueCategory}
           editActive={true} tablename={"Existing Device Issues"} /*style={}*/ /> 
         </Box>

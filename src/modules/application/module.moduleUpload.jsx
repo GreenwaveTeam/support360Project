@@ -58,6 +58,8 @@ const Application = () => {
   const [categoryname,setCategoryname]=useState(null)
   const location = useLocation();
   const application_name=location.state.application_name
+  const modulelist=location.state.modulelist
+  //console.log("Module list====>"+JSON.stringify(modulelist))
   const [module_Name,setModule_Name]=useState(application_name+"_Module_")
   const urllist = [{ pageName: "Application", pagelink: "/Application" },
   { pageName: "Module", pagelink: "/Application"+'/Module'},
@@ -180,6 +182,14 @@ const handleAddCategory=()=>{
 	};
   
   const handleFileChange = (event) => {
+    if(modulelist.some((module)=>(module.modulename===module_Name))){
+    console.log("Module name found")
+    setDialogPopup(true);
+    setsnackbarSeverity("error")
+    setDialogMessage("Module Name is already present")
+    return
+  }
+    
     setSelectedFile(event.target.files[0]);
     setImageUrl(null); // Clear previous image URL when selecting a new file
     const file = event.target.files[0];

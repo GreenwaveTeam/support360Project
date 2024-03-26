@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Container, Typography } from '@mui/material'
+import { Box, Button, Container, Divider, Typography } from '@mui/material'
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
 /*Navigation Pane*/
@@ -21,9 +21,10 @@ import axios from 'axios';
 export default function ModuleConfiguration() {
   const plantid='P009'
     const [open, setOpen] = useState(false);
-    const [application_name,setApplication_name]=useState(null)
+    const [application_name,setApplication_name]=useState('')
     const [dialogPopup, setDialogPopup] = useState(false);
     const [dialogMessage, setDialogMessage] = useState('');
+    const [snackbarSeverity,setsnackbarSeverity]=useState(null)
     const columns=[
       {
         "id": "application_name",
@@ -126,7 +127,21 @@ export default function ModuleConfiguration() {
       if(data.some(app=>app.application_name===application_name)){
         setDialogPopup(true);
         setDialogMessage("Application Name already Exists")
+        setsnackbarSeverity('error')
         return
+      }
+      if(application_name.trim()===''){
+        setDialogPopup(true);
+        setDialogMessage("Application Name cannot remain blank")
+        setsnackbarSeverity('error')
+        return
+      }
+      const regex = /[^A-Za-z0-9 _]/;
+      if (regex.test(application_name.trim())) {
+        setsnackbarSeverity('error')
+        setDialogPopup(true);
+        setDialogMessage('Special characters are not allowed');
+        return true;
       }
       console.log("Application name:"+application_name);
       navigate(`/Application/`+'Module', {
@@ -202,11 +217,12 @@ export default function ModuleConfiguration() {
             </DataTable> 
             </Box>*/}
             </Container>
+            <Divider/>
             <Table rows={data} setRows={setData} 
             redirectColumn={'application_name'} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}
             editActive={true} tablename={"Existing Applications"} /*style={}*/ redirectIconActive={true}/>
             </Box>
-            <DialogBox openPopup={dialogPopup} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
+            <DialogBox snackbarSeverity={snackbarSeverity}openPopup={dialogPopup} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
     </Main>
     </Box>
 

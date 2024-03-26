@@ -431,7 +431,7 @@ const ModuleConfigure = () => {
 	const handleRedirect = () => {
 		console.log(data)
 		navigate(`/Application/Module`, {
-			state: { application_name:data.application_name },
+			state: { application_name:data.application_name ,modulelist:data.modulelist},
 		});
 	};
 

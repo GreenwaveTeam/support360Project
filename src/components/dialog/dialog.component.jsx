@@ -12,7 +12,7 @@ export default function DialogBox({ openPopup, setOpenPopup, dialogMessage,snack
   return (
     <Snackbar
       open={openPopup}
-      autoHideDuration={1000}
+      //autoHideDuration={1000}
       
       onClose={handleClosePopup}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Positioning top right

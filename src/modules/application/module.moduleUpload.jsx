@@ -152,6 +152,17 @@ const handleAddCategory=()=>{
 	};
 	
   const handleDeleteIssue = async (rowData) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then(async(result) => {
+      if (result.isConfirmed) {
+       
 		const requestBody = {
 			plant_id: plantid,
 			application_name: application_name,
@@ -174,15 +185,16 @@ const handleAddCategory=()=>{
 			};
 			console.log("Detail====>"+JSON.stringify(detail))
 			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
-
+      setissues(issues.filter((row)=>(row!==rowData)))
 		} catch (error) {
 			console.error('Error deleting issue:', error.response ? error.response.data : error.message);
 			// Handle errors, such as displaying an error message to the user
 		}
+  }});
 	};
   
   const handleFileChange = (event) => {
-    if(modulelist.some((module)=>(module.modulename===module_Name))){
+    if(modulelist!==null&&modulelist.some((module)=>(module.modulename===module_Name))){
     console.log("Module name found")
     setDialogPopup(true);
     setsnackbarSeverity("error")

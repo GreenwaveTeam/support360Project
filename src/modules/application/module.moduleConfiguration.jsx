@@ -280,6 +280,17 @@ const ModuleConfigure = () => {
     setIssues([])
 	};
 	const handleDeleteIssue = async (rowdata) => {
+		Swal.fire({
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!"
+		  }).then(async(result) => {
+			if (result.isConfirmed) {
+			 
 		const requestBody = {
 			plant_id: plantid,
 			application_name: data.application_name,
@@ -302,11 +313,12 @@ const ModuleConfigure = () => {
 			};
 			console.log("Detail====>"+JSON.stringify(detail))
 			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
-
+			setIssues(issues.filter((row)=>(row!==rowdata)))
 		} catch (error) {
 			console.error('Error deleting issue:', error.response ? error.response.data : error.message);
 			// Handle errors, such as displaying an error message to the user
 		}
+	}})
 	};
 	  const handleEditIssue = async(prev,rowData) => {
 		const deleteRequestBody = {
@@ -536,7 +548,7 @@ const ModuleConfigure = () => {
 											/>
 											<form onSubmit={(event) => { handleAddIssue(event,module) }}>
 											  {!categorySubmitted && (
-												<Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center' }}>
+												<Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center'}}>
 												  <Typography
 													variant="h6"
 													color="textSecondary"
@@ -547,7 +559,7 @@ const ModuleConfigure = () => {
 													Add a New Acronym
 												</Typography>
 												  <TextField
-													label={'Category Name'}
+													label={'Acronym Name'}
 													id="issue"
 													value={categoryname}
 													onChange={(e) => {
@@ -559,12 +571,7 @@ const ModuleConfigure = () => {
 													variant="contained"
 													onClick={handleAddCategory} style={{width:'50%'}}
 												  >
-													Add Category&nbsp;
-													{/* <AddCircleOutlineOutlinedIcon
-													  fontSize="large"
-													  sx={{ color: 'white' }}
-													/>  */}
-													style={{width:'50%'}}
+													Add Category
 												  </Button>
 												</Box>
 											  )}

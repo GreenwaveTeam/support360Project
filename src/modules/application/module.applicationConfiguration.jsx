@@ -16,7 +16,7 @@ import TextField from "../../components/textfield/textfield.component";
 
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import Swal from'sweetalert2'
 
 export default function ModuleConfiguration() {
   const plantid='P009'
@@ -69,18 +69,19 @@ export default function ModuleConfiguration() {
 
     }
     const handleDeleteClick=async(rowData)=>{
-      try{// Swal.fire({
-      //   title: "Are you sure?",
-      //   text: "You won't be able to revert this!",
-      //   icon: "warning",
-      //   showCancelButton: true,
-      //   confirmButtonColor: "#3085d6",
-      //   cancelButtonColor: "#d33",
-      //   confirmButtonText: "Yes, delete it!"
-      // }).then((result) => {
-      //   if (result.isConfirmed) {
-      //     const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
-      //     setData(updatedCategories);
+      try{
+         Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
+          setData(updatedCategories);
       const requestBody = {
         plant_id: plantid,
         application_name: rowData.application_name
@@ -88,8 +89,8 @@ export default function ModuleConfiguration() {
       };     
       console.log("Request body=>"+JSON.stringify(requestBody))
       axios.delete(`http://localhost:9080/application/admin/plantid/applicationname`,{ data: requestBody });
-      //   }
-      // });
+         }
+       });
     }
     catch( e){
       console.log("Exception:"+e)
@@ -217,7 +218,7 @@ export default function ModuleConfiguration() {
             </DataTable> 
             </Box>*/}
             </Container>
-            <Divider/>
+            &nbsp;
             <Table rows={data} setRows={setData} 
             redirectColumn={'application_name'} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}
             editActive={true} tablename={"Existing Applications"} /*style={}*/ redirectIconActive={true}/>

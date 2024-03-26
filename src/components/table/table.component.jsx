@@ -134,91 +134,93 @@ useEffect(()=>
   setClearVisible(filterValue===''?false:true)
 },[filterValue])
 
-  const handleSaveClick = async (selectedRow) => {
+const handleSaveClick = async (selectedRow) => {
+  console.log('handleSaveClick() called');
+  console.log('Updated Row : ', updatedRow);
+  console.log('Selected prev row : ', selectedRow);
+  let checkError = false;
+  const regex = /[^A-Za-z0-9 _]/;
+  let countChange = 0;
+  columns.map((column) => {
 
-    console.log('handleSaveClick() called')
-    console.log('Updated Row : ',updatedRow);
-    console.log('Selected prev row : ',selectedRow)
-    let checkError = false;
-    const regex = /[^A-Za-z0-9 _]/;
-      
     rows.find((row) => {
+      console.log("Rows.........." + JSON.stringify(row));
       if (selectedRow !== row) {
-        columns.map((column) => {
-          if (
-            column.type !== 'calender' &&
-            column.canRepeatSameValue === false &&
-            updatedRow[column.id].trim().toLowerCase() === row[column.id].trim().toLowerCase()
-          ) {
-            setSnackbarText('This property is already added');
-            setsnackbarSeverity('error');
-            setOpen(true);
-            checkError = true;
-          } else if (column.type !== 'calender' && updatedRow[column.id].trim() === '') {
-            setSnackbarText('Blank Inputs are not permitted');
-            setsnackbarSeverity('error');
-            setOpen(true);
-            checkError = true;
-          }
-          else if (column.type !== 'calender' && regex.test(updatedRow[column.id].trim())) {
-            setSnackbarText('Special Characters are not allowed !');
-            setsnackbarSeverity('error');
-            setOpen(true);
-            checkError = true;
-          }
-        });
-      } else if (selectedRow === row) {
-        let countChange = 0;
-        columns.map((column) => {
-          if (column.type !== 'calender' && updatedRow[column.id].trim().toLowerCase() !== row[column.id].trim().toLowerCase()) {
-            countChange += 1;
-          }
-          if (column.type === 'calender' && updatedRow[column.id] !== row[column.id]) {
-            countChange += 1;
-            console.log("Calender updated")
-          }
-        });
-        if (countChange === 0) {
-          // setSnackbarText('No changes are made');
-          // setsnackbarSeverity('error');
-          // setOpen(true);
-          setEditRowIndex(null)
-          setUpdatedRow(null)
-           checkError = true;
+        if (
+          column.type !== 'calender' &&
+          column.canRepeatSameValue === false &&
+          updatedRow[column.id].trim().toLowerCase() === row[column.id].trim().toLowerCase()
+        ) {
+          setSnackbarText('This property is already added');
+          setsnackbarSeverity('error');
+          setOpen(true);
+          console.log("Check this property is already added");
+          checkError = true;
         }
+      } else if (selectedRow === row) {
+        console.log("Save click");
+        
+        if (column.type !== 'calender' && updatedRow[column.id].trim().toLowerCase() !== row[column.id].trim().toLowerCase()) {
+          countChange += 1;
+          console.log("Check changes");
+        }
+        if (column.type === 'calender' && updatedRow[column.id] !== row[column.id]) {
+          countChange += 1;
+          console.log("Calender updated");
+        }
+        
       }
     });
-    if (checkError === true){
-      setEditRequired(true)
-      return
-      
+    
+    if (column.type !== 'calender' && updatedRow[column.id].trim() === '') {
+      setSnackbarText('Blank Inputs are not permitted');
+      setsnackbarSeverity('error');
+      console.log('Blank Inputs are not permitted');
+      setOpen(true);
+      checkError = true;
     }
-      if (savetoDatabse != null)
-      {
-      const success= await savetoDatabse(selectedRow, updatedRow)
-      console.log('The final returned value in table component is => ',success)
-      if(success===false)
-      {
-        setEditRowIndex(null)
-        return;
-      }
-      }
-    updatedRow.edited=true;
-    setRows(rows.map(row => {
-      if (row !== selectedRow) {
-        return row;
-      }
-      else {
-        return updatedRow;
-      }
-    }));
-    setSnackbarText("Changes are saved !");
-    setsnackbarSeverity("success");
-    setOpen(true);
-    setUpdatedRow(null);
+    else if (column.type !== 'calender' && regex.test(updatedRow[column.id].trim())) {
+      console.log("Special characters check")
+      setSnackbarText('Special Characters are not allowed !');
+      setsnackbarSeverity('error');
+      console.log("Check")
+      setOpen(true);
+      checkError = true;
+    }
+  });
+  if (countChange === 0) {
     setEditRowIndex(null);
+    setUpdatedRow(null);
+    checkError = true;
+  }
+  if (checkError === true) {
+    setEditRequired(true);
     return;
   }
+  console.log("Tejncdqskjcnqskdqk,jcnsqkndqknqknckqsndqk")
+  if (savetoDatabse != null) {
+    const success = await savetoDatabse(selectedRow, updatedRow);
+    console.log('The final returned value in table component is => ');
+    // if (success === false) {
+    //   setEditRowIndex(null);
+    //   return;
+    // }
+  }
+  updatedRow.edited = true;
+  setRows(rows.map(row => {
+    if (row !== selectedRow) {
+      return row;
+    } else {
+      return updatedRow;
+    }
+  }));
+  setSnackbarText("Changes are saved !");
+  setsnackbarSeverity("success");
+  setOpen(true);
+  setUpdatedRow(null);
+  setEditRowIndex(null);
+  return;
+};
 
   const handleAlertClose = (event) => {
     setOpen(false);

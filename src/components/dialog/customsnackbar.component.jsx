@@ -26,9 +26,7 @@ export default function DialogBox({ openPopup, setOpenPopup, dialogMessage,snack
         sx={{ width: '100%' }}
       >
         {dialogMessage}
-        <Button color="inherit" size="small" onClick={handleClosePopup}>
-          OK
-        </Button>
+        
       </MuiAlert>
     </Snackbar>
   );

@@ -514,7 +514,7 @@ const handleSaveClick = async (selectedRow) => {
         </TableContainer>
        
       </Paper>
-      <DialogBox snackbarSeverity={snackbarSeverity}openPopup={open} dialogMessage={snackbarText}/>
+      <DialogBox snackbarSeverity={snackbarSeverity}openPopup={open} setOpenPopup={setOpen} dialogMessage={snackbarText}/>
     </>
   );
 }

@@ -1462,7 +1462,7 @@ export default function ApplicationUser() {
            
          
           <div  align="center"
-             style={{backgroundColor:'#B5C0D0',padding:'5px',flex:1}}
+             style={{backgroundColor:'#B5C0D0',padding:'5px',flex:1,overflow:'auto'}}
             >
             
              <span style={{fontSize:'14px',fontWeight:'bold',flex:1}}>Issues Overview  </span>
@@ -1503,9 +1503,9 @@ export default function ApplicationUser() {
       <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' ,}}>
         <b> Remarks</b>
       </TableCell>
-      <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' }}>
-        <b> Action</b>
-      </TableCell>
+        <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' }}>
+          <b> Action</b>
+        </TableCell>
           </TableRow>
           {overviewTableData.length===0 && <TableRow><TableCell>No Issues Added...</TableCell></TableRow>}
           {overviewTableData.length>0 && overviewTableData.map((item, index) => (

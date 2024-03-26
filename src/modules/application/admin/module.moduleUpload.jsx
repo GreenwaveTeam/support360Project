@@ -11,17 +11,17 @@ import axios from 'axios';
 import Swal from 'sweetalert2'
 
 /*Navigation Pane*/
-import Sidebar from '../../components/navigation/sidebar/sidebar';
-import Topbar from '../../components/navigation/topbar/topbar';
-import Main from '../../components/navigation/mainbody/mainbody';
-import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
+import Sidebar from '../../../components/navigation/sidebar/sidebar';
+import Topbar from '../../../components/navigation/topbar/topbar';
+import Main from '../../../components/navigation/mainbody/mainbody';
+import DrawerHeader from '../../../components/navigation/drawerheader/drawerheader.component';
 
 
 /*Custom Components*/
-import Table from '../../components/table/table.component'
-import DialogBox from "../../components/dialog/dialog.component";
-import TextField from "../../components/textfield/textfield.component";
-import Dropdown from '../../components/dropdown/dropdown.component';
+import Table from '../../../components/table/table.component'
+import DialogBox from "../../../components/dialog/dialog.component";
+import TextField from "../../../components/textfield/textfield.component";
+import Dropdown from '../../../components/dropdown/dropdown.component';
 
 
 const Application = () => {

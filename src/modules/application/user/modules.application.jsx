@@ -304,6 +304,7 @@ export default function ApplicationUser() {
     setTableIssuesForCurrentDiv([]);
     setOriginalIssuesDropdown([]);
     setmiscellaneousRemarks('')
+    setmiscellaneousSeverity("")
     //Now feed with new data
     fetchTabData(newValue, dropdownValue);
 
@@ -1456,151 +1457,99 @@ export default function ApplicationUser() {
 
           <br />
           <center>
-            {tabsmoduleNames.length !== 0 && (
-              <div
-                // style={{
-                //   maxHeight: "400px",
-                //   maxWidth: "1200px",
-                //   overflowY: "auto",
-                //   boxShadow: "0px 4px 8px black",
-                //   borderRadius: "10px",
-                // }}
-                className="overviewTable"
-              >
-                <div
-                  colSpan={4}
-                  align="center"
-                  style={{ backgroundColor: "#B5C0D0", padding: "5px" }}
-                >
-                  <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-                    Issues Overview{" "}
-                  </span>
-                  <span
-                    style={{
-                      color: "#610C9F",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    [{dropdownValue}]{" "}
-                  </span>
-                  <ExpandMore
-                    expand={expanded}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                  >
-                    <ExpandMoreIcon />
-                  </ExpandMore>
-                  <Badge
-                    badgeContent={overviewTableData.length}
-                    color="primary"
-                  >
-                    <NotificationsActiveIcon color="secondary" />
-                  </Badge>{" "}
-                  &nbsp;
-                </div>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                  <Table sx={{ borderRadius: "100px" }}>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell
-                          align="left"
-                          sx={{ width: "30%", backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Module Name </b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ width: "20%", backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Area </b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ width: "40%", backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Issue Name </b>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            width: "10%",
-                            backgroundColor: "#B5C0D0",
-                            padding: "30px",
-                          }}
-                        >
-                          <b> Severity</b>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            width: "10%",
-                            backgroundColor: "#B5C0D0",
-                            padding: "30px",
-                          }}
-                        >
-                          <b> Remarks</b>
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            width: "10%",
-                            backgroundColor: "#B5C0D0",
-                            padding: "30px",
-                          }}
-                        >
-                          <b> Action</b>
-                        </TableCell>
-                      </TableRow>
-                      {overviewTableData.length === 0 && (
-                        <TableRow>
-                          <TableCell>No Issues Added...</TableCell>
-                        </TableRow>
-                      )}
-                      {overviewTableData.length > 0 &&
-                        overviewTableData.map((item, index) => (
-                          <TableRow key={index}>
-                            <TableCell align="left">
-                              {item.module_name}
-                            </TableCell>
-                            <TableCell align="center">
-                              {item.selected_coordinates_acronym}
-                            </TableCell>
-                            <TableCell align="center">
-                              {item.issue_name}
-                            </TableCell>
+          {tabsmoduleNames.length!==0&&
+          <div style={{ maxHeight: '400px',maxWidth:'1200px', overflowY: 'auto',boxShadow: '0px 4px 8px black',borderRadius:'10px'}}>
+           
+         
+          <div  align="center"
+             style={{backgroundColor:'#B5C0D0',padding:'5px',flex:1}}
+            >
+            
+             <span style={{fontSize:'14px',fontWeight:'bold',flex:1}}>Issues Overview  </span>
+             <span style={{color:'#610C9F',fontSize:'14px',fontWeight:'bold'}}>[{dropdownValue}] </span>
+            
+            <ExpandMore
+          expand={expanded}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+         
+        </ExpandMore>
+        <Badge badgeContent={overviewTableData.length} color="primary">
+      <NotificationsActiveIcon color="secondary" />
+    </Badge> &nbsp;
+       
+        </div>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Table sx={{borderRadius:'100px'}}>
+        <TableBody>
+             
+        
+          <TableRow colSpan={7}>
+          <TableCell align="left" sx={{ backgroundColor: '#B5C0D0' }}>
+        <b> Module Name </b>
+      </TableCell>
+      <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' }}>
+        <b> Area </b>
+      </TableCell>
+      <TableCell align="center" sx={{ backgroundColor: '#B5C0D0' }}>
+        <b> Issue Name </b>
+      </TableCell>
+      <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' ,}}>
+        <b> Severity</b>
+      </TableCell>
+      <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' ,}}>
+        <b> Remarks</b>
+      </TableCell>
+      <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' }}>
+        <b> Action</b>
+      </TableCell>
+          </TableRow>
+          {overviewTableData.length===0 && <TableRow><TableCell>No Issues Added...</TableCell></TableRow>}
+          {overviewTableData.length>0 && overviewTableData.map((item, index) => (
+      <TableRow key={index}>
+        <TableCell align="left">{item.module_name}</TableCell>
+    <TableCell align="center">{item.selected_coordinates_acronym}</TableCell>
+    <TableCell align="center">{item.issue_name}</TableCell>
 
-                            <TableCell
-                              align="center"
-                              style={{
-                                color:
-                                  severityColors[item.severity.toLowerCase()] ||
-                                  severityColors.minor,
-                                fontWeight: "bold",
-                              }}
+    <TableCell align="center" style={{
+            color:
+              severityColors[item.severity.toLowerCase()] ||
+              severityColors.minor,
+            fontWeight: "bold",
+          }}
+          >{item.severity}</TableCell>
+           <TableCell align="center">
+              {item.remarks}
+            </TableCell>
+
+
+          <TableCell  align="center">
+          <Button
+                              onClick={() =>
+                                handleOverviewDeleteClick(item)
+                              }
                             >
-                              {item.severity}
-                            </TableCell>
-                            <TableCell>{item.remarks}</TableCell>
+                              <DeleteIcon
+                                align="right"
+                                sx={{ color: "#FE2E2E" }}
+                              />
+                            </Button>
+          </TableCell>
+        </TableRow>
+          ))}
 
-                            <TableCell>
-                              <Button
-                                onClick={() => handleOverviewDeleteClick(item)}
-                              >
-                                <DeleteIcon
-                                  align="right"
-                                  sx={{ color: "#FE2E2E" }}
-                                />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </Collapse>
-              </div>
-            )}
+
+        
+         </TableBody>
+         </Table>
+         </Collapse>
+         
+         
+       
+         </div>}
 
             <center>
               <br />
@@ -1745,6 +1694,7 @@ export default function ApplicationUser() {
                         placement="top-start"
                       >
                         <div
+                         
                           onClick={(event) => handleDivClick(event, area)}
                           key={areaIndex}
                           style={{

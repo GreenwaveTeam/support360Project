@@ -12,9 +12,9 @@ import UserHome from "./modules/homepages/UserHome";
 import ApplicationUser from "./modules/application/user/modules.application";
 import DeviceIssueCategoryUpload from './modules/device/module.deviceIssueCategoryUpload'
 import DeviceIssueUpload from './modules/device/module.deviceIssueUpload'
-import ApplicationConfiguration from './modules/application/module.applicationConfiguration'
-import ModuleConfiguration from './modules/application/module.moduleConfiguration'
-import ModuleUpload from './modules/application/module.moduleUpload'
+import ApplicationConfiguration from './modules/application/admin/module.applicationConfiguration'
+import ModuleConfiguration from './modules/application/admin/module.moduleConfiguration'
+import ModuleUpload from './modules/application/admin/module.moduleUpload'
 import ConfigureInfrastructure from "./modules/infrastructure/module.configureInfrastructure";
 import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 

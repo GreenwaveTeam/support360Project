@@ -18,6 +18,7 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { Box, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
 
 import axios from 'axios';
 
@@ -98,6 +99,17 @@ const DeviceCategory = () => {
   };
 
   const handleDeleteClick = async (rowData) => {
+    Swal.fire({
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!"
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				
     console.log("Handle del")
     // Create a request body object
     const requestBody = {
@@ -108,10 +120,12 @@ const DeviceCategory = () => {
     try {
         // Send requestBody as request body in the DELETE request
         await axios.delete('http://localhost:9080/device/admin/categories', { data: requestBody });
-    } catch (error) {
+        setCategorylist(categorylist.filter((category)=>(category!==rowData)))
+      } catch (error) {
         console.error('Error:', error);
         // Handle errors, such as displaying an error message to the user
     }
+  }})
 };
 
   const handleInputChange = (e) => {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Box, MenuItem, Button, Container } from '@mui/material';
-
+import Swal from 'sweetalert2'
 /*Navigation Pane*/
 import Sidebar from '../../components/navigation/sidebar/sidebar';
 import Topbar from '../../components/navigation/topbar/topbar';
@@ -108,6 +108,17 @@ const DeviceIssue = () => {
       
     };
     const deleteIssueCategory = async (rowdata) => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(async(result) => {
+        if (result.isConfirmed) {
+         
       console.log("useEffectIssue")
       const requestBody={ 
         plantid: plantid,
@@ -116,11 +127,13 @@ const DeviceIssue = () => {
     } 
         try {
           
-          const response = await axios.delete('http://localhost:9080/device/admin/categories/issue', {data: requestBody}
-    );} catch (error) {
+          const response = await axios.delete('http://localhost:9080/device/admin/categories/issue', {data: requestBody});
+          setIssueList(issueList.filter((issue)=>(issue!==rowdata)));
+          console.log("Successfully deleted")
+          } catch (error) {
           console.error('Error:', error);
         }
-      
+        }})
     };
   
   const submitIssue = (event) => {

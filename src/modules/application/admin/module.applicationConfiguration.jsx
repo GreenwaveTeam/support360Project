@@ -3,16 +3,16 @@ import { Box, Button, Container, Divider, Typography } from '@mui/material'
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
 /*Navigation Pane*/
-import Sidebar from '../../components/navigation/sidebar/sidebar';
-import Topbar from '../../components/navigation/topbar/topbar';
-import Main from '../../components/navigation/mainbody/mainbody';
-import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
+import Sidebar from '../../../components/navigation/sidebar/sidebar';
+import Topbar from '../../../components/navigation/topbar/topbar';
+import Main from '../../../components/navigation/mainbody/mainbody';
+import DrawerHeader from '../../../components/navigation/drawerheader/drawerheader.component';
 
 
 /*Custom Components*/
-import Table from '../../components/table/table.component'
-import DialogBox from "../../components/dialog/dialog.component";
-import TextField from "../../components/textfield/textfield.component";
+import Table from '../../../components/table/table.component'
+import DialogBox from "../../../components/dialog/dialog.component";
+import TextField from "../../../components/textfield/textfield.component";
 
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -80,17 +80,18 @@ export default function ModuleConfiguration() {
         confirmButtonText: "Yes, delete it!"
       }).then((result) => {
         if (result.isConfirmed) {
-          const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
-          setData(updatedCategories);
+          
       const requestBody = {
         plant_id: plantid,
-        application_name: rowData.application_name
+        application_name: rowData.application_name 
         // Add other properties from rowData if needed
       };     
       console.log("Request body=>"+JSON.stringify(requestBody))
       axios.delete(`http://localhost:9080/application/admin/plantid/applicationname`,{ data: requestBody });
          }
        });
+       const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
+          setData(updatedCategories);
     }
     catch( e){
       console.log("Exception:"+e)

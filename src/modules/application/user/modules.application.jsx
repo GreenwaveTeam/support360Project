@@ -1458,7 +1458,7 @@ export default function ApplicationUser() {
           <br />
           <center>
           {tabsmoduleNames.length!==0&&
-          <div style={{ maxHeight: '400px',maxWidth:'1200px', overflowY: 'auto',boxShadow: '0px 4px 8px black',borderRadius:'10px'}}>
+          <div style={{ maxHeight: '400px',maxWidth:'1200px', overflowY: 'auto',boxShadow: '0px 4px 8px black',borderRadius:'10px',backgroundColor:'#B5C0D0'}}>
            
          
           <div  align="center"
@@ -1507,9 +1507,9 @@ export default function ApplicationUser() {
           <b> Action</b>
         </TableCell>
           </TableRow>
-          {overviewTableData.length===0 && <TableRow><TableCell>No Issues Added...</TableCell></TableRow>}
+          {overviewTableData.length===0 && <TableRow  style={{backgroundColor:'white'}}><TableCell  colSpan={6}>No Issues Added...</TableCell></TableRow>}
           {overviewTableData.length>0 && overviewTableData.map((item, index) => (
-      <TableRow key={index}>
+      <TableRow key={index} style={{backgroundColor:'white'}}>
         <TableCell align="left">{item.module_name}</TableCell>
     <TableCell align="center">{item.selected_coordinates_acronym}</TableCell>
     <TableCell align="center">{item.issue_name}</TableCell>
@@ -1712,15 +1712,18 @@ export default function ApplicationUser() {
                             // fontSize: '16px',
                             // fontWeight: 'bold',
                             // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                            // transition: 'all 0.3s ease',
+                            //transition: 'all 0.3s ease',
                             cursor: "pointer",
+                            
                           }}
-                          // onMouseEnter={(e) => {
-                          //   e.target.style.backgroundColor = 'rgba(33, 150, 243, 0.7)'; // Lighter blue on hover
-                          // }}
-                          // onMouseLeave={(e) => {
-                          //   e.target.style.backgroundColor = 'rgba(33, 150, 243, 0.5)';
-                          // }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = 'rgba(128, 128, 128, 0.5)';
+                            e.target.style.filter = 'blur(20px)'
+                            e.target.style.transition = 'background-color 0.3s, filter 0.3s';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = 'rgba(0,0,0,0)';
+                          }}
                         >
                           {area.edited && (
                             <CheckCircleIcon
@@ -1746,6 +1749,7 @@ export default function ApplicationUser() {
               </motion.div>
 
               <center>
+                
                 <Container>
                   <Paper
                     elevation={4}

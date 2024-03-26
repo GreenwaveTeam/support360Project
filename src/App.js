@@ -17,6 +17,7 @@ import ModuleConfiguration from './modules/application/admin/module.moduleConfig
 import ModuleUpload from './modules/application/admin/module.moduleUpload'
 import ConfigureInfrastructure from "./modules/infrastructure/module.configureInfrastructure";
 import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
+import Samplemodule from "./modules/device/module.samplemodule";
 
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
@@ -62,6 +63,8 @@ function App() {
           {/* Admin Infrastructure */}
           <Route path="/admin/infrastructure/configureInfrastructure" element={ <ConfigureInfrastructure/>}/>
           <Route  path="/admin/infrastructure/addIssues" element={ <AddInfrastructureIssue/>}/>
+          {/* test */}
+          <Route  path="/sample" element={ <Samplemodule/>}/>
         </Routes>
       </div>
     </Router>

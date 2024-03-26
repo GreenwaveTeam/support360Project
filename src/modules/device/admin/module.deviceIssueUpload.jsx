@@ -53,6 +53,7 @@ const DeviceIssue = () => {
   const [severity, setSeverity] = useState('');
   const [openPopup, setOpenPopup] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
+  const [snackbarSeverity,setsnackbarSeverity]=useState(null)
   // useEffect(() => {
   //   console.log("Location.state");
   //   // Create a copy of the location object
@@ -144,6 +145,7 @@ const DeviceIssue = () => {
         if (issueExists) {
             setOpenPopup(true);
             setDialogMessage('Issue name already exists.');
+            setsnackbarSeverity('error')
             return
         } 
       const newIssue = { issuename: issueName, severity: severity };
@@ -152,6 +154,7 @@ const DeviceIssue = () => {
     } else {
       setOpenPopup(true);
       setDialogMessage('Please provide both issue name and severity.');
+      setsnackbarSeverity('error')
       return
     }
     addIssueCategory()
@@ -230,7 +233,7 @@ const DeviceIssue = () => {
          </Box>
          &nbsp;
           <Table rows={issueList} setRows={setIssueList} columns={columns} savetoDatabse={editIssueCategory} deleteFromDatabase={deleteIssueCategory}
-          editActive={true} tablename={"Existing Device Issues"} /*style={}*/ /> 
+          editActive={true} snackbarSeverity={snackbarSeverity} tablename={"Existing Device Issues"} /*style={}*/ /> 
         </Box>
         <DialogBox openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage} />
       </Main>

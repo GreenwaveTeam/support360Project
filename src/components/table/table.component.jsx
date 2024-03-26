@@ -41,7 +41,8 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
   const [updatedRow, setUpdatedRow] = useState(null);
   const [filterValue, setFilterValue] = useState('');
   const [filteredrows, setFilteredrows] = useState(null);
-  const [editRequired,setEditRequired]=useState(true)
+  const [editError,seteditError]=useState(true)
+  const [errorValue,setErrorValue]=useState(null)
   const [page, pagechange] = useState(0);
   const [rowperpage, rowperpagechange] = useState(5);
   const [search,setSearch]=useState("")
@@ -75,7 +76,8 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
   };
 
   const handleInputChange = (event, id, type) => {
-    setEditRequired(false)
+    seteditError(false)
+    setErrorValue(null)
     if (type === 'calender')
       console.log(dayjs(event))
     setUpdatedRow(prevData => ({
@@ -86,7 +88,7 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
   }
 
   const handleEditClick = (index, row) => {
-    setEditRequired(false)
+    seteditError(false)
     setEditRowIndex(index)
     setUpdatedRow(row)
   };
@@ -154,6 +156,7 @@ const handleSaveClick = async (selectedRow) => {
           setSnackbarText('This property is already added');
           setsnackbarSeverity('error');
           setOpen(true);
+          setErrorValue(selectedRow[column.id])
           console.log("Check this property is already added");
           checkError = true;
         }
@@ -176,6 +179,7 @@ const handleSaveClick = async (selectedRow) => {
       setSnackbarText('Blank Inputs are not permitted');
       setsnackbarSeverity('error');
       console.log('Blank Inputs are not permitted');
+      setErrorValue(selectedRow[column.id])
       setOpen(true);
       checkError = true;
     }
@@ -183,6 +187,7 @@ const handleSaveClick = async (selectedRow) => {
       console.log("Special characters check")
       setSnackbarText('Special Characters are not allowed !');
       setsnackbarSeverity('error');
+      setErrorValue(selectedRow[column.id])
       console.log("Check")
       setOpen(true);
       checkError = true;
@@ -194,10 +199,10 @@ const handleSaveClick = async (selectedRow) => {
     checkError = true;
   }
   if (checkError === true) {
-    setEditRequired(true);
+    seteditError(true);
+    
     return;
   }
-  console.log("Tejncdqskjcnqskdqk,jcnsqkndqknqknckqsndqk")
   if (savetoDatabse != null) {
     const success = await savetoDatabse(selectedRow, updatedRow);
     console.log('The final returned value in table component is => ');
@@ -389,7 +394,7 @@ const handleSaveClick = async (selectedRow) => {
                                       label={column.label}
                                       value={updatedValue}
                                       required
-                                      error={editRequired}
+                                      error={ errorValue===value && editError}
                                       onChange={(e) => {
                                         handleInputChange(
                                           e,
@@ -411,7 +416,7 @@ const handleSaveClick = async (selectedRow) => {
                                       label={column.label}
                                       value={updatedValue}
                                       required
-                                      error={editRequired}
+                                      error={ errorValue===value && editError}
                                       onChange={(e) => {
                                         handleInputChange(
                                           e,
@@ -438,7 +443,7 @@ const handleSaveClick = async (selectedRow) => {
                                   <div>
                                     <Datepicker
                                       format={"YYYY-MM-DD"}
-                                      error={editRequired}
+                                      error={ errorValue===value && editError}
                                       label="Date"
                                       onChange={(e) => {
                                         handleInputChange(

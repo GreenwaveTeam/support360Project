@@ -33,6 +33,7 @@ const DeviceCategory = () => {
   const [dialogMessage, setDialogMessage] = useState('');
   const [globalFilter, setGlobalFilter] = useState('');
   const [filteredRows,setFilteredRows]=useState([])
+  const [snackbarSeverity,setsnackbarSeverity]=useState(null)
   const columns=[
     {
       "id": "categoryname",
@@ -87,12 +88,14 @@ const DeviceCategory = () => {
     if (input == null || input.trim() === '') {
       setDialogMessage("Empty string is not allowed");
       setOpenPopup(true);
+      setsnackbarSeverity("error")
       return true;
     }
     const regex = /[^A-Za-z0-9 _]/;
     if (regex.test(input.trim())) {
       setOpenPopup(true);
       setDialogMessage("Special Character is not allowed");
+      setsnackbarSeverity("error")
       return true;
     }
     return false;
@@ -248,7 +251,7 @@ const DeviceCategory = () => {
           {/* </Box> */}
         </div>
       </Main>
-      <DialogBox openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage}/>
+      <DialogBox snackbarSeverity={snackbarSeverity} openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage}/>
     </Box>
   );
 };

@@ -228,7 +228,8 @@ const DeviceCategory = () => {
           
           
             <Table rows={categorylist} columns={columns} setRows={setCategorylist}
-            savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}/>
+            savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick} 
+            editActive={true} tablename={"Existing Device Issue Category"} /*style={}*/ redirectIconActive={true} />
           </Container>
           {/* </Box> */}
         </div>

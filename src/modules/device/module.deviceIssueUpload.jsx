@@ -215,7 +215,8 @@ const DeviceIssue = () => {
          */}
          </Container>
          </Box>
-          <Table rows={issueList} setRows={setIssueList} columns={columns} savetoDatabse={editIssueCategory} deleteFromDatabase={deleteIssueCategory}/> 
+          <Table rows={issueList} setRows={setIssueList} columns={columns} savetoDatabse={editIssueCategory} deleteFromDatabase={deleteIssueCategory}
+          editActive={true} tablename={"Existing Device Issues"} /*style={}*/ /> 
         </Box>
         <DialogBox openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage} />
       </Main>

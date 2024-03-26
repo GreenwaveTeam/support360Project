@@ -517,7 +517,7 @@ const ModuleConfigure = () => {
 												position: 'fixed',
 												left: '50%',
 												transform: 'translate(-50%)',
-												width: '30%',
+												width: '30%',minWidth:'500px',
 												top: '20%',
 												bottom:'10%',
 												backgroundColor: 'white',
@@ -536,25 +536,35 @@ const ModuleConfigure = () => {
 											/>
 											<form onSubmit={(event) => { handleAddIssue(event,module) }}>
 											  {!categorySubmitted && (
-												<Box sx={{ display: 'flex', flexDirection: 'column' }}>
+												<Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center' }}>
+												  <Typography
+													variant="h6"
+													color="textSecondary"
+													component="h2"
+													gutterBottom
+													fontWeight={900}
+												>
+													Add a New Acronym
+												</Typography>
 												  <TextField
 													label={'Category Name'}
 													id="issue"
 													value={categoryname}
 													onChange={(e) => {
 													  setCategoryname(e.target.value);
-													}}
+													}} style={{width:'50%'}}
 												  />&nbsp;&nbsp;
 												  <Button
 													color="primary"
 													variant="contained"
-													onClick={handleAddCategory}
+													onClick={handleAddCategory} style={{width:'50%'}}
 												  >
-													Add&nbsp;
-													<AddCircleOutlineOutlinedIcon
+													Add Category&nbsp;
+													{/* <AddCircleOutlineOutlinedIcon
 													  fontSize="large"
 													  sx={{ color: 'white' }}
-													/>
+													/>  */}
+													style={{width:'50%'}}
 												  </Button>
 												</Box>
 											  )}
@@ -570,40 +580,40 @@ const ModuleConfigure = () => {
 													Current Category Name ➥ &nbsp;
 													<span style={{ color: "red" }}>{categoryname}</span>
 												</Typography>
-												<Box sx={{ display: 'flex', flexDirection: 'row' }}>
+												<Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center'}}>
 												  <TextField
 													  label={'Issue Name'}
-													  id="issue"
+													  id="issue" style={{width:'50%'}}
 													  value={issueName}
 													  onChange={(e) => setIssueName(e.target.value)}
 													/>
-													&nbsp;&nbsp;
 													<Dropdown
 													  label={'Severity'}
-													  select
+													  select formstyle={{width:'50%'}}
 													  value={severity}
 													  list={["Critical","Major","Minor"]}
 													  onChange={(e) => setSeverity(e.target.value)}
 													/>
-													&nbsp;&nbsp;
+													&nbsp;
 													<Button
 													  color="primary"
-													  variant="contained"
+													  variant="contained" style={{width:'50%'}}
 													  type='submit'
 													>
-													  Add&nbsp;
-													  <AddCircleOutlineOutlinedIcon
+													  Add Issue&nbsp;
+													  {/* <AddCircleOutlineOutlinedIcon
 														fontSize="large"
 														sx={{ color: 'white' }}
-													  />
+													  /> */}
 													</Button>
 												  </Box>
+												  &nbsp;&nbsp;
 												  <Table
 													rows={issues}
 													setRows={setIssues}
 													savetoDatabse={handleEditIssue}
 													deleteFromDatabase={handleDeleteIssue}
-													columns={columns}
+													columns={columns} editActive={true} tablename={"Existing Issues"} /*style={}*/ 
 												  />
 												</>
 											  )}

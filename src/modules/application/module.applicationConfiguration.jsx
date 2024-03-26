@@ -203,7 +203,8 @@ export default function ModuleConfiguration() {
             </Box>*/}
             </Container>
             <Table rows={data} setRows={setData} 
-            redirectColumn={'application_name'} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}/>
+            redirectColumn={'application_name'} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}
+            editActive={true} tablename={"Existing Applications"} /*style={}*/ redirectIconActive={true}/>
             </Box>
             <DialogBox openPopup={dialogPopup} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
     </Main>

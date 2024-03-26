@@ -158,9 +158,6 @@ export default function UserLogin() {
               // console.log("allUser : ", allUser);
               const loggedIn = login(userID, password);
               if (loggedIn) {
-                // navigate(`/abc/${userID}`, {
-                //   // state: { userName: name },
-                // });
                 console.log("Loggedin");
                 return;
               } else {

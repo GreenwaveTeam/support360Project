@@ -88,7 +88,7 @@ function UserHome() {
         <div style={{ width: "50%", height: "100%", padding: "50px" }}>
           <div
             style={{
-              borderRadius: "50px",
+              borderRadius: "20px",
               border: "2px solid black",
               marginTop: "20px",
               marginBottom: "20px",
@@ -108,7 +108,7 @@ function UserHome() {
           </div>
           <div
             style={{
-              borderRadius: "50px",
+              borderRadius: "20px",
               border: "2px solid black",
               marginTop: "20px",
               marginBottom: "20px",
@@ -124,7 +124,7 @@ function UserHome() {
         <div style={{ width: "50%", height: "100%", padding: "50px" }}>
           <div
             style={{
-              borderRadius: "50px",
+              borderRadius: "20px",
               border: "2px solid black",
               marginTop: "20px",
               marginBottom: "20px",
@@ -138,7 +138,7 @@ function UserHome() {
           </div>
           <div
             style={{
-              borderRadius: "50px",
+              borderRadius: "20px",
               border: "2px solid black",
               marginTop: "20px",
               marginBottom: "20px",

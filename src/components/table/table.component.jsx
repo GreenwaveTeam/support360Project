@@ -30,6 +30,7 @@ import TableRow from "@mui/material/TableRow";
 import dayjs from 'dayjs';
 import { useEffect, useState } from "react";
 import Datepicker from '../datepicker/datepicker.component';
+import DialogBox from '../dialog/customsnackbar.component'
 
 
 export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
@@ -513,21 +514,7 @@ const handleSaveClick = async (selectedRow) => {
         </TableContainer>
        
       </Paper>
-      <Snackbar
-        open={open}
-        autoHideDuration={2000}
-        onClose={handleAlertClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleAlertClose}
-          severity={snackbarSeverity}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {snackbarText}
-        </Alert>
-      </Snackbar>
+      <DialogBox snackbarSeverity={snackbarSeverity}openPopup={open} dialogMessage={snackbarText}/>
     </>
   );
 }

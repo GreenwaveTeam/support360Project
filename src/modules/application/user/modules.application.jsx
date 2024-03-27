@@ -211,7 +211,7 @@ export default function ApplicationUser() {
       // "miscellaneous_issues": miscellaneousInput,
       // "remarks": remarksInput,
       ticket_number: ticketNumber,
-      status: "Open",
+      status: "pending",
       //The case may arise when the issues are blank for the current selection  then only  add it the finaluserInput
 
       issuesList: updatedfinalUserInput,

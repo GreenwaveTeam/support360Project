@@ -353,10 +353,12 @@ const handleSaveClick = async (selectedRow) => {
                               </>
                             )} */}
                                 {editRowIndex !== index && row.edited && columnindex===0&&(
+                                  <div>
                                   <CheckCircleIcon
                                             fontSize="small"
                                             sx={{ color: "green" }}
-                                          />
+                                          />&nbsp;
+                                           </div>
                                   )}
                                 {editRowIndex !== index &&
                                   column.id === redirectColumn &&
@@ -396,7 +398,8 @@ const handleSaveClick = async (selectedRow) => {
                           />
                         </Button>
                         </Tooltip>} */}
-                              </div>
+                             
+                             
                               {editRowIndex !== index &&
                                 column.id !== redirectColumn && (
                                   <Typography>{value}</Typography>
@@ -470,6 +473,7 @@ const handleSaveClick = async (selectedRow) => {
                                     />
                                   </div>
                                 )}
+                                </div>
                             </TableCell>
                             </>
                           );

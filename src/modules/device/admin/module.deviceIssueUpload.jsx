@@ -97,7 +97,7 @@ const DeviceIssue = () => {
             issueList: [{issuename: rowData.issuename, severity: rowData.severity }]
           };
           console.log("Edit Issue called")
-          const response = await axios.put(`http://localhost:9080/device/admin/${plantid}/categories/categoryname/`+prev.issuename, requestData, {
+          const response = await axios.put(`http://localhost:9080/device/admin/${plantid}/categories/${categoryname}/`+prev.issuename, requestData, {
             headers: {
               'Content-Type': 'application/json',
             },

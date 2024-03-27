@@ -342,7 +342,7 @@ const handleSaveClick = async (selectedRow) => {
                                 style={{
                                   display: "flex",
                                   justifyContent: "flex-start",
-                                  alignItems: "center",
+                                  //alignItems: "center",
                                 }}
                               >
                                 
@@ -355,12 +355,10 @@ const handleSaveClick = async (selectedRow) => {
                               </>
                             )} */}
                                 {editRowIndex !== index && row.edited && columnindex===0&&(
-                                  
-                                          <CheckCircleIcon
+                                  <CheckCircleIcon
                                             fontSize="small"
                                             sx={{ color: "green" }}
                                           />
-                                     
                                   )}
                                 {editRowIndex !== index &&
                                   column.id === redirectColumn &&

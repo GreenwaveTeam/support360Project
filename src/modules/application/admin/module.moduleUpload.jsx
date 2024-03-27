@@ -112,7 +112,7 @@ const handleAddCategory=()=>{
       issuename: prev.issuename
     };
     console.log("Rowdata=====>"+JSON.stringify(rowData))
-    await axios.delete('http://localhost:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
+    await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
     
 		if (selection) {
 			const details = {
@@ -143,7 +143,7 @@ const handleAddCategory=()=>{
       
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://localhost:9080/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
 			
 			} catch (error) {
 				console.error('Error:', error);
@@ -174,7 +174,7 @@ const handleAddCategory=()=>{
 		console.log("Handle delete==>", requestBody);
 	
 		try {
-			await axios.delete('http://localhost:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
+			await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -246,7 +246,7 @@ const handleAddCategory=()=>{
         if (result.isConfirmed) {
           try {
             e.stopPropagation();
-            const response = await axios.delete(`http://localhost:9080/application/admin/plant_id/application/module/category`,   { data: requestBody });
+            const response = await axios.delete(`http://192.168.7.8:9080/application/admin/plant_id/application/module/category`,   { data: requestBody });
 			      // Optionally, update the UI or perform any additional actions after successful deletion
             setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== area.categoryname));
             setCategories(prev => prev.filter(category => category !== area.categoryname));
@@ -397,7 +397,7 @@ const handleAddCategory=()=>{
 			console.log(JSON.stringify(requestData))
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://localhost:9080/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
 				console.log("Posted data")
 			} catch (error) {
 				console.error('Error:', error);
@@ -452,7 +452,7 @@ const handleAddCategory=()=>{
       console.log("Request Data====>"+JSON.stringify(requestData))
       //Send formData to the new API endpoint
       try {
-        const response = await fetch('http://localhost:9080/application/admin/plant_id/application_name/moduleName', {
+        const response = await fetch('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -151,7 +151,7 @@ export default function ModuleConfiguration() {
       }
       console.log("Application name:"+application_name);
       navigate(`/Application/`+'Module', {
-        state: { application_name:application_name},
+        state: { application_name:application_name,modulelist:null},
       });
     };
 

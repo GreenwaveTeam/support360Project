@@ -235,7 +235,7 @@ const DeviceIssue = () => {
           <Table rows={issueList} setRows={setIssueList} columns={columns} savetoDatabse={editIssueCategory} deleteFromDatabase={deleteIssueCategory}
           editActive={true} snackbarSeverity={snackbarSeverity} tablename={"Existing Device Issues"} /*style={}*/ /> 
         </Box>
-        <DialogBox openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage} />
+        <DialogBox openPopup={openPopup} snackbarSeverity={snackbarSeverity} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage} />
       </Main>
     </Box>
   );

@@ -70,16 +70,7 @@ export default function ModuleConfiguration() {
     }
     const handleDeleteClick=async(rowData)=>{
       
-         Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-      }).then((result) => {
-        if (result.isConfirmed) {
+        
           try{ 
               const requestBody = {
                 plant_id: plantid,
@@ -96,7 +87,6 @@ export default function ModuleConfiguration() {
           }
           
 
-        }})
       
        
     }
@@ -225,7 +215,7 @@ export default function ModuleConfiguration() {
             </Container>
             &nbsp;
             <Table rows={data} setRows={setData} 
-            redirectColumn={'application_name'} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}
+            redirectColumn={'application_name'} isDeleteDialog={true} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}
             editActive={true} tablename={"Existing Applications"} /*style={}*/ redirectIconActive={true}/>
             </Box>
             <DialogBox snackbarSeverity={snackbarSeverity}openPopup={dialogPopup} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>

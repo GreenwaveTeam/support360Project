@@ -7,20 +7,23 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 export default function CustomDialog(
-
+{
     open,
     setOpen,
     proceedButtonText,
     proceedButtonClick,
     cancelButtonText
-
+}
 ) {
 //   const [open, setOpen] = React.useState(false);
 
 //   const proceedButtonClick = () => {
 //     setOpen(true);
 //   };
-
+  const handleButtonClick=()=>{
+    setOpen(false)
+    proceedButtonClick()
+  }
   const handleClose = () => {
     setOpen(false);
   };
@@ -42,7 +45,7 @@ export default function CustomDialog(
           {"Are you sure you want to proceed ?"}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={proceedButtonClick}>{proceedButtonText}</Button>
+          <Button onClick={handleButtonClick}>{proceedButtonText}</Button>
           <Button onClick={handleClose} autoFocus>
             {cancelButtonText}
           </Button>

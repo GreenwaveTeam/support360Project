@@ -102,16 +102,7 @@ const DeviceCategory = () => {
   };
 
   const handleDeleteClick = async (rowData) => {
-    Swal.fire({
-			title: "Are you sure?",
-			text: "You won't be able to revert this!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "Yes, delete it!"
-		}).then(async (result) => {
-			if (result.isConfirmed) {
+    
 				
     console.log("Handle del")
     // Create a request body object
@@ -128,7 +119,6 @@ const DeviceCategory = () => {
         console.error('Error:', error);
         // Handle errors, such as displaying an error message to the user
     }
-  }})
 };
 
   const handleInputChange = (e) => {
@@ -245,7 +235,7 @@ const DeviceCategory = () => {
             &nbsp;&nbsp;
           
             <Table rows={categorylist} columns={columns} setRows={setCategorylist}
-            savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick} 
+            savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} isDeleteDialog={true} deleteFromDatabase={handleDeleteClick} 
             editActive={true} tablename={"Existing Device Issue Category"} /*style={}*/ redirectIconActive={true} />
           </Container>
           {/* </Box> */}

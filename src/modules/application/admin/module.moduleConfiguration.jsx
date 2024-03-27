@@ -144,17 +144,7 @@ const ModuleConfigure = () => {
 			categoryname: categoryName
 		};
 	
-		Swal.fire({
-			title: "Are you sure?",
-			text: "You won't be able to revert this!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "Yes, delete it!"
-		}).then(async (result) => {
-			if (result.isConfirmed) {
-				try {
+		try {
 					console.log("Data=====>" + moduleName);
 					const response = await axios.delete('http://192.168.7.8:9080/application/admin/plant_id/application/module/category', { data: requestBody });
 					// Optionally, update the UI or perform any additional actions after successful deletion
@@ -174,8 +164,8 @@ const ModuleConfigure = () => {
     				setDialogMessage("Database error")
 				}
 			}
-		});
-	};
+
+	
 	
 
 	const handleAddIssue = (event,moduleData) => {
@@ -619,7 +609,7 @@ const ModuleConfigure = () => {
 												  </Box>
 												  &nbsp;&nbsp;
 												  <Table
-													rows={issues}
+													rows={issues} isDeleteDialog={true}
 													setRows={setIssues}
 													savetoDatabse={handleEditIssue}
 													deleteFromDatabase={handleDeleteIssue}

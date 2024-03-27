@@ -31,9 +31,10 @@ import { useEffect, useState } from "react";
 import Datepicker from '../datepicker/datepicker.component';
 import Snackbar from '../snackbar/customsnackbar.component'
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CustomDialog from '../dialog/dialog.component';
   
 
-export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
+export default function CustomTable({isDeleteDialog, deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
 
   const [open, setOpen] = useState(false);
@@ -48,7 +49,8 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
   const [rowperpage, rowperpagechange] = useState(5);
   const [search,setSearch]=useState("")
   const [clearVisible,setClearVisible]=useState(false)
-  const editedIndex=1
+  const [openDeleteDialog,setOpenDeleteDialog]=useState(false)
+  const [deleteRow,setDeleteRow]=useState(null)
   useEffect(() => {
     // Filter rows when filterValue changes
     filterRows();
@@ -96,6 +98,21 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
   const handleCancelClick = () => {
     setEditRowIndex(null)
     setUpdatedRow(null)
+  }
+  const handleFinalDelete=()=>{
+    deleteFromDatabase(deleteRow)
+  }
+  const handleDeleteClick=(selectedRow)=>{
+    console.log("HAndle delete click table component")
+    setDeleteRow(selectedRow)
+    if(isDeleteDialog===true){
+      setOpenDeleteDialog(true)
+      
+    }
+    else{
+      deleteFromDatabase(selectedRow)
+    }
+
   }
 
 //   const handleDeleteClick = (selectedrow) => {
@@ -491,7 +508,7 @@ const handleSaveClick = async (selectedRow) => {
                             )}
                             {editRowIndex !== index && (
                                 <Tooltip TransitionComponent={Fade}  title="Delete">
-                              <Button onClick={() =>deleteFromDatabase(row)}>
+                              <Button onClick={(e) =>{e.preventDefault();handleDeleteClick(row)}}>
                                 <DeleteIcon
                                   align="right"
                                   sx={{ color: "#FE2E2E" }}
@@ -534,6 +551,7 @@ const handleSaveClick = async (selectedRow) => {
        
       </Paper>
       <Snackbar snackbarSeverity={snackbarSeverity}openPopup={open} setOpenPopup={setOpen} dialogMessage={snackbarText}/>
+      <CustomDialog open={openDeleteDialog} setOpen={setOpenDeleteDialog} proceedButtonText="Delete" cancelButtonText="Cancel" proceedButtonClick={handleFinalDelete}/>
     </>
   );
 }

@@ -152,18 +152,7 @@ const handleAddCategory=()=>{
 	};
 	
   const handleDeleteIssue = async (rowData) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then(async(result) => {
-      if (result.isConfirmed) {
-       
-		const requestBody = {
+    const requestBody = {
 			plant_id: plantid,
 			application_name: application_name,
 			moduleName: module_Name,
@@ -190,8 +179,8 @@ const handleAddCategory=()=>{
 			console.error('Error deleting issue:', error.response ? error.response.data : error.message);
 			// Handle errors, such as displaying an error message to the user
 		}
-  }});
-	};
+  };
+	
   
   const handleFileChange = (event) => {
     if(modulelist!==null&&modulelist.some((module)=>(module.modulename===module_Name))){
@@ -701,7 +690,7 @@ const handleAddCategory=()=>{
                       setRows={setissues}
                       savetoDatabse={handleEditIssue}
                       deleteFromDatabase={handleDeleteIssue}
-                      columns={columns}
+                      columns={columns} isDeleteDialog={true}
                       editActive={true} tablename={"Existing Issues"} /*style={}*/ 
                     />
                   </>

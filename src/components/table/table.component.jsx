@@ -15,7 +15,6 @@ import {
     MenuItem,
     Paper,
     Select,
-    Snackbar,
     TablePagination,
     TextField,
     Tooltip,
@@ -30,7 +29,7 @@ import TableRow from "@mui/material/TableRow";
 import dayjs from 'dayjs';
 import { useEffect, useState } from "react";
 import Datepicker from '../datepicker/datepicker.component';
-import DialogBox from '../snackbar/customsnackbar.component'
+import Snackbar from '../snackbar/customsnackbar.component'
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
   
 
@@ -50,7 +49,6 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
   const [search,setSearch]=useState("")
   const [clearVisible,setClearVisible]=useState(false)
   const editedIndex=1
-
   useEffect(() => {
     // Filter rows when filterValue changes
     filterRows();
@@ -531,7 +529,7 @@ const handleSaveClick = async (selectedRow) => {
         </TableContainer>
        
       </Paper>
-      <DialogBox snackbarSeverity={snackbarSeverity}openPopup={open} setOpenPopup={setOpen} dialogMessage={snackbarText}/>
+      <Snackbar snackbarSeverity={snackbarSeverity}openPopup={open} setOpenPopup={setOpen} dialogMessage={snackbarText}/>
     </>
   );
 }

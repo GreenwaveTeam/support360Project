@@ -528,24 +528,27 @@ const ModuleConfigure = () => {
 												display: showPopup ? 'block' : 'none',
 												position: 'fixed',
 												left: '50%',
+												bottom:'20%',
 												transform: 'translate(-50%)',
-												width: '30%',minWidth:'500px',
+												//width: '30%',
+												minWidth:'500px',
 												top: '20%',
-												bottom:'10%',
 												backgroundColor: 'white',
 												padding: '20px',
-												overflow:'auto',
+												overflowX:'auto',
 												height: 'auto', 
 												boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-												zIndex: 999, // Ensure the box is above other content
+												borderRadius:'30px'
+												 // Ensure the box is above other content
 											}}
 									   >
-										<Container style={{ margin: '5%' }}>
-										  <Box className="addIssue">
-											<CloseIcon
-											  style={{ cursor: 'pointer', marginRight: 'auto' }}
+										<CloseIcon
+											  style={{ cursor: 'pointer',  }}
 											  onClick={handleClosePopupForm}
 											/>
+										<Container style={{ margin: '5%' }}>
+										  <Box className="addIssue">
+											
 											<form onSubmit={(event) => { handleAddIssue(event,module) }}>
 											  {!categorySubmitted && (
 												<Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center'}}>

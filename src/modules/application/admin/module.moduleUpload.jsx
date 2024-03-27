@@ -602,22 +602,24 @@ const handleAddCategory=()=>{
           {showPopup && selection && (
             <Box
            sx={{
-										  display: showPopup ? 'block' : 'none',
-										  position: 'fixed',
-										  left: '50%',minWidth:'500px',
-										  transform: 'translate(-50%)',
-										  width: '30%',
-										  top: '20%',
-												bottom:'10%',
-										  backgroundColor: 'white',
-										  padding: '20px',
-										  overflowY: 'auto',height: 'auto', 
-										  boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-										  zIndex: 999, // Ensure the box is above other content
+                display: showPopup ? 'block' : 'none',
+                position: 'fixed',
+                left: '50%',
+                bottom:'20%',
+                transform: 'translate(-50%)',
+                //width: '30%',
+                minWidth:'500px',
+                top: '20%',
+                backgroundColor: 'white',
+                padding: '20px',
+                overflow:'auto',
+                height: 'auto', 
+                boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
+                borderRadius:'30px'
 										}}
           >
             <CloseIcon
-              style={{ cursor: 'pointer', marginRight: 'auto' }}
+              style={{ cursor: 'pointer',  }}
               onClick={handleClosePopupForm}
             />
             <Container style={{ margin: '5%' }}>

@@ -15,7 +15,6 @@ import {
     MenuItem,
     Paper,
     Select,
-    Snackbar,
     TablePagination,
     TextField,
     Tooltip,
@@ -30,10 +29,12 @@ import TableRow from "@mui/material/TableRow";
 import dayjs from 'dayjs';
 import { useEffect, useState } from "react";
 import Datepicker from '../datepicker/datepicker.component';
-import DialogBox from '../dialog/customsnackbar.component'
+import Snackbar from '../snackbar/customsnackbar.component'
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CustomDialog from '../dialog/dialog.component';
+  
 
-
-export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
+export default function CustomTable({isDeleteDialog, deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
 
   const [open, setOpen] = useState(false);
@@ -48,8 +49,8 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
   const [rowperpage, rowperpagechange] = useState(5);
   const [search,setSearch]=useState("")
   const [clearVisible,setClearVisible]=useState(false)
-  
-
+  const [openDeleteDialog,setOpenDeleteDialog]=useState(false)
+  const [deleteRow,setDeleteRow]=useState(null)
   useEffect(() => {
     // Filter rows when filterValue changes
     filterRows();
@@ -97,6 +98,21 @@ export default function CustomTable({ deleteFromDatabase, savetoDatabse, rows, s
   const handleCancelClick = () => {
     setEditRowIndex(null)
     setUpdatedRow(null)
+  }
+  const handleFinalDelete=()=>{
+    deleteFromDatabase(deleteRow)
+  }
+  const handleDeleteClick=(selectedRow)=>{
+    console.log("HAndle delete click table component")
+    setDeleteRow(selectedRow)
+    if(isDeleteDialog===true){
+      setOpenDeleteDialog(true)
+      
+    }
+    else{
+      deleteFromDatabase(selectedRow)
+    }
+
   }
 
 //   const handleDeleteClick = (selectedrow) => {
@@ -207,16 +223,19 @@ const handleSaveClick = async (selectedRow) => {
   if (savetoDatabse != null) {
     const success = await savetoDatabse(selectedRow, updatedRow);
     console.log('The final returned value in table component is => ');
-    // if (success === false) {
-    //   setEditRowIndex(null);
-    //   return;
-    // }
+    if (success === false) {
+      // setEditRowIndex(null);
+      // setUpdatedRow(null)
+      // set
+      return;
+    }
   }
   updatedRow.edited = true;
   setRows(rows.map(row => {
     if (row !== selectedRow) {
       return row;
     } else {
+      updatedRow.edited=true
       return updatedRow;
     }
   }));
@@ -225,6 +244,7 @@ const handleSaveClick = async (selectedRow) => {
   setOpen(true);
   setUpdatedRow(null);
   setEditRowIndex(null);
+
   return;
 };
 
@@ -322,21 +342,25 @@ const handleSaveClick = async (selectedRow) => {
                   .map((row, index) => {
                     return (
                       <TableRow hover tabIndex={-1} key={index}>
-                        {columns.map((column) => {
+                        
+                        {columns.map((column,columnindex) => {
                           const value = row[column.id];
                           let updatedValue =
                             updatedRow !== null
                               ? updatedRow[column.id]
                               : row[column.id];
                           return (
+                            <>
                             <TableCell key={value} align={column.align}>
+                              
                               <div
                                 style={{
                                   display: "flex",
                                   justifyContent: "flex-start",
-                                  alignItems: "center",
+                                  //alignItems: "center",
                                 }}
                               >
+                                
                                   {/* {row.edited && (
                               <>
                                  <CheckCircleIcon
@@ -345,6 +369,14 @@ const handleSaveClick = async (selectedRow) => {
                                 />
                               </>
                             )} */}
+                                {editRowIndex !== index && row.edited && columnindex===0&&(
+                                  <div>
+                                  <CheckCircleIcon
+                                            fontSize="small"
+                                            sx={{ color: "green" }}
+                                          />&nbsp;
+                                           </div>
+                                  )}
                                 {editRowIndex !== index &&
                                   column.id === redirectColumn &&
                                   redirectIconActive && (
@@ -383,7 +415,8 @@ const handleSaveClick = async (selectedRow) => {
                           />
                         </Button>
                         </Tooltip>} */}
-                              </div>
+                             
+                             
                               {editRowIndex !== index &&
                                 column.id !== redirectColumn && (
                                   <Typography>{value}</Typography>
@@ -457,7 +490,9 @@ const handleSaveClick = async (selectedRow) => {
                                     />
                                   </div>
                                 )}
+                                </div>
                             </TableCell>
+                            </>
                           );
                         })}
                         <TableCell sx={{ width: "10%" }} align="right">
@@ -473,7 +508,7 @@ const handleSaveClick = async (selectedRow) => {
                             )}
                             {editRowIndex !== index && (
                                 <Tooltip TransitionComponent={Fade}  title="Delete">
-                              <Button onClick={() =>deleteFromDatabase(row)}>
+                              <Button onClick={(e) =>{e.preventDefault();handleDeleteClick(row)}}>
                                 <DeleteIcon
                                   align="right"
                                   sx={{ color: "#FE2E2E" }}
@@ -481,6 +516,7 @@ const handleSaveClick = async (selectedRow) => {
                               </Button>
                               </Tooltip>
                             )}
+                            
                           </div>
                           {editRowIndex === index && (
                             <div style={{ display: "flex" }}>
@@ -514,7 +550,8 @@ const handleSaveClick = async (selectedRow) => {
         </TableContainer>
        
       </Paper>
-      <DialogBox snackbarSeverity={snackbarSeverity}openPopup={open} setOpenPopup={setOpen} dialogMessage={snackbarText}/>
+      <Snackbar snackbarSeverity={snackbarSeverity}openPopup={open} setOpenPopup={setOpen} dialogMessage={snackbarText}/>
+      <CustomDialog open={openDeleteDialog} setOpen={setOpenDeleteDialog} proceedButtonText="Delete" cancelButtonText="Cancel" proceedButtonClick={handleFinalDelete}/>
     </>
   );
 }

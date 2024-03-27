@@ -10,7 +10,7 @@ import DrawerHeader from '../../../components/navigation/drawerheader/drawerhead
 
 /*Custom Components */
 import Table from '../../../components/table/table.component'
-import DialogBox from "../../../components/dialog/customsnackbar.component";
+import DialogBox from "../../../components/snackbar/customsnackbar.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import Dropdown from "../../../components/dropdown/dropdown.component";
 
@@ -48,7 +48,7 @@ const DeviceCategory = () => {
     const fetchData = async () => {
       try {
         // Make the API call to fetch data
-        const response = await axios.get(`http://localhost:9080/device/admin/${plantid}/categories`);
+        const response = await axios.get(`http://192.168.7.8:9080/device/admin/${plantid}/categories`);
         
         // Extract data from the response
         const data = await response.data;
@@ -102,16 +102,7 @@ const DeviceCategory = () => {
   };
 
   const handleDeleteClick = async (rowData) => {
-    Swal.fire({
-			title: "Are you sure?",
-			text: "You won't be able to revert this!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "Yes, delete it!"
-		}).then(async (result) => {
-			if (result.isConfirmed) {
+    
 				
     console.log("Handle del")
     // Create a request body object
@@ -122,13 +113,12 @@ const DeviceCategory = () => {
 
     try {
         // Send requestBody as request body in the DELETE request
-        await axios.delete('http://localhost:9080/device/admin/categories', { data: requestBody });
+        await axios.delete('http://192.168.7.8:9080/device/admin/categories', { data: requestBody });
         setCategorylist(categorylist.filter((category)=>(category!==rowData)))
       } catch (error) {
         console.error('Error:', error);
         // Handle errors, such as displaying an error message to the user
     }
-  }})
 };
 
   const handleInputChange = (e) => {
@@ -154,7 +144,7 @@ const DeviceCategory = () => {
         issueList: updatedCategory.issuelist
       };
       try {
-        const response = await axios.put(`http://localhost:9080/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
+        const response = await axios.put(`http://192.168.7.8:9080/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -245,7 +235,7 @@ const DeviceCategory = () => {
             &nbsp;&nbsp;
           
             <Table rows={categorylist} columns={columns} setRows={setCategorylist}
-            savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick} 
+            savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} isDeleteDialog={true} deleteFromDatabase={handleDeleteClick} 
             editActive={true} tablename={"Existing Device Issue Category"} /*style={}*/ redirectIconActive={true} />
           </Container>
           {/* </Box> */}

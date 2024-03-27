@@ -11,7 +11,7 @@ import DrawerHeader from '../../../components/navigation/drawerheader/drawerhead
 
 /*Custom Components*/
 import Table from '../../../components/table/table.component'
-import DialogBox from "../../../components/dialog/customsnackbar.component";
+import DialogBox from "../../../components/snackbar/customsnackbar.component";
 import TextField from "../../../components/textfield/textfield.component";
 
 import { useNavigate } from 'react-router-dom';
@@ -70,16 +70,7 @@ export default function ModuleConfiguration() {
     }
     const handleDeleteClick=async(rowData)=>{
       
-         Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-      }).then((result) => {
-        if (result.isConfirmed) {
+        
           try{ 
               const requestBody = {
                 plant_id: plantid,
@@ -96,7 +87,6 @@ export default function ModuleConfiguration() {
           }
           
 
-        }})
       
        
     }
@@ -151,7 +141,7 @@ export default function ModuleConfiguration() {
       }
       console.log("Application name:"+application_name);
       navigate(`/Application/`+'Module', {
-        state: { application_name:application_name},
+        state: { application_name:application_name,modulelist:null},
       });
     };
 
@@ -225,7 +215,7 @@ export default function ModuleConfiguration() {
             </Container>
             &nbsp;
             <Table rows={data} setRows={setData} 
-            redirectColumn={'application_name'} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}
+            redirectColumn={'application_name'} isDeleteDialog={true} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}
             editActive={true} tablename={"Existing Applications"} /*style={}*/ redirectIconActive={true}/>
             </Box>
             <DialogBox snackbarSeverity={snackbarSeverity}openPopup={dialogPopup} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>

@@ -12,7 +12,7 @@ import DrawerHeader from '../../../components/navigation/drawerheader/drawerhead
 
 /*Custom Components*/
 import Table from '../../../components/table/table.component'
-import DialogBox from "../../../components/dialog/customsnackbar.component";
+import DialogBox from "../../../components/snackbar/customsnackbar.component";
 import TextField from "../../../components/textfield/textfield.component";
 import Dropdown from "../../../components/dropdown/dropdown.component";
 
@@ -97,7 +97,7 @@ const DeviceIssue = () => {
             issueList: [{issuename: rowData.issuename, severity: rowData.severity }]
           };
           console.log("Edit Issue called")
-          const response = await axios.put(`http://localhost:9080/device/admin/${plantid}/categories/categoryname/`+prev.issuename, requestData, {
+          const response = await axios.put(`http://localhost:9080/device/admin/${plantid}/categories/${categoryname}/`+prev.issuename, requestData, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -109,17 +109,7 @@ const DeviceIssue = () => {
       
     };
     const deleteIssueCategory = async (rowdata) => {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-      }).then(async(result) => {
-        if (result.isConfirmed) {
-         
+      
       console.log("useEffectIssue")
       const requestBody={ 
         plantid: plantid,
@@ -134,7 +124,6 @@ const DeviceIssue = () => {
           } catch (error) {
           console.error('Error:', error);
         }
-        }})
     };
   
   const submitIssue = (event) => {
@@ -233,9 +222,9 @@ const DeviceIssue = () => {
          </Box>
          &nbsp;
           <Table rows={issueList} setRows={setIssueList} columns={columns} savetoDatabse={editIssueCategory} deleteFromDatabase={deleteIssueCategory}
-          editActive={true} snackbarSeverity={snackbarSeverity} tablename={"Existing Device Issues"} /*style={}*/ /> 
+          editActive={true} snackbarSeverity={snackbarSeverity} isDeleteDialog={true} tablename={"Existing Device Issues"} /*style={}*/ /> 
         </Box>
-        <DialogBox openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage} />
+        <DialogBox openPopup={openPopup}  snackbarSeverity={snackbarSeverity} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage} />
       </Main>
     </Box>
   );

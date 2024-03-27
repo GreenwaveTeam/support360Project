@@ -20,7 +20,7 @@ import DrawerHeader from '../../../components/navigation/drawerheader/drawerhead
 
 /*Custom Components*/
 import Table from '../../../components/table/table.component'
-import DialogBox from "../../../components/dialog/customsnackbar.component";
+import DialogBox from "../../../components/snackbar/customsnackbar.component";
 import TextField from "../../../components/textfield/textfield.component";
 import Dropdown from "../../../components/dropdown/dropdown.component";
 
@@ -144,19 +144,9 @@ const ModuleConfigure = () => {
 			categoryname: categoryName
 		};
 	
-		Swal.fire({
-			title: "Are you sure?",
-			text: "You won't be able to revert this!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "Yes, delete it!"
-		}).then(async (result) => {
-			if (result.isConfirmed) {
-				try {
+		try {
 					console.log("Data=====>" + moduleName);
-					const response = await axios.delete('http://localhost:9080/application/admin/plant_id/application/module/category', { data: requestBody });
+					const response = await axios.delete('http://192.168.7.8:9080/application/admin/plant_id/application/module/category', { data: requestBody });
 					// Optionally, update the UI or perform any additional actions after successful deletion
 					setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== categoryName));
 					setCategories(prev => prev.filter(category => category !== area.categoryName));
@@ -174,8 +164,8 @@ const ModuleConfigure = () => {
     				setDialogMessage("Database error")
 				}
 			}
-		});
-	};
+
+	
 	
 
 	const handleAddIssue = (event,moduleData) => {
@@ -248,7 +238,7 @@ const ModuleConfigure = () => {
 			console.log(JSON.stringify(requestData))
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://localhost:9080/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
 				console.log("Posted data")
 			} catch (error) {
 				console.error('Error:', error);
@@ -302,7 +292,7 @@ const ModuleConfigure = () => {
 		console.log("Handle delete==>", requestBody);
 	
 		try {
-			await axios.delete('http://localhost:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
+			await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -329,7 +319,7 @@ const ModuleConfigure = () => {
 			issuename: prev.issuename
 		  };
 		  
-		  await axios.delete('http://localhost:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
+		  await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
 		  
 		
 		if (selection) {
@@ -362,7 +352,7 @@ const ModuleConfigure = () => {
 
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://localhost:9080/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
 				console.log("Posted data")
 			} catch (error) {
 				console.error('Error:', error);
@@ -528,24 +518,27 @@ const ModuleConfigure = () => {
 												display: showPopup ? 'block' : 'none',
 												position: 'fixed',
 												left: '50%',
+												bottom:'20%',
 												transform: 'translate(-50%)',
-												width: '30%',minWidth:'500px',
+												//width: '30%',
+												minWidth:'500px',
 												top: '20%',
-												bottom:'10%',
 												backgroundColor: 'white',
 												padding: '20px',
-												overflow:'auto',
+												overflowX:'auto',
 												height: 'auto', 
 												boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-												zIndex: 999, // Ensure the box is above other content
+												borderRadius:'30px'
+												 // Ensure the box is above other content
 											}}
 									   >
-										<Container style={{ margin: '5%' }}>
-										  <Box className="addIssue">
-											<CloseIcon
-											  style={{ cursor: 'pointer', marginRight: 'auto' }}
+										<CloseIcon
+											  style={{ cursor: 'pointer',  }}
 											  onClick={handleClosePopupForm}
 											/>
+										<Container style={{ margin: '5%' }}>
+										  <Box className="addIssue">
+											
 											<form onSubmit={(event) => { handleAddIssue(event,module) }}>
 											  {!categorySubmitted && (
 												<Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center'}}>
@@ -616,7 +609,7 @@ const ModuleConfigure = () => {
 												  </Box>
 												  &nbsp;&nbsp;
 												  <Table
-													rows={issues}
+													rows={issues} isDeleteDialog={true}
 													setRows={setIssues}
 													savetoDatabse={handleEditIssue}
 													deleteFromDatabase={handleDeleteIssue}

@@ -19,7 +19,7 @@ import DrawerHeader from '../../../components/navigation/drawerheader/drawerhead
 
 /*Custom Components*/
 import Table from '../../../components/table/table.component'
-import DialogBox from "../../../components/dialog/customsnackbar.component";
+import DialogBox from "../../../components/snackbar/customsnackbar.component";
 import TextField from "../../../components/textfield/textfield.component";
 import Dropdown from '../../../components/dropdown/dropdown.component';
 
@@ -112,7 +112,7 @@ const handleAddCategory=()=>{
       issuename: prev.issuename
     };
     console.log("Rowdata=====>"+JSON.stringify(rowData))
-    await axios.delete('http://localhost:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
+    await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
     
 		if (selection) {
 			const details = {
@@ -143,7 +143,7 @@ const handleAddCategory=()=>{
       
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://localhost:9080/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
 			
 			} catch (error) {
 				console.error('Error:', error);
@@ -152,18 +152,7 @@ const handleAddCategory=()=>{
 	};
 	
   const handleDeleteIssue = async (rowData) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
-    }).then(async(result) => {
-      if (result.isConfirmed) {
-       
-		const requestBody = {
+    const requestBody = {
 			plant_id: plantid,
 			application_name: application_name,
 			moduleName: module_Name,
@@ -174,7 +163,7 @@ const handleAddCategory=()=>{
 		console.log("Handle delete==>", requestBody);
 	
 		try {
-			await axios.delete('http://localhost:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
+			await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -190,8 +179,8 @@ const handleAddCategory=()=>{
 			console.error('Error deleting issue:', error.response ? error.response.data : error.message);
 			// Handle errors, such as displaying an error message to the user
 		}
-  }});
-	};
+  };
+	
   
   const handleFileChange = (event) => {
     if(modulelist!==null&&modulelist.some((module)=>(module.modulename===module_Name))){
@@ -246,7 +235,7 @@ const handleAddCategory=()=>{
         if (result.isConfirmed) {
           try {
             e.stopPropagation();
-            const response = await axios.delete(`http://localhost:9080/application/admin/plant_id/application/module/category`,   { data: requestBody });
+            const response = await axios.delete(`http://192.168.7.8:9080/application/admin/plant_id/application/module/category`,   { data: requestBody });
 			      // Optionally, update the UI or perform any additional actions after successful deletion
             setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== area.categoryname));
             setCategories(prev => prev.filter(category => category !== area.categoryname));
@@ -397,7 +386,7 @@ const handleAddCategory=()=>{
 			console.log(JSON.stringify(requestData))
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://localhost:9080/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
 				console.log("Posted data")
 			} catch (error) {
 				console.error('Error:', error);
@@ -452,7 +441,7 @@ const handleAddCategory=()=>{
       console.log("Request Data====>"+JSON.stringify(requestData))
       //Send formData to the new API endpoint
       try {
-        const response = await fetch('http://localhost:9080/application/admin/plant_id/application_name/moduleName', {
+        const response = await fetch('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -602,22 +591,24 @@ const handleAddCategory=()=>{
           {showPopup && selection && (
             <Box
            sx={{
-										  display: showPopup ? 'block' : 'none',
-										  position: 'fixed',
-										  left: '50%',minWidth:'500px',
-										  transform: 'translate(-50%)',
-										  width: '30%',
-										  top: '20%',
-												bottom:'10%',
-										  backgroundColor: 'white',
-										  padding: '20px',
-										  overflowY: 'auto',height: 'auto', 
-										  boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-										  zIndex: 999, // Ensure the box is above other content
+                display: showPopup ? 'block' : 'none',
+                position: 'fixed',
+                left: '50%',
+                bottom:'20%',
+                transform: 'translate(-50%)',
+                //width: '30%',
+                minWidth:'500px',
+                top: '20%',
+                backgroundColor: 'white',
+                padding: '20px',
+                overflow:'auto',
+                height: 'auto', 
+                boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
+                borderRadius:'30px'
 										}}
           >
             <CloseIcon
-              style={{ cursor: 'pointer', marginRight: 'auto' }}
+              style={{ cursor: 'pointer',  }}
               onClick={handleClosePopupForm}
             />
             <Container style={{ margin: '5%' }}>
@@ -699,7 +690,7 @@ const handleAddCategory=()=>{
                       setRows={setissues}
                       savetoDatabse={handleEditIssue}
                       deleteFromDatabase={handleDeleteIssue}
-                      columns={columns}
+                      columns={columns} isDeleteDialog={true}
                       editActive={true} tablename={"Existing Issues"} /*style={}*/ 
                     />
                   </>

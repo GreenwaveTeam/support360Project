@@ -10,7 +10,7 @@ import DrawerHeader from '../../../components/navigation/drawerheader/drawerhead
 
 /*Custom Components */
 import Table from '../../../components/table/table.component'
-import DialogBox from "../../../components/dialog/customsnackbar.component";
+import DialogBox from "../../../components/snackbar/customsnackbar.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import Dropdown from "../../../components/dropdown/dropdown.component";
 

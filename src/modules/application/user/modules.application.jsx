@@ -319,7 +319,7 @@ export default function ApplicationUser() {
   const fetchApplicationNames = async (plantID) => {
     try {
       const response = await fetch(
-        `http://localhost:8082/application/user/${plantID}`
+        `http://localhost:8081/application/user/${plantID}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -348,7 +348,7 @@ export default function ApplicationUser() {
       console.log("Current Dropdown selection : ", dropdownvalue);
       const plantID = "P009";
       const response = await fetch(
-        `http://localhost:8082/application/user/${plantID}/${dropdownvalue}`
+        `http://localhost:8081/application/user/${plantID}/${dropdownvalue}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -414,9 +414,9 @@ export default function ApplicationUser() {
       }
       console.log(
         "Current API call : ",
-        `http://localhost:8082/application/user/${plantID}/${application}/${module}`
+        `http://localhost:8081/application/user/${plantID}/${application}/${module}`
       );
-      const API = `http://localhost:8082/application/user/${plantID}/${application}/${module}`;
+      const API = `http://localhost:8081/application/user/${plantID}/${application}/${module}`;
       const response = await fetch(API);
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -1058,7 +1058,7 @@ export default function ApplicationUser() {
     console.log("postDatainDB() called");
     console.log("current JSON_data is => ", JSON.stringify(json_data));
     try {
-      const response = await fetch(`http://localhost:8082/application/user`, {
+      const response = await fetch(`http://localhost:8081/application/user`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(json_data),

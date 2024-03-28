@@ -66,9 +66,6 @@ export default function AdminRegistration() {
   const confirmPassword = async (e) => {
     const confirmPass = e.target.value;
     setCnfpass(confirmPass);
-    // const hashedPassword = await bcrypt.hash(pass, 10);
-    // setFormData({ ...formData, password: hashedPassword });
-    // const passwordsMatch = await bcrypt.compare(confirmPass, hashedPassword);
     const passwordsMatch = pass === e;
     if (!passwordsMatch) {
       setShowPasswordError(true);
@@ -173,7 +170,7 @@ export default function AdminRegistration() {
           <HowToRegTwoToneIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          admin Registration Page
+          Admin Registration Page
         </Typography>
         <form>
           <Box noValidate sx={{ mt: 3 }}>

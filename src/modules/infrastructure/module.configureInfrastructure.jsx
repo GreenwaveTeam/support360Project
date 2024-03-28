@@ -34,8 +34,13 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
       console.log("fetchInfraFromDb() called");
       try {
         const response = await fetch(
-          `http://localhost:8081/infrastructure/admin/1`,
-
+          `http://localhost:8081/infrastructure/admin/P009`,
+          {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
         );
         if (!response.ok) {
           console.log('Response => '+response.status)
@@ -217,12 +222,15 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
   
     const deletefromDB = async (infra_name) => {
       try {
-        const plantID="1"
+        const plantID="P009"
         const response = await fetch(
           `http://localhost:8081/infrastructure/admin`,
           {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify({ 
               infrastructureName: infra_name,
               plantID : plantID

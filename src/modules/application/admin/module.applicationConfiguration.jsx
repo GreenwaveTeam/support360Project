@@ -52,7 +52,7 @@ export default function ModuleConfiguration() {
   ];useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9080/application/admin/${plantid}`);
+        const response = await axios.get(`http://localhost:8081/application/admin/${plantid}`);
         const moduleData = response.data;
         setData(moduleData);
         setFilteredRows(moduleData)
@@ -79,7 +79,7 @@ export default function ModuleConfiguration() {
                 // Add other properties from rowData if needed
               };     
               console.log("Request body=>"+JSON.stringify(requestBody))
-              axios.delete(`http://localhost:9080/application/admin/plantid/applicationname`,{ data: requestBody });
+              axios.delete(`http://localhost:8081/application/admin/plantid/applicationname`,{ data: requestBody });
              const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
             setData(updatedCategories);
           }catch(e)
@@ -100,7 +100,7 @@ export default function ModuleConfiguration() {
 
   try {
     // Send requestBody as request body in the PUT request
-    const response = await axios.put(`http://localhost:9080/application/admin/${plantid}/${prev.application_name}`, rowData);
+    const response = await axios.put(`http://localhost:8081/application/admin/${plantid}/${prev.application_name}`, rowData);
     console.log("Posted data");
   } catch (error) {
     console.error('Error:', error);

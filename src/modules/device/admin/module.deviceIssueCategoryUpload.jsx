@@ -50,7 +50,7 @@ const DeviceCategory = () => {
     const fetchData = async () => {
       try {
         // Make the API call to fetch data
-        const response = await axios.get(`http://192.168.7.8:9080/device/admin/${plantid}/categories`);
+        const response = await axios.get(`http://192.168.7.8:8081/device/admin/${plantid}/categories`);
         
         // Extract data from the response
         const data = await response.data;
@@ -115,7 +115,7 @@ const DeviceCategory = () => {
 
     try {
         // Send requestBody as request body in the DELETE request
-        await axios.delete('http://192.168.7.8:9080/device/admin/categories', { data: requestBody });
+        await axios.delete('http://192.168.7.8:8081/device/admin/categories', { data: requestBody });
         setCategorylist(categorylist.filter((category)=>(category!==rowData)))
       } catch (error) {
         console.error('Error:', error);
@@ -146,7 +146,7 @@ const DeviceCategory = () => {
         issueList: updatedCategory.issuelist
       };
       try {
-        const response = await axios.put(`http://192.168.7.8:9080/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
+        const response = await axios.put(`http://192.168.7.8:8081/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
           headers: {
             'Content-Type': 'application/json',
           },

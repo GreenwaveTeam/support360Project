@@ -145,7 +145,7 @@ const ModuleConfigure = () => {
 		};
 	
 		try {
-					const response = await axios.delete('http://192.168.7.8:9080/application/admin/plant_id/application/module/category', { data: requestBody });
+					const response = await axios.delete('http://192.168.7.8:8081/application/admin/plant_id/application/module/category', { data: requestBody });
 					// Optionally, update the UI or perform any additional actions after successful deletion
 					setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== categoryName));
 					setCategories(prev => prev.filter(category => category !== area.categoryName));
@@ -232,7 +232,7 @@ const ModuleConfigure = () => {
       
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData);
 				
 			} catch (error) {
 				console.error('Error:', error);
@@ -275,7 +275,7 @@ const ModuleConfigure = () => {
 	
 		
 		try {
-			await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
+			await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: requestBody });
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -300,7 +300,7 @@ const ModuleConfigure = () => {
 			issuename: prev.issuename
 		  };
 		  
-		  await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
+		  await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
 		  
 		
 		if (selection) {
@@ -331,7 +331,7 @@ const ModuleConfigure = () => {
 
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData);
 				
 			} catch (error) {
 				console.error('Error:', error);

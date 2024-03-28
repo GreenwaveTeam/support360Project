@@ -17,6 +17,7 @@ import TextField from "../../../components/textfield/textfield.component";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from'sweetalert2'
+import NotFound from '../../../components/notfound/notfound.component';
 
 export default function ModuleConfiguration() {
   const plantid='P009'
@@ -144,7 +145,8 @@ export default function ModuleConfiguration() {
         state: { application_name:application_name,modulelist:null},
       });
     };
-
+    if(plantid==null)
+    return(<NotFound/>)
     
     return (
    

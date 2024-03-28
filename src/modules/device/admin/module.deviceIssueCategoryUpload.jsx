@@ -21,9 +21,11 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
 
 import axios from 'axios';
+import NotFound from '../../../components/notfound/notfound.component';
 
 const DeviceCategory = () => {
   const plantid='P009'
+  
   const [open, setOpen] = useState(false);
   const [categorylist, setCategorylist] = useState([]);
   const [categoryName, setCategoryName] = useState('');
@@ -185,7 +187,8 @@ const DeviceCategory = () => {
   const handleClosePopup = () => {
     setOpenPopup(false);
   };
-
+  if(plantid==null)
+    return(<NotFound/>)
   return (
     <Box sx={{ display: 'flex' }}>
       <Topbar

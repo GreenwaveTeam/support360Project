@@ -323,7 +323,7 @@ const handleSaveClick = async (selectedRow) => {
                 {columns.map((column, index) => (
                   <TableCell
                     sx={{ backgroundColor: "#B5C0D0" ,fontWeight: "bold",fontSize:'14px'}}
-                    key={column.label} //The column headers will be unique right ...
+                    key={index} //The column headers will be unique right ...
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
                   >
@@ -339,9 +339,10 @@ const handleSaveClick = async (selectedRow) => {
               {filteredrows &&
                 filteredrows
                 .slice(page * rowperpage, page * rowperpage + rowperpage)
-                  .map((row, index) => {
+                  .map((row, index) => {console.log("Index====>"+index)
                     return (
-                      <TableRow hover tabIndex={-1} key={index}>
+                      
+                      <TableRow hover key={index}>
                         
                         {columns.map((column,columnindex) => {
                           const value = row[column.id];
@@ -350,8 +351,7 @@ const handleSaveClick = async (selectedRow) => {
                               ? updatedRow[column.id]
                               : row[column.id];
                           return (
-                            <>
-                            <TableCell key={value} align={column.align}>
+                            <TableCell key={columnindex} align={column.align}>
                               
                               <div
                                 style={{
@@ -460,9 +460,9 @@ const handleSaveClick = async (selectedRow) => {
                                       }}
                                     >
                                       {column.values.map(
-                                        (dropdownvalue, index) => (
+                                        (dropdownvalue, valueindex) => (
                                           <MenuItem
-                                            key={index}
+                                            key={valueindex}
                                             value={dropdownvalue}
                                           >
                                             {dropdownvalue}
@@ -492,7 +492,6 @@ const handleSaveClick = async (selectedRow) => {
                                 )}
                                 </div>
                             </TableCell>
-                            </>
                           );
                         })}
                         <TableCell sx={{ width: "10%" }} align="right">

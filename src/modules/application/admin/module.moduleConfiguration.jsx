@@ -270,17 +270,7 @@ const ModuleConfigure = () => {
     setIssues([])
 	};
 	const handleDeleteIssue = async (rowdata) => {
-		Swal.fire({
-			title: "Are you sure?",
-			text: "You won't be able to revert this!",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#3085d6",
-			cancelButtonColor: "#d33",
-			confirmButtonText: "Yes, delete it!"
-		  }).then(async(result) => {
-			if (result.isConfirmed) {
-			 
+		
 		const requestBody = {
 			plant_id: plantid,
 			application_name: data.application_name,
@@ -308,7 +298,6 @@ const ModuleConfigure = () => {
 			console.error('Error deleting issue:', error.response ? error.response.data : error.message);
 			// Handle errors, such as displaying an error message to the user
 		}
-	}})
 	};
 	  const handleEditIssue = async(prev,rowData) => {
 		const deleteRequestBody = {

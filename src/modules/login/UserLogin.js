@@ -12,40 +12,19 @@ import Textfield from "../../components/textfield/textfield.component";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-import { login } from "../helper/AuthService";
 import { useNavigate } from "react-router";
+import { login } from "../helper/AuthService";
 
 export default function UserLogin() {
   const [userID, setUserID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  // const [allUser, setAllUser] = useState([]);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
-
-  // useEffect(() => {
-  //   fetchExistingUser();
-  // }, []);
-
-  // const fetchExistingUser = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:8081/users/", {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log("data : ", data);
-  //     setAllUser(data);
-  //   } catch (error) {
-  //     console.error("Error fetching user list:", error);
-  //   }
-  // };
 
   const handleUserIDInputChange = (event) => {
     setUserID(event.target.value);
@@ -73,7 +52,7 @@ export default function UserLogin() {
           User Login Page
         </Typography>
         <form>
-          <Box component="table" noValidate sx={{ mt: 3 }}>
+          <Box noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Textfield
@@ -126,40 +105,15 @@ export default function UserLogin() {
           </Typography>
         )}
         <Grid item xs={12}>
-          {/* <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            onClick={async (event) => {
-              event.preventDefault();
-              console.log("allUser : ", allUser);
-              for (let i of allUser) {
-                if (
-                  i.userID === userID &&
-                  bcrypt.compare(password, i.password)
-                ) {
-                  navigate(`/abc/${i.userID}`, {
-                    state: { userName: i.name },
-                  });
-                  return;
-                } else {
-                  setError("UserID or Password and not Matching ! ");
-                }
-              }
-            }}
-          >
-            Login
-          </Button> */}
           <Button
             type="submit"
             fullWidth
             variant="contained"
             onClick={(event) => {
               event.preventDefault();
-              // console.log("allUser : ", allUser);
               const loggedIn = login(userID, password);
               if (loggedIn) {
-                // navigate("/UserHome");
+                navigate("/UserHome");
                 console.log("Loggedin");
                 return;
               } else {

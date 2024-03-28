@@ -8,6 +8,7 @@ import Textfield from "../../components/textfield/textfield.component";
 import CustomTable from "../../components/table/table.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import { useNavigate } from "react-router-dom";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 
 export default function ConfigureInfrastructure() {
   const [search, setSearch] = useState("");

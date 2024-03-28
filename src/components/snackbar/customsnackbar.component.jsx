@@ -3,7 +3,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 
-export default function DialogBox({ openPopup, setOpenPopup, dialogMessage,snackbarSeverity }) {
+export default function SnackbarComponent({ openPopup, setOpenPopup, dialogMessage,snackbarSeverity }) {
   const handleClosePopup = () => {
     setOpenPopup(false);
   };

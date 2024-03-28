@@ -1,15 +1,10 @@
 import React, { useState } from "react";
-import { Container, Typography } from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useEffect } from "react";
 import dayjs from "dayjs";
-import axios from "axios";
-// import { useParams } from "react-router-dom";
 
 function UserHome() {
-  const [supporttillDate, setSupporttillDate] = useState(new Date());
-  const [userExist, setUserExist] = useState(false);
-  // const { userID } = useParams();
   const [formData, setFormData] = useState({
     userID: "",
     name: "",
@@ -38,52 +33,6 @@ function UserHome() {
     fetchUser();
     fetchTicketDetails();
   }, []);
-
-  // const fetchUser = async () => {
-  //   console.log(`userhome Bearer ${localStorage.getItem("token")}`);
-  //   try {
-  //     const response = await fetch("http://localhost:8081/users/user", {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         "Content-Type": "application/json",
-  //         // "Access-Control-Allow-Origin": "*",
-  //         // "Access-Control-Request-Headers":
-  //         //   "Authorization, Content-Type, X-Auth-Token, Origin",
-  //         // "Access-Control-Allow-Meathods": "OPTIONS, GET, POST",
-  //         // "Access-Control-Allow-Origin": process.env.REACT_APP_API_URL,
-  //       },
-  //       // mode: "no-cors",
-  //     }).then((response) => {
-  //       console.log("response : ", response.json());
-  //     });
-  //     // setFormData((prevData) => ({
-  //     //   ...prevData,
-  //     //   userID: data.userID,
-  //     //   name: data.name,
-  //     //   designation: data.designation,
-  //     //   email: data.email,
-  //     //   phoneNumber: data.phoneNumber,
-  //     //   plantID: data.plantID,
-  //     //   plantName: data.plantName,
-  //     //   address: data.address,
-  //     //   division: data.division,
-  //     //   customerName: data.customerName,
-  //     //   supportStartDate: dayjs(
-  //     //     convertDateFormat(data.supportStartDate),
-  //     //     "DD-MM-YYYY"
-  //     //   ),
-  //     //   supportEndDate: dayjs(
-  //     //     convertDateFormat(data.supportEndDate),
-  //     //     "DD-MM-YYYY"
-  //     //   ),
-  //     //   accountOwnerCustomer: data.accountOwnerCustomer,
-  //     //   accountOwnerGW: data.accountOwnerGW,
-  //     // }));
-  //   } catch (error) {
-  //     console.error("Error fetching user list:", error);
-  //   }
-  // };
 
   const fetchUser = async () => {
     console.log(`userhome Bearer ${localStorage.getItem("token")}`);
@@ -146,63 +95,30 @@ function UserHome() {
         total_ticket_raised: data.total_ticket_raised,
         pending_tickets: data.pending_tickets,
         resolved_tickets: data.resolved_tickets,
-        last_ticket_raised: data.last_ticket_raised,
+        last_ticket_raised: dayjs(
+          convertDateFormat(data.last_ticket_raised),
+          "DD-MM-YYYY"
+        ),
       }));
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
   };
 
-  // const fetchExistingUser = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:8081/users/", {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     checkExistingUser(data);
-  //   } catch (error) {
-  //     console.error("Error fetching user list:", error);
-  //   }
-  // };
-
-  // const checkExistingUser = (data) => {
-  //   for (let i of data) {
-  //     if (i.userID === userID) {
-  //       setUserExist(true);
-  //       setFormData((prevData) => ({
-  //         ...prevData,
-  //         userID: i.userID,
-  //         name: i.name,
-  //         designation: i.designation,
-  //         email: i.email,
-  //         phoneNumber: i.phoneNumber,
-  //         plantID: i.plantID,
-  //         plantName: i.plantName,
-  //         address: i.address,
-  //         division: i.division,
-  //         customerName: i.customerName,
-  //         supportStartDate: dayjs(
-  //           convertDateFormat(i.supportStartDate),
-  //           "DD-MM-YYYY"
-  //         ),
-  //         supportEndDate: dayjs(
-  //           convertDateFormat(i.supportEndDate),
-  //           "DD-MM-YYYY"
-  //         ),
-  //         accountOwnerCustomer: i.accountOwnerCustomer,
-  //         accountOwnerGW: i.accountOwnerGW,
-  //       }));
-  //     }
-  //   }
-  // };
-
   function convertDateFormat(dateString) {
+    console.log("dateString : ", dateString);
     const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
   }
+
+  // function convertDateFormat(dateString) {
+  //   if (dateString) {
+  //     const [year, month, day] = dateString.split("-");
+  //     return `${day}-${month}-${year}`;
+  //   } else {
+  //     return dateString;
+  //   }
+  // }
 
   return (
     <Container style={{ display: "flex", height: "100vh", width: "100vw" }}>
@@ -218,11 +134,14 @@ function UserHome() {
               marginRight: "20px",
               width: "100%",
               height: "30%",
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              flexDirection: "column",
             }}
           >
             <Typography>Support Till Date</Typography>
             <Datepicker
-              label="Support Start Date"
               value={formData.supportEndDate}
               format="DD-MM-YYYY"
               slotProps={{ textField: { fullWidth: true } }}
@@ -238,9 +157,26 @@ function UserHome() {
               marginRight: "20px",
               width: "100%",
               height: "70%",
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "stretch",
+              flexDirection: "column",
             }}
           >
-            <Typography>reiheih</Typography>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Typography>OPEN TICKETS</Typography>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Button variant="contained" style={{ margin: "10px" }}>
+                Device
+              </Button>
+              <Button variant="contained" style={{ margin: "10px" }}>
+                Application
+              </Button>
+              <Button variant="contained" style={{ margin: "10px" }}>
+                Infrastructure
+              </Button>
+            </div>
           </div>
         </div>
         <div style={{ width: "50%", height: "100%", padding: "50px" }}>
@@ -254,6 +190,10 @@ function UserHome() {
               marginRight: "20px",
               width: "100%",
               height: "70%",
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              flexDirection: "column",
             }}
           >
             <Typography>
@@ -276,9 +216,18 @@ function UserHome() {
               marginRight: "20px",
               width: "100%",
               height: "30%",
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              flexDirection: "column",
             }}
           >
-            <Typography>reiheih</Typography>
+            <Typography>Last Ticket Raised</Typography>
+            <Datepicker
+              value={ticketData.last_ticket_raised}
+              format="DD-MM-YYYY"
+              slotProps={{ textField: { fullWidth: true } }}
+            />
           </div>
         </div>
       </>

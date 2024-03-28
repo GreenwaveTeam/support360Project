@@ -20,7 +20,6 @@ import {
   MenuItem,
   Paper,
   Select,
-  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -48,6 +47,8 @@ import './modules.application.css'
 import Dropdown from "../../../components/dropdown/dropdown.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import CustomTable from "../../../components/table/table.component";
+import { useNavigate } from "react-router-dom";
+import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
 
 
 export default function ApplicationUser() {
@@ -106,7 +107,7 @@ export default function ApplicationUser() {
   const [miscellaneousRemarks, setmiscellaneousRemarks] = useState("");
   const [additionalMiscellaneousError,setAdditionalMiscellaneousError]=useState(false)
   const [additionalMiscellaneousSeverityError,setAdditionallMiscellaneousSeverityError]=useState(false)
-
+  const navigate =useNavigate()
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
     //The next check i need to make whether the current finalUser based on modulename and update the same
@@ -332,6 +333,7 @@ export default function ApplicationUser() {
       }
     } catch (error) {
       console.log("Error fetching data ", error);
+      
     }
     setTabsModuleNames([]);
   };
@@ -362,6 +364,7 @@ export default function ApplicationUser() {
     } catch (error) {
       console.log("Error fetching data ", error);
       setTabsModuleNames([]);
+      navigate('/notfound')
     }
   };
 
@@ -1457,99 +1460,148 @@ export default function ApplicationUser() {
 
           <br />
           <center>
-          {tabsmoduleNames.length!==0&&
-          <div style={{ maxHeight: '400px',maxWidth:'1200px', overflowY: 'auto',boxShadow: '0px 4px 8px black',borderRadius:'10px',backgroundColor:'#B5C0D0'}}>
-           
-         
-          <div  align="center"
-             style={{backgroundColor:'#B5C0D0',padding:'5px',flex:1,overflow:'auto'}}
-            >
-            
-             <span style={{fontSize:'14px',fontWeight:'bold',flex:1}}>Issues Overview  </span>
-             <span style={{color:'#610C9F',fontSize:'14px',fontWeight:'bold'}}>[{dropdownValue}] </span>
-            
-            <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-         
-        </ExpandMore>
-        <Badge badgeContent={overviewTableData.length} color="primary">
-      <NotificationsActiveIcon color="secondary" />
-    </Badge> &nbsp;
-       
-        </div>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <Table sx={{borderRadius:'100px'}}>
-        <TableBody>
-             
-        
-          <TableRow colSpan={7}>
-          <TableCell align="left" sx={{ backgroundColor: '#B5C0D0' }}>
-        <b> Module Name </b>
-      </TableCell>
-      <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' }}>
-        <b> Area </b>
-      </TableCell>
-      <TableCell align="center" sx={{ backgroundColor: '#B5C0D0' }}>
-        <b> Issue Name </b>
-      </TableCell>
-      <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' ,}}>
-        <b> Severity</b>
-      </TableCell>
-      <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' ,}}>
-        <b> Remarks</b>
-      </TableCell>
-        <TableCell align="center" sx={{  backgroundColor: '#B5C0D0' }}>
-          <b> Action</b>
-        </TableCell>
-          </TableRow>
-          {overviewTableData.length===0 && <TableRow  style={{backgroundColor:'white'}}><TableCell  colSpan={6}>No Issues Added...</TableCell></TableRow>}
-          {overviewTableData.length>0 && overviewTableData.map((item, index) => (
-      <TableRow key={index} style={{backgroundColor:'white'}}>
-        <TableCell align="left">{item.module_name}</TableCell>
-    <TableCell align="center">{item.selected_coordinates_acronym}</TableCell>
-    <TableCell align="center">{item.issue_name}</TableCell>
+            {tabsmoduleNames.length !== 0 && (
+              <div
+                style={{
+                  maxHeight: "400px",
+                  maxWidth: "1200px",
+                  overflowY: "auto",
+                  boxShadow: "0px 4px 8px black",
+                  borderRadius: "10px",
+                  backgroundColor: "#B5C0D0",
+                }}
+              >
+                <div
+                  align="center"
+                  style={{
+                    backgroundColor: "#B5C0D0",
+                    padding: "5px",
+                    flex: 1,
+                    overflow: "auto",
+                  }}
+                >
+                  <span
+                    style={{ fontSize: "14px", fontWeight: "bold", flex: 1 }}
+                  >
+                    Issues Overview{" "}
+                  </span>
+                  <span
+                    style={{
+                      color: "#610C9F",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    [{dropdownValue}]{" "}
+                  </span>
+                  <ExpandMore
+                    expand={expanded}
+                    onClick={handleExpandClick}
+                    aria-expanded={expanded}
+                    aria-label="show more"
+                  >
+                    <ExpandMoreIcon />
+                  </ExpandMore>
+                  <Badge
+                    badgeContent={overviewTableData.length}
+                    color="primary"
+                  >
+                    <NotificationsActiveIcon color="secondary" />
+                  </Badge>{" "}
+                  &nbsp;
+                </div>
+                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                  <Table sx={{ borderRadius: "100px" }}>
+                    <TableBody>
+                      <TableRow colSpan={7}>
+                        <TableCell
+                          align="left"
+                          sx={{ backgroundColor: "#B5C0D0" }}
+                        >
+                          <b> Module Name </b>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: "#B5C0D0" }}
+                        >
+                          <b> Area </b>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: "#B5C0D0" }}
+                        >
+                          <b> Issue Name </b>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: "#B5C0D0" }}
+                        >
+                          <b> Severity</b>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: "#B5C0D0" }}
+                        >
+                          <b> Remarks</b>
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ backgroundColor: "#B5C0D0" }}
+                        >
+                          <b> Action</b>
+                        </TableCell>
+                      </TableRow>
+                      {overviewTableData.length === 0 && (
+                        <TableRow style={{ backgroundColor: "white" }}>
+                          <TableCell colSpan={6}>No Issues Added...</TableCell>
+                        </TableRow>
+                      )}
+                      {overviewTableData.length > 0 &&
+                        overviewTableData.map((item, index) => (
+                          <TableRow
+                            key={index}
+                            style={{ backgroundColor: "white" }}
+                          >
+                            <TableCell align="left">
+                              {item.module_name}
+                            </TableCell>
+                            <TableCell align="center">
+                              {item.selected_coordinates_acronym}
+                            </TableCell>
+                            <TableCell align="center">
+                              {item.issue_name}
+                            </TableCell>
 
-    <TableCell align="center" style={{
-            color:
-              severityColors[item.severity.toLowerCase()] ||
-              severityColors.minor,
-            fontWeight: "bold",
-          }}
-          >{item.severity}</TableCell>
-           <TableCell align="center">
-              {item.remarks}
-            </TableCell>
-
-
-          <TableCell  align="center">
-          <Button
-                              onClick={() =>
-                                handleOverviewDeleteClick(item)
-                              }
+                            <TableCell
+                              align="center"
+                              style={{
+                                color:
+                                  severityColors[item.severity.toLowerCase()] ||
+                                  severityColors.minor,
+                                fontWeight: "bold",
+                              }}
                             >
-                              <DeleteIcon
-                                align="right"
-                                sx={{ color: "#FE2E2E" }}
-                              />
-                            </Button>
-          </TableCell>
-        </TableRow>
-          ))}
+                              {item.severity}
+                            </TableCell>
+                            <TableCell align="center">{item.remarks}</TableCell>
 
-
-        
-         </TableBody>
-         </Table>
-         </Collapse>
-         
-         
-       
-         </div>}
+                            <TableCell align="center">
+                              <Button
+                                onClick={() => handleOverviewDeleteClick(item)}
+                              >
+                                <DeleteIcon
+                                  align="right"
+                                  sx={{ color: "#FE2E2E" }}
+                                />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </Collapse>
+              </div>
+            )}
 
             <center>
               <br />
@@ -1598,7 +1650,7 @@ export default function ApplicationUser() {
                   ))}
                 </Tabs>
               </Box>
-             
+
               <center>
                 <div
                   className="floating-div"
@@ -1636,9 +1688,9 @@ export default function ApplicationUser() {
                   </style> */}
                 </div>
               </center>
-              <br/>
-              <div style={{display:'flex',marginLeft:'40px'}}>
-                <CheckCircleIcon fontSize="small" sx={{color: '#66FF00'}}/>
+              <br />
+              <div style={{ display: "flex", marginLeft: "40px" }}>
+                <CheckCircleIcon fontSize="small" sx={{ color: "#66FF00" }} />
                 <span> - * Indicates Issues have been added </span>
               </div>
               <motion.div
@@ -1694,7 +1746,6 @@ export default function ApplicationUser() {
                         placement="top-start"
                       >
                         <div
-                         
                           onClick={(event) => handleDivClick(event, area)}
                           key={areaIndex}
                           style={{
@@ -1714,15 +1765,16 @@ export default function ApplicationUser() {
                             // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
                             //transition: 'all 0.3s ease',
                             cursor: "pointer",
-                            
                           }}
                           onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = 'rgba(128, 128, 128, 0.5)';
-                            e.target.style.filter = 'blur(20px)'
-                            e.target.style.transition = 'background-color 0.3s, filter 0.3s';
+                            e.target.style.backgroundColor =
+                              "rgba(128, 128, 128, 0.5)";
+                            e.target.style.filter = "blur(20px)";
+                            e.target.style.transition =
+                              "background-color 0.3s, filter 0.3s";
                           }}
                           onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = 'rgba(0,0,0,0)';
+                            e.target.style.backgroundColor = "rgba(0,0,0,0)";
                           }}
                         >
                           {area.edited && (
@@ -1749,7 +1801,6 @@ export default function ApplicationUser() {
               </motion.div>
 
               <center>
-                
                 <Container>
                   <Paper
                     elevation={4}
@@ -1856,7 +1907,6 @@ export default function ApplicationUser() {
                           setmiscellaneousRemarks(e.target.value);
                           console.log("Remarks:", e.target.value);
                         }}
-                       
                       />
 
                       <div style={{ marginBottom: "40px" }}>
@@ -2079,6 +2129,7 @@ export default function ApplicationUser() {
                         editActive={false}
                         tablename={"Added Issues"}
                         redirectIconActive={false}
+                        isDeleteDialog={false}
                       ></CustomTable>
                     </div>
                   )}
@@ -2090,7 +2141,7 @@ export default function ApplicationUser() {
 
                 {/* </Grid> */}
 
-                <Snackbar
+                {/* <Snackbar
                   id="modal-alert"
                   open={modalAlertOpen}
                   autoHideDuration={2000}
@@ -2105,14 +2156,20 @@ export default function ApplicationUser() {
                   >
                     {snackbarText}
                   </Alert>
-                </Snackbar>
+                </Snackbar> */}
+                <SnackbarComponent
+                  openPopup={modalAlertOpen}
+                  setOpenPopup={setModalAlertOpen}
+                  dialogMessage={snackbarText}
+                  snackbarSeverity={snackbarSeverity}
+                ></SnackbarComponent>
                 <br></br>
               </TableContainer>
             </Modal>
           </div>
 
           {/* <Paper elevation={5}> */}
-          <Snackbar
+          {/* <Snackbar
             id="mainreport-alert"
             open={mainAlert}
             autoHideDuration={1500}
@@ -2127,7 +2184,14 @@ export default function ApplicationUser() {
             >
               {snackbarText}
             </Alert>
-          </Snackbar>
+          </Snackbar> */}
+
+          <SnackbarComponent
+            openPopup={mainAlert}
+            setOpenPopup={setMainAlert}
+            dialogMessage={snackbarText}
+            snackbarSeverity={snackbarSeverity}
+          ></SnackbarComponent>
         </Box>
       </AnimatedPage>
     </div>

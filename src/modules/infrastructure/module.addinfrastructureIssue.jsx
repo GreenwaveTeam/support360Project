@@ -846,7 +846,7 @@ export default function AddInfrastructureIssue() {
           </Container>
         </form>
 
-        <Snackbar
+        {/* <Snackbar
           open={open}
           autoHideDuration={2000}
           onClose={handleAlertClose}
@@ -860,7 +860,13 @@ export default function AddInfrastructureIssue() {
           >
             {snackbarText}
           </Alert>
-        </Snackbar>
+        </Snackbar> */}
+        <SnackbarComponent
+          openPopup={open}
+          setOpenPopup={setOpen}
+          dialogMessage={snackbarText}
+          snackbarSeverity={snackbarSeverity}
+        ></SnackbarComponent>
       </div>
     </AnimatedPage>
   );

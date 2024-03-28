@@ -12,59 +12,27 @@ import Textfield from "../../components/textfield/textfield.component";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-import { isAuthenticated, login } from "../helper/AuthService";
-import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { login } from "../helper/AuthService";
 
 export default function AdminLogin() {
   const [adminID, setAdminID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  // const [allAdmin, setAllAdmin] = useState({
-  //   adminID: "",
-  //   name: "",
-  //   role: "",
-  //   email: "",
-  //   password: "",
-  //   phoneNumber: "",
-  // });
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  // useEffect(() => {
-  //   fetchExistingAdmin();
-  // }, []);
-
-  // const fetchExistingAdmin = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:8081/admins/", {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log("data : ", data);
-  //     setAllAdmin(data);
-  //   } catch (error) {
-  //     console.error("Error fetching admin list:", error);
-  //   }
-  // };
-
-  const handleAdminIDInputChange = (event) => {
+  const handleUserIDInputChange = (event) => {
     setAdminID(event.target.value);
   };
 
   const handlePasswordInputChange = (event) => {
     setPassword(event.target.value);
   };
-
-  if (isAuthenticated) {
-    const jsonResponse = jwtDecode(localStorage.getItem("token"));
-    console.log("jsonResponse : ", jsonResponse);
-  }
 
   return (
     <Container component="main" maxWidth="md">
@@ -84,7 +52,7 @@ export default function AdminLogin() {
           Admin Login Page
         </Typography>
         <form>
-          <Box component="table" noValidate sx={{ mt: 3 }}>
+          <Box noValidate sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Textfield
@@ -95,7 +63,7 @@ export default function AdminLogin() {
                   id="adminID"
                   label="Admin ID"
                   value={adminID}
-                  onChange={handleAdminIDInputChange}
+                  onChange={handleUserIDInputChange}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -137,42 +105,16 @@ export default function AdminLogin() {
           </Typography>
         )}
         <Grid item xs={12}>
-          {/* <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            onClick={async (event) => {
-              event.preventDefault();
-              console.log("allAdmin : ", allAdmin);
-              for (let i of allAdmin) {
-                if (
-                  i.adminID === adminID &&
-                  bcrypt.compare(password, i.password)
-                ) {
-                  navigate(`/ad/${i.adminID}`, {
-                    state: { adminName: i.name },
-                  });
-                  return;
-                } else {
-                  setError("AdminID or Password and not Matching ! ");
-                }
-              }
-            }}
-          >
-            Login
-          </Button> */}
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            onClick={async (event) => {
+            onClick={(event) => {
               event.preventDefault();
-              // console.log("allUser : ", allAdmin);
-              const loggedIn = await login(adminID, password);
+              const loggedIn = login(adminID, password);
               if (loggedIn) {
-                // navigate(`/abc/${adminID}`, {
-                //   // state: { userName: i.name },
-                // });
+                navigate("/AdminHome");
+                console.log("Loggedin");
                 return;
               } else {
                 setError("Failed to login.");

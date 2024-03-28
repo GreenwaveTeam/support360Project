@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Textfield from "../../components/textfield/textfield.component";
@@ -24,35 +24,29 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { CategoryOutlined } from "@mui/icons-material";
 
-export default function UserConfigurationHome() {
-  // const { adminID } = useParams();
-  // const location = useLocation();
-  // const [adminName, setUserName] = useState("");
-
+export default function AdminHome() {
   const [list, setList] = useState([]);
   const [search, setSearch] = useState("");
   const [filteredRows, setFilteredRows] = useState(list);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
-    // const { adminName } = location.state || (" UserID : ", adminID);
-    // if (adminName) {
-    //   setUserName(adminName);
-    // }
   }, []);
-  // console.log("adminName : ", adminName);
 
   const fetchData = async () => {
+    console.log(`adminhome Bearer ${localStorage.getItem("token")}`);
     try {
       const response = await fetch("http://localhost:8081/users/", {
         method: "GET",
         headers: {
-          Accept: "application/json",
-          Authorization: localStorage.setItem("token"),
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
         },
       });
       const data = await response.json();
+      console.log("response : ", data);
       setList(data);
       setFilteredRows(data);
       console.log(data);
@@ -129,12 +123,18 @@ export default function UserConfigurationHome() {
         {/* Welcome {adminName} */}
       </Typography>
       <Button
-        type="submit"
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
-        href="/UserRegistration"
+        onClick={() => navigate("/UserRegistration")}
       >
-        Create New User
+        Register New User
+      </Button>
+      <Button
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}
+        onClick={() => navigate("/AdminRegistration")}
+      >
+        Register New Admin
       </Button>
       <Grid item xs={12} justifyContent={"center"}>
         <h3>Existing Users</h3>

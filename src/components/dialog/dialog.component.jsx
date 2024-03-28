@@ -5,7 +5,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 export default function CustomDialog(
 {
     open,
@@ -42,11 +42,16 @@ export default function CustomDialog(
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Are you sure you want to proceed ?"}
+        <div style={{display:'flex'}}>
+          <WarningAmberIcon  sx={{color:'#FFC700'}}/>&nbsp;
+          <span style={{fontSize:"17px"}}>
+              Are you sure you want to proceed ?
+          </span>
+          </div>
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleButtonClick}>{proceedButtonText}</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button onClick={handleButtonClick} style={{color:'red',fontWeight:'bold'}}>{proceedButtonText}</Button>
+          <Button onClick={handleClose} autoFocus style={{fontWeight:'bold'}}>
             {cancelButtonText}
           </Button>
         </DialogActions>

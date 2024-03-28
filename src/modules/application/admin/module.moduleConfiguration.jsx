@@ -43,7 +43,8 @@ const ModuleConfigure = () => {
 	const [selectedAreas,setSelectedAreas]=useState(data.modulelist[0].issueslist)
 	const [module_Name, setModule_Name] = useState(data.modulelist[0].modulename);
 	const [categorySubmitted,setCategorySubmitted]=useState(false)
-	const[categories,setCategories]=useState([])
+	const[categories,setCategories]=useState(data.modulelist[0].issueslist.map(issueDetail => issueDetail.categoryname));
+
 	const [currentModule,setCurrentModule]=useState(data.modulelist[0])
 	const columns=[
 		{
@@ -61,6 +62,7 @@ const ModuleConfigure = () => {
 		},
 	  ]  
 	useEffect(()=>handleDataChange,[selectedAreas])
+	useEffect(()=>{console.log("Category list===>"+categories)},[categories])
 	const handleAddCategory=()=>{
   if(categories.includes(categoryname)){
     setDialogPopup(true);
@@ -108,8 +110,10 @@ const ModuleConfigure = () => {
 		setCurrentModule(selectedModule)
 	 if (selectedModule && selectedModule.issueslist) {
 			setSelectedAreas(selectedModule.issueslist);
-			console.log("selected module======="+JSON.stringify(selectedModule))
-			//setCategories(selectedModule)
+			
+			setCategories(selectedModule.issueslist.map(issueDetail => issueDetail.categoryname));
+
+	 
 		} else {
 			setSelectedAreas([]);
 		}

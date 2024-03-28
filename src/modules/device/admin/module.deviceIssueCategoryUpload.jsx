@@ -204,8 +204,11 @@ const DeviceCategory = () => {
         adminList={[
           { pagename: 'Device Issue Category', pagelink: '/Device/Category' },
           { pagename: 'Application', pagelink: '/Application' },
+          
         ]}
-        userList={['User Item 1', 'User Item 2', 'User Item 3']}
+        userList={[
+          { pagename: 'Report Application', pagelink: '/user/ReportApplication' }
+        ]}
       />
       <Main open={open}>
         <DrawerHeader />

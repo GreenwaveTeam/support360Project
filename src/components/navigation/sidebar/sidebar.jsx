@@ -75,10 +75,10 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
         </ListItemButton>
         <Collapse in={openUser} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {userList.map((text, index) => (
-              <ListItem key={text} disablePadding sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
-                <ListItemButton component={Link} to={`/user/${text}`}> {/* Add Link component with "to" prop */}
-                  <ListItemText primary={text} />
+          {userList.map(({pagename, pagelink}) => (
+              <ListItem key={pagename} disablePadding sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
+                <ListItemButton component={Link} to={pagelink}>
+                  <ListItemText primary={pagename} />
                 </ListItemButton>
               </ListItem>
             ))}

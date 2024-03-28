@@ -57,6 +57,9 @@ function App() {
           <Route path="/Application/Modules" element={<ModuleConfiguration/>} />
           <Route path="/Application/Module" element={<ModuleUpload/>} /> 
           <Route path="/abc" element={<AdminPage />} />
+
+
+          
             {/* Application Report */}
           <Route path="/user/ReportApplication" element={ <ApplicationUser/>}/>
           {/* Admin Infrastructure */}

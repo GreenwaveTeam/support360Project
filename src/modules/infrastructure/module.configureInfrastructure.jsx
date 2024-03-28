@@ -62,6 +62,7 @@ import { useNavigate } from "react-router-dom";
         setSnackbarText(error.toString())
         setOpen(true)
         console.log("Error fetching data from database !");
+        navigate('/notfound')
       }
     };
   

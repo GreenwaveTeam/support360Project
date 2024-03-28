@@ -2079,6 +2079,7 @@ export default function ApplicationUser() {
                         editActive={false}
                         tablename={"Added Issues"}
                         redirectIconActive={false}
+                        isDeleteDialog={false}
                       ></CustomTable>
                     </div>
                   )}

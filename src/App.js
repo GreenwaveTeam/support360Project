@@ -18,6 +18,7 @@ import ModuleUpload from './modules/application/admin/module.moduleUpload'
 import ConfigureInfrastructure from "./modules/infrastructure/module.configureInfrastructure";
 import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 import Samplemodule from "./modules/device/module.samplemodule";
+import NotFound from "./components/notfound/notfound.component";
 
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
@@ -64,6 +65,7 @@ function App() {
           <Route  path="/admin/infrastructure/addIssues" element={ <AddInfrastructureIssue/>}/>
           {/* test */}
           <Route  path="/sample" element={ <Samplemodule/>}/>
+          <Route path='/notfound' element={<NotFound/>}></Route>
         </Routes>
       </div>
     </Router>

@@ -8,7 +8,6 @@ import {
   Alert,
   Box,
   Button,
-  Snackbar,
   Typography
 } from "@mui/material";
 import { Container } from "@mui/system";
@@ -25,6 +24,7 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 
 
 export default function AddInfrastructureIssue() {
@@ -327,20 +327,20 @@ const handleRowsPerPage = (event) => {
   const handleDeleteClick = (row) => {
     console.log('handleDeleteClick() called')
     console.log('Row to delete => ',row.issue_name)
-    Swal.fire({
-      title: "Do you really want to delete ? ",
-      showDenyButton: true,
-      confirmButtonText: "Delete",
-      denyButtonText: `Cancel`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
+    // Swal.fire({
+    //   title: "Do you really want to delete ? ",
+    //   showDenyButton: true,
+    //   confirmButtonText: "Delete",
+    //   denyButtonText: `Cancel`,
+    // }).then((result) => {
+    //   /* Read more about isConfirmed, isDenied below */
+    //   if (result.isConfirmed) {
         // Swal.fire("Saved!", "", "success");
 
         deletedataDb(row.issue_name);
         
-      }
-    });
+    //   }
+    // });
     console.log("handleDeleteClick()");
 
     //setSearch('');
@@ -851,7 +851,7 @@ const handleRowsPerPage = (event) => {
                rows={filteredRows}
                columns={columns}
                setRows={setFilteredRows}
-               savetoDatabse={addIssueToCurrentCategory}  deleteFromDatabase={handleDeleteClick} editActive={true} tablename={"Added Issues List"} redirectIconActive={false}
+               savetoDatabse={addIssueToCurrentCategory}  deleteFromDatabase={handleDeleteClick} editActive={true} tablename={"Added Issues List"} redirectIconActive={false} isDeleteDialog={true}
                >
                 </CustomTable>
             </motion.div>
@@ -871,7 +871,7 @@ const handleRowsPerPage = (event) => {
           </Container>
         </form>
 
-        <Snackbar
+        {/* <Snackbar
           open={open}
           autoHideDuration={2000}
           onClose={handleAlertClose}
@@ -885,7 +885,14 @@ const handleRowsPerPage = (event) => {
           >
             {snackbarText}
           </Alert>
-        </Snackbar>
+        </Snackbar> */}
+        <SnackbarComponent
+                openPopup={open}
+                setOpenPopup={setOpen}
+                dialogMessage={snackbarText}
+                snackbarSeverity={snackbarSeverity}
+                >
+                </SnackbarComponent>
       </div>
     </AnimatedPage>
   );

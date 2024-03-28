@@ -28,8 +28,10 @@ function UserHome() {
     resolved_tickets: "",
     last_ticket_raised: "",
   });
+  const [token, setToken] = useEffect("");
 
   useEffect(() => {
+    setToken(`${localStorage.getItem("token")}`);
     fetchUser();
     fetchTicketDetails();
   }, []);
@@ -40,7 +42,7 @@ function UserHome() {
       const response = await fetch("http://localhost:8081/users/user", {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
@@ -84,10 +86,11 @@ function UserHome() {
           method: "GET",
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
+      // Authorization: `Bearer ${localStorage.getItem("token")}`,
       const data = await response.json();
       console.log("fetchTicketDetails data : ", data);
       setTicketData((prevData) => ({

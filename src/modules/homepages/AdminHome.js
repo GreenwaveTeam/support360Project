@@ -23,6 +23,7 @@ import Textfield from "../../components/textfield/textfield.component";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { CategoryOutlined } from "@mui/icons-material";
+import CustomTable from "../../components/table/table.component";
 
 export default function AdminHome() {
   const [list, setList] = useState([]);
@@ -47,9 +48,11 @@ export default function AdminHome() {
       });
       const data = await response.json();
       console.log("response : ", data);
-      setList(data);
-      setFilteredRows(data);
-      console.log(data);
+
+      const filteredData = data.filter((item) => item.plantID !== "NA");
+
+      setList(filteredData);
+      setFilteredRows(filteredData);
     } catch (error) {
       console.log(error);
     }
@@ -117,6 +120,27 @@ export default function AdminHome() {
     setOpenDeleteDialog(true);
   };
 
+  const columns = [
+    {
+      id: "name",
+      label: "Name",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "email",
+      label: "Email",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "userid",
+      label: "UserID",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+  ];
+
   return (
     <>
       <Typography component="h1" variant="h5">
@@ -138,7 +162,7 @@ export default function AdminHome() {
       </Button>
       <Grid item xs={12} justifyContent={"center"}>
         <h3>Existing Users</h3>
-        <TableContainer>
+        {/* <TableContainer>
           <Table>
             <TableRow>
               <TableCell
@@ -259,7 +283,17 @@ export default function AdminHome() {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> */}
+        <CustomTable
+          rows={filteredRows}
+          columns={columns}
+          // setRows={setTableIssuesForCurrentDiv}
+          // deleteFromDatabase={handleDeleteTableClick}
+          editActive={false}
+          tablename={"Added Issues"}
+          redirectIconActive={false}
+          isDeleteDialog={false}
+        ></CustomTable>
       </Grid>
     </>
   );

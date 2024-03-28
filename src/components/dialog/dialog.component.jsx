@@ -5,6 +5,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useMediaQuery } from '@mui/system';
+import { useTheme } from '@mui/material';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 export default function CustomDialog(
 {
@@ -27,6 +30,8 @@ export default function CustomDialog(
   const handleClose = () => {
     setOpen(false);
   };
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   return (
     <div >
@@ -39,14 +44,20 @@ export default function CustomDialog(
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        aria-describedby="alert-dialog-description"S
+        fullScreen={fullScreen}
       >
         <DialogTitle id="alert-dialog-title">
-          {"Are you sure you want to proceed ?"}
+          <div style={{display:'flex'}}>
+          <WarningAmberIcon  sx={{color:'#FFC700'}}/>&nbsp;
+          <span style={{fontSize:"17px"}}>
+              Are you sure you want to proceed ?
+          </span>
+          </div>
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleButtonClick}>{proceedButtonText}</Button>
-          <Button onClick={handleClose} autoFocus>
+          <Button sx={{color:'red',fontWeight:'bold'}} onClick={handleButtonClick}>{proceedButtonText}</Button>
+          <Button sx={{fontWeight:'bold'}} onClick={handleClose} autoFocus>
             {cancelButtonText}
           </Button>
         </DialogActions>

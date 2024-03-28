@@ -113,7 +113,7 @@ export default function AdminLogin() {
               event.preventDefault();
               const loggedIn = login(adminID, password);
               if (loggedIn) {
-                navigate("/UserHome");
+                navigate("/AdminHome");
                 console.log("Loggedin");
                 return;
               } else {

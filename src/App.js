@@ -38,22 +38,16 @@ function App() {
         <Routes>
           {/* <Route path="/xyz" element={<AddInfrastructureIssue />} /> */}
           <Route path="/device" element={<Device />} />
-          <Route path="/ad/:adminID" element={<AdminHome />} />
-          <Route path="/ad" element={<AdminHome />} />
+          <Route path="/AdminHome" element={<AdminHome />} />
           <Route
             path="/UserRegistration/:userID"
             element={<UserRegistration />}
           />
           <Route path="/UserRegistration" element={<UserRegistration />} />
-          <Route
-            path="/AdminRegistration/:adminID"
-            element={<AdminRegistration />}
-          />
           <Route path="/UserHome" element={<UserHome />} />
           <Route path="/AdminRegistration" element={<AdminRegistration />} />
-          <Route path="/userlogin" element={<UserLogin />} />
-          <Route path="/adminlogin" element={<AdminLogin />} />
-          <Route path="/abc/:userID" element={<AdminPage />} />
+          <Route path="/UserLogin" element={<UserLogin />} />
+          <Route path="/AdminLogin" element={<AdminLogin />} />
           <Route
             path="/Device/Category"
             element={<DeviceIssueCategoryUpload />}

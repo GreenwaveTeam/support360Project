@@ -81,12 +81,8 @@ function App() {
             element={<AddInfrastructureIssue />}
           />
           {/* test */}
-<<<<<<< HEAD
           <Route path="/sample" element={<Samplemodule />} />
-=======
-          <Route  path="/sample" element={ <Samplemodule/>}/>
-          <Route path='/notfound' element={<NotFound/>}></Route>
->>>>>>> 63410b942a9ee4fbd6937081446c18e7b8e6743b
+          <Route path="/notfound" element={<NotFound />}></Route>
         </Routes>
       </div>
     </Router>

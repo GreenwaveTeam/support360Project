@@ -28,7 +28,7 @@ function UserHome() {
     resolved_tickets: "",
     last_ticket_raised: "",
   });
-  const [token, setToken] = useEffect("");
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     setToken(`${localStorage.getItem("token")}`);

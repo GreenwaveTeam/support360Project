@@ -49,8 +49,12 @@ const DeviceCategory = () => {
     console.log('UseEffect for Device Category');
     const fetchData = async () => {
       try {
+        console.log(`userhome Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
-        const response = await axios.get(`http://192.168.7.8:8081/device/admin/${plantid}/categories`);
+        const response = await axios.get(`http://192.168.7.8:8081/device/admin/${plantid}/categories`,{headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },});
         
         // Extract data from the response
         const data = await response.data;

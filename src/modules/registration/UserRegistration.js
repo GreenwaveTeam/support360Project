@@ -94,9 +94,6 @@ export default function UserRegistration() {
   };
 
   const confirmPassword = async (e) => {
-    // const hashedPassword = await bcrypt.hash(pass, 10);
-    // setFormData({ ...formData, password: hashedPassword });
-    // const passwordsMatch = await bcrypt.compare(e, hashedPassword);
     const passwordsMatch = pass === e;
     if (!passwordsMatch) {
       setShowPasswordError(true);
@@ -369,7 +366,6 @@ export default function UserRegistration() {
                     label="Password"
                     type={showPassword ? "text" : "password"}
                     id="password"
-                    // autoComplete="new-password"
                     value={pass}
                     onChange={hashedPasswordChange}
                   />

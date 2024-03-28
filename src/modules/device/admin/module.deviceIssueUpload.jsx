@@ -75,7 +75,7 @@ const DeviceIssue = () => {
             plantid: plantid,
             issueList: [{issuename: issueName, severity: severity }]
           };
-          const response = await axios.post(`http://localhost:9080/device/admin/${plantid}/categories/`+categoryname, requestData, {
+          const response = await axios.post(`http://localhost:8081/device/admin/${plantid}/categories/`+categoryname, requestData, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -97,7 +97,7 @@ const DeviceIssue = () => {
             issueList: [{issuename: rowData.issuename, severity: rowData.severity }]
           };
           console.log("Edit Issue called")
-          const response = await axios.put(`http://localhost:9080/device/admin/${plantid}/categories/${categoryname}/`+prev.issuename, requestData, {
+          const response = await axios.put(`http://localhost:8081/device/admin/${plantid}/categories/${categoryname}/`+prev.issuename, requestData, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -118,7 +118,7 @@ const DeviceIssue = () => {
     } 
         try {
           
-          const response = await axios.delete('http://localhost:9080/device/admin/categories/issue', {data: requestBody});
+          const response = await axios.delete('http://localhost:8081/device/admin/categories/issue', {data: requestBody});
           setIssueList(issueList.filter((issue)=>(issue!==rowdata)));
           console.log("Successfully deleted")
           } catch (error) {

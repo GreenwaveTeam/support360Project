@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Box, MenuItem, Button, Container, Dialog, Typography } from '@mui/material';
-import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import axios from 'axios';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -8,8 +7,7 @@ import TabList from '@mui/lab/TabList';
 import { TabPanel } from '@mui/lab';
 import CloseIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { json, useLocation, useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2'
+import {  useLocation, useNavigate } from 'react-router-dom';
 
 /*Navigation Pane*/
 import Sidebar from '../../../components/navigation/sidebar/sidebar';
@@ -45,7 +43,8 @@ const ModuleConfigure = () => {
 	const [selectedAreas,setSelectedAreas]=useState(data.modulelist[0].issueslist)
 	const [module_Name, setModule_Name] = useState(data.modulelist[0].modulename);
 	const [categorySubmitted,setCategorySubmitted]=useState(false)
-	const[categories,setCategories]=useState([])
+	const[categories,setCategories]=useState(data.modulelist[0].issueslist.map(issueDetail => issueDetail.categoryname));
+
 	const [currentModule,setCurrentModule]=useState(data.modulelist[0])
 	const columns=[
 		{
@@ -63,9 +62,8 @@ const ModuleConfigure = () => {
 		},
 	  ]  
 	useEffect(()=>handleDataChange,[selectedAreas])
+	useEffect(()=>{console.log("Category list===>"+categories)},[categories])
 	const handleAddCategory=()=>{
-		console.log(categories)
-  console.log(categoryname)
   if(categories.includes(categoryname)){
     setDialogPopup(true);
 	setsnackbarSeverity('error')
@@ -108,11 +106,14 @@ const ModuleConfigure = () => {
 		setValue(newValue);
 		const moduleIndex = parseInt(newValue) - 1;
 	 const selectedModule = data.modulelist[moduleIndex];
-	 	console.log("Module:"+selectedModule.modulename)
 		setModule_Name(selectedModule.modulename)
 		setCurrentModule(selectedModule)
 	 if (selectedModule && selectedModule.issueslist) {
 			setSelectedAreas(selectedModule.issueslist);
+			
+			setCategories(selectedModule.issueslist.map(issueDetail => issueDetail.categoryname));
+
+	 
 		} else {
 			setSelectedAreas([]);
 		}
@@ -133,7 +134,6 @@ const ModuleConfigure = () => {
 		setIssues(area.issues);
 		setCategoryname(area.categoryname);
 		setCategorySubmitted(true)
-		console.log("Area=====>"+JSON.stringify(area.issues))
 	};
 
 	const handleDeleteArea = async (moduleName, categoryName, area) => {
@@ -145,8 +145,7 @@ const ModuleConfigure = () => {
 		};
 	
 		try {
-					console.log("Data=====>" + moduleName);
-					const response = await axios.delete('http://192.168.7.8:9080/application/admin/plant_id/application/module/category', { data: requestBody });
+					const response = await axios.delete('http://192.168.7.8:8081/application/admin/plant_id/application/module/category', { data: requestBody });
 					// Optionally, update the UI or perform any additional actions after successful deletion
 					setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== categoryName));
 					setCategories(prev => prev.filter(category => category !== area.categoryName));
@@ -155,7 +154,6 @@ const ModuleConfigure = () => {
 					setsnackbarSeverity("success")
     				setDialogMessage("Your area has been deleted")
 				} catch (error) {
-					console.error('Error deleting data:', error.response ? error.response.data : error.message);
 					// Handle errors, such as displaying an error message to the user
 					
 					setsnackbarSeverity("error")
@@ -181,7 +179,6 @@ const ModuleConfigure = () => {
   };
   if(issueExists(issues, 'issuename', issueName))
   {
-    console.log("Issue===>"+issueExists+JSON.stringify(issues))
 	setsnackbarSeverity('error')
     setDialogPopup(true);
     setDialogMessage("Issue Name already exists")
@@ -217,7 +214,6 @@ const ModuleConfigure = () => {
 				categoryname: categoryname,
 				issues: [{issuename: issueName, severity: severity }],
 			};
-			console.log(moduleData)
 			const requestData = {
 				plant_id: plantid,
 				application_name: data.application_name,
@@ -232,14 +228,12 @@ const ModuleConfigure = () => {
 				categoryname: categoryname,
 				issues: [...issues,{issuename: issueName, severity: severity }],
 			};
-			console.log("Issues"+JSON.stringify(issues))
 			setSelectedAreas([...selectedAreas, detail]);
       
-			console.log(JSON.stringify(requestData))
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
-				console.log("Posted data")
+				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData);
+				
 			} catch (error) {
 				console.error('Error:', error);
 			}
@@ -279,10 +273,9 @@ const ModuleConfigure = () => {
 			issuename: rowdata.issuename
 		};
 	
-		console.log("Handle delete==>", requestBody);
-	
+		
 		try {
-			await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: requestBody });
+			await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: requestBody });
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -291,7 +284,6 @@ const ModuleConfigure = () => {
 				categoryname: categoryname,
 				issues: issues.filter(issue => issue.issuename !== rowdata.issuename),
 			};
-			console.log("Detail====>"+JSON.stringify(detail))
 			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
 			setIssues(issues.filter((row)=>(row!==rowdata)))
 		} catch (error) {
@@ -308,7 +300,7 @@ const ModuleConfigure = () => {
 			issuename: prev.issuename
 		  };
 		  
-		  await axios.delete('http://192.168.7.8:9080/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
+		  await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
 		  
 		
 		if (selection) {
@@ -327,7 +319,6 @@ const ModuleConfigure = () => {
 				
 				modulelist: [{modulename: currentModule.modulename, moduleimage: currentModule.moduleimage, issueslist: [details] }],
 			};
-			console.log(JSON.stringify(requestData))
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -336,13 +327,12 @@ const ModuleConfigure = () => {
 				categoryname: categoryname,
 				issues: issues.filter(issue => issue.issuename !== prev.issuename).concat({issuename: rowData.issuename, severity: rowData.severity}),
 			};
-			console.log("Detail====>"+JSON.stringify(detail))
 			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
 
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:9080/application/admin/plant_id/application_name/moduleName', requestData);
-				console.log("Posted data")
+				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData);
+				
 			} catch (error) {
 				console.error('Error:', error);
 			}
@@ -385,7 +375,6 @@ const ModuleConfigure = () => {
 			if (overlaps) {
 				setsnackbarSeverity('error')
 				setDialogPopup(true);
-				console.log("Overlapped")
 				setDialogMessage("Overlap is strictly restricted")
 				setShowPopup(false);
 				setSelection(null);
@@ -398,7 +387,6 @@ const ModuleConfigure = () => {
 	};
 
 	const handleOverlapCheck = (details) => {
-		console.log("Handle overlap")
 		return selectedAreas.some((existing) => {
 			const rightExisting = existing.left + existing.width;
 			const rightNew = details.left + details.width;
@@ -420,7 +408,6 @@ const ModuleConfigure = () => {
 	};
 
 	const handleRedirect = () => {
-		console.log(data)
 		navigate(`/Application/Module`, {
 			state: { application_name:data.application_name ,modulelist:data.modulelist},
 		});
@@ -433,16 +420,17 @@ const ModuleConfigure = () => {
 			<Main open={open}>
 				<DrawerHeader />
 				<Box sx={{ width: '100%', typography: 'body1' }}>
+				
 					{data.modulelist.length > 0 && (
 						<TabContext value={value}>
-							<Box sx={{ borderBottom: 1, borderColor: 'divider'}}>
+							<Box sx={{ borderBottom: 1}}>
 								<TabList onChange={handleChange} aria-label="lab API tabs example">
 									{data.modulelist.map((module, index) => (
 										<Tab key={index} label={module.modulename} value={(index + 1).toString()} />
 									))}
-									<Button variant="contained" sx={{ marginLeft: 'auto', fontSize: '10px', width: 'auto', height: '8vh' }} type="submit" onClick={handleRedirect}>
+									<Tab key="button" label={<div style={{color:'red' }}  variant="contained" type="submit" onClick={handleRedirect}>
 										Add Module
-									</Button>
+									</div>}  ></Tab>
 								</TabList>
 							</Box>
 							{data.modulelist.map((module, index) => (
@@ -549,7 +537,6 @@ const ModuleConfigure = () => {
 													}} style={{width:'50%'}}
 												  />&nbsp;&nbsp;
 												  <Button
-													color="primary"
 													variant="contained"
 													onClick={handleAddCategory} style={{width:'50%'}}
 												  >
@@ -585,7 +572,6 @@ const ModuleConfigure = () => {
 													/>
 													&nbsp;
 													<Button
-													  color="primary"
 													  variant="contained" style={{width:'50%'}}
 													  type='submit'
 													>

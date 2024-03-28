@@ -34,7 +34,13 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
       console.log("fetchInfraFromDb() called");
       try {
         const response = await fetch(
-          `http://localhost:8081/infrastructure/admin/1`
+          `http://localhost:8081/infrastructure/admin/1`,
+          {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
         );
         if (!response.ok) {
           console.log('Response => '+response.status)

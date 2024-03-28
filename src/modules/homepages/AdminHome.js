@@ -36,15 +36,17 @@ export default function AdminHome() {
   }, []);
 
   const fetchData = async () => {
+    console.log(`adminhome Bearer ${localStorage.getItem("token")}`);
     try {
       const response = await fetch("http://localhost:8081/users/", {
         method: "GET",
         headers: {
-          Accept: "application/json",
-          Authorization: localStorage.setItem("token"),
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
         },
       });
       const data = await response.json();
+      console.log("response : ", data);
       setList(data);
       setFilteredRows(data);
       console.log(data);

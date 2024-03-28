@@ -549,7 +549,7 @@ const handleSaveClick = async (selectedRow) => {
         </TableContainer>
        
       </Paper>
-      <Snackbar snackbarSeverity={snackbarSeverity}openPopup={open} setOpenPopup={setOpen} dialogMessage={snackbarText}/>
+      <Snackbar snackbarSeverity={snackbarSeverity} openPopup={open} setOpenPopup={setOpen} dialogMessage={snackbarText}/>
       <CustomDialog open={openDeleteDialog} setOpen={setOpenDeleteDialog} proceedButtonText="Delete" cancelButtonText="Cancel" proceedButtonClick={handleFinalDelete}/>
     </>
   );

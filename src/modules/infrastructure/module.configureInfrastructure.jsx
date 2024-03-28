@@ -1,5 +1,5 @@
 import {
-  Alert, Button, Snackbar
+  Alert, Button
 } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import Textfield from "../../components/textfield/textfield.component";
 import CustomTable from "../../components/table/table.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import { useNavigate } from "react-router-dom";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 
   export default function ConfigureInfrastructure() {
     const [search, setSearch] = useState("");
@@ -33,7 +34,7 @@ import { useNavigate } from "react-router-dom";
       console.log("fetchInfraFromDb() called");
       try {
         const response = await fetch(
-          `http://localhost:8082/infrastructure/admin/1`
+          `http://localhost:8081/infrastructure/admin/1`
         );
         if (!response.ok) {
           console.log('Response => '+response.status)
@@ -170,7 +171,7 @@ import { useNavigate } from "react-router-dom";
       try {
         const plantID="1";
         const response = await fetch(
-          `http://localhost:8082/infrastructure/admin`,
+          `http://localhost:8081/infrastructure/admin`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -217,7 +218,7 @@ import { useNavigate } from "react-router-dom";
       try {
         const plantID="1"
         const response = await fetch(
-          `http://localhost:8082/infrastructure/admin`,
+          `http://localhost:8081/infrastructure/admin`,
           {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
@@ -251,16 +252,16 @@ import { useNavigate } from "react-router-dom";
         const infra_name=row.categoryname;
         console.log(" Row  to delete: ",infra_name)
        // return true;
-      Swal.fire({
-        title: "Do you really want to delete ? ",
-        showDenyButton: true,
-        confirmButtonText: "Delete",
-        denyButtonText: `Cancel`,
-      }).then((result) => {
-        if (result.isConfirmed) {
+      // Swal.fire({
+      //   title: "Do you really want to delete ? ",
+      //   showDenyButton: true,
+      //   confirmButtonText: "Delete",
+      //   denyButtonText: `Cancel`,
+      // }).then((result) => {
+      //   if (result.isConfirmed) {
           deletefromDB(infra_name);
-        }
-      });
+      //   }
+      // });
     };
   
     // const handleSaveClick = async(selected_category, updated_category) => {
@@ -462,7 +463,7 @@ import { useNavigate } from "react-router-dom";
                rows={infraList}
                columns={columns}
                setRows={setInfraList}
-               savetoDatabse={addIssueCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick} editActive={true} tablename={"Edit Existing Category List "} style={{ borderRadius: 10, maxHeight: 440,maxWidth:1200 }} redirectIconActive={true}
+               savetoDatabse={addIssueCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick} editActive={true} tablename={"Edit Existing Category List "} style={{ borderRadius: 10, maxHeight: 440,maxWidth:1200 }} redirectIconActive={true} isDeleteDialog={true}
 
 
 
@@ -472,7 +473,7 @@ import { useNavigate } from "react-router-dom";
   <br/>
   <br/>
   </center>
-          <Snackbar
+          {/* <Snackbar
             open={open}
             autoHideDuration={2000}
             onClose={handleAlertClose}
@@ -486,7 +487,14 @@ import { useNavigate } from "react-router-dom";
             >
               {snackbarText}
             </Alert>
-          </Snackbar>
+          </Snackbar> */}
+          <SnackbarComponent
+                openPopup={open}
+                setOpenPopup={setOpen}
+                dialogMessage={snackbarText}
+                snackbarSeverity={snackbarSeverity}
+                >
+                </SnackbarComponent>
         </div>
       </AnimatedPage>
     );

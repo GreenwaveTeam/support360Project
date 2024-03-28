@@ -8,7 +8,6 @@ import {
   Alert,
   Box,
   Button,
-  Snackbar,
   Typography
 } from "@mui/material";
 import { Container } from "@mui/system";
@@ -25,6 +24,7 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 
 
 export default function AddInfrastructureIssue() {
@@ -150,7 +150,7 @@ const saveEditedDataDb=async (newdata,prev_issue,new_rows,foundRow,editedValue,e
       "new_issue":editedValue.trim(),
       "new_severity":editedSeverity
       };
-      const response= await fetch(`http://localhost:8082/infrastructure/admin/issues`,{
+      const response= await fetch(`http://localhost:8081/infrastructure/admin/issues`,{
         method:'PUT',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify(json_data)
@@ -217,7 +217,7 @@ const saveInfrastructureDetails=async (data) => {
     };
     console.log('Json-Data => ',JSON.stringify(json_data));
     
-   const response= await fetch(`http://localhost:8082/infrastructure/admin`,{
+   const response= await fetch(`http://localhost:8081/infrastructure/admin`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(json_data)
@@ -327,20 +327,20 @@ const handleRowsPerPage = (event) => {
   const handleDeleteClick = (row) => {
     console.log('handleDeleteClick() called')
     console.log('Row to delete => ',row.issue_name)
-    Swal.fire({
-      title: "Do you really want to delete ? ",
-      showDenyButton: true,
-      confirmButtonText: "Delete",
-      denyButtonText: `Cancel`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
+    // Swal.fire({
+    //   title: "Do you really want to delete ? ",
+    //   showDenyButton: true,
+    //   confirmButtonText: "Delete",
+    //   denyButtonText: `Cancel`,
+    // }).then((result) => {
+    //   /* Read more about isConfirmed, isDenied below */
+    //   if (result.isConfirmed) {
         // Swal.fire("Saved!", "", "success");
 
         deletedataDb(row.issue_name);
         
-      }
-    });
+    //   }
+    // });
     console.log("handleDeleteClick()");
 
     //setSearch('');
@@ -483,7 +483,7 @@ const handleRowsPerPage = (event) => {
       console.log("plant ID => ", plantId);
       console.log("infrastructure => ", inf);
       const response = await fetch(
-        `http://localhost:8082/infrastructure/admin/${plantId}/${inf}/issues`
+        `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -851,7 +851,7 @@ const handleRowsPerPage = (event) => {
                rows={filteredRows}
                columns={columns}
                setRows={setFilteredRows}
-               savetoDatabse={addIssueToCurrentCategory}  deleteFromDatabase={handleDeleteClick} editActive={true} tablename={"Added Issues List"} redirectIconActive={false}
+               savetoDatabse={addIssueToCurrentCategory}  deleteFromDatabase={handleDeleteClick} editActive={true} tablename={"Added Issues List"} redirectIconActive={false} isDeleteDialog={true}
                >
                 </CustomTable>
             </motion.div>
@@ -871,7 +871,7 @@ const handleRowsPerPage = (event) => {
           </Container>
         </form>
 
-        <Snackbar
+        {/* <Snackbar
           open={open}
           autoHideDuration={2000}
           onClose={handleAlertClose}
@@ -885,7 +885,14 @@ const handleRowsPerPage = (event) => {
           >
             {snackbarText}
           </Alert>
-        </Snackbar>
+        </Snackbar> */}
+        <SnackbarComponent
+                openPopup={open}
+                setOpenPopup={setOpen}
+                dialogMessage={snackbarText}
+                snackbarSeverity={snackbarSeverity}
+                >
+                </SnackbarComponent>
       </div>
     </AnimatedPage>
   );

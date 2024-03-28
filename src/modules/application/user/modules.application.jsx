@@ -48,6 +48,7 @@ import './modules.application.css'
 import Dropdown from "../../../components/dropdown/dropdown.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import CustomTable from "../../../components/table/table.component";
+import { useNavigate } from "react-router-dom";
 
 
 export default function ApplicationUser() {
@@ -106,7 +107,7 @@ export default function ApplicationUser() {
   const [miscellaneousRemarks, setmiscellaneousRemarks] = useState("");
   const [additionalMiscellaneousError,setAdditionalMiscellaneousError]=useState(false)
   const [additionalMiscellaneousSeverityError,setAdditionallMiscellaneousSeverityError]=useState(false)
-
+  const navigate =useNavigate()
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
     //The next check i need to make whether the current finalUser based on modulename and update the same
@@ -332,6 +333,7 @@ export default function ApplicationUser() {
       }
     } catch (error) {
       console.log("Error fetching data ", error);
+      
     }
     setTabsModuleNames([]);
   };
@@ -362,6 +364,7 @@ export default function ApplicationUser() {
     } catch (error) {
       console.log("Error fetching data ", error);
       setTabsModuleNames([]);
+      navigate('/notfound')
     }
   };
 

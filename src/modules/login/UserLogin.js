@@ -13,13 +13,14 @@ import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { login } from "../helper/AuthService";
+import { useNavigate } from "react-router";
 
 export default function UserLogin() {
   const [userID, setUserID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   // const [allUser, setAllUser] = useState([]);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleShowPasswordClick = () => {
@@ -158,6 +159,7 @@ export default function UserLogin() {
               // console.log("allUser : ", allUser);
               const loggedIn = login(userID, password);
               if (loggedIn) {
+                // navigate("/UserHome");
                 console.log("Loggedin");
                 return;
               } else {

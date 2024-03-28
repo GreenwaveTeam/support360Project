@@ -47,7 +47,6 @@ function App() {
             element={<AdminRegistration />}
           />
           <Route path="/UserHome" element={<UserHome />} />
-          <Route path="/UserHome/:userID" element={<UserHome />} />
           <Route path="/AdminRegistration" element={<AdminRegistration />} />
           <Route path="/userlogin" element={<UserLogin />} />
           <Route path="/adminlogin" element={<AdminLogin />} />

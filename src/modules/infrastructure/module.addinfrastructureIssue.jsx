@@ -26,7 +26,6 @@ import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import Main from "../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 
-
 export default function AddInfrastructureIssue() {
   //********************* Data ********************
 
@@ -72,16 +71,14 @@ export default function AddInfrastructureIssue() {
   const [page, pagechange] = useState(0);
   const [rowperpage, rowperpagechange] = useState(5);
 
-
-    //Modified
-    const [drawerOpen, setDrawerOpen] = useState(false);
-    const handleDrawerOpen = () => {
-      setDrawerOpen(true);
+  //Modified
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
   };
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
-  
 
   //Note the plantID is harcoded currently
   //********************* Style classes ***************
@@ -103,6 +100,10 @@ export default function AddInfrastructureIssue() {
   //Database functions  for CRUD operations
   const deletedataDb = async (issue) => {
     console.log("Issue to be deleted => ", issue);
+    console.log(
+      "Current Bearer Token => ",
+      `Bearer ${localStorage.getItem("token")}`
+    );
     try {
       const plantID = plantId.toString();
       // const currentIP=`http://192.168.7.18:8082/infrastructure/admin/${plantId}/${inf}/${issue}`
@@ -111,7 +112,10 @@ export default function AddInfrastructureIssue() {
         `http://localhost:8081/infrastructure/admin/issue`,
         {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             plantID: plantID,
             infrastructureName: inf,
@@ -166,7 +170,10 @@ export default function AddInfrastructureIssue() {
         `http://localhost:8081/infrastructure/admin/issues`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(json_data),
         }
       );
@@ -227,7 +234,10 @@ export default function AddInfrastructureIssue() {
         `http://localhost:8081/infrastructure/admin`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(json_data),
         }
       );
@@ -492,7 +502,13 @@ export default function AddInfrastructureIssue() {
         console.log("plant ID => ", plantId);
         console.log("infrastructure => ", inf);
         const response = await fetch(
-          `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`
+          `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
         if (!response.ok) {
           throw new Error("Failed to fetch data");
@@ -737,81 +753,86 @@ export default function AddInfrastructureIssue() {
   //************** Returned Component  **************
   return (
     <Box sx={{ display: "flex" }}>
-    <TopbarPage
-      open={drawerOpen}
-      handleDrawerOpen={handleDrawerOpen}
-      urllist={[
-        { pageName: "Home", pagelink: "/AdminPage" },
-        { pageName: "Configure Infrastructure", pagelink: "/admin/InfrastructureConfigure" },
-        { pageName: "Add Issues", pagelink: "/admin/infrastructure/addIssues" },
-
-      ]}
-    />
-    <SidebarPage
-      open={drawerOpen}
-      handleDrawerClose={handleDrawerClose}
-      adminList={[
-        {
-          pagename: "Device Issue Category",
-          pagelink: "/admin/Device/CategoryConfigure",
-        },
-        { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-        { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-        {
-          pagename: "Infrastructure ",
-          pagelink: "/admin/InfrastructureConfigure",
-        },
-      ]}
-      userList={[
-        {
-          pagename: "Report Application",
-          pagelink: "/user/ReportApplication",
-        },
-        {
-          pagename: "Report Infrastructure",
-          pagelink: "/user/ReportInfrastructure",
-        },
-        { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-      ]}
-    />
-    <Main open={drawerOpen}>
-      <DrawerHeader />
-      <Box
-      // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-      >
-    <AnimatedPage>
-      <div>
-        <form>
-          <Container sx={classes.conatiner}>
-            <Box
-              boxShadow={2} // Adjust the shadow depth as needed
-              p={2} // Optional: Add padding to the box
-            >
-              <Typography
-                variant="h6"
-                color="textSecondary"
-                component="h2"
-                gutterBottom
-                fontWeight={900}
-              >
-                Current Infrastructure Category Name ➥ &nbsp;
-                <span style={{ color: "red" }}>{inf}</span>
-              </Typography>
-            </Box>
-            <br />
-            {/* issue name */}
-            <Textfield
-              onChange={(e) => handleAddIssueText(e)}
-              // sx={classes.txt}
-              label={"Enter Issue Name"}
-              variant={"outlined"}
-              required
-              value={addIssue}
-              error={addIssueError}
-            />
-            &nbsp;&nbsp;
-            {/* Add Severity Dropdown  */}
-            {/* <FormControl sx={{ minWidth: 120 }}>
+      <TopbarPage
+        open={drawerOpen}
+        handleDrawerOpen={handleDrawerOpen}
+        urllist={[
+          { pageName: "Home", pagelink: "/AdminPage" },
+          {
+            pageName: "Configure Infrastructure",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
+          {
+            pageName: "Add Issues",
+            pagelink: "/admin/infrastructure/addIssues",
+          },
+        ]}
+      />
+      <SidebarPage
+        open={drawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[
+          {
+            pagename: "Device Issue Category",
+            pagelink: "/admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
+      />
+      <Main open={drawerOpen}>
+        <DrawerHeader />
+        <Box
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+          <AnimatedPage>
+            <div>
+              <form>
+                <Container sx={classes.conatiner}>
+                  <Box
+                    boxShadow={2} // Adjust the shadow depth as needed
+                    p={2} // Optional: Add padding to the box
+                  >
+                    <Typography
+                      variant="h6"
+                      color="textSecondary"
+                      component="h2"
+                      gutterBottom
+                      fontWeight={900}
+                    >
+                      Current Infrastructure Category Name ➥ &nbsp;
+                      <span style={{ color: "red" }}>{inf}</span>
+                    </Typography>
+                  </Box>
+                  <br />
+                  {/* issue name */}
+                  <Textfield
+                    onChange={(e) => handleAddIssueText(e)}
+                    // sx={classes.txt}
+                    label={"Enter Issue Name"}
+                    variant={"outlined"}
+                    required
+                    value={addIssue}
+                    error={addIssueError}
+                  />
+                  &nbsp;&nbsp;
+                  {/* Add Severity Dropdown  */}
+                  {/* <FormControl sx={{ minWidth: 120 }}>
               <InputLabel id="demo-simple-select-helper-label">
                 Select One
               </InputLabel>
@@ -849,70 +870,70 @@ export default function AddInfrastructureIssue() {
                 <b>Level of Severity</b>{" "}
               </FormHelperText>
             </FormControl> */}
-            <Dropdown
-              id={"add-severity"}
-              value={addSeverity}
-              onChange={(event) => handleAddSeverityChange(event)}
-              list={customSeverity}
-              label={"Severity"}
-              error={dropDownError}
-              style={{ width: "110px" }}
-            ></Dropdown>
-            &nbsp;&nbsp;
-            {/* add icon */}
-            <CustomButton
-              color={"primary"}
-              variant={"contained"}
-              onClick={handleAddClick}
-              buttontext={
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  {" "}
-                  Add &nbsp;
-                  <AddCircleOutlineOutlinedIcon
-                    fontSize="large"
-                    sx={{ color: "white" }}
-                  ></AddCircleOutlineOutlinedIcon>
-                </div>
-              }
-            >
-              Add &nbsp;
-              <AddCircleOutlineOutlinedIcon
-                fontSize="large"
-                sx={{ color: "white" }}
-              ></AddCircleOutlineOutlinedIcon>
-            </CustomButton>
-            <br />
-            <br />
-            <motion.div
-              variants={icon}
-              initial="hidden"
-              animate="visible"
-              transition={{
-                default: { duration: 2, ease: "easeInOut" },
-                fill: { duration: 4, ease: [1, 0, 0.8, 1] },
-              }}
-            >
-              <CustomTable
-                rows={filteredRows}
-                columns={columns}
-                setRows={setFilteredRows}
-                savetoDatabse={addIssueToCurrentCategory}
-                deleteFromDatabase={handleDeleteClick}
-                editActive={true}
-                tablename={"Added Issues List"}
-                redirectIconActive={false}
-                isDeleteDialog={true}
-              ></CustomTable>
-            </motion.div>
-            <br />
-            <center>
-              {/* <Button
+                  <Dropdown
+                    id={"add-severity"}
+                    value={addSeverity}
+                    onChange={(event) => handleAddSeverityChange(event)}
+                    list={customSeverity}
+                    label={"Severity"}
+                    error={dropDownError}
+                    style={{ width: "110px" }}
+                  ></Dropdown>
+                  &nbsp;&nbsp;
+                  {/* add icon */}
+                  <CustomButton
+                    color={"primary"}
+                    variant={"contained"}
+                    onClick={handleAddClick}
+                    buttontext={
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {" "}
+                        Add &nbsp;
+                        <AddCircleOutlineOutlinedIcon
+                          fontSize="large"
+                          sx={{ color: "white" }}
+                        ></AddCircleOutlineOutlinedIcon>
+                      </div>
+                    }
+                  >
+                    Add &nbsp;
+                    <AddCircleOutlineOutlinedIcon
+                      fontSize="large"
+                      sx={{ color: "white" }}
+                    ></AddCircleOutlineOutlinedIcon>
+                  </CustomButton>
+                  <br />
+                  <br />
+                  <motion.div
+                    variants={icon}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{
+                      default: { duration: 2, ease: "easeInOut" },
+                      fill: { duration: 4, ease: [1, 0, 0.8, 1] },
+                    }}
+                  >
+                    <CustomTable
+                      rows={filteredRows}
+                      columns={columns}
+                      setRows={setFilteredRows}
+                      savetoDatabse={addIssueToCurrentCategory}
+                      deleteFromDatabase={handleDeleteClick}
+                      editActive={true}
+                      tablename={"Added Issues List"}
+                      redirectIconActive={false}
+                      isDeleteDialog={true}
+                    ></CustomTable>
+                  </motion.div>
+                  <br />
+                  <center>
+                    {/* <Button
                 variant="contained"
                 color="success"
                 onClick={handleSubmit}
@@ -920,13 +941,13 @@ export default function AddInfrastructureIssue() {
               >
                 Submit ➥
               </Button> */}
-              <br />
-              <br />
-            </center>
-          </Container>
-        </form>
+                    <br />
+                    <br />
+                  </center>
+                </Container>
+              </form>
 
-        {/* <Snackbar
+              {/* <Snackbar
           open={open}
           autoHideDuration={2000}
           onClose={handleAlertClose}
@@ -941,16 +962,16 @@ export default function AddInfrastructureIssue() {
             {snackbarText}
           </Alert>
         </Snackbar> */}
-        <SnackbarComponent
-          openPopup={open}
-          setOpenPopup={setOpen}
-          dialogMessage={snackbarText}
-          snackbarSeverity={snackbarSeverity}
-        ></SnackbarComponent>
-      </div>
-    </AnimatedPage>
-    </Box>
-        </Main>
+              <SnackbarComponent
+                openPopup={open}
+                setOpenPopup={setOpen}
+                dialogMessage={snackbarText}
+                snackbarSeverity={snackbarSeverity}
+              ></SnackbarComponent>
+            </div>
+          </AnimatedPage>
+        </Box>
+      </Main>
     </Box>
   );
 }

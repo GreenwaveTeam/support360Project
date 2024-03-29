@@ -206,12 +206,21 @@ const DeviceCategory = () => {
         open={open}
         handleDrawerClose={handleDrawerClose}
         adminList={[
-          { pagename: 'Device Issue Category', pagelink: '/Device/Category' },
-          { pagename: 'Application', pagelink: '/Application' },
-          
+          { pagename: "Device Issue Category", pagelink: "admin/Device/CategoryConfigure" },
+          { pagename: "Application", pagelink: "admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
+          { pagename: "Infrastructure ", pagelink: "admin/InfrastructureConfigure" },
         ]}
         userList={[
-          { pagename: 'Report Application', pagelink: '/user/ReportApplication' }
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
         ]}
       />
       <Main open={open}>

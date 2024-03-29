@@ -433,12 +433,21 @@ const ModuleConfigure = () => {
 		<Box sx={{ display: 'flex' }}>
 			<Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[{ pageName: 'Application', pagelink: '/Application' }]} />
 			<Sidebar open={open} handleDrawerClose={handleDrawerClose} adminList={[
-          { pagename: 'Device Issue Category', pagelink: '/Device/Category' },
-          { pagename: 'Application', pagelink: '/Application' },
-          
+          { pagename: "Device Issue Category", pagelink: "admin/Device/CategoryConfigure" },
+          { pagename: "Application", pagelink: "admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
+          { pagename: "Infrastructure ", pagelink: "admin/InfrastructureConfigure" },
         ]}
         userList={[
-          { pagename: 'Report Application', pagelink: '/user/ReportApplication' }
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
         ]} />
 			<Main open={open}>
 				<DrawerHeader />
@@ -549,10 +558,10 @@ const ModuleConfigure = () => {
 													gutterBottom
 													fontWeight={900}
 												>
-													Add a New Acronym
+													Name of the Selected Snippet
 												</Typography>
 												  <TextField
-													label={'Acronym Name'}
+													label={'Snippet Name'}
 													id="issue"
 													value={categoryname}
 													onChange={(e) => {
@@ -576,7 +585,7 @@ const ModuleConfigure = () => {
 													gutterBottom
 													fontWeight={900}
 												>
-													Current Category Name ➥ &nbsp;
+													Current Snippet Name ➥ &nbsp;
 													<span style={{ color: "red" }}>{categoryname}</span>
 												</Typography>
 												<Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center'}}>

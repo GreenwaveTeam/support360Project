@@ -498,22 +498,26 @@ const handleAddCategory=()=>{
         open={open}
         handleDrawerClose={() => setOpen(false)}
         adminList={[
-          { pagename: 'Device Issue Category', pagelink: '/Device/Category' },
-          { pagename: 'Application', pagelink: '/Application' },
-          
+          { pagename: "Device Issue Category", pagelink: "admin/Device/CategoryConfigure" },
+          { pagename: "Application", pagelink: "admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
+          { pagename: "Infrastructure ", pagelink: "admin/InfrastructureConfigure" },
         ]}
         userList={[
-          { pagename: 'Report Application', pagelink: '/user/ReportApplication' }
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
         ]}
       />
       <Main open={open}>
         <DrawerHeader />
-        
-        {!imageUrl && (
-            
-        <form  style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          
-          <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
+        <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
               <TextField
                 label={'Enter Module  Name'}
                 id="issuecategory"
@@ -523,6 +527,11 @@ const handleAddCategory=()=>{
               />
               
           </div>
+        {!imageUrl && (
+            
+        <form  style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          
+          
           <Button
             variant="contained"
             component="label"
@@ -639,10 +648,10 @@ const handleAddCategory=()=>{
 													gutterBottom
 													fontWeight={900}
 												>
-													Add a New Acronym
+													Name of the selected Snippet
 												</Typography>
                     <TextField
-                      label={'Acronym Name'}
+                      label={'Snippet Name'}
                       id="issue"
                       value={categoryname}
                       onChange={(e) => {
@@ -671,7 +680,7 @@ const handleAddCategory=()=>{
 													gutterBottom
 													fontWeight={900}
 												>
-													Current Category Name ➥ &nbsp;
+													Current Snippetpet Name ➥ &nbsp;
 													<span style={{ color: "red" }}>{categoryname}</span>
 												</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center' }}>

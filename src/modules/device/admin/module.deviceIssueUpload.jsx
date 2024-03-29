@@ -171,8 +171,23 @@ const DeviceIssue = () => {
       <Sidebar
         open={open}
         handleDrawerClose={handleDrawerClose}
-        adminList={[{ pagename: 'Device Issue Category', pagelink: '/Device/Category' }, { pagename: 'Application', pagelink: '/Application' }]}
-        userList={['User Item 1', 'User Item 2', 'User Item 3']}
+        adminList={[
+          { pagename: "Device Issue Category", pagelink: "admin/Device/CategoryConfigure" },
+          { pagename: "Application", pagelink: "admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
+          { pagename: "Infrastructure ", pagelink: "admin/InfrastructureConfigure" },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
       />
       <Main open={open}>
         <DrawerHeader />

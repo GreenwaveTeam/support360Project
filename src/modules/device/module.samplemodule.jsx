@@ -18,12 +18,23 @@ export default function Samplemodule() {
 		setOpen(false);
 	};
   return (
-    <Box>
-        <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[{ pageName: 'Application', pagelink: '/Application' },{ pageName: 'Category', pagelink: '/Device/Category' }]} />
-		<Sidebar open={open} handleDrawerClose={handleDrawerClose} adminList={[{ pagename: 'Issue Category', pagelink: '/IssueCategory' }, { pagename: 'Issue', pagelink: '/Issue' }]} userList={['User Item 1', 'User Item 2', 'User Item 3']} />
-		<Main open={open}>
-		    <DrawerHeader />
+    <Box sx={{ display: 'flex' }}>
+      <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[
+          { pageName: 'Device Issue Category', pagelink: '/Device/Category' }
+        ]} />
+      <Sidebar
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[{ pagename: 'Device Issue Category', pagelink: '/Device/Category' }, { pagename: 'Application', pagelink: '/Application' }]}
+        userList={['User Item 1', 'User Item 2', 'User Item 3']}
+      />
+      <Main open={open}>
+        <DrawerHeader />
+        <Box 
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
             <Typography>Your content</Typography>
+            </Box>
         </Main>
     </Box>
   )

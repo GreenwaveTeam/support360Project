@@ -1527,10 +1527,10 @@ const handleDrawerClose = () => {
     </CustomDropDown> */}
     
         <Box
-          mt={2}
-          ml={2}
-          mr={2}
-          mb={2}
+          // mt={2}
+          // ml={2}
+          // mr={2}
+          // mb={2}
           // sx={{
           //   // typography: "body1",
           //   boxShadow: "0px 3px 5px black",

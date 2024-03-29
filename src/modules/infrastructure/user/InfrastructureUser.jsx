@@ -25,6 +25,7 @@ import {
 import { Dialog } from "primereact/dialog";
 import AddIcon from "@mui/icons-material/Add";
 import CustomTable from "../../../components/table/table.component";
+import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 
 export default function InfrastructureUser() {
   const [open, setOpen] = useState(false);
@@ -43,6 +44,7 @@ export default function InfrastructureUser() {
     []
   );
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
+  const [ticketOpen, setTicketOpen] = useState(false);
 
   const infraTicketJSON = {
     plantId: "plant101",
@@ -151,6 +153,7 @@ export default function InfrastructureUser() {
       if (response.ok) {
         // setPostDataStatus("Data successfully posted!");
         console.log("post completed");
+        setTicketOpen(true);
       } else {
         console.log("Error posting data. Please try again.");
       }
@@ -265,7 +268,11 @@ export default function InfrastructureUser() {
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: "Device Issue Category", pagelink: "/Device/Category" },
+          { pageName: "Home", pagelink: "/AdminPage" },
+          {
+            pageName: "Infrastructure Report",
+            pagelink: "/user/ReportInfrastructure",
+          },
         ]}
       />
       <SidebarPage
@@ -544,6 +551,11 @@ export default function InfrastructureUser() {
                 </center>
               </TableContainer>
             )}
+            <TicketDialog
+              ticketDialogOpen={ticketOpen}
+              setTicketDialogOpen={setTicketOpen}
+              ticketNumber={ticketNumber}
+            ></TicketDialog>
           </div>
         </Box>
       </Main>

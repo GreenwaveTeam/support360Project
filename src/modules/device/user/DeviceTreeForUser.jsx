@@ -39,6 +39,7 @@ import TopbarPage from "../../../components/navigation/topbar/topbar";
 import SidebarPage from "../../../components/navigation/sidebar/sidebar";
 import Main from "../../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../../components/navigation/drawerheader/drawerheader.component";
+import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 
 export default function UserDeviceTree() {
   const [open, setOpen] = useState(false);
@@ -65,6 +66,7 @@ export default function UserDeviceTree() {
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
 
   const [visibleConfirm, setVisibleConfirm] = useState(false);
+  const [ticketOpen, setTicketOpen] = useState(false);
   const toast = useRef(null);
 
   const handleDrawerOpen = () => {
@@ -224,6 +226,7 @@ export default function UserDeviceTree() {
       if (response.ok) {
         // setPostDataStatus("Data successfully posted!");
         console.log("post completed");
+        setTicketOpen(true);
       } else {
         // setPostDataStatus("Error posting data. Please try again.");
       }
@@ -371,7 +374,11 @@ export default function UserDeviceTree() {
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: "Device Issue Category", pagelink: "/Device/Category" },
+          { pageName: "Home", pagelink: "/AdminPage" },
+          {
+            pageName: "Device Report",
+            pagelink: "/user/ReportDevice",
+          },
         ]}
       />
       <SidebarPage
@@ -380,13 +387,13 @@ export default function UserDeviceTree() {
         adminList={[
           {
             pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
+            pagelink: "admin/Device/CategoryConfigure",
           },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          { pagename: "Application", pagelink: "admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
           {
             pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
+            pagelink: "admin/InfrastructureConfigure",
           },
         ]}
         userList={[
@@ -928,6 +935,11 @@ export default function UserDeviceTree() {
                 )}
               </div>
             </div>
+            <TicketDialog
+              ticketDialogOpen={ticketOpen}
+              setTicketDialogOpen={setTicketOpen}
+              ticketNumber={ticketNumber}
+            ></TicketDialog>
           </div>
         </Box>
       </Main>

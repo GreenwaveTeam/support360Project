@@ -19,6 +19,7 @@ import TopbarPage from "../../../components/navigation/topbar/topbar";
 import SidebarPage from "../../../components/navigation/sidebar/sidebar";
 import Main from "../../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../../components/navigation/drawerheader/drawerheader.component";
+import CustomDialog from "../../../components/dialog/dialog.component";
 
 export default function RichObjectTreeView() {
   const [selectedNode, setSelectedNode] = useState(null);
@@ -63,6 +64,7 @@ export default function RichObjectTreeView() {
   const [editedImage, setEditedImage] = useState(null);
   const [editedCategory, setEditedCategory] = useState("");
   const [open, setOpen] = useState(false);
+  const [delOpen, setDelOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -582,6 +584,9 @@ export default function RichObjectTreeView() {
     }
   };
 
+  const handleDialogOpen = () => {
+    setDelOpen(true);
+  };
   const handleDeleteNode = async () => {
     if (selectedNode && selectedNode.id === "root") {
       // If the selected node is the root, clear all data and hide the right panel
@@ -589,6 +594,7 @@ export default function RichObjectTreeView() {
       handleDeleteData();
       setData(null);
       setSelectedNode(null);
+      setDelOpen(false);
     } else if (selectedNode) {
       let dataForDelete;
       // For other nodes, delete the selected node
@@ -599,6 +605,7 @@ export default function RichObjectTreeView() {
         return updatedData;
       });
       setSelectedNode(null);
+      setDelOpen(false);
       handlePostData(dataForDelete);
     }
   };
@@ -626,7 +633,11 @@ export default function RichObjectTreeView() {
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: "Device Issue Category", pagelink: "/Device/Category" },
+          { pageName: "Home", pagelink: "/AdminPage" },
+          {
+            pageName: "Configure Device",
+            pagelink: "/admin/DeviceConfigure",
+          },
         ]}
       />
       <SidebarPage
@@ -709,7 +720,7 @@ export default function RichObjectTreeView() {
                         className="button"
                         variant="contained"
                         color="secondary" // Use secondary color for delete button
-                        onClick={handleDeleteNode}
+                        onClick={handleDialogOpen}
                       >
                         Delete Node
                       </Button>
@@ -1438,6 +1449,13 @@ export default function RichObjectTreeView() {
                 </>
               )}
             </div>
+            <CustomDialog
+              open={delOpen}
+              setOpen={setDelOpen}
+              proceedButtonText={"YES"}
+              proceedButtonClick={handleDeleteNode}
+              cancelButtonText={"NO"}
+            ></CustomDialog>
           </div>
         </Box>
       </Main>

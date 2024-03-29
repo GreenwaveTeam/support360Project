@@ -20,12 +20,12 @@ const AdminPage = () => {
   console.log("userID : ", userName);
   return (
     <Container component="main" maxWidth="md">
-      <Typography component="h1" variant="h5">
+      {/* <Typography component="h1" variant="h5">
         Create Configuration for {userName}
-      </Typography>
+      </Typography> */}
       <Grid
         container
-        spacing={2}
+        spacing={4}
         direction="column"
         justifyContent="center"
         alignItems="center"
@@ -36,7 +36,9 @@ const AdminPage = () => {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={navigate("/Application")}
+            onClick={() => {
+              navigate("/admin/ApplicationConfigure");
+            }}
           >
             Application
           </Button>
@@ -46,7 +48,9 @@ const AdminPage = () => {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={navigate("/deviceCreation")}
+            onClick={() => {
+              navigate("/admin/DeviceConfigure");
+            }}
           >
             Device
           </Button>
@@ -56,7 +60,9 @@ const AdminPage = () => {
             variant="contained"
             color="primary"
             fullWidth
-            onClick={navigate("/admin/infrastructure/configureInfrastructure")}
+            onClick={() => {
+              navigate("/admin/InfrastructureConfigure");
+            }}
           >
             Infrastructure
           </Button>

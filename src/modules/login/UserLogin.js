@@ -15,8 +15,6 @@ import {
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { useNavigate } from "react-router";
 import { login } from "../helper/AuthService";
 import { Visibility, VisibilityOff } from "@mui/icons-material";

@@ -1,7 +1,7 @@
 export const login = async (username, password) => {
-  if (localStorage.getItem("token") !== null) {
-    localStorage.removeItem("token");
-  }
+  // if (localStorage.getItem("token") !== null) {
+  //   localStorage.removeItem("token");
+  // }
   try {
     const response = await fetch("http://localhost:8081/auth/signin", {
       method: "POST",

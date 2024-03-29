@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -23,6 +24,10 @@ import Textfield from "../../components/textfield/textfield.component";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { CategoryOutlined } from "@mui/icons-material";
+import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
+import Main from "../../components/navigation/mainbody/mainbody";
+import TopbarPage from "../../components/navigation/topbar/topbar";
+import SidebarPage from "../../components/navigation/sidebar/sidebar";
 
 export default function AdminHome() {
   const [list, setList] = useState([]);
@@ -30,6 +35,15 @@ export default function AdminHome() {
   const [filteredRows, setFilteredRows] = useState(list);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     fetchData();
@@ -168,178 +182,227 @@ export default function AdminHome() {
   // };
 
   return (
-    <>
-      <Typography component="h1" variant="h5">
-        {/* Welcome {adminName} */}
-      </Typography>
-      <Grid
-        item
-        xs={12}
-        display={"flex"}
-        alignItems={"center"}
-        justifyContent={"space-evenly"}
-        margin={"10px"}
-        border={"2px solid gray"}
-        borderRadius={"20px"}
-        paddingBottom={"10px"}
-      >
-        <Button
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-          onClick={() => navigate("/UserRegistration")}
+    <Box sx={{ display: "flex" }}>
+      <TopbarPage
+        open={open}
+        handleDrawerOpen={handleDrawerOpen}
+        urllist={[{ pageName: "Admin Home Page", pagelink: "/AdminHome" }]}
+      />
+      <SidebarPage
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[
+          {
+            pagename: "Device Issue Category",
+            pagelink: "/admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
+      />
+      <Main open={open}>
+        <DrawerHeader />
+        <Box
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
-          Register New User
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-          onClick={() => navigate("/AdminRegistration")}
-        >
-          Register New Admin
-        </Button>
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        {/* <h3>Existing Users</h3> */}
-        <Typography style={{ fontWeight: "bold", backgroundColor: "cyan" }}>
-          Existing Users
-        </Typography>
-        <TableContainer>
-          <Table>
-            <TableRow>
-              <TableCell
-                colSpan={4}
-                sx={{
-                  textAlign: "center",
-                  fontSize: "15px",
-                  fontWeight: "bold",
-                  backgroundColor: "#B5C0D0",
-                  lineHeight: 4,
-                }}
+          <>
+            <Typography component="h1" variant="h5">
+              {/* Welcome {adminName} */}
+            </Typography>
+            <Grid
+              item
+              xs={12}
+              display={"flex"}
+              alignItems={"center"}
+              justifyContent={"space-evenly"}
+              margin={"10px"}
+              border={"2px solid gray"}
+              borderRadius={"20px"}
+              paddingBottom={"10px"}
+            >
+              <Button
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={() => navigate("/UserRegistration")}
               >
-                <Textfield
-                  onChange={(e) => handleSearchChange(e)}
-                  variant={"outlined"}
-                  size="small"
-                  label={
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <SearchOutlinedIcon style={{ marginRight: "5px" }} />
-                      Search...
-                    </div>
-                  }
-                  value={search}
-                  sx={{
-                    marginLeft: "5px",
-                    width: "200px",
-                    // Set the background color to white
-                  }}
-                  //   InputProps={{
-                  //     startAdornment: (
-                  //         <InputAdornment position="start">
-                  //             <SearchOutlinedIcon />
-                  //         </InputAdornment>
-                  //     ),
-                  // }}
-                />
-                <Tooltip title="Clear">
-                  <Button
-                    onClick={() => {
-                      setSearch("");
-                      setFilteredRows(list);
-                    }}
-                    style={{ color: "black" }}
-                  >
-                    <DisabledByDefaultRoundedIcon />
-                  </Button>
-                </Tooltip>
-              </TableCell>
-            </TableRow>
-            <TableHead>
-              <TableRow>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Email</TableCell>
-                <TableCell align="center">User ID</TableCell>
-                <TableCell align="center"></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRows.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell align="center">{item.name}</TableCell>
-                  <TableCell align="center">{item.email}</TableCell>
-                  {/* <Link to={"/AdminPage"} style={{ color: "inherit" }}> */}
-                  <TableCell
-                    onClick={() => navigate("/AdminPage")}
-                    align="center"
-                  >
-                    {item.userID}
-                  </TableCell>
-                  {/* </Link> */}
-                  <TableCell align="center">
-                    {/* <Link
+                Register New User
+              </Button>
+              <Button
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={() => navigate("/AdminRegistration")}
+              >
+                Register New Admin
+              </Button>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              {/* <h3>Existing Users</h3> */}
+              <Typography
+                style={{ fontWeight: "bold", backgroundColor: "cyan" }}
+              >
+                Existing Users
+              </Typography>
+              <TableContainer>
+                <Table>
+                  <TableRow>
+                    <TableCell
+                      colSpan={4}
+                      sx={{
+                        textAlign: "center",
+                        fontSize: "15px",
+                        fontWeight: "bold",
+                        backgroundColor: "#B5C0D0",
+                        lineHeight: 4,
+                      }}
+                    >
+                      <Textfield
+                        onChange={(e) => handleSearchChange(e)}
+                        variant={"outlined"}
+                        size="small"
+                        label={
+                          <div
+                            style={{ display: "flex", alignItems: "center" }}
+                          >
+                            <SearchOutlinedIcon
+                              style={{ marginRight: "5px" }}
+                            />
+                            Search...
+                          </div>
+                        }
+                        value={search}
+                        sx={{
+                          marginLeft: "5px",
+                          width: "200px",
+                          // Set the background color to white
+                        }}
+                        //   InputProps={{
+                        //     startAdornment: (
+                        //         <InputAdornment position="start">
+                        //             <SearchOutlinedIcon />
+                        //         </InputAdornment>
+                        //     ),
+                        // }}
+                      />
+                      <Tooltip title="Clear">
+                        <Button
+                          onClick={() => {
+                            setSearch("");
+                            setFilteredRows(list);
+                          }}
+                          style={{ color: "black" }}
+                        >
+                          <DisabledByDefaultRoundedIcon />
+                        </Button>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">Name</TableCell>
+                      <TableCell align="center">Email</TableCell>
+                      <TableCell align="center">User ID</TableCell>
+                      <TableCell align="center"></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredRows.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell align="center">{item.name}</TableCell>
+                        <TableCell align="center">{item.email}</TableCell>
+                        {/* <Link to={"/AdminPage"} style={{ color: "inherit" }}> */}
+                        <TableCell
+                          onClick={() => navigate("/AdminPage")}
+                          align="center"
+                        >
+                          {item.userID}
+                        </TableCell>
+                        {/* </Link> */}
+                        <TableCell align="center">
+                          {/* <Link
                       to={`/UserRegistration/${item.userID}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <BorderColorOutlinedIcon color="primary" />
                     </Link> */}
-                    <Link style={{ textDecoration: "none", color: "inherit" }}>
-                      <DeleteForeverOutlinedIcon
-                        color="error"
-                        // onClick={(e) => {
-                        //   deleteUserByUserID(item.adminID);
-                        // }}
-                        onClick={(e) => handleDelete(item.userID)}
-                      />
-                    </Link>
-                    <>
-                      <Dialog
-                        open={openDeleteDialog}
-                        onClose={() => setOpenDeleteDialog(false)}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                      >
-                        <DialogTitle id="alert-dialog-title">
-                          {"Delete User?"}
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText id="alert-dialog-description">
-                            Are you sure you want to delete this user :{" "}
-                            {item.userID} ?
-                          </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            onClick={() => setOpenDeleteDialog(false)}
-                            color="primary"
+                          <Link
+                            style={{ textDecoration: "none", color: "inherit" }}
                           >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              deleteUserByUserID(item.userID);
-                              setOpenDeleteDialog(false);
-                            }}
-                            color="error"
-                            autoFocus
-                          >
-                            Delete
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Grid>
-    </>
+                            <DeleteForeverOutlinedIcon
+                              color="error"
+                              // onClick={(e) => {
+                              //   deleteUserByUserID(item.adminID);
+                              // }}
+                              onClick={(e) => handleDelete(item.userID)}
+                            />
+                          </Link>
+                          <>
+                            <Dialog
+                              open={openDeleteDialog}
+                              onClose={() => setOpenDeleteDialog(false)}
+                              aria-labelledby="alert-dialog-title"
+                              aria-describedby="alert-dialog-description"
+                            >
+                              <DialogTitle id="alert-dialog-title">
+                                {"Delete User?"}
+                              </DialogTitle>
+                              <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                  Are you sure you want to delete this user :{" "}
+                                  {item.userID} ?
+                                </DialogContentText>
+                              </DialogContent>
+                              <DialogActions>
+                                <Button
+                                  onClick={() => setOpenDeleteDialog(false)}
+                                  color="primary"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={() => {
+                                    deleteUserByUserID(item.userID);
+                                    setOpenDeleteDialog(false);
+                                  }}
+                                  color="error"
+                                  autoFocus
+                                >
+                                  Delete
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+          </>
+        </Box>
+      </Main>
+    </Box>
   );
 }

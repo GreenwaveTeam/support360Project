@@ -84,8 +84,8 @@ function App() {
           <Route path="/*" element={<NotFound />}></Route>
 
           <Route path="/userDevice" element={<UserDeviceTree />} />
-          <Route path="/infraUser" element={<InfrastructureUser/>} />
-          <Route path="/deviceCreation" element={<RichObjectTreeView/>} />
+          <Route path="/infraUser" element={<InfrastructureUser />} />
+          <Route path="/deviceCreation" element={<RichObjectTreeView />} />
         </Routes>
       </div>
     </Router>

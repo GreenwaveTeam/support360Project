@@ -52,7 +52,10 @@ export default function ModuleConfiguration() {
   ];useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8081/application/admin/${plantid}`);
+        const response = await axios.get(`http://192.168.7.8:8081/application/admin/${plantid}`,{headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },});
         const moduleData = response.data;
         setData(moduleData);
         setFilteredRows(moduleData)
@@ -79,7 +82,10 @@ export default function ModuleConfiguration() {
                 // Add other properties from rowData if needed
               };     
               console.log("Request body=>"+JSON.stringify(requestBody))
-              axios.delete(`http://localhost:8081/application/admin/plantid/applicationname`,{ data: requestBody });
+              axios.delete(`http://192.168.7.8:8081/application/admin/plantid/applicationname`,{ data: requestBody },{headers:{
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+              },});
              const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
             setData(updatedCategories);
           }catch(e)
@@ -100,7 +106,10 @@ export default function ModuleConfiguration() {
 
   try {
     // Send requestBody as request body in the PUT request
-    const response = await axios.put(`http://localhost:8081/application/admin/${plantid}/${prev.application_name}`, rowData);
+    const response = await axios.put(`http://192.168.7.8:8081/application/admin/${plantid}/${prev.application_name}`, rowData,{headers:{
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },});
     console.log("Posted data");
   } catch (error) {
     console.error('Error:', error);
@@ -150,13 +159,19 @@ export default function ModuleConfiguration() {
     
     return (
    
-        <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex' }}>
       <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={urllist} />
       <Sidebar
         open={open}
         handleDrawerClose={handleDrawerClose}
-        adminList={[{ pagename: 'Issue Category', pagelink: '/IssueCategory' }, { pagename: 'Issue', pagelink: '/Issue' }]}
-        userList={['User Item 1', 'User Item 2', 'User Item 3']}
+        adminList={[
+          { pagename: 'Device Issue Category', pagelink: '/Device/Category' },
+          { pagename: 'Application', pagelink: '/Application' },
+          
+        ]}
+        userList={[
+          { pagename: 'Report Application', pagelink: '/user/ReportApplication' }
+        ]}
       />
       <Main open={open}>
       <DrawerHeader />

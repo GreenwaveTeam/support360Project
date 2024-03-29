@@ -56,8 +56,8 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
         </ListItemButton>
         <Collapse in={openAdmin} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            {adminList.map(({pagename, pagelink}) => (
-              <ListItem key={pagename} disablePadding sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
+            {adminList.map(({pagename, pagelink},index) => (
+              <ListItem key={index} disablePadding sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
                 <ListItemButton component={Link} to={pagelink}>
                   <ListItemText primary={pagename} />
                 </ListItemButton>
@@ -75,8 +75,8 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
         </ListItemButton>
         <Collapse in={openUser} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-          {userList.map(({pagename, pagelink}) => (
-              <ListItem key={pagename} disablePadding sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
+          {userList.map(({pagename, pagelink},index) => (
+              <ListItem key={index} disablePadding sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
                 <ListItemButton component={Link} to={pagelink}>
                   <ListItemText primary={pagename} />
                 </ListItemButton>

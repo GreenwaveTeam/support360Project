@@ -119,7 +119,10 @@ const DeviceCategory = () => {
 
     try {
         // Send requestBody as request body in the DELETE request
-        await axios.delete('http://192.168.7.8:8081/device/admin/categories', { data: requestBody });
+        await axios.delete('http://192.168.7.8:8081/device/admin/categories', { data: requestBody },{headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },});
         setCategorylist(categorylist.filter((category)=>(category!==rowData)))
       } catch (error) {
         console.error('Error:', error);
@@ -150,11 +153,10 @@ const DeviceCategory = () => {
         issueList: updatedCategory.issuelist
       };
       try {
-        const response = await axios.put(`http://192.168.7.8:8081/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await axios.put(`http://192.168.7.8:8081/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },});
         console.log(response.data); // Handle response data
       } catch (error) {
         console.error('Error:', error);

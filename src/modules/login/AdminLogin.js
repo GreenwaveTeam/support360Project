@@ -155,7 +155,7 @@ export default function AdminLogin() {
             onClick={(event) => {
               event.preventDefault();
               const loggedIn = login(adminID, password);
-              if (loggedIn) {
+              if (loggedIn && localStorage.getItem("token") !== null) {
                 navigate("/AdminHome");
                 console.log("Loggedin");
                 return;

@@ -37,6 +37,7 @@ export default function UserRegistration() {
     supportEndDate: "",
     accountOwnerCustomer: "",
     accountOwnerGW: "",
+    role: "",
   });
   const [newPlantName, setNewPlantName] = useState({
     plantName: "",
@@ -59,7 +60,7 @@ export default function UserRegistration() {
 
   useEffect(() => {
     fetchData();
-    fetchExistingUser();
+    // fetchExistingUser();
   }, []);
 
   const handleAddPlantClick = () => {
@@ -84,6 +85,11 @@ export default function UserRegistration() {
   const handleDesignationChange = (event) => {
     const { value } = event.target;
     setFormData({ ...formData, designation: value });
+  };
+
+  const handleRoleChange = (event) => {
+    const { value } = event.target;
+    setFormData({ ...formData, role: value });
   };
 
   const handlePhoneNumberChange = (event) => {
@@ -143,62 +149,64 @@ export default function UserRegistration() {
   //   }
   // };
 
-  const fetchExistingUser = async () => {
-    try {
-      const response = await fetch("http://localhost:8081/users/", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      const data = await response.json();
-      checkExistingUser(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
+  // const fetchExistingUser = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:8081/users/", {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     checkExistingUser(data);
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
 
-  const checkExistingUser = (data) => {
-    for (let i of data) {
-      if (i.userID === userID) {
-        setUserExist(true);
-        setFormData((prevData) => ({
-          ...prevData,
-          userID: i.userID,
-          name: i.name,
-          designation: i.designation,
-          email: i.email,
-          // password: i.password,
-          phoneNumber: i.phoneNumber,
-          plantID: i.plantID,
-          plantName: i.plantName,
-          address: i.address,
-          division: i.division,
-          customerName: i.customerName,
-          supportStartDate: dayjs(
-            convertDateFormat(i.supportStartDate),
-            "DD-MM-YYYY"
-          ),
-          supportEndDate: dayjs(
-            convertDateFormat(i.supportEndDate),
-            "DD-MM-YYYY"
-          ),
-          accountOwnerCustomer: i.accountOwnerCustomer,
-          accountOwnerGW: i.accountOwnerGW,
-        }));
-      }
-    }
-  };
+  // const checkExistingUser = (data) => {
+  //   for (let i of data) {
+  //     if (i.userID === userID) {
+  //       setUserExist(true);
+  //       setFormData((prevData) => ({
+  //         ...prevData,
+  //         userID: i.userID,
+  //         name: i.name,
+  //         designation: i.designation,
+  //         email: i.email,
+  //         // password: i.password,
+  //         phoneNumber: i.phoneNumber,
+  //         plantID: i.plantID,
+  //         plantName: i.plantName,
+  //         address: i.address,
+  //         division: i.division,
+  //         customerName: i.customerName,
+  //         supportStartDate: dayjs(
+  //           convertDateFormat(i.supportStartDate),
+  //           "DD-MM-YYYY"
+  //         ),
+  //         supportEndDate: dayjs(
+  //           convertDateFormat(i.supportEndDate),
+  //           "DD-MM-YYYY"
+  //         ),
+  //         accountOwnerCustomer: i.accountOwnerCustomer,
+  //         accountOwnerGW: i.accountOwnerGW,
+  //       }));
+  //     }
+  //   }
+  // };
 
   const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:8081/plants/", {
         method: "GET",
         headers: {
-          Accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
         },
       });
       const data = await response.json();
+      console.log("plantDetails : ", data);
       setPlantList(data);
     } catch (error) {
       console.log(error);
@@ -210,6 +218,7 @@ export default function UserRegistration() {
       const response = await fetch("http://localhost:8081/plants/plant", {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newPlantName),
@@ -255,7 +264,7 @@ export default function UserRegistration() {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch("http://localhost:8081/auth/user/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -264,9 +273,9 @@ export default function UserRegistration() {
       });
       if (response.ok) {
         console.log("User registered successfully");
-        navigate(`/abc/${formData.userID}`, {
-          state: { userName: formData.name },
-        });
+        navigate(`/AdminHome`);
+      } else if (response.status === 400) {
+        console.error("User Already Exist");
       } else {
         console.error("Failed to register user");
       }
@@ -530,6 +539,7 @@ export default function UserRegistration() {
                     </FormControl> */}
                     <Dropdown
                       style={{ width: "40%" }}
+                      fullWidth={true}
                       id="plantName"
                       value={formData.plantName}
                       label="Plant Name"
@@ -680,6 +690,14 @@ export default function UserRegistration() {
                   onChange={handleFormdataInputChange}
                 />
               </Grid>
+              <Dropdown
+                id="role"
+                value={formData.role}
+                label="Role"
+                onChange={handleRoleChange}
+                list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                fullWidth
+              />
             </Grid>
             {userExist ? (
               <Button

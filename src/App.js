@@ -19,6 +19,9 @@ import ConfigureInfrastructure from "./modules/infrastructure/module.configureIn
 import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 import Samplemodule from "./modules/device/module.samplemodule";
 import NotFound from "./components/notfound/notfound.component";
+import UserDeviceTree from "./modules/device/user/DeviceTreeForUser";
+import InfrastructureUser from "./modules/infrastructure/user/InfrastructureUser";
+import RichObjectTreeView from "./modules/device/admin/RichObjectTreeView";
 
 // import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 
@@ -80,6 +83,10 @@ function App() {
           {/* test */}
           <Route path="/sample" element={<Samplemodule />} />
           <Route path="/notfound" element={<NotFound />}></Route>
+
+          <Route path="/userDevice" element={<UserDeviceTree />} />
+          <Route path="/infraUser" element={<InfrastructureUser/>} />
+          <Route path="/deviceCreation" element={<RichObjectTreeView/>} />
         </Routes>
       </div>
     </Router>

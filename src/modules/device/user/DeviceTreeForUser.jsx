@@ -29,6 +29,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { Dialog } from "primereact/dialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Alert } from "@mui/material";
+import CustomTable from "../../../components/table/table.component";
 
 export default function UserDeviceTree() {
   const [selectedNode, setSelectedNode] = useState(null);
@@ -80,6 +81,26 @@ export default function UserDeviceTree() {
     status: "open",
     deviceIssueDetails: deviceIssueDetails,
   };
+  const columns = [
+    {
+      id: "issue",
+      label: "Issue Name",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "priority",
+      label: "Severity",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "remarks",
+      label: "Remarks",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+  ];
 
   //   React.useEffect(() => {
   //     console.log(
@@ -266,7 +287,9 @@ export default function UserDeviceTree() {
     setFilteredDeviceIssueDetails(filteredData);
   };
 
-  const handleDeleteItem = (issue) => {
+  const handleDeleteItem = (row) => {
+    const issue = row.issue;
+    console.log(" for delete => ", issue);
     const updatedData = tableData.filter((item) => item.issue !== issue);
     setTableData(updatedData);
   };
@@ -532,34 +555,44 @@ export default function UserDeviceTree() {
                   )}
 
                   {tableData.length > 0 && (
-                    <TableContainer>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Issue</TableCell>
-                            <TableCell>Priority</TableCell>
-                            <TableCell>Remarks</TableCell>
-                            <TableCell>Action</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {tableData.map((row, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{row.issue}</TableCell>
-                              <TableCell>{row.priority}</TableCell>
-                              <TableCell>{row.remarks}</TableCell>
-                              <TableCell>
-                                <IconButton
-                                  onClick={() => handleDeleteItem(row.issue)}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                    // <TableContainer>
+                    //   <Table>
+                    //     <TableHead>
+                    //       <TableRow>
+                    //         <TableCell>Issue</TableCell>
+                    //         <TableCell>Priority</TableCell>
+                    //         <TableCell>Remarks</TableCell>
+                    //         <TableCell>Action</TableCell>
+                    //       </TableRow>
+                    //     </TableHead>
+                    //     <TableBody>
+                    //       {tableData.map((row, index) => (
+                    //         <TableRow key={index}>
+                    //           <TableCell>{row.issue}</TableCell>
+                    //           <TableCell>{row.priority}</TableCell>
+                    //           <TableCell>{row.remarks}</TableCell>
+                    //           <TableCell>
+                    //             <IconButton
+                    //               onClick={() => handleDeleteItem(row.issue)}
+                    //             >
+                    //               <DeleteIcon />
+                    //             </IconButton>
+                    //           </TableCell>
+                    //         </TableRow>
+                    //       ))}
+                    //     </TableBody>
+                    //   </Table>
+                    // </TableContainer>
+                    <CustomTable
+                      rows={tableData}
+                      columns={columns}
+                      setRows={setTableData}
+                      deleteFromDatabase={handleDeleteItem}
+                      editActive={false}
+                      tablename={"Added Issues"}
+                      redirectIconActive={false}
+                      isDeleteDialog={false}
+                    ></CustomTable>
                   )}
                 </Dialog>
               </div>

@@ -19,6 +19,7 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 
 export default function AddInfrastructureIssue() {
   //********************* Data ********************

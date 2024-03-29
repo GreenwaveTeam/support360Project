@@ -13,6 +13,8 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Card } from "@mui/material";
 import { Dialog } from "primereact/dialog";
+//import CustomTree from "../../../components/Tree/tree.component";
+import CustomTreeView from "../../../components/Tree/tree.component";
 
 export default function RichObjectTreeView() {
   const [selectedNode, setSelectedNode] = useState(null);
@@ -633,15 +635,12 @@ export default function RichObjectTreeView() {
         {data !== null && (
           <div className="treeViewContainer">
             <p>Device Tree:</p>
-            <TreeView
-              className="treeView"
-              aria-label="rich object"
-              defaultCollapseIcon={<ExpandMoreIcon />}
-              defaultExpanded={getAllNodeIds(data)}
-              defaultExpandIcon={<ChevronRightIcon />}
-            >
-              {renderTree(data)}
-            </TreeView>
+            <CustomTreeView
+              data={data}
+              renderTree={renderTree}
+              handleNodeClick={handleNodeClick}
+              handleContextMenu={handleContextMenu}
+            />
             <br />
           </div>
         )}

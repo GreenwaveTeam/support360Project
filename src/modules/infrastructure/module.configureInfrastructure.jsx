@@ -461,7 +461,7 @@ const handleDrawerClose = () => {
         open={drawerOpen}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: "AdminHome Page > ", pagelink: "/AdminPage" },
+          { pageName: "Home", pagelink: "/AdminPage" },
           { pageName: "Configure Infrastructure", pagelink: "/admin/InfrastructureConfigure" },
         ]}
       />

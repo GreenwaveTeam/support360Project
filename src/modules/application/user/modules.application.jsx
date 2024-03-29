@@ -327,7 +327,13 @@ export default function ApplicationUser() {
   const fetchApplicationNames = async (plantID) => {
     try {
       const response = await fetch(
-        `http://localhost:8081/application/user/${plantID}`
+        `http://localhost:8081/application/user/${plantID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -356,7 +362,13 @@ export default function ApplicationUser() {
       console.log("Current Dropdown selection : ", dropdownvalue);
       const plantID = "P009";
       const response = await fetch(
-        `http://localhost:8081/application/user/${plantID}/${dropdownvalue}`
+        `http://localhost:8081/application/user/${plantID}/${dropdownvalue}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -425,7 +437,13 @@ export default function ApplicationUser() {
         `http://localhost:8081/application/user/${plantID}/${application}/${module}`
       );
       const API = `http://localhost:8081/application/user/${plantID}/${application}/${module}`;
-      const response = await fetch(API);
+      const response = await fetch(API, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
@@ -1069,7 +1087,12 @@ export default function ApplicationUser() {
     try {
       const response = await fetch(`http://localhost:8081/application/user`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+       
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+       
         body: JSON.stringify(json_data),
       });
       if (response.ok) {

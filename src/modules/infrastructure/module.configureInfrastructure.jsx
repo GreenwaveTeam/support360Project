@@ -33,6 +33,7 @@ import CustomButton from "../../components/button/button.component";
     const fetchInfraFromDb = async () => {
       setProgressVisible(true)
       const plantID='P009'
+      console.log("Fetched Token from LS=>  ",`Bearer ${localStorage.getItem("token")}`)
       console.log("fetchInfraFromDb() called");
       try {
         const response = await fetch(

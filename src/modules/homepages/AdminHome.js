@@ -23,7 +23,6 @@ import Textfield from "../../components/textfield/textfield.component";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import { CategoryOutlined } from "@mui/icons-material";
-import CustomTable from "../../components/table/table.component";
 
 export default function AdminHome() {
   const [list, setList] = useState([]);
@@ -81,7 +80,8 @@ export default function AdminHome() {
       const response = await fetch(`http://localhost:8081/users/user/${e}`, {
         method: "DELETE",
         headers: {
-          Accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
         },
       });
       const data = await response.ok;
@@ -120,26 +120,52 @@ export default function AdminHome() {
     setOpenDeleteDialog(true);
   };
 
-  const columns = [
-    {
-      id: "name",
-      label: "Name",
-      type: "textbox",
-      canRepeatSameValue: false,
-    },
-    {
-      id: "email",
-      label: "Email",
-      type: "textbox",
-      canRepeatSameValue: false,
-    },
-    {
-      id: "userid",
-      label: "UserID",
-      type: "textbox",
-      canRepeatSameValue: false,
-    },
-  ];
+  // const columns = [
+  //   {
+  //     id: "name",
+  //     label: "Name",
+  //     type: "textbox",
+  //     canRepeatSameValue: false,
+  //   },
+  //   {
+  //     id: "email",
+  //     label: "Email",
+  //     type: "textbox",
+  //     canRepeatSameValue: false,
+  //   },
+  //   {
+  //     id: "userID",
+  //     label: "UserID",
+  //     type: "textbox",
+  //     canRepeatSameValue: false,
+  //   },
+  // ];
+
+  // const handleDeleteClick = async (rowData) => {
+  //   try {
+  //     const requestBody = {
+  //       userID: rowData.userID,
+  //     };
+  //     console.log("Request body=>" + JSON.stringify(requestBody));
+  //     // axios.delete(`http://localhost:8081/users/user/${rowData.userID}`, {
+  //     //   data: requestBody,
+  //     //   headers:
+  //     // });
+  //     await fetch("http://localhost:8081/users/", {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     const updatedCategories = filteredRows.filter(
+  //       (app) => app.userID !== rowData.userID
+  //     );
+  //     setFilteredRows(updatedCategories);
+  //   } catch (e) {
+  //     console.log("Exception");
+  //   }
+  // };
 
   return (
     <>
@@ -162,7 +188,7 @@ export default function AdminHome() {
       </Button>
       <Grid item xs={12} justifyContent={"center"}>
         <h3>Existing Users</h3>
-        {/* <TableContainer>
+        <TableContainer>
           <Table>
             <TableRow>
               <TableCell
@@ -225,7 +251,12 @@ export default function AdminHome() {
                 <TableRow key={index}>
                   <TableCell align="center">{item.name}</TableCell>
                   <TableCell align="center">{item.email}</TableCell>
-                  <TableCell align="center">{item.userID}</TableCell>
+                  <Link
+                    to={"/AdminPage"}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <TableCell align="center">{item.userID}</TableCell>
+                  </Link>
                   <TableCell align="center">
                     <Link
                       to={`/UserRegistration/${item.userID}`}
@@ -283,17 +314,7 @@ export default function AdminHome() {
               ))}
             </TableBody>
           </Table>
-        </TableContainer> */}
-        <CustomTable
-          rows={filteredRows}
-          columns={columns}
-          // setRows={setTableIssuesForCurrentDiv}
-          // deleteFromDatabase={handleDeleteTableClick}
-          editActive={false}
-          tablename={"Added Issues"}
-          redirectIconActive={false}
-          isDeleteDialog={false}
-        ></CustomTable>
+        </TableContainer>
       </Grid>
     </>
   );

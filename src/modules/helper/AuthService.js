@@ -11,6 +11,7 @@ export const login = async (username, password) => {
     if (response.ok) {
       const res = await response.json();
       console.log("token : ", res);
+      localStorage.removeItem("token");
       localStorage.setItem("token", res.token);
       return true;
     } else {

@@ -137,7 +137,7 @@ export default function UserLogin() {
             onClick={(event) => {
               event.preventDefault();
               const loggedIn = login(userID, password);
-              if (loggedIn) {
+              if (loggedIn && localStorage.getItem("token") !== null) {
                 navigate("/UserHome");
                 console.log("Loggedin");
                 return;

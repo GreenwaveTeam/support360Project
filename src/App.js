@@ -81,7 +81,7 @@ function App() {
           />
           {/* test */}
           <Route path="/sample" element={<Samplemodule />} />
-          <Route path="/notfound" element={<NotFound />}></Route>
+          <Route path="/*" element={<NotFound />}></Route>
 
           <Route path="/userDevice" element={<UserDeviceTree />} />
           <Route path="/infraUser" element={<InfrastructureUser/>} />

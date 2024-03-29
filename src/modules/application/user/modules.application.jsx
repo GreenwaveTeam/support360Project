@@ -56,6 +56,11 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import InfoIcon from '@mui/icons-material/Info';
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 import CustomButton from "../../../components/button/button.component";
+import TopbarPage from "../../../components/navigation/topbar/topbar";
+import SidebarPage from "../../../components/navigation/sidebar/sidebar";
+import Main from "../../../components/navigation/mainbody/mainbody";
+import DrawerHeader from "../../../components/navigation/drawerheader/drawerheader.component";
+ 
 
 
 export default function ApplicationUser() {
@@ -76,6 +81,15 @@ export default function ApplicationUser() {
 
   const [miscellaneousInput, setMiscellaneousInput] = useState("");
   const [remarksInput, setRemarksInput] = useState("");
+
+  //Modified
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+};
+const handleDrawerClose = () => {
+  setDrawerOpen(false);
+};
 
   //for keeping track of the clicked div
   const [selectedDivArea, setSelectedDivArea] = useState({});
@@ -691,9 +705,9 @@ export default function ApplicationUser() {
     setUserIssue("");
     setUserSeverity("");
     setRemarksInput("");
-    setSnackbarText("Changes are saved !");
-    setSnackbarSeverity("success");
-    setModalAlertOpen(true);
+    // setSnackbarText("Changes are saved !");
+    // setSnackbarSeverity("success");
+    // setModalAlertOpen(true);
     //Saving the information for the current session
   };
 
@@ -1467,10 +1481,33 @@ export default function ApplicationUser() {
     };
 
   return (
+    <Box sx={{ display: "flex" }}>
+    <TopbarPage
+      open={drawerOpen}
+      handleDrawerOpen={handleDrawerOpen}
+      urllist={[
+        { pageName: "Device Issue Category", pagelink: "/Device/Category" },
+      ]}
+    />
+    <SidebarPage
+      open={drawerOpen}
+      handleDrawerClose={handleDrawerClose}
+      adminList={[
+        { pagename: "Device Issue Category", pagelink: "/Device/Category" },
+        { pagename: "Application", pagelink: "/Application" },
+      ]}
+      userList={["User Item 1", "User Item 2", "User Item 3"]}
+    />
+    <Main open={drawerOpen}>
+      <DrawerHeader />
+      <Box
+      // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      >
     <div>
       <AnimatedPage>
         {/* <CustomDropDown>
     </CustomDropDown> */}
+    
         <Box
           mt={2}
           ml={2}
@@ -1544,7 +1581,7 @@ export default function ApplicationUser() {
                     color="primary"
                   >
                     <NotificationsActiveIcon color="secondary" />
-                  </Badge>{" "}
+                  </Badge>
                   &nbsp;
                 </div>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -2241,7 +2278,11 @@ export default function ApplicationUser() {
           </TicketDialog>
           
         </Box>
+       
       </AnimatedPage>
     </div>
+    </Box>
+        </Main>
+    </Box>
   );
 }

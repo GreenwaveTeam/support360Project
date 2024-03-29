@@ -199,7 +199,7 @@ const DeviceCategory = () => {
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: 'Device Issue Category', pagelink: '/Device/Category' }
+          {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Device Issue Category', pagelink: '/Device/Category' }
         ]}
       />
       <Sidebar

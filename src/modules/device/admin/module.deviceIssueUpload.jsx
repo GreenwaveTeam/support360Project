@@ -31,6 +31,7 @@ const DeviceIssue = () => {
   const [issueList, setIssueList] = useState(issues);
   const [filteredRows,setFilteredRows]=useState(issues)
   const urllist = [
+    {pageName:'Admin Home',pagelink:'/AdminPage'},
     { pageName: "Device Issue Category", pagelink: "/Device/Category" },
     { pageName: "Device Issue", pagelink: "/"+categoryname+"/Device/Category/Issue" }
   ];

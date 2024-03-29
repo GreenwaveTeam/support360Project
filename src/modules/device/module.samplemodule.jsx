@@ -18,7 +18,13 @@ export default function Samplemodule() {
 		setOpen(false);
 	};
   return (
-    
-           <div> <Typography>Your content</Typography></div>
+    <Box>
+        <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[{ pageName: 'Application', pagelink: '/Application' },{ pageName: 'Category', pagelink: '/Device/Category' }]} />
+		<Sidebar open={open} handleDrawerClose={handleDrawerClose} adminList={[{ pagename: 'Issue Category', pagelink: '/IssueCategory' }, { pagename: 'Issue', pagelink: '/Issue' }]} userList={['User Item 1', 'User Item 2', 'User Item 3']} />
+		<Main open={open}>
+		    <DrawerHeader />
+            <Typography>Your content</Typography>
+        </Main>
+    </Box>
   )
 }

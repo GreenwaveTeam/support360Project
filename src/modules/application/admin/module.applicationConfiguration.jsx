@@ -165,10 +165,16 @@ export default function ModuleConfiguration() {
         open={open}
         handleDrawerClose={handleDrawerClose}
         adminList={[
-          { pagename: "Device Issue Category", pagelink: "admin/Device/CategoryConfigure" },
-          { pagename: "Application", pagelink: "admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
-          { pagename: "Infrastructure ", pagelink: "admin/InfrastructureConfigure" },
+          {
+            pagename: "Device Issue Category",
+            pagelink: "/admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
         ]}
         userList={[
           {

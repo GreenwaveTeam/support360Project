@@ -53,14 +53,17 @@ function App() {
           <Route path="/UserLogin" element={<UserLogin />} />
           <Route path="/AdminLogin" element={<AdminLogin />} />
           <Route
-            path="/Device/Category"
+            path="/admin/Device/CategoryConfigure"
             element={<DeviceIssueCategoryUpload />}
           />
           <Route
             path="/Device/Category/Issue"
             element={<DeviceIssueUpload />}
           />
-          <Route path="/Application" element={<ApplicationConfiguration />} />
+          <Route
+            path="/admin/ApplicationConfigure"
+            element={<ApplicationConfiguration />}
+          />
           <Route
             path="/Application/Modules"
             element={<ModuleConfiguration />}
@@ -72,7 +75,7 @@ function App() {
           <Route path="/user/ReportApplication" element={<ApplicationUser />} />
           {/* Admin Infrastructure */}
           <Route
-            path="/admin/infrastructure/configureInfrastructure"
+            path="/admin/InfrastructureConfigure"
             element={<ConfigureInfrastructure />}
           />
           <Route
@@ -83,9 +86,15 @@ function App() {
           <Route path="/sample" element={<Samplemodule />} />
           <Route path="/*" element={<NotFound />}></Route>
 
-          <Route path="/userDevice" element={<UserDeviceTree />} />
-          <Route path="/infraUser" element={<InfrastructureUser />} />
-          <Route path="/deviceCreation" element={<RichObjectTreeView />} />
+          <Route path="/user/ReportDevice" element={<UserDeviceTree />} />
+          <Route
+            path="/user/ReportInfrastructure"
+            element={<InfrastructureUser />}
+          />
+          <Route
+            path="/admin/DeviceConfigure"
+            element={<RichObjectTreeView />}
+          />
         </Routes>
       </div>
     </Router>

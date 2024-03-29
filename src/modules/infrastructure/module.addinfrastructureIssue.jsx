@@ -25,6 +25,7 @@ import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
+import CustomButton from "../../components/button/button.component";
 
 
 export default function AddInfrastructureIssue() {
@@ -825,17 +826,23 @@ const handleRowsPerPage = (event) => {
             ></Dropdown>
             &nbsp;&nbsp;
             {/* add icon */}
-            <Button
-              color="primary"
-              variant="contained"
+            <CustomButton
+              color={"primary"}
+              variant={"contained"}
               onClick={handleAddClick}
-            >
+              buttontext={<div style={{display:'flex',alignItems: 'center', justifyContent: 'center' }}> Add &nbsp;
+              <AddCircleOutlineOutlinedIcon
+                fontSize="large"
+                sx={{ color: "white" }}
+              ></AddCircleOutlineOutlinedIcon></div>}
+          >
+            
               Add &nbsp;
               <AddCircleOutlineOutlinedIcon
                 fontSize="large"
                 sx={{ color: "white" }}
               ></AddCircleOutlineOutlinedIcon>
-            </Button>
+            </CustomButton>
             <br />
             <br />
             <motion.div

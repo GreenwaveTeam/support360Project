@@ -55,6 +55,7 @@ import SnackbarComponent from "../../../components/snackbar/customsnackbar.compo
 import VerifiedIcon from '@mui/icons-material/Verified';
 import InfoIcon from '@mui/icons-material/Info';
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
+import CustomButton from "../../../components/button/button.component";
 
 
 export default function ApplicationUser() {
@@ -1619,17 +1620,18 @@ export default function ApplicationUser() {
             <center>
               <br />
               {tabsmoduleNames.length !== 0 && (
-                <Button
-                  size="medium"
-                  id="final-submit"
-                  variant="contained"
-                  color="success"
+                <CustomButton
+                  size={"medium"}
+                  id={"final-submit"}
+                  variant={"contained"}
+                  color={"success"}
                   onClick={handleFinalReportClick}
-                  sx={classes.btn}
+                  style={classes.btn}
+                  buttontext={<div style={{display:'flex',alignItems: 'center', justifyContent: 'center' }}>Raise a Ticket
+                    <ArrowRightIcon fontSize="small" /></div>}
                 >
-                  Raise a Ticket
-                  <ArrowRightIcon fontSize="small" />
-                </Button>
+                  
+                </CustomButton>
               )}
             </center>
           </center>

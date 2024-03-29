@@ -11,6 +11,7 @@ import CustomTable from "../../components/table/table.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import { useNavigate } from "react-router-dom";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
+import CustomButton from "../../components/button/button.component";
 
   export default function ConfigureInfrastructure() {
     const [search, setSearch] = useState("");
@@ -454,15 +455,16 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
               ></Textfield>
               <br />
               <br />
-              <Button
-                variant="contained"
-                size="large"
-                color="success"
-                sx={classes.btn}
+              <CustomButton
+                variant={"contained"}
+                size={"large"}
+                color={"success"}
+                style={classes.btn}
                 onClick={() => handleAddIssues()}
+                buttontext={" Add Issues ➥"}
               >
-                Add Issues ➥
-              </Button>
+               
+              </CustomButton>
               <br />
               <br />
               <b>OR</b>

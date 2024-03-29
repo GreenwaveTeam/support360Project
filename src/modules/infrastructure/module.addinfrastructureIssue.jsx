@@ -25,6 +25,7 @@ import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
+import CustomButton from "../../components/button/button.component";
 
 
 export default function AddInfrastructureIssue() {
@@ -72,7 +73,7 @@ export default function AddInfrastructureIssue() {
   const [page, pagechange] = useState(0);
   const [rowperpage, rowperpagechange] = useState(5);
   
-
+//Note the plantID is harcoded currently
   //********************* Style classes ***************
   const classes = {
     conatiner: {
@@ -97,7 +98,7 @@ const deletedataDb=async (issue)=>
     const plantID=plantId.toString();
     // const currentIP=`http://192.168.7.18:8082/infrastructure/admin/${plantId}/${inf}/${issue}`
     // console.log('IP => ',currentIP);
-    const response= await fetch(`http://localhost:8082/infrastructure/admin/issue`,{
+    const response= await fetch(`http://localhost:8081/infrastructure/admin/issue`,{
         method:'DELETE',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
@@ -825,17 +826,23 @@ const handleRowsPerPage = (event) => {
             ></Dropdown>
             &nbsp;&nbsp;
             {/* add icon */}
-            <Button
-              color="primary"
-              variant="contained"
+            <CustomButton
+              color={"primary"}
+              variant={"contained"}
               onClick={handleAddClick}
-            >
+              buttontext={<div style={{display:'flex',alignItems: 'center', justifyContent: 'center' }}> Add &nbsp;
+              <AddCircleOutlineOutlinedIcon
+                fontSize="large"
+                sx={{ color: "white" }}
+              ></AddCircleOutlineOutlinedIcon></div>}
+          >
+            
               Add &nbsp;
               <AddCircleOutlineOutlinedIcon
                 fontSize="large"
                 sx={{ color: "white" }}
               ></AddCircleOutlineOutlinedIcon>
-            </Button>
+            </CustomButton>
             <br />
             <br />
             <motion.div

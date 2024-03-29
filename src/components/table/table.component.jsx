@@ -158,7 +158,7 @@ const handleSaveClick = async (selectedRow) => {
   console.log('Updated Row : ', updatedRow);
   console.log('Selected prev row : ', selectedRow);
   let checkError = false;
-  const regex = /[^A-Za-z0-9 _]/;
+  const regex = /[^A-Za-z0-9 _/]/;
   let countChange = 0;
   columns.map((column) => {
 

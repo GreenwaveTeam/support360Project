@@ -11,6 +11,7 @@ import CustomTable from "../../components/table/table.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import { useNavigate } from "react-router-dom";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
+import CustomButton from "../../components/button/button.component";
 
   export default function ConfigureInfrastructure() {
     const [search, setSearch] = useState("");
@@ -31,10 +32,11 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
     
     const fetchInfraFromDb = async () => {
       setProgressVisible(true)
+      const plantID='P009'
       console.log("fetchInfraFromDb() called");
       try {
         const response = await fetch(
-          `http://localhost:8081/infrastructure/admin/1`,
+          `http://localhost:8081/infrastructure/admin/${plantID}`,
           {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -111,7 +113,7 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
         setCategoryError(true)
         return;
       }
-      const regex = /[^A-Za-z0-9 _]/;
+      const regex = /[^A-Za-z0-9 _/]/;
       if(regex.test(newCateogry.trim())) {
         setsnackbarSeverity("error")
         setSnackbarText("Special Characters are not allowed ! ")
@@ -132,7 +134,8 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
         
         return;
       }
-      const data={infrastructure:newCateogry,plantID:1};
+      //plantID here is harcoded
+      const data={infrastructure:newCateogry,plantID:'P009'};
       console.log("Data sent is => ",data)
       navigate("/admin/infrastructure/addIssues", { state:data});
     };
@@ -175,7 +178,7 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
         console.log('Previous Infrastructure : ',prev_infra)
         console.log('New Infrastucture : ',new_infraname)
       try {
-        const plantID="1";
+        const plantID="P009";
         const response = await fetch(
           `http://localhost:8081/infrastructure/admin`,
           {
@@ -222,12 +225,15 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
   
     const deletefromDB = async (infra_name) => {
       try {
-        const plantID="1"
+        const plantID="P009"
         const response = await fetch(
           `http://localhost:8081/infrastructure/admin`,
           {
             method: "DELETE",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              // Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
             body: JSON.stringify({ 
               infrastructureName: infra_name,
               plantID : plantID
@@ -345,7 +351,7 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
       if (currentSearch === "" || currentSearch.length === 0) {
         setInfraList(originalInfrarows);
       } else {
-        const regex = /[^A-Za-z0-9 _]/;
+        const regex = /[^A-Za-z0-9 _/]/;
       if(regex.test(currentSearch.trim())) {
         setsnackbarSeverity("error")
         setSnackbarText("Special Characters are not allowed ! ")
@@ -369,7 +375,7 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
       setCategoryError(false)
       setNewCategory(e.target.value)
       const currentCategory=e.target.value;
-      const regex = /[^A-Za-z0-9 _]/;
+      const regex = /[^A-Za-z0-9 _/]/;
       if(regex.test(currentCategory.trim())) {
         setsnackbarSeverity("error")
         setSnackbarText("Special Characters are not allowed ! ")
@@ -423,7 +429,8 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
             console.log("Redirected Catefory : ",categoryname)
     //         const paramIssue = infrastructure.trim();
     // console.log("Category is => ", paramIssue);
-    const data={infrastructure:categoryname,plantID:1};
+    //plant ID is hardcoded
+    const data={infrastructure:categoryname,plantID:'P009'};
     console.log("Data sent is => ",data)
    navigate( "/admin/infrastructure/addIssues", {state: data });
    //history.push({pathname:"/"})
@@ -451,15 +458,16 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
               ></Textfield>
               <br />
               <br />
-              <Button
-                variant="contained"
-                size="large"
-                color="success"
-                sx={classes.btn}
+              <CustomButton
+                variant={"contained"}
+                size={"large"}
+                color={"success"}
+                style={classes.btn}
                 onClick={() => handleAddIssues()}
+                buttontext={" Add Issues ➥"}
               >
-                Add Issues ➥
-              </Button>
+               
+              </CustomButton>
               <br />
               <br />
               <b>OR</b>

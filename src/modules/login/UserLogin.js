@@ -7,6 +7,11 @@ import {
   Box,
   Typography,
   Container,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  OutlinedInput,
+  InputLabel,
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
@@ -14,13 +19,19 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { useNavigate } from "react-router";
 import { login } from "../helper/AuthService";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function UserLogin() {
   const [userID, setUserID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -67,19 +78,33 @@ export default function UserLogin() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Textfield
-                  autoComplete="password"
-                  name="password"
-                  required
-                  fullWidth
-                  id="password"
-                  label="Password"
-                  value={password}
-                  onChange={handlePasswordInputChange}
-                  style={{ width: "80%" }}
-                  type={showPassword ? "text" : "password"}
-                />
-                <Button
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <OutlinedInput
+                    autoComplete="password"
+                    name="password"
+                    required
+                    fullWidth
+                    id="password"
+                    label="Password"
+                    value={password}
+                    onChange={handlePasswordInputChange}
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                </FormControl>
+                {/* <Button
                   id="showpasswoed"
                   onClick={handleShowPasswordClick}
                   style={{
@@ -94,7 +119,7 @@ export default function UserLogin() {
                   ) : (
                     <VisibilityOutlinedIcon />
                   )}
-                </Button>
+                </Button> */}
               </Grid>
             </Grid>
           </Box>
@@ -104,7 +129,7 @@ export default function UserLogin() {
             {error}
           </Typography>
         )}
-        <Grid item xs={12}>
+        <Grid item xs={12} marginTop={"50px"}>
           <Button
             type="submit"
             fullWidth

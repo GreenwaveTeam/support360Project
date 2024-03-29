@@ -9,12 +9,14 @@ export default function Datepicker({
   onChange,
   format,
   slotProps,
+  defaultValue,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         label={label}
         value={value}
+        defaultValue={defaultValue}
         // defaultValue={dayjs(value)}
         onChange={onChange}
         format={format}

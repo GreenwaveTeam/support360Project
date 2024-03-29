@@ -37,7 +37,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          <Route path="/" element={<Entrypage />} />
+          <Route path="/" element={<UserLogin />} />
           {/* <Route path="/xyz" element={<AddInfrastructureIssue />} /> */}
           <Route path="/device" element={<Device />} />
           <Route path="/AdminHome" element={<AdminHome />} />
@@ -79,7 +79,7 @@ function App() {
           />
           {/* test */}
           <Route path="/sample" element={<Samplemodule />} />
-          <Route path="/notfound" element={<NotFound />}></Route>
+          <Route path="/*" element={<NotFound />}></Route>
         </Routes>
       </div>
     </Router>

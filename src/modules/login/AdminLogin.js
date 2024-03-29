@@ -7,20 +7,29 @@ import {
   Box,
   Typography,
   Container,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import { useNavigate } from "react-router-dom";
 import { login } from "../helper/AuthService";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function AdminLogin() {
   const [adminID, setAdminID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -67,19 +76,34 @@ export default function AdminLogin() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <Textfield
-                  autoComplete="password"
-                  name="password"
-                  required
-                  fullWidth
-                  id="password"
-                  label="Password"
-                  value={password}
-                  onChange={handlePasswordInputChange}
-                  style={{ width: "80%" }}
-                  type={showPassword ? "text" : "password"}
-                />
-                <Button
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <OutlinedInput
+                    label="Password"
+                    autoComplete="password"
+                    name="password"
+                    required
+                    fullWidth
+                    id="password"
+                    // label="Password"
+                    value={password}
+                    onChange={handlePasswordInputChange}
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                </FormControl>
+                {/* <Button
                   id="showpasswoed"
                   onClick={handleShowPasswordClick}
                   style={{
@@ -94,8 +118,27 @@ export default function AdminLogin() {
                   ) : (
                     <VisibilityOutlinedIcon />
                   )}
-                </Button>
+                </Button> */}
               </Grid>
+              {/* <Grid item xs={12}>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  type={showPassword ? "text" : "password"}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </Grid> */}
             </Grid>
           </Box>
         </form>
@@ -104,7 +147,7 @@ export default function AdminLogin() {
             {error}
           </Typography>
         )}
-        <Grid item xs={12}>
+        <Grid item xs={12} marginTop={"50px"}>
           <Button
             type="submit"
             fullWidth

@@ -172,20 +172,28 @@ export default function AdminHome() {
       <Typography component="h1" variant="h5">
         {/* Welcome {adminName} */}
       </Typography>
-      <Button
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}
-        onClick={() => navigate("/UserRegistration")}
+      <Grid
+        item
+        xs={12}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"space-evenly"}
       >
-        Register New User
-      </Button>
-      <Button
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}
-        onClick={() => navigate("/AdminRegistration")}
-      >
-        Register New Admin
-      </Button>
+        <Button
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={() => navigate("/UserRegistration")}
+        >
+          Register New User
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={() => navigate("/AdminRegistration")}
+        >
+          Register New Admin
+        </Button>
+      </Grid>
       <Grid item xs={12} justifyContent={"center"}>
         <h3>Existing Users</h3>
         <TableContainer>

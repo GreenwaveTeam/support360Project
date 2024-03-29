@@ -432,23 +432,30 @@ const ModuleConfigure = () => {
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[{ pageName: 'Application', pagelink: '/Application' }]} />
-			<Sidebar open={open} handleDrawerClose={handleDrawerClose} adminList={[
-          { pagename: "Device Issue Category", pagelink: "admin/Device/CategoryConfigure" },
-          { pagename: "Application", pagelink: "admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
-          { pagename: "Infrastructure ", pagelink: "admin/InfrastructureConfigure" },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]} />
+			<Sidebar open={open} handleDrawerClose={handleDrawerClose} 
+			adminList={[
+				{
+				  pagename: "Device Issue Category",
+				  pagelink: "/admin/Device/CategoryConfigure",
+				},
+				{ pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+				{ pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+				{
+				  pagename: "Infrastructure ",
+				  pagelink: "/admin/InfrastructureConfigure",
+				},
+			  ]}
+			  userList={[
+				{
+				  pagename: "Report Application",
+				  pagelink: "/user/ReportApplication",
+				},
+				{
+				  pagename: "Report Infrastructure",
+				  pagelink: "/user/ReportInfrastructure",
+				},
+				{ pagename: "Report Device", pagelink: "/user/ReportDevice" },
+			  ]}/>
 			<Main open={open}>
 				<DrawerHeader />
 				<Box sx={{ width: '100%', typography: 'body1' }}>

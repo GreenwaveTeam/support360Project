@@ -144,9 +144,7 @@ function UserHome() {
       <TopbarPage
         open={open}
         handleDrawerOpen={handleDrawerOpen}
-        urllist={[
-          { pageName: "Device Issue Category", pagelink: "/Device/Category" },
-        ]}
+        urllist={[{ pageName: "User Home Page", pagelink: "/userhome" }]}
       />
       <SidebarPage
         open={open}

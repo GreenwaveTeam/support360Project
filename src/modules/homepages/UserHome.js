@@ -3,6 +3,7 @@ import { Button, Container, Typography } from "@mui/material";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useEffect } from "react";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 function UserHome() {
   const [formData, setFormData] = useState({
@@ -29,6 +30,7 @@ function UserHome() {
     last_ticket_raised: "",
   });
   const [token, setToken] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     // setToken(`${localStorage.getItem("token")}`);
@@ -171,13 +173,31 @@ function UserHome() {
               <Typography>OPEN TICKETS</Typography>
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button variant="contained" style={{ margin: "10px" }}>
+              <Button
+                variant="contained"
+                style={{ margin: "10px" }}
+                onClick={(e) => {
+                  navigate("/userDevice");
+                }}
+              >
                 Device
               </Button>
-              <Button variant="contained" style={{ margin: "10px" }}>
+              <Button
+                variant="contained"
+                style={{ margin: "10px" }}
+                onClick={(e) => {
+                  navigate("/user/ReportApplication");
+                }}
+              >
                 Application
               </Button>
-              <Button variant="contained" style={{ margin: "10px" }}>
+              <Button
+                variant="contained"
+                style={{ margin: "10px" }}
+                onClick={(e) => {
+                  navigate("/infraUser");
+                }}
+              >
                 Infrastructure
               </Button>
             </div>

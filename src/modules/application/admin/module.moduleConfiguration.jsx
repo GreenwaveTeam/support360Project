@@ -431,7 +431,8 @@ const ModuleConfigure = () => {
 
 	return (
 		<Box sx={{ display: 'flex' }}>
-			<Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[{ pageName: 'Application', pagelink: '/Application' }]} />
+			<Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[
+    			{pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/Application' }]} />
 			<Sidebar open={open} handleDrawerClose={handleDrawerClose} 
 			adminList={[
 				{
@@ -446,6 +447,7 @@ const ModuleConfigure = () => {
 				},
 			  ]}
 			  userList={[
+				
 				{
 				  pagename: "Report Application",
 				  pagelink: "/user/ReportApplication",

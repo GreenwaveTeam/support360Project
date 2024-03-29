@@ -61,7 +61,8 @@ const Application = () => {
   const modulelist=location.state.modulelist
   //console.log("Module list====>"+JSON.stringify(modulelist))
   const [module_Name,setModule_Name]=useState(application_name+"_Module_")
-  const urllist = [{ pageName: "Application", pagelink: "/Application" },
+  const urllist = [
+    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: "Application", pagelink: "/Application" },
   { pageName: "Module", pagelink: "/Application"+'/Module'},
 ];
 const [categorySubmitted,setCategorySubmitted]=useState(false)

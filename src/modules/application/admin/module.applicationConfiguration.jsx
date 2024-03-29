@@ -48,6 +48,7 @@ export default function ModuleConfiguration() {
     
     
   const urllist = [
+    {pageName:'Admin Home',pagelink:'/AdminPage'},
     { pageName: "Application", pagelink: "/Application" }
   ];useEffect(() => {
     const fetchData = async () => {

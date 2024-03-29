@@ -5,7 +5,7 @@ import TabContext from "@mui/lab/TabContext";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
@@ -13,6 +13,9 @@ import {
   Badge,
   Collapse,
   Container,
+  Dialog,
+  DialogActions,
+  DialogTitle,
   Divider,
   FormControl,
   IconButton,
@@ -49,6 +52,9 @@ import Textfield from "../../../components/textfield/textfield.component";
 import CustomTable from "../../../components/table/table.component";
 import { useNavigate } from "react-router-dom";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
+import VerifiedIcon from '@mui/icons-material/Verified';
+import InfoIcon from '@mui/icons-material/Info';
+import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 
 
 export default function ApplicationUser() {
@@ -107,6 +113,7 @@ export default function ApplicationUser() {
   const [miscellaneousRemarks, setmiscellaneousRemarks] = useState("");
   const [additionalMiscellaneousError,setAdditionalMiscellaneousError]=useState(false)
   const [additionalMiscellaneousSeverityError,setAdditionallMiscellaneousSeverityError]=useState(false)
+  const [ticketDialogOpen,setTicketDialogOpen]=useState(false);
   const navigate =useNavigate()
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
@@ -1035,14 +1042,15 @@ export default function ApplicationUser() {
       setSnackbarSeverity("success");
       setSnackbarText(ticket);
       setMainAlert(true);
-      Swal.fire({
-        title: "Ticket raised successfully",
-        text: " Ticket No - " + ticketNumber,
-        icon: "success",
-        allowOutsideClick: false,
-        confirmButtonText: "OK",
-      });
+      // Swal.fire({
+      //   title: "Ticket raised successfully",
+      //   text: " Ticket No - " + ticketNumber,
+      //   icon: "success",
+      //   allowOutsideClick: false,
+      //   confirmButtonText: "OK",
+      // });
       // const ticket="Tiket raised successfully ! Ticket No - "+ticketNumber ;
+       setTicketDialogOpen(true)
     } else {
       setSnackbarSeverity("error");
       setSnackbarText("No Tickets were raised");
@@ -1428,6 +1436,11 @@ export default function ApplicationUser() {
       },
   ] 
 
+  const handleTicketDialogClose = (event,reason) => {
+    if (reason && reason === "backdropClick") 
+          return;
+      setTicketDialogOpen(false);
+    };
 
   return (
     <div>
@@ -1769,12 +1782,13 @@ export default function ApplicationUser() {
                           onMouseEnter={(e) => {
                             e.target.style.backgroundColor =
                               "rgba(128, 128, 128, 0.5)";
-                            e.target.style.filter = "blur(20px)";
+                            // e.target.style.filter = "blur(5px)";
                             e.target.style.transition =
                               "background-color 0.3s, filter 0.3s";
                           }}
                           onMouseLeave={(e) => {
                             e.target.style.backgroundColor = "rgba(0,0,0,0)";
+                            e.target.style.filter = "blur(0px)";
                           }}
                         >
                           {area.edited && (
@@ -2185,13 +2199,22 @@ export default function ApplicationUser() {
               {snackbarText}
             </Alert>
           </Snackbar> */}
-
           <SnackbarComponent
             openPopup={mainAlert}
             setOpenPopup={setMainAlert}
             dialogMessage={snackbarText}
             snackbarSeverity={snackbarSeverity}
           ></SnackbarComponent>
+
+          {/* Ticket Dialog  */}
+          <TicketDialog
+          ticketDialogOpen={ticketDialogOpen}
+          // handleTicketDialogClose={handleTicketDialogClose}
+          setTicketDialogOpen={setTicketDialogOpen}
+          ticketNumber={ticketNumber}
+          >
+          </TicketDialog>
+          
         </Box>
       </AnimatedPage>
     </div>

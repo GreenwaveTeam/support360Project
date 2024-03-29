@@ -35,9 +35,8 @@ const NotFound = () => {
         <br />
         <div>
           <Link to="/">
-            {" "}
             <ReplyIcon fontSize="small" />
-            Back to Homepage
+            Back to LoginPage
           </Link>
         </div>
       </center>

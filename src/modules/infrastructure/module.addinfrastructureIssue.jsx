@@ -72,7 +72,7 @@ export default function AddInfrastructureIssue() {
   const [page, pagechange] = useState(0);
   const [rowperpage, rowperpagechange] = useState(5);
   
-
+//Note the plantID is harcoded currently
   //********************* Style classes ***************
   const classes = {
     conatiner: {

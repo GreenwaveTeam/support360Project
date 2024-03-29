@@ -32,10 +32,11 @@ import CustomButton from "../../components/button/button.component";
     
     const fetchInfraFromDb = async () => {
       setProgressVisible(true)
+      const plantID='P009'
       console.log("fetchInfraFromDb() called");
       try {
         const response = await fetch(
-          `http://localhost:8081/infrastructure/admin/P009`,
+          `http://localhost:8081/infrastructure/admin/${plantID}`,
           {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -112,7 +113,7 @@ import CustomButton from "../../components/button/button.component";
         setCategoryError(true)
         return;
       }
-      const regex = /[^A-Za-z0-9 _]/;
+      const regex = /[^A-Za-z0-9 _/]/;
       if(regex.test(newCateogry.trim())) {
         setsnackbarSeverity("error")
         setSnackbarText("Special Characters are not allowed ! ")
@@ -133,7 +134,8 @@ import CustomButton from "../../components/button/button.component";
         
         return;
       }
-      const data={infrastructure:newCateogry,plantID:1};
+      //plantID here is harcoded
+      const data={infrastructure:newCateogry,plantID:'P009'};
       console.log("Data sent is => ",data)
       navigate("/admin/infrastructure/addIssues", { state:data});
     };
@@ -176,7 +178,7 @@ import CustomButton from "../../components/button/button.component";
         console.log('Previous Infrastructure : ',prev_infra)
         console.log('New Infrastucture : ',new_infraname)
       try {
-        const plantID="1";
+        const plantID="P009";
         const response = await fetch(
           `http://localhost:8081/infrastructure/admin`,
           {
@@ -349,7 +351,7 @@ import CustomButton from "../../components/button/button.component";
       if (currentSearch === "" || currentSearch.length === 0) {
         setInfraList(originalInfrarows);
       } else {
-        const regex = /[^A-Za-z0-9 _]/;
+        const regex = /[^A-Za-z0-9 _/]/;
       if(regex.test(currentSearch.trim())) {
         setsnackbarSeverity("error")
         setSnackbarText("Special Characters are not allowed ! ")
@@ -373,7 +375,7 @@ import CustomButton from "../../components/button/button.component";
       setCategoryError(false)
       setNewCategory(e.target.value)
       const currentCategory=e.target.value;
-      const regex = /[^A-Za-z0-9 _]/;
+      const regex = /[^A-Za-z0-9 _/]/;
       if(regex.test(currentCategory.trim())) {
         setsnackbarSeverity("error")
         setSnackbarText("Special Characters are not allowed ! ")
@@ -427,7 +429,8 @@ import CustomButton from "../../components/button/button.component";
             console.log("Redirected Catefory : ",categoryname)
     //         const paramIssue = infrastructure.trim();
     // console.log("Category is => ", paramIssue);
-    const data={infrastructure:categoryname,plantID:1};
+    //plant ID is hardcoded
+    const data={infrastructure:categoryname,plantID:'P009'};
     console.log("Data sent is => ",data)
    navigate( "/admin/infrastructure/addIssues", {state: data });
    //history.push({pathname:"/"})

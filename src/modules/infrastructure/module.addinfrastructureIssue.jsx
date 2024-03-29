@@ -98,7 +98,7 @@ const deletedataDb=async (issue)=>
     const plantID=plantId.toString();
     // const currentIP=`http://192.168.7.18:8082/infrastructure/admin/${plantId}/${inf}/${issue}`
     // console.log('IP => ',currentIP);
-    const response= await fetch(`http://localhost:8082/infrastructure/admin/issue`,{
+    const response= await fetch(`http://localhost:8081/infrastructure/admin/issue`,{
         method:'DELETE',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({

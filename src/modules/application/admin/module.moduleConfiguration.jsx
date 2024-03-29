@@ -145,7 +145,10 @@ const ModuleConfigure = () => {
 		};
 	
 		try {
-					const response = await axios.delete('http://192.168.7.8:8081/application/admin/plant_id/application/module/category', { data: requestBody });
+					const response = await axios.delete('http://192.168.7.8:8081/application/admin/plant_id/application/module/category', { data: requestBody },{headers:{
+						Authorization: `Bearer ${localStorage.getItem("token")}`,
+						"Content-Type": "application/json",
+					  },});
 					// Optionally, update the UI or perform any additional actions after successful deletion
 					setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== categoryName));
 					setCategories(prev => prev.filter(category => category !== area.categoryName));
@@ -232,7 +235,10 @@ const ModuleConfigure = () => {
       
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData,{headers:{
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+					"Content-Type": "application/json",
+				  },});
 				
 			} catch (error) {
 				console.error('Error:', error);
@@ -275,7 +281,11 @@ const ModuleConfigure = () => {
 	
 		
 		try {
-			await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: requestBody });
+			console.log("Bearer token:=>"+localStorage.getItem("token"))
+			await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: requestBody },{headers:{
+				Authorization: `Bearer ${localStorage.getItem("token")}`,
+				"Content-Type": "application/json",
+			  },});
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -300,7 +310,10 @@ const ModuleConfigure = () => {
 			issuename: prev.issuename
 		  };
 		  
-		  await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
+		  await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody },{headers:{
+			Authorization: `Bearer ${localStorage.getItem("token")}`,
+			"Content-Type": "application/json",
+		  },});
 		  
 		
 		if (selection) {
@@ -331,7 +344,10 @@ const ModuleConfigure = () => {
 
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData,{headers:{
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+					"Content-Type": "application/json",
+				  },});
 				
 			} catch (error) {
 				console.error('Error:', error);
@@ -416,7 +432,14 @@ const ModuleConfigure = () => {
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[{ pageName: 'Application', pagelink: '/Application' }]} />
-			<Sidebar open={open} handleDrawerClose={handleDrawerClose} adminList={[{ pagename: 'Issue Category', pagelink: '/IssueCategory' }, { pagename: 'Issue', pagelink: '/Issue' }]} userList={['User Item 1', 'User Item 2', 'User Item 3']} />
+			<Sidebar open={open} handleDrawerClose={handleDrawerClose} adminList={[
+          { pagename: 'Device Issue Category', pagelink: '/Device/Category' },
+          { pagename: 'Application', pagelink: '/Application' },
+          
+        ]}
+        userList={[
+          { pagename: 'Report Application', pagelink: '/user/ReportApplication' }
+        ]} />
 			<Main open={open}>
 				<DrawerHeader />
 				<Box sx={{ width: '100%', typography: 'body1' }}>

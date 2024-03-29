@@ -47,9 +47,11 @@ export default function AdminHome() {
       });
       const data = await response.json();
       console.log("response : ", data);
-      setList(data);
-      setFilteredRows(data);
-      console.log(data);
+
+      const filteredData = data.filter((item) => item.plantID !== "NA");
+
+      setList(filteredData);
+      setFilteredRows(filteredData);
     } catch (error) {
       console.log(error);
     }
@@ -78,7 +80,8 @@ export default function AdminHome() {
       const response = await fetch(`http://localhost:8081/users/user/${e}`, {
         method: "DELETE",
         headers: {
-          Accept: "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
         },
       });
       const data = await response.ok;
@@ -117,25 +120,80 @@ export default function AdminHome() {
     setOpenDeleteDialog(true);
   };
 
+  // const columns = [
+  //   {
+  //     id: "name",
+  //     label: "Name",
+  //     type: "textbox",
+  //     canRepeatSameValue: false,
+  //   },
+  //   {
+  //     id: "email",
+  //     label: "Email",
+  //     type: "textbox",
+  //     canRepeatSameValue: false,
+  //   },
+  //   {
+  //     id: "userID",
+  //     label: "UserID",
+  //     type: "textbox",
+  //     canRepeatSameValue: false,
+  //   },
+  // ];
+
+  // const handleDeleteClick = async (rowData) => {
+  //   try {
+  //     const requestBody = {
+  //       userID: rowData.userID,
+  //     };
+  //     console.log("Request body=>" + JSON.stringify(requestBody));
+  //     // axios.delete(`http://localhost:8081/users/user/${rowData.userID}`, {
+  //     //   data: requestBody,
+  //     //   headers:
+  //     // });
+  //     await fetch("http://localhost:8081/users/", {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     const updatedCategories = filteredRows.filter(
+  //       (app) => app.userID !== rowData.userID
+  //     );
+  //     setFilteredRows(updatedCategories);
+  //   } catch (e) {
+  //     console.log("Exception");
+  //   }
+  // };
+
   return (
     <>
       <Typography component="h1" variant="h5">
         {/* Welcome {adminName} */}
       </Typography>
-      <Button
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}
-        onClick={() => navigate("/UserRegistration")}
+      <Grid
+        item
+        xs={12}
+        display={"flex"}
+        alignItems={"center"}
+        justifyContent={"space-evenly"}
       >
-        Register New User
-      </Button>
-      <Button
-        variant="contained"
-        sx={{ mt: 3, mb: 2 }}
-        onClick={() => navigate("/AdminRegistration")}
-      >
-        Register New Admin
-      </Button>
+        <Button
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={() => navigate("/UserRegistration")}
+        >
+          Register New User
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={() => navigate("/AdminRegistration")}
+        >
+          Register New Admin
+        </Button>
+      </Grid>
       <Grid item xs={12} justifyContent={"center"}>
         <h3>Existing Users</h3>
         <TableContainer>
@@ -201,7 +259,12 @@ export default function AdminHome() {
                 <TableRow key={index}>
                   <TableCell align="center">{item.name}</TableCell>
                   <TableCell align="center">{item.email}</TableCell>
-                  <TableCell align="center">{item.userID}</TableCell>
+                  <Link
+                    to={"/AdminPage"}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    <TableCell align="center">{item.userID}</TableCell>
+                  </Link>
                   <TableCell align="center">
                     <Link
                       to={`/UserRegistration/${item.userID}`}

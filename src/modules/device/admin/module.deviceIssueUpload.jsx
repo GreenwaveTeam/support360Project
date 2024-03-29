@@ -75,7 +75,7 @@ const DeviceIssue = () => {
             plantid: plantid,
             issueList: [{issuename: issueName, severity: severity }]
           };
-          const response = await axios.post(`http://localhost:8081/device/admin/${plantid}/categories/`+categoryname, requestData, {
+          const response = await axios.post(`http://19:8081/device/admin/${plantid}/categories/`+categoryname, requestData, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -97,11 +97,10 @@ const DeviceIssue = () => {
             issueList: [{issuename: rowData.issuename, severity: rowData.severity }]
           };
           console.log("Edit Issue called")
-          const response = await axios.put(`http://localhost:8081/device/admin/${plantid}/categories/${categoryname}/`+prev.issuename, requestData, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
+          const response = await axios.put(`http://192.168.7.8:8081/device/admin/${plantid}/categories/${categoryname}/`+prev.issuename, requestData, {headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },});
           console.log(response.data); // Handle response data
         } catch (error) {
           console.error('Error:', error);
@@ -118,7 +117,10 @@ const DeviceIssue = () => {
     } 
         try {
           
-          const response = await axios.delete('http://localhost:8081/device/admin/categories/issue', {data: requestBody});
+          const response = await axios.delete('http://192.168.7.8:8081/device/admin/categories/issue', {data: requestBody},{headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },});
           setIssueList(issueList.filter((issue)=>(issue!==rowdata)));
           console.log("Successfully deleted")
           } catch (error) {

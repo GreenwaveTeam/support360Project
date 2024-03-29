@@ -112,7 +112,10 @@ const handleAddCategory=()=>{
       issuename: prev.issuename
     };
     console.log("Rowdata=====>"+JSON.stringify(rowData))
-    await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody });
+    await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody },{headers:{
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },});
     
 		if (selection) {
 			const details = {
@@ -143,7 +146,10 @@ const handleAddCategory=()=>{
       
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData,{headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },});
 			
 			} catch (error) {
 				console.error('Error:', error);
@@ -163,7 +169,10 @@ const handleAddCategory=()=>{
 		console.log("Handle delete==>", requestBody);
 	
 		try {
-			await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: requestBody });
+			await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: requestBody },{headers:{
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },});
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -235,7 +244,10 @@ const handleAddCategory=()=>{
         if (result.isConfirmed) {
           try {
             e.stopPropagation();
-            const response = await axios.delete(`http://192.168.7.8:8081/application/admin/plant_id/application/module/category`,   { data: requestBody });
+            const response = await axios.delete(`http://192.168.7.8:8081/application/admin/plant_id/application/module/category`,   { data: requestBody },{headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },});
 			      // Optionally, update the UI or perform any additional actions after successful deletion
             setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== area.categoryname));
             setCategories(prev => prev.filter(category => category !== area.categoryname));
@@ -442,9 +454,9 @@ const handleAddCategory=()=>{
       //Send formData to the new API endpoint
       try {
         const response = await fetch('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+          method: 'POST',headers:{
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData)
         });
@@ -485,9 +497,14 @@ const handleAddCategory=()=>{
       <Sidebar
         open={open}
         handleDrawerClose={() => setOpen(false)}
-        adminList={[{ pagename: 'Issue Category', pagelink: '/IssueCategory' }, 
-        { pagename: 'Application', pagelink: '/Application' },]}
-        userList={['User Item 1', 'User Item 2', 'User Item 3']}
+        adminList={[
+          { pagename: 'Device Issue Category', pagelink: '/Device/Category' },
+          { pagename: 'Application', pagelink: '/Application' },
+          
+        ]}
+        userList={[
+          { pagename: 'Report Application', pagelink: '/user/ReportApplication' }
+        ]}
       />
       <Main open={open}>
         <DrawerHeader />

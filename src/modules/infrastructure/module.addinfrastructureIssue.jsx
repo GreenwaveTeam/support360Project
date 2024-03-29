@@ -4,7 +4,7 @@
 // import ListItemButton from '@mui/material/ListItemButton';
 // import ListItemIcon from '@mui/material/ListItemIcon';
 // import ListItemText from '@mui/material/ListItemText';
-import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 //import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { useEffect, useState } from "react";
@@ -66,6 +66,7 @@ export default function AddInfrastructureIssue() {
   const [page, pagechange] = useState(0);
   const [rowperpage, rowperpagechange] = useState(5);
 
+  //Note the plantID is harcoded currently
   //********************* Style classes ***************
   const classes = {
     conatiner: {
@@ -313,19 +314,20 @@ export default function AddInfrastructureIssue() {
   const handleDeleteClick = (row) => {
     console.log("handleDeleteClick() called");
     console.log("Row to delete => ", row.issue_name);
-    Swal.fire({
-      title: "Do you really want to delete ? ",
-      showDenyButton: true,
-      confirmButtonText: "Delete",
-      denyButtonText: `Cancel`,
-    }).then((result) => {
-      /* Read more about isConfirmed, isDenied below */
-      if (result.isConfirmed) {
-        // Swal.fire("Saved!", "", "success");
+    // Swal.fire({
+    //   title: "Do you really want to delete ? ",
+    //   showDenyButton: true,
+    //   confirmButtonText: "Delete",
+    //   denyButtonText: `Cancel`,
+    // }).then((result) => {
+    //   /* Read more about isConfirmed, isDenied below */
+    //   if (result.isConfirmed) {
+    // Swal.fire("Saved!", "", "success");
 
-        deletedataDb(row.issue_name);
-      }
-    });
+    deletedataDb(row.issue_name);
+
+    //   }
+    // });
     console.log("handleDeleteClick()");
 
     //setSearch('');
@@ -798,17 +800,33 @@ export default function AddInfrastructureIssue() {
             ></Dropdown>
             &nbsp;&nbsp;
             {/* add icon */}
-            <Button
-              color="primary"
-              variant="contained"
+            <CustomButton
+              color={"primary"}
+              variant={"contained"}
               onClick={handleAddClick}
+              buttontext={
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {" "}
+                  Add &nbsp;
+                  <AddCircleOutlineOutlinedIcon
+                    fontSize="large"
+                    sx={{ color: "white" }}
+                  ></AddCircleOutlineOutlinedIcon>
+                </div>
+              }
             >
               Add &nbsp;
               <AddCircleOutlineOutlinedIcon
                 fontSize="large"
                 sx={{ color: "white" }}
               ></AddCircleOutlineOutlinedIcon>
-            </Button>
+            </CustomButton>
             <br />
             <br />
             <motion.div
@@ -829,6 +847,7 @@ export default function AddInfrastructureIssue() {
                 editActive={true}
                 tablename={"Added Issues List"}
                 redirectIconActive={false}
+                isDeleteDialog={true}
               ></CustomTable>
             </motion.div>
             <br />

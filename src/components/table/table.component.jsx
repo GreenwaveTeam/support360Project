@@ -34,7 +34,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CustomDialog from '../dialog/dialog.component';
   
 
-export default function CustomTable({isDeleteDialog, deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
+export default function CustomTable({isDeleteDialog,handleSaveClickOverridden ,deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
 
   const [open, setOpen] = useState(false);
@@ -158,7 +158,7 @@ const handleSaveClick = async (selectedRow) => {
   console.log('Updated Row : ', updatedRow);
   console.log('Selected prev row : ', selectedRow);
   let checkError = false;
-  const regex = /[^A-Za-z0-9 _]/;
+  const regex = /[^A-Za-z0-9 _/]/;
   let countChange = 0;
   columns.map((column) => {
 

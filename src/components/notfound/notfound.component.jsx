@@ -3,14 +3,26 @@ import FindInPageIcon from "@mui/icons-material/FindInPage";
 import BackHandIcon from "@mui/icons-material/BackHand";
 import ReplyIcon from "@mui/icons-material/Reply";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
+import notfoundimg from "../../resources/images/page404.jpg";
 
 const NotFound = () => {
   return (
-    <div id="not-found">
+    <div
+      id="not-found"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <br />
       <br />
+      <img
+        src={notfoundimg}
+        alt="404page"
+        style={{ height: "300px", width: "300px" }}
+      ></img>
       <center>
-        <h2>Sorry...</h2>
         <div
           style={{
             display: "flex",
@@ -21,17 +33,10 @@ const NotFound = () => {
           <FindInPageIcon /> &nbsp; Page not Found
         </div>
         <br />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <div>
           <Link to="/">
-            {" "}
             <ReplyIcon fontSize="small" />
-            Back to Homepage
+            Back to LoginPage
           </Link>
         </div>
       </center>

@@ -39,13 +39,14 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          <Route path="/" element={<UserLogin />} />
           {/* <Route path="/xyz" element={<AddInfrastructureIssue />} /> */}
           <Route path="/device" element={<Device />} />
           <Route path="/AdminHome" element={<AdminHome />} />
-          <Route
+          {/* <Route
             path="/UserRegistration/:userID"
             element={<UserRegistration />}
-          />
+          /> */}
           <Route path="/UserRegistration" element={<UserRegistration />} />
           <Route path="/UserHome" element={<UserHome />} />
           <Route path="/AdminRegistration" element={<AdminRegistration />} />
@@ -65,12 +66,10 @@ function App() {
             element={<ModuleConfiguration />}
           />
           <Route path="/Application/Module" element={<ModuleUpload />} />
-          <Route path="/abc" element={<AdminPage />} />
+          <Route path="/AdminPage" element={<AdminPage />} />
 
-
-          
-            {/* Application Report */}
-          <Route path="/user/ReportApplication" element={ <ApplicationUser/>}/>
+          {/* Application Report */}
+          <Route path="/user/ReportApplication" element={<ApplicationUser />} />
           {/* Admin Infrastructure */}
           <Route
             path="/admin/infrastructure/configureInfrastructure"

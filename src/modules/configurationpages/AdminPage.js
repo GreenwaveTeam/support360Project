@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Button, Container, Grid, Typography } from "@mui/material";
-import { useLocation, useParams } from "react-router-dom";
+// import { useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
 const AdminPage = () => {
-  const { userID } = useParams();
-  const location = useLocation();
+  // const { userID } = useParams();
+  // const location = useLocation();
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    const { userName } = location.state || (" UserID : ", userID);
+    // const { userName } = location.state || (" UserID : ", userID);
     if (userName) {
       setUserName(userName);
     }

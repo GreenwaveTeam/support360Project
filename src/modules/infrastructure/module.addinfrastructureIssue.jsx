@@ -21,6 +21,11 @@ import Textfield from "../../components/textfield/textfield.component";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 import CustomButton from "../../components/button/button.component";
+import TopbarPage from "../../components/navigation/topbar/topbar";
+import SidebarPage from "../../components/navigation/sidebar/sidebar";
+import Main from "../../components/navigation/mainbody/mainbody";
+import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
+
 
 export default function AddInfrastructureIssue() {
   //********************* Data ********************
@@ -66,6 +71,17 @@ export default function AddInfrastructureIssue() {
   const [filterSeverity, setFilterSeverity] = useState("All");
   const [page, pagechange] = useState(0);
   const [rowperpage, rowperpagechange] = useState(5);
+
+
+    //Modified
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const handleDrawerOpen = () => {
+      setDrawerOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
+  
 
   //Note the plantID is harcoded currently
   //********************* Style classes ***************
@@ -720,6 +736,49 @@ export default function AddInfrastructureIssue() {
 
   //************** Returned Component  **************
   return (
+    <Box sx={{ display: "flex" }}>
+    <TopbarPage
+      open={drawerOpen}
+      handleDrawerOpen={handleDrawerOpen}
+      urllist={[
+        { pageName: "AdminHome Page > ", pagelink: "/AdminPage" },
+        { pageName: "Configure Infrastructure", pagelink: "/admin/InfrastructureConfigure" },
+        { pageName: "Add Issues", pagelink: "/admin/infrastructure/addIssues" },
+
+      ]}
+    />
+    <SidebarPage
+      open={drawerOpen}
+      handleDrawerClose={handleDrawerClose}
+      adminList={[
+        {
+          pagename: "Device Issue Category",
+          pagelink: "/admin/Device/CategoryConfigure",
+        },
+        { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+        { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+        {
+          pagename: "Infrastructure ",
+          pagelink: "/admin/InfrastructureConfigure",
+        },
+      ]}
+      userList={[
+        {
+          pagename: "Report Application",
+          pagelink: "/user/ReportApplication",
+        },
+        {
+          pagename: "Report Infrastructure",
+          pagelink: "/user/ReportInfrastructure",
+        },
+        { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+      ]}
+    />
+    <Main open={drawerOpen}>
+      <DrawerHeader />
+      <Box
+      // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      >
     <AnimatedPage>
       <div>
         <form>
@@ -890,5 +949,8 @@ export default function AddInfrastructureIssue() {
         ></SnackbarComponent>
       </div>
     </AnimatedPage>
+    </Box>
+        </Main>
+    </Box>
   );
 }

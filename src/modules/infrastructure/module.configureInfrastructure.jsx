@@ -1,5 +1,5 @@
 import {
-  Alert, Button
+  Alert, Box, Button
 } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useEffect, useState } from "react";
@@ -12,6 +12,11 @@ import AnimatedPage from "../../components/animation_/AnimatedPage";
 import { useNavigate } from "react-router-dom";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 import CustomButton from "../../components/button/button.component";
+import TopbarPage from "../../components/navigation/topbar/topbar";
+import SidebarPage from "../../components/navigation/sidebar/sidebar";
+import Main from "../../components/navigation/mainbody/mainbody";
+import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
+
 
   export default function ConfigureInfrastructure() {
     const [search, setSearch] = useState("");
@@ -27,6 +32,15 @@ import CustomButton from "../../components/button/button.component";
     const [onEditError,setOnEditError]=useState(false);
     const [progressVisible,setProgressVisible]=useState(false);
     const [clearVisible,setClearVisible] =useState(false)
+      //Modified
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+};
+const handleDrawerClose = () => {
+  setDrawerOpen(false);
+};
+
     
     const navigate = useNavigate();
     
@@ -442,6 +456,47 @@ import CustomButton from "../../components/button/button.component";
           };
   
     return (
+      <Box sx={{ display: "flex" }}>
+      <TopbarPage
+        open={drawerOpen}
+        handleDrawerOpen={handleDrawerOpen}
+        urllist={[
+          { pageName: "AdminHome Page > ", pagelink: "/AdminPage" },
+          { pageName: "Configure Infrastructure", pagelink: "/admin/InfrastructureConfigure" },
+        ]}
+      />
+      <SidebarPage
+        open={drawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[
+          {
+            pagename: "Device Issue Category",
+            pagelink: "/admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
+      />
+      <Main open={drawerOpen}>
+        <DrawerHeader />
+        <Box
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
       <AnimatedPage>
         <div>
           <center>
@@ -512,6 +567,9 @@ import CustomButton from "../../components/button/button.component";
                 </SnackbarComponent>
         </div>
       </AnimatedPage>
+      </Box>
+        </Main>
+    </Box>
     );
   }
   

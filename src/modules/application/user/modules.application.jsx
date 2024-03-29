@@ -1486,17 +1486,35 @@ const handleDrawerClose = () => {
       open={drawerOpen}
       handleDrawerOpen={handleDrawerOpen}
       urllist={[
-        { pageName: "Device Issue Category", pagelink: "/Device/Category" },
+        { pageName: "Home", pagelink: "/UserHome" },
       ]}
     />
     <SidebarPage
       open={drawerOpen}
       handleDrawerClose={handleDrawerClose}
       adminList={[
-        { pagename: "Device Issue Category", pagelink: "/Device/Category" },
-        { pagename: "Application", pagelink: "/Application" },
+        {
+          pagename: "Device Issue Category",
+          pagelink: "/admin/Device/CategoryConfigure",
+        },
+        { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+        { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+        {
+          pagename: "Infrastructure ",
+          pagelink: "/admin/InfrastructureConfigure",
+        },
       ]}
-      userList={["User Item 1", "User Item 2", "User Item 3"]}
+      userList={[
+        {
+          pagename: "Report Application",
+          pagelink: "/user/ReportApplication",
+        },
+        {
+          pagename: "Report Infrastructure",
+          pagelink: "/user/ReportInfrastructure",
+        },
+        { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+      ]}
     />
     <Main open={drawerOpen}>
       <DrawerHeader />

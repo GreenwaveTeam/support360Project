@@ -265,7 +265,7 @@ export default function AdminHome() {
                 <TableCell align="center">Name</TableCell>
                 <TableCell align="center">Email</TableCell>
                 <TableCell align="center">User ID</TableCell>
-                <TableCell align="center">Edit</TableCell>
+                <TableCell align="center"></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -273,19 +273,21 @@ export default function AdminHome() {
                 <TableRow key={index}>
                   <TableCell align="center">{item.name}</TableCell>
                   <TableCell align="center">{item.email}</TableCell>
-                  <Link
-                    to={"/AdminPage"}
-                    style={{ textDecoration: "none", color: "inherit" }}
+                  {/* <Link to={"/AdminPage"} style={{ color: "inherit" }}> */}
+                  <TableCell
+                    onClick={() => navigate("/AdminPage")}
+                    align="center"
                   >
-                    <TableCell align="center">{item.userID}</TableCell>
-                  </Link>
+                    {item.userID}
+                  </TableCell>
+                  {/* </Link> */}
                   <TableCell align="center">
-                    <Link
+                    {/* <Link
                       to={`/UserRegistration/${item.userID}`}
                       style={{ textDecoration: "none", color: "inherit" }}
                     >
                       <BorderColorOutlinedIcon color="primary" />
-                    </Link>
+                    </Link> */}
                     <Link style={{ textDecoration: "none", color: "inherit" }}>
                       <DeleteForeverOutlinedIcon
                         color="error"

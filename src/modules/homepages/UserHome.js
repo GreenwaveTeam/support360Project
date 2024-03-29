@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { Button, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useEffect } from "react";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import SidebarPage from "../../components/navigation/sidebar/sidebar";
+import Main from "../../components/navigation/mainbody/mainbody";
+import TopbarPage from "../../components/navigation/topbar/topbar";
+import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 
 function UserHome() {
   const [formData, setFormData] = useState({
@@ -31,6 +35,15 @@ function UserHome() {
   });
   const [token, setToken] = useState("");
   const navigate = useNavigate();
+
+  const [open, setOpen] = useState(false);
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     // setToken(`${localStorage.getItem("token")}`);
@@ -127,135 +140,182 @@ function UserHome() {
   // }
 
   return (
-    <Container style={{ display: "flex", height: "100vh", width: "100vw" }}>
-      <>
-        <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-          <div
-            style={{
-              borderRadius: "20px",
-              border: "2px solid black",
-              marginTop: "20px",
-              marginBottom: "20px",
-              marginLeft: "20px",
-              marginRight: "20px",
-              width: "100%",
-              height: "30%",
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
+    <Box sx={{ display: "flex" }}>
+      <TopbarPage
+        open={open}
+        handleDrawerOpen={handleDrawerOpen}
+        urllist={[
+          { pageName: "Device Issue Category", pagelink: "/Device/Category" },
+        ]}
+      />
+      <SidebarPage
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[
+          {
+            pagename: "Device Issue Category",
+            pagelink: "admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "admin/InfrastructureConfigure",
+          },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
+      />
+      <Main open={open}>
+        <DrawerHeader />
+        <Box
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+          <Container
+            style={{ display: "flex", height: "100vh", width: "100vw" }}
           >
-            <Typography>Support Till Date</Typography>
-            <Datepicker
-              value={formData.supportEndDate}
-              format="DD-MM-YYYY"
-              slotProps={{ textField: { fullWidth: true } }}
-            />
-          </div>
-          <div
-            style={{
-              borderRadius: "20px",
-              border: "2px solid black",
-              marginTop: "20px",
-              marginBottom: "20px",
-              marginLeft: "20px",
-              marginRight: "20px",
-              width: "100%",
-              height: "70%",
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "stretch",
-              flexDirection: "column",
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Typography>OPEN TICKETS</Typography>
-            </div>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button
-                variant="contained"
-                style={{ margin: "10px" }}
-                onClick={(e) => {
-                  navigate("/userDevice");
-                }}
-              >
-                Device
-              </Button>
-              <Button
-                variant="contained"
-                style={{ margin: "10px" }}
-                onClick={(e) => {
-                  navigate("/user/ReportApplication");
-                }}
-              >
-                Application
-              </Button>
-              <Button
-                variant="contained"
-                style={{ margin: "10px" }}
-                onClick={(e) => {
-                  navigate("/infraUser");
-                }}
-              >
-                Infrastructure
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-          <div
-            style={{
-              borderRadius: "20px",
-              border: "2px solid black",
-              marginTop: "20px",
-              marginBottom: "20px",
-              marginLeft: "20px",
-              marginRight: "20px",
-              width: "100%",
-              height: "70%",
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Typography>
-              Total Issue Raised : {ticketData.total_ticket_raised}
-            </Typography>
-            <Typography>
-              Pending Tickets : {ticketData.pending_tickets}
-            </Typography>
-            <Typography>
-              Resolved Tickets : {ticketData.resolved_tickets}
-            </Typography>
-          </div>
-          <div
-            style={{
-              borderRadius: "20px",
-              border: "2px solid black",
-              marginTop: "20px",
-              marginBottom: "20px",
-              marginLeft: "20px",
-              marginRight: "20px",
-              width: "100%",
-              height: "30%",
-              display: "flex",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            <Typography>Last Ticket Raised</Typography>
-            <Datepicker
-              value={ticketData.last_ticket_raised}
-              format="DD-MM-YYYY"
-              slotProps={{ textField: { fullWidth: true } }}
-            />
-          </div>
-        </div>
-      </>
-    </Container>
+            <>
+              <div style={{ width: "50%", height: "100%", padding: "50px" }}>
+                <div
+                  style={{
+                    borderRadius: "20px",
+                    border: "2px solid black",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                    marginLeft: "20px",
+                    marginRight: "20px",
+                    width: "100%",
+                    height: "30%",
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                    alignItems: "center",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography>Support Till Date</Typography>
+                  <Datepicker
+                    value={formData.supportEndDate}
+                    format="DD-MM-YYYY"
+                    slotProps={{ textField: { fullWidth: true } }}
+                    readOnly
+                  />
+                </div>
+                <div
+                  style={{
+                    borderRadius: "20px",
+                    border: "2px solid black",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                    marginLeft: "20px",
+                    marginRight: "20px",
+                    width: "100%",
+                    height: "70%",
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                    alignItems: "stretch",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Typography>OPEN TICKETS</Typography>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Button
+                      variant="contained"
+                      style={{ margin: "10px" }}
+                      onClick={(e) => {
+                        navigate("/userDevice");
+                      }}
+                    >
+                      Device
+                    </Button>
+                    <Button
+                      variant="contained"
+                      style={{ margin: "10px" }}
+                      onClick={(e) => {
+                        navigate("/user/ReportApplication");
+                      }}
+                    >
+                      Application
+                    </Button>
+                    <Button
+                      variant="contained"
+                      style={{ margin: "10px" }}
+                      onClick={(e) => {
+                        navigate("/infraUser");
+                      }}
+                    >
+                      Infrastructure
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div style={{ width: "50%", height: "100%", padding: "50px" }}>
+                <div
+                  style={{
+                    borderRadius: "20px",
+                    border: "2px solid black",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                    marginLeft: "20px",
+                    marginRight: "20px",
+                    width: "100%",
+                    height: "70%",
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                    alignItems: "center",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography variant="h5">
+                    Total Issue Raised : {ticketData.total_ticket_raised}
+                  </Typography>
+                  <Typography variant="h5">
+                    Pending Tickets : {ticketData.pending_tickets}
+                  </Typography>
+                  <Typography variant="h5">
+                    Resolved Tickets : {ticketData.resolved_tickets}
+                  </Typography>
+                </div>
+                <div
+                  style={{
+                    borderRadius: "20px",
+                    border: "2px solid black",
+                    marginTop: "20px",
+                    marginBottom: "20px",
+                    marginLeft: "20px",
+                    marginRight: "20px",
+                    width: "100%",
+                    height: "30%",
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                    alignItems: "center",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography>Last Ticket Raised</Typography>
+                  <Datepicker
+                    value={ticketData.last_ticket_raised}
+                    format="DD-MM-YYYY"
+                    slotProps={{ textField: { fullWidth: true } }}
+                    readOnly
+                  />
+                </div>
+              </div>
+            </>
+          </Container>
+        </Box>
+      </Main>
+    </Box>
   );
 }
 

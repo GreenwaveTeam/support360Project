@@ -178,6 +178,10 @@ export default function AdminHome() {
         display={"flex"}
         alignItems={"center"}
         justifyContent={"space-evenly"}
+        margin={"10px"}
+        border={"2px solid gray"}
+        borderRadius={"20px"}
+        paddingBottom={"10px"}
       >
         <Button
           variant="contained"
@@ -194,8 +198,18 @@ export default function AdminHome() {
           Register New Admin
         </Button>
       </Grid>
-      <Grid item xs={12} justifyContent={"center"}>
-        <h3>Existing Users</h3>
+      <Grid
+        item
+        xs={12}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+      >
+        {/* <h3>Existing Users</h3> */}
+        <Typography style={{ fontWeight: "bold", backgroundColor: "cyan" }}>
+          Existing Users
+        </Typography>
         <TableContainer>
           <Table>
             <TableRow>

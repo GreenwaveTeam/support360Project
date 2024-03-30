@@ -26,6 +26,7 @@ export default function ModuleConfiguration() {
     const [dialogPopup, setDialogPopup] = useState(false);
     const [dialogMessage, setDialogMessage] = useState('');
     const [snackbarSeverity,setsnackbarSeverity]=useState(null)
+    
     const columns=[
       {
         "id": "application_name",
@@ -52,8 +53,9 @@ export default function ModuleConfiguration() {
     { pageName: "Application", pagelink: "/Application" }
   ];useEffect(() => {
     const fetchData = async () => {
+      console.log("Ischjscnjqnck")
       try {
-        const response = await axios.get(`http://192.168.7.8:8081/application/admin/${plantid}`,{headers:{
+        const response = await axios.get(`http://localhost:8081/application/admin/${plantid}`,{headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },});
@@ -83,7 +85,7 @@ export default function ModuleConfiguration() {
                 // Add other properties from rowData if needed
               };     
               console.log("Request body=>"+JSON.stringify(requestBody))
-              axios.delete(`http://192.168.7.8:8081/application/admin/plantid/applicationname`,{ data: requestBody },{headers:{
+              await axios.delete(`http://localhost:8081/application/admin/plantid/applicationname`,{ data: requestBody },{headers:{
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
               },});
@@ -92,6 +94,9 @@ export default function ModuleConfiguration() {
           }catch(e)
           {
             console.log("Exception")
+            setDialogPopup(true);
+            setDialogMessage("Database error!")
+            setsnackbarSeverity('error')
           }
           
 
@@ -107,13 +112,18 @@ export default function ModuleConfiguration() {
 
   try {
     // Send requestBody as request body in the PUT request
-    const response = await axios.put(`http://192.168.7.8:8081/application/admin/${plantid}/${prev.application_name}`, rowData,{headers:{
+    const response = await axios.put(`http://localhost:8081/application/admin/${plantid}/${prev.application_name}`, rowData,{headers:{
       Authorization: `Bearer ${localStorage.getItem("token")}`,
       "Content-Type": "application/json",
     },});
     console.log("Posted data");
+    return true
   } catch (error) {
     console.error('Error:', error);
+    setDialogPopup(true);
+    setDialogMessage("Database error!")
+    setsnackbarSeverity('error')
+    return false
     // Handle errors, such as displaying an error message to the user
   }
 };
@@ -126,7 +136,7 @@ export default function ModuleConfiguration() {
     const handleRedirect=(appdata)=>{
       console.log(appdata)
       navigate(`/Application/Modules`, {
-        state: { application_data:appdata},
+        state: { application_name:appdata.application_name},
       });
     }
     const handleSubmit = (event) => {

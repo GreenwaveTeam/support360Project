@@ -8,7 +8,6 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import Dialog from '@mui/material/Dialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
-import Swal from 'sweetalert2'
 
 /*Navigation Pane*/
 import Sidebar from '../../../components/navigation/sidebar/sidebar';
@@ -19,9 +18,10 @@ import DrawerHeader from '../../../components/navigation/drawerheader/drawerhead
 
 /*Custom Components*/
 import Table from '../../../components/table/table.component'
-import DialogBox from "../../../components/snackbar/customsnackbar.component";
+import Snackbar from "../../../components/snackbar/customsnackbar.component";
 import TextField from "../../../components/textfield/textfield.component";
 import Dropdown from '../../../components/dropdown/dropdown.component';
+import CustomDialog from '../../../components/dialog/dialog.component';
 
 
 const Application = () => {
@@ -67,6 +67,9 @@ const Application = () => {
 ];
 const [categorySubmitted,setCategorySubmitted]=useState(false)
 const [snackbarSeverity,setsnackbarSeverity]=useState(null)
+const [deleteDialog,setDeleteDialog]=useState(false)
+const[deleteArea,setDeleteArea]=useState(null)
+
 const handleAddCategory=()=>{
   console.log(categories)
   console.log(categoryname)
@@ -79,7 +82,6 @@ const handleAddCategory=()=>{
   }
   if(checkInput(categoryname))
     return
-  setCategories([...categories,categoryname])
   setCategorySubmitted(true)
     
 }
@@ -103,6 +105,7 @@ const handleAddCategory=()=>{
   }
  
 	  const handleEditIssue = async(prev,rowData) => {
+      try{
 		console.log("Handle delete")
 		//console.log("Row data==>"+JSON.stringify(rowData))
 		const deleteRequestBody = {
@@ -113,10 +116,11 @@ const handleAddCategory=()=>{
       issuename: prev.issuename
     };
     console.log("Rowdata=====>"+JSON.stringify(rowData))
-    await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: deleteRequestBody },{headers:{
+    await axios.delete('http://localhost:8081/application/admin/plant/application/modulename/category/issue',
+    {headers:{
       Authorization: `Bearer ${localStorage.getItem("token")}`,
       "Content-Type": "application/json",
-    },});
+    }, data: deleteRequestBody});
     
 		if (selection) {
 			const details = {
@@ -145,20 +149,26 @@ const handleAddCategory=()=>{
 			};
 			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
       
-			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData,{headers:{
+				const response = await axios.post('http://localhost:8081/application/admin/plant_id/application_name/moduleName',requestData, {headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
-        },});
-			
+        },
+        });
+    }
 			} catch (error) {
 				console.error('Error:', error);
+				setsnackbarSeverity('error')
+				setDialogPopup(true);
+				setDialogMessage('Database Error');
+				return false;
 			}
-		}
+		
 	};
 	
   const handleDeleteIssue = async (rowData) => {
+    
+		try {
     const requestBody = {
 			plant_id: plantid,
 			application_name: application_name,
@@ -169,11 +179,10 @@ const handleAddCategory=()=>{
 	
 		console.log("Handle delete==>", requestBody);
 	
-		try {
-			await axios.delete('http://192.168.7.8:8081/application/admin/plant/application/modulename/category/issue', { data: requestBody },{headers:{
+			await axios.delete('http://localhost:8081/application/admin/plant/application/modulename/category/issue',  {headers:{
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
-      },});
+      },data: requestBody});
 			const detail = {
 				left: selection.left,
 				top: selection.top,
@@ -185,9 +194,15 @@ const handleAddCategory=()=>{
 			console.log("Detail====>"+JSON.stringify(detail))
 			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
       setissues(issues.filter((row)=>(row!==rowData)))
+      return true
 		} catch (error) {
 			console.error('Error deleting issue:', error.response ? error.response.data : error.message);
 			// Handle errors, such as displaying an error message to the user
+      setsnackbarSeverity('error')
+				setDialogPopup(true);
+				setDialogMessage('Database Error');
+				return false;
+      return false
 		}
   };
 	
@@ -223,9 +238,16 @@ const handleAddCategory=()=>{
     
     }
   
-
+    const handleDeleteAreaClick=(area)=>{
+      setDeleteDialog(true)
+      setDeleteArea(area)
+      
+    }
+    const handleDeleteAreaConfirm=()=>{
+      handleDeleteArea(deleteArea)
+    }
   
-    const handleDeleteArea = async (e, area) => {
+    const handleDeleteArea = async ( area) => {
       const requestBody = {
         plant_id: plantid,
         application_name: application_name,
@@ -233,22 +255,13 @@ const handleAddCategory=()=>{
         categoryname: area.categoryname
       };
     
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-      }).then(async (result) => {
-        if (result.isConfirmed) {
+      
           try {
-            e.stopPropagation();
-            const response = await axios.delete(`http://192.168.7.8:8081/application/admin/plant_id/application/module/category`,   { data: requestBody },{headers:{
+            const response = await axios.delete(`http://localhost:8081/application/admin/plant_id/application/module/category`,  
+            {headers:{
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "application/json",
-            },});
+            },data: requestBody });
 			      // Optionally, update the UI or perform any additional actions after successful deletion
             setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== area.categoryname));
             setCategories(prev => prev.filter(category => category !== area.categoryname));
@@ -263,8 +276,7 @@ const handleAddCategory=()=>{
     				setDialogMessage("Database error")
             // Handle errors, such as displaying an error message to the user
           }
-        }
-      });
+        
     };
     
   useEffect(() => {
@@ -326,6 +338,53 @@ const handleAddCategory=()=>{
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
    }
+   const handleTouchStart = (event) => {
+		const imageRef=event.target
+		const imageRect = imageRef.getBoundingClientRect();
+		const imageWidth = imageRect.width;
+		const imageHeight = imageRect.height;
+		const touch = event.touches[0];
+		const startX = (touch.clientX - imageRect.left) / imageWidth;
+		const startY = (touch.clientY - imageRect.top) / imageHeight;
+		let detailsToCheckOverlap = null;
+		let isTouchMoved = false;
+	
+		const handleTouchMove = (event) => {
+			isTouchMoved = true;
+			const touch = event.touches[0];
+			const endX = (touch.clientX - imageRect.left) / imageWidth;
+			const endY = (touch.clientY - imageRect.top) / imageHeight;
+	
+			const left = Math.min(startX, endX);
+			const top = Math.min(startY, endY);
+			const width = Math.abs(endX - startX);
+			const height = Math.abs(endY - startY);
+	
+			setSelection({ left, top, width, height });
+			detailsToCheckOverlap = { left, top, width, height };
+		};
+	
+		const handleTouchEnd = () => {
+			document.removeEventListener('touchmove', handleTouchMove);
+			document.removeEventListener('touchend', handleTouchEnd);
+			if (!isTouchMoved) return;
+			setissues([]);
+			setShowPopup(true);
+			const overlaps = handleOverlapCheck(detailsToCheckOverlap);
+	
+			if (overlaps) {
+				setsnackbarSeverity('error');
+				setDialogPopup(true);
+				setDialogMessage("Overlap is strictly restricted");
+				setShowPopup(false);
+				setSelection(null);
+			}
+		};
+	
+		document.addEventListener('touchmove', handleTouchMove);
+		document.addEventListener('touchend', handleTouchEnd);
+	};
+
   const handleAddIssue=(event)=>{
     event.preventDefault();
     const newIssue={issuename:issueName,severity:severity}
@@ -353,13 +412,7 @@ const handleAddCategory=()=>{
   }
   if(!checkInput(issueName)){
     
-    setissues(prevIssues=>{
-        if(prevIssues&&issueName&&severity)
-            return [...prevIssues,newIssue]
-        else if(issueName&&severity)
-            return [newIssue]
-        
-    })
+    
     handleCoordinateSubmit(event)
   }
   }
@@ -388,7 +441,6 @@ const handleAddCategory=()=>{
 			};
 
       // Update selectedAreas with the new details
-      setSelectedAreas([...selectedAreas, detail]);
       console.log(selectedAreas)
       const requestData = {
 				plant_id: plantid,
@@ -399,10 +451,26 @@ const handleAddCategory=()=>{
 			console.log(JSON.stringify(requestData))
 			try {
 				// Here requestData contains entire module data including module_image
-				const response = await axios.post('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', requestData);
+				const response = await axios.post('http://localhost:8081/application/admin/plant_id/application_name/moduleName', requestData,
+        {headers:{
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+					"Content-Type": "application/json",
+				  },
+				  });
 				console.log("Posted data")
+        setissues((prevIssues) => {
+					if (prevIssues && issueName && severity) return [...prevIssues, { issuename: issueName, severity: severity }];
+					else if (issueName && severity) return [{ issuename: issueName, severity: severity }];
+					
+				});
+				setSelectedAreas([...selectedAreas, detail]);
+        !categories.includes(categoryname) && setCategories([...categories, categoryname]);
+  
 			} catch (error) {
 				console.error('Error:', error);
+        setsnackbarSeverity('error')
+				setDialogPopup(true);
+				setDialogMessage('Database Error.');
 			}
 		}
       //setShowPopup(false);
@@ -454,7 +522,7 @@ const handleAddCategory=()=>{
       console.log("Request Data====>"+JSON.stringify(requestData))
       //Send formData to the new API endpoint
       try {
-        const response = await fetch('http://192.168.7.8:8081/application/admin/plant_id/application_name/moduleName', {
+        const response = await fetch('http://localhost:8081/application/admin/plant_id/application_name/moduleName', {
           method: 'POST',headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -560,7 +628,7 @@ const handleAddCategory=()=>{
             <img
               src={imageUrl}
               alt=""
-              onMouseDown={handleMouseDown}
+              onMouseDown={handleMouseDown} onTouchStart={handleTouchStart}
               style={{ cursor: 'crosshair', width: '100%', height: '100%' }}
             />
           )}
@@ -599,7 +667,7 @@ const handleAddCategory=()=>{
       style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white' }}
       onClick={(e) => {
         e.stopPropagation();
-        handleDeleteArea(e,area); // Call a function to delete the area when delete icon is clicked
+        handleDeleteAreaClick(area); // Call a function to delete the area when delete icon is clicked
       }}
     />
   </div>
@@ -736,8 +804,10 @@ const handleAddCategory=()=>{
           )}
         </div>
         
-        <DialogBox openPopup={dialogPopup} snackbarSeverity={snackbarSeverity}setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
-        
+        <Snackbar openPopup={dialogPopup} snackbarSeverity={snackbarSeverity}setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
+        <CustomDialog open={deleteDialog}setOpen={setDeleteDialog}proceedButtonText={"Delete"}
+				proceedButtonClick={handleDeleteAreaConfirm}cancelButtonText="Cancel"/>
+				
       </Main>
     </Box>
   );

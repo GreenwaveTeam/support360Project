@@ -11,6 +11,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
   Alert,
   Badge,
+  CircularProgress,
   Collapse,
   Container,
   Dialog,
@@ -128,6 +129,8 @@ const handleDrawerClose = () => {
   const [additionalMiscellaneousSeverityError,setAdditionallMiscellaneousSeverityError]=useState(false)
   const [ticketDialogOpen,setTicketDialogOpen]=useState(false);
   const navigate =useNavigate()
+const [progressVisible,setprogressVisible]=useState(false);
+
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
     //The next check i need to make whether the current finalUser based on modulename and update the same
@@ -972,7 +975,8 @@ const handleDrawerClose = () => {
       },
     },
   };
-  const handleFinalReportClick = () => {
+  const handleFinalReportClick = async() => {
+    setprogressVisible(true)
     console.log("handleFinalReportClick() called");
     //Modified
     let currentSuperInformation = saveCurrentTabModuleInformation(); //Remember if the array with the particular value doesn't exist how will i ever change the value inside  it, I cannot replace a const array but definitely can change the value inside one of the array Index value  but in usestate while runtime if you set something and expect to get the set value , it won't be possible
@@ -1045,17 +1049,36 @@ const handleDrawerClose = () => {
     });
 
     console.log("Final Json for POST : ", final_Json);
+    if(final_Json.length === 0){
+      setSnackbarSeverity('warning')
+      setSnackbarText('Please select an issue to report !')
+      setMainAlert(true);
+      return;
+    }
 
     let json_Count = 0;
-    final_Json.forEach((json_data) => {
-      //let count=0
-      // count=
-      postDatainDB(json_data);
-      json_Count = json_Count + 1;
-    });
+    for (const json_data of final_Json) {
+      try {
+          const posted = await postDatainDB(json_data);
+          if (!posted) {
+              break; 
+          }
+          json_Count++;
+      } catch (error) {
+          console.error("Error posting data:", error.message);
+      }
+  }
     //   )
-    // console.log('Number of JSON posted => ',json_Count)
+     console.log('Number of JSON posted => ',json_Count)
 
+     if(json_Count===0)
+{
+setSnackbarSeverity("error")
+setSnackbarText("Error in raising the ticket !")
+setMainAlert(true)
+setprogressVisible(false)
+return;
+}
     //Resetting Data
     setDropdownValue("Select an application");
     setTabsModuleNames([]);
@@ -1068,6 +1091,7 @@ const handleDrawerClose = () => {
     setOverviewTableData([]);
     setSeverityError(false);
     setIssueDropDownError(false);
+    setprogressVisible(false)
     if (json_Count > 0) {
       const ticket = "Ticket raised successfully ! Ticket No - " + ticketNumber;
       setSnackbarSeverity("success");
@@ -1109,6 +1133,7 @@ const handleDrawerClose = () => {
       });
       if (response.ok) {
         console.log("Data has been updated successfully ! ");
+        return true;
       }
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -1118,6 +1143,7 @@ const handleDrawerClose = () => {
       setSnackbarSeverity("error");
       setSnackbarText("Error in Database  Connection ");
       setMainAlert(true);
+      return false;
       // return 0;
     }
   };
@@ -1485,6 +1511,7 @@ const handleDrawerClose = () => {
       handleDrawerOpen={handleDrawerOpen}
       urllist={[
         { pageName: "Home", pagelink: "/UserHome" },
+        { pageName: "Report Application", pagelink: "/user/ReportApplication" },
       ]}
     />
     <SidebarPage
@@ -1696,6 +1723,7 @@ const handleDrawerClose = () => {
 
             <center>
               <br />
+              <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
               {tabsmoduleNames.length !== 0 && (
                 <CustomButton
                   size={"medium"}
@@ -1706,10 +1734,13 @@ const handleDrawerClose = () => {
                   style={classes.btn}
                   buttontext={<div style={{display:'flex',alignItems: 'center', justifyContent: 'center' }}>Raise a Ticket
                     <ArrowRightIcon fontSize="small" /></div>}
-                >
-                  
+                >  
                 </CustomButton>
+
               )}
+              &nbsp;
+               {progressVisible&&<CircularProgress color="secondary" size={20} />}
+              </div>
             </center>
           </center>
           <br />

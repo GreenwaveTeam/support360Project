@@ -22,7 +22,7 @@ export default function TicketDialog({ticketDialogOpen, setTicketDialogOpen, tic
             setTimeout(()=>
             {
               setCopyText('Copy')
-            },5000)
+            },10000)
         }
   return (
     <div >

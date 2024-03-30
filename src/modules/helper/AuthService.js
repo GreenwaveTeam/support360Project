@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 export const login = async (username, password) => {
   // if (localStorage.getItem("token") !== null) {
   //   localStorage.removeItem("token");
@@ -28,4 +30,6 @@ export const login = async (username, password) => {
 
 export const logout = () => {
   localStorage.removeItem("token");
+  // const navigate = useNavigate();
+  // navigate("/login");
 };

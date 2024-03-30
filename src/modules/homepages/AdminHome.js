@@ -333,7 +333,11 @@ export default function AdminHome() {
                         <TableCell align="center">{item.email}</TableCell>
                         {/* <Link to={"/AdminPage"} style={{ color: "inherit" }}> */}
                         <TableCell
-                          onClick={() => navigate("/AdminPage")}
+                          onClick={() =>
+                            navigate("/AdminPage", {
+                              state: { userID: item.userID },
+                            })
+                          }
                           align="center"
                         >
                           {item.userID}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 // import { useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import Main from "../../components/navigation/mainbody/mainbody";
 import SidebarPage from "../../components/navigation/sidebar/sidebar";
@@ -11,7 +11,8 @@ import TopbarPage from "../../components/navigation/topbar/topbar";
 const AdminPage = () => {
   // const { userID } = useParams();
   // const location = useLocation();
-  const [userName, setUserName] = useState("");
+  const { state } = useLocation();
+  const [userName, setUserName] = useState(state.userID);
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);

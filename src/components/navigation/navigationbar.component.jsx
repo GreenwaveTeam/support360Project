@@ -10,7 +10,7 @@ export default function NavigationArea({urllist,handleOnClick}) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="relative" sx={{backgroundColor:'#F3F8FF '}} >
-        <Toolbar sx={{color:'black'}}>
+        <Toolbar sx={{color:'#0C0C0C'}}>
           <IconButton
             size="large"
             edge="start"

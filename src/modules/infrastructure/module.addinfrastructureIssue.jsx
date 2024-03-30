@@ -26,6 +26,7 @@ import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import Main from "../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 
+
 export default function AddInfrastructureIssue() {
   //********************* Data ********************
 
@@ -294,7 +295,7 @@ export default function AddInfrastructureIssue() {
       setDropdownError(true);
       return;
     }
-    const regex = /[^A-Za-z0-9 _]/;
+    const regex = /[^A-Za-z0-9 _/]/;
     if (regex.test(addIssue.trim())) {
       setsnackbarSeverity("error");
       setSnackbarText("Special Characters are not allowed ! ");
@@ -313,6 +314,14 @@ export default function AddInfrastructureIssue() {
       setDropdownError(true);
       setSnackbarText("Fill required data !");
       setsnackbarSeverity("error");
+      setOpen(true);
+      return;
+    }
+    if(addIssue.trim().toLowerCase()==='miscellaneous')
+    {
+      setsnackbarSeverity("error");
+      setSnackbarText("Miscellaneous keyword is not allowed! ");
+      setAddissueError(true);
       setOpen(true);
       return;
     }
@@ -665,10 +674,18 @@ export default function AddInfrastructureIssue() {
     setAddissueError(false);
     setAddIssue(e.target.value);
     const currentAddedIssue = e.target.value;
-    const regex = /[^A-Za-z0-9 _]/;
+    const regex = /[^A-Za-z0-9 _/]/;
     if (regex.test(currentAddedIssue.trim())) {
       setsnackbarSeverity("error");
       setSnackbarText("Special Characters are not allowed ! ");
+      setAddissueError(true);
+      setOpen(true);
+      return;
+    }
+    if(currentAddedIssue.trim().toLowerCase()==='miscellaneous')
+    {
+      setsnackbarSeverity("error");
+      setSnackbarText("Miscellaneous keyword is not allowed! ");
       setAddissueError(true);
       setOpen(true);
       return;

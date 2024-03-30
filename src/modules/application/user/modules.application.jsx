@@ -38,8 +38,6 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-import Swal from "sweetalert2";
-
 import { motion } from "framer-motion";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { styled } from "@mui/material/styles";
@@ -113,7 +111,7 @@ const handleDrawerClose = () => {
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
-  const modalWidth = isSmallScreen ? "90%" : 700;
+  const modalWidth = isSmallScreen ? "90%" : 760;
 
   const [superInformationofAllModules, setSuperInformationofAllModules] =
     useState([]);
@@ -919,8 +917,8 @@ const handleDrawerClose = () => {
     setTableIssuesForCurrentDiv(updatedData);
     setOriginalTableIssues(updatedData);
     updateFinalIssueData(updatedData);
-    setSnackbarSeverity("success");
-    setSnackbarText("Data deleted successfully !");
+    // setSnackbarSeverity("success");
+    // setSnackbarText("Data deleted successfully !");
     setModalAlertOpen(true);
     const filteredFinalUserInput = finalUserInput.filter(
       (item) => item.issues.length > 0
@@ -1593,12 +1591,13 @@ const handleDrawerClose = () => {
                     aria-label="show more"
                   >
                     <ExpandMoreIcon />
+                    {/* &nbsp; */}
                   </ExpandMore>
                   <Badge
                     badgeContent={overviewTableData.length}
                     color="primary"
                   >
-                    <NotificationsActiveIcon color="secondary" />
+                    {/* <NotificationsActiveIcon color="secondary" /> */}
                   </Badge>
                   &nbsp;
                 </div>
@@ -1782,7 +1781,7 @@ const handleDrawerClose = () => {
                 </div>
               </center>
               <br />
-              <div style={{ display: "flex", marginLeft: "40px" }}>
+              <div style={{ display: "flex" }}>
                 <CheckCircleIcon fontSize="small" sx={{ color: "#66FF00" }} />
                 <span> - * Indicates Issues have been added </span>
               </div>

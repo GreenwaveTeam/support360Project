@@ -5,7 +5,7 @@ import Link from '@mui/material/Link';
 export default function BreadCrumbs({ urllist }) {
   return (
     <div>
-      <Breadcrumbs separator="›" aria-label="breadcrumb">
+      <Breadcrumbs sx={{fontWeight:'bold',fontSize:'15px',fontStyle: 'italic',color:'#0C0C0C' }} separator="›" aria-label="breadcrumb">
         {urllist.map(url => (
           <Link underline="hover" color="inherit" href={url.pagelink} key={url.pageName}>
             {url.pageName}

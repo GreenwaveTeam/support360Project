@@ -1,6 +1,8 @@
-import { Button, Dialog, DialogActions, DialogTitle } from '@mui/material'
-import React, { Fragment } from 'react'
+import { Button, Dialog, DialogActions, DialogTitle, IconButton, Tooltip } from '@mui/material'
+import React, { Fragment, useState } from 'react'
 import VerifiedIcon from '@mui/icons-material/Verified';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+
 
 export default function TicketDialog({ticketDialogOpen, setTicketDialogOpen, ticketNumber }) {
 
@@ -10,6 +12,18 @@ export default function TicketDialog({ticketDialogOpen, setTicketDialogOpen, tic
               return;
         setTicketDialogOpen(false);
         };
+
+        const [copyText,setCopyText]=useState("Copy")
+
+        const handleCopyText=async (e)=>
+        {
+            setCopyText('Copied!')
+            await navigator.clipboard.writeText(ticketNumber)
+            setTimeout(()=>
+            {
+              setCopyText('Copy')
+            },5000)
+        }
   return (
     <div >
     <Fragment>
@@ -29,6 +43,12 @@ export default function TicketDialog({ticketDialogOpen, setTicketDialogOpen, tic
             <span style={{fontSize:"17px",fontWeight:'bold',color:'red'}}>
            {ticketNumber}
           </span>
+          &nbsp;
+          <Tooltip title={copyText} placement="top-end" >
+          <IconButton onClick={handleCopyText}>
+          <ContentCopyIcon fontSize='small'/>
+          </IconButton>
+          </Tooltip>
           </div>
           </center>
         </DialogTitle>

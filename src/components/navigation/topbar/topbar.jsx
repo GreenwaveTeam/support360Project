@@ -27,7 +27,7 @@ const AppBar = styled(MuiAppBar, {
 
 const TopbarPage = ({ open, handleDrawerOpen,urllist }) => {
   return (
-    <AppBar position="fixed" open={open}>
+    <AppBar position="fixed" open={open}sx={{backgroundColor:'#B9F3FC',color:'black'}}>
       <Toolbar>
         <IconButton
           color="inherit"
@@ -38,9 +38,8 @@ const TopbarPage = ({ open, handleDrawerOpen,urllist }) => {
         >
           <MenuIcon />
         </IconButton>
-        <Typography variant="h6" noWrap component="div">
-        <BreadCrumbs urllist={urllist}
-           /> 
+        <Typography  variant="h6" noWrap component="div">
+        <BreadCrumbs urllist={urllist}  />
         </Typography>
       </Toolbar>
     </AppBar>

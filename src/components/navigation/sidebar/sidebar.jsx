@@ -37,7 +37,10 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
+          borderRight: '2px solid #6863633d',
+          boxShadow: '5px 5px 15px rgba(0, 0, 0, 0.1)'
         },
+        
       }}
       variant="persistent"
       anchor="left"
@@ -45,7 +48,7 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
     >
       <div>
         <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+          {theme.direction === 'ltr' ? <ChevronLeftIcon sx={{color:'#0C0C0C'}} /> : <ChevronRightIcon sx={{color:'#0C0C0C'}}/>}
         </IconButton>
       </div>
       <Divider />

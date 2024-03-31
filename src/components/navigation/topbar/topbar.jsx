@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { styled } from "@mui/material/styles";
 import BreadCrumbs from "../../breadcrumbs/breadcrumbs.component";
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { logout } from "../../../modules/helper/AuthService";
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -51,15 +51,17 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
         <Typography variant="h6" noWrap component="div">
           <BreadCrumbs urllist={urllist} />
         </Typography>
-        <Button
-          onClick={() => {
-            logout();
-            navigate("/userlogin");
-          }}
-          sx={{ marginLeft: "auto" }}
-        >
-          <LogoutIcon />
-        </Button>
+        <Tooltip title="Logout" placement="right">
+          <Button
+            onClick={() => {
+              logout();
+              navigate("/userlogin");
+            }}
+            sx={{ marginLeft: "auto" }}
+          >
+            <LogoutIcon />
+          </Button>
+        </Tooltip>
       </Toolbar>
     </AppBar>
   );

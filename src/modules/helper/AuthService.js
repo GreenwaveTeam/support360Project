@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-
 export const login = async (username, password) => {
   // if (localStorage.getItem("token") !== null) {
   //   localStorage.removeItem("token");
@@ -33,3 +31,12 @@ export const logout = () => {
   // const navigate = useNavigate();
   // navigate("/login");
 };
+
+// export const handleFetchResponse = (response, redirectTo) => {
+//   const navigate = useNavigate();
+//   if (response.status === 403) {
+//     navigate(redirectTo);
+//     return;
+//   }
+//   return response.json();
+// };

@@ -35,6 +35,7 @@ export default function AdminHome() {
   const [filteredRows, setFilteredRows] = useState(list);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const navigate = useNavigate();
+  const [deleteUserID, setDeleteUserId] = useState("");
 
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
@@ -132,6 +133,7 @@ export default function AdminHome() {
 
   const handleDelete = (userID) => {
     setOpenDeleteDialog(true);
+    setDeleteUserId(userID);
   };
 
   // const columns = [
@@ -378,22 +380,26 @@ export default function AdminHome() {
                         {/* </Link> */}
                         <TableCell align="center">
                           {/* <Link
-                      to={`/UserRegistration/${item.userID}`}
-                      style={{ textDecoration: "none", color: "inherit" }}
-                    >
-                      <BorderColorOutlinedIcon color="primary" />
-                    </Link> */}
-                          <Link
                             style={{ textDecoration: "none", color: "inherit" }}
-                          >
-                            <DeleteForeverOutlinedIcon
-                              color="error"
-                              // onClick={(e) => {
-                              //   deleteUserByUserID(item.adminID);
-                              // }}
-                              onClick={(e) => handleDelete(item.userID)}
-                            />
-                          </Link>
+                          > */}
+                          <BorderColorOutlinedIcon
+                            color="primary"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => {
+                              console.log("item : ", item);
+                              navigate("/UserRegistration", {
+                                state: { user: item },
+                              });
+                            }}
+                          />
+                          <DeleteForeverOutlinedIcon
+                            color="error"
+                            style={{ cursor: "pointer" }}
+                            // onClick={(e) => {
+                            //   deleteUserByUserID(item.adminID);
+                            // }}
+                            onClick={(e) => handleDelete(item.userID)}
+                          />
                           <Dialog
                             open={openDeleteDialog}
                             onClose={() => setOpenDeleteDialog(false)}
@@ -406,7 +412,7 @@ export default function AdminHome() {
                             <DialogContent>
                               <DialogContentText id="alert-dialog-description">
                                 Are you sure you want to delete this user :{" "}
-                                {item.userID} ?
+                                {deleteUserID} ?
                               </DialogContentText>
                             </DialogContent>
                             <DialogActions>
@@ -418,7 +424,7 @@ export default function AdminHome() {
                               </Button>
                               <Button
                                 onClick={() => {
-                                  deleteUserByUserID(item.userID);
+                                  deleteUserByUserID(deleteUserID);
                                   setOpenDeleteDialog(false);
                                 }}
                                 color="error"

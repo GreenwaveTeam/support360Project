@@ -20,7 +20,7 @@ const NotFound = () => {
       <img
         src={notfoundimg}
         alt="404page"
-        style={{ height: "500px", width: "500px" }}
+        style={{ height: "300px", width: "300px" }}
       ></img>
       <center>
         <div

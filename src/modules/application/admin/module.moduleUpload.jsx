@@ -35,7 +35,7 @@ const Application = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const navigate = useNavigate();
-  const [issueName,setIssueName]=useState(null)
+  const [issueName,setIssueName]=useState('')
   const [severity,setSeverity]=useState('')
   const [issues,setissues]=useState([])
   const [dialogMessage,setDialogMessage]=useState(null)
@@ -57,7 +57,7 @@ const Application = () => {
     },
   ]  
   const [selectedByteArray,setSelectedByteArray]=useState([])
-  const [categoryname,setCategoryname]=useState(null)
+  const [categoryname,setCategoryname]=useState('')
   const location = useLocation();
   const application_name=location.state.application_name
   const modulelist=location.state.modulelist
@@ -209,16 +209,10 @@ const handleAddCategory=()=>{
 	
   
   const handleFileChange = (event) => {
-    if(modulelist!==null&&modulelist.some((module)=>(module.modulename===module_Name))){
-    console.log("Module name found")
-    setDialogPopup(true);
-    setsnackbarSeverity("error")
-    setDialogMessage("Module Name is already present")
-    return
-  }
     
+    setImageUrl(null); 
     setSelectedFile(event.target.files[event.target.files.length - 1]);
-    setImageUrl(null); // Clear previous image URL when selecting a new file
+    // Clear previous image URL when selecting a new file
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -291,6 +285,32 @@ const handleAddCategory=()=>{
   
   const handleModuleNameChange=async(e)=>{
     setModule_Name(e.target.value)
+    if(e.target.value.trim()==='')
+    {
+      setDialogPopup(true);
+      setsnackbarSeverity('error')
+      setDialogMessage("Blank string is not accepted")
+      return
+    }
+    const regex = /[^A-Za-z0-9 _]/;
+    if(regex.test(e.target.value.trim())) {
+      setDialogPopup(true);
+      setsnackbarSeverity('error')
+      setDialogMessage("Special Character is not allowed")
+      return 
+    }
+    if(modulelist!==null&&modulelist.some((module)=>(module.modulename===e.target.value.trim()))){
+      console.log("Module name found")
+      setDialogPopup(true);
+      setsnackbarSeverity("error")
+      setDialogMessage("Module Name is already present")
+      setSelectedFile(null)
+      setSelectedByteArray(null)
+      return
+    }
+      
+    
+    
   }
   const handleMouseDown = async (event) => {
     setShowPopup(false);
@@ -636,7 +656,7 @@ if(localStorage.getItem("token")===null)
               type="file"
               accept="image/*"
               onChange={handleFileChange}
-              style={{ display: 'none' }}
+              style={{ display: 'none' }}multiple={false}
             />
           </Button>
         </form>

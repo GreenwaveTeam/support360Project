@@ -119,10 +119,14 @@ const DeviceCategory = () => {
 
     try {
         // Send requestBody as request body in the DELETE request
-        await axios.delete('http://localhost:8081/device/admin/categories', { data: requestBody } ,{headers:{
+        await axios.delete('http://localhost:8081/device/admin/categories', 
+        {
+          headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
-        },});
+        },
+        data: requestBody 
+      });
         setCategorylist(categorylist.filter((category)=>(category!==rowData)))
       } catch (error) {
         console.error('Error:', error);
@@ -159,6 +163,8 @@ const DeviceCategory = () => {
         const response = await axios.put(`http://localhost:8081/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+			  
           },
         });
         return true;

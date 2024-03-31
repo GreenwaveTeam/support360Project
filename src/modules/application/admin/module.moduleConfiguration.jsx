@@ -9,6 +9,8 @@ import CloseIcon from '@mui/icons-material/Cancel';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {  useLocation, useNavigate } from 'react-router-dom';
 
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+
 /*Navigation Pane*/
 import Sidebar from '../../../components/navigation/sidebar/sidebar';
 import Topbar from '../../../components/navigation/topbar/topbar';
@@ -25,6 +27,7 @@ import CustomDialog from '../../../components/dialog/dialog.component';
 import NotFound from '../../../components/notfound/notfound.component';
 
 import styles from './module.module.css'
+import Textfield from '../../../components/textfield/textfield.component';
 
 export default function ModuleConfigure ()  {
 	const plantid='P009'
@@ -55,6 +58,9 @@ export default function ModuleConfigure ()  {
 	const [deleteModule,setDeleteModule]=useState(null)
 	const [deleteCategory,setDeleteCategory]=useState(null)
 	const [deleteArea,setDeleteArea]=useState(null)
+	const [filterValue, setFilterValue] = useState('');
+
+
 	const columns=[
 		{
 		  "id": "issuename",
@@ -164,7 +170,15 @@ export default function ModuleConfigure ()  {
 	const handleDrawerClose = () => {
 		setOpen(false);
 	};
+	// Handler function for updating the filter value
+const handleFilterChange = (event) => {
+    setFilterValue(event.target.value);
+};
 
+// Filtered module list based on the filter value
+const filteredModules = data!==null&&data.modulelist.filter(module =>
+    module.modulename.toLowerCase().includes(filterValue.toLowerCase())
+);
 	const handleAreaClick = (area) => {
 		setShowPopup(true);
 		setSelection(area);
@@ -592,21 +606,53 @@ export default function ModuleConfigure ()  {
 			  ]}/>
 			<Main open={open}>
 				<DrawerHeader />
-				<Box >
+				 <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh', width:'100vw'}}>
 				
 					{data && data.modulelist.length > 0 && (
 						<TabContext value={value}>
 							<Box sx={{ borderBottom: 1}}>
+								<Box sx={{display:'flex', flexDirection:'row'}}>
+							<Textfield
+							id="filter-input"
+							label={
+								<div style={{ display: "flex", alignItems: "center" }}>
+								  <SearchOutlinedIcon />
+								  <span style={{ fontSize: "20px" }}>Search...</span>
+								</div>
+							  }
+							  variant="outlined"
+							value={filterValue}
+							onChange={handleFilterChange}
+							 // Adjust margin as needed
+						/>
+						<Box sx={{ flexGrow: 1 }} />
+						 {/* Empty Box to fill remaining space */}
+							<Button
+								variant="contained"
+								onClick={handleRedirect}sx={{ marginRight: '50px',padding: '4px ', // Decrease padding to make the button smaller
+								fontSize: '0.75rem', marginTop: '5px', // Adjust the margin in the y-axis
+								marginBottom: '5px', borderRadius:'10px'}}
+								
+							>
+								Add Module
+							</Button>
+							{/* <Button
+								variant="contained"
+								onClick={handleDeleteModule}sx={{ marginRight: '50px',padding: '4px ', // Decrease padding to make the button smaller
+								fontSize: '0.75rem' , borderRadius:'10px',marginTop: '5px', // Adjust the margin in the y-axis
+								marginBottom: '5px' }}
+							>
+								Delete Module
+							</Button> */}
+							</Box>
 								<TabList onChange={handleChange} aria-label="lab API tabs example">
-									{data.modulelist.map((module, index) => (
+									{filteredModules.map((module, index) => (
 										<Tab key={index} label={module.modulename} value={(index + 1).toString()} />
 									))}
-									<Tab key="button" label={<div style={{color:'red',cursor: 'pointer',  background:'blue',padding: '8px 16px', borderRadius:'10px' }}  variant="contained" type="submit" onClick={handleRedirect}>
-										Add Module
-									</div>}  ></Tab>
+									
 								</TabList>
 							</Box>
-							{data.modulelist.map((module, index) => (
+							{filteredModules.map((module, index) => (
 								<TabPanel key={index} value={(index + 1).toString()}>
 									<Box sx={{ position: 'relative', width: '80vw', height: '80vh', objectFit:'contain'}}>
 									<Box sx={{ position: 'relative', width: '100%', height: '100%' }}>

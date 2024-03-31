@@ -617,7 +617,7 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 							label={
 								<div style={{ display: "flex", alignItems: "center" }}>
 								  <SearchOutlinedIcon />
-								  <span style={{ fontSize: "20px" }}>Search...</span>
+								  <span style={{ fontSize: "20px" }}>Search Module...</span>
 								</div>
 							  }
 							  variant="outlined"
@@ -645,7 +645,10 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 								Delete Module
 							</Button> */}
 							</Box>
-								<TabList onChange={handleChange} aria-label="lab API tabs example">
+								<TabList onChange={handleChange}
+									variant="scrollable"
+									scrollButtons="auto"
+									aria-label="scrollable auto tabs example">
 									{filteredModules.map((module, index) => (
 										<Tab key={index} label={module.modulename} value={(index + 1).toString()} />
 									))}

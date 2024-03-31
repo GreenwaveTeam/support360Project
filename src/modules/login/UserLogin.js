@@ -141,16 +141,25 @@ export default function UserLogin() {
               const loggedIn = await login(userID, password);
               if (loggedIn) {
                 let token = localStorage.getItem("token");
-                while (token === null) {
+                let attempts = 0; 
+                while (token === null && attempts < 5) { 
                   await new Promise(resolve => setTimeout(resolve, 100)); 
                   token = localStorage.getItem("token");
+                  attempts++;
                 }
-                navigate("/UserHome");
-                console.log("Logged in");
-              } else {
-                setError("Failed to login.");
+                if (token !== null) { 
+                  navigate("/UserHome");
+                  console.log("Logged in");
+                } 
+                else {
+                  setError("Failed to login.");
+                }
               }
+              else {
+                setError("Failed to login.");
+              } 
             }}
+            
           >
             Login
           </Button>

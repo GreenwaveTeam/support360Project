@@ -231,7 +231,9 @@ function UserHome() {
                       variant="contained"
                       style={{ margin: "10px" }}
                       onClick={(e) => {
-                        navigate("/user/ReportDevice");
+                        navigate("/user/ReportDevice", {
+                          state: { plantID: formData.plantID },
+                        });
                       }}
                     >
                       Device
@@ -240,7 +242,9 @@ function UserHome() {
                       variant="contained"
                       style={{ margin: "10px" }}
                       onClick={(e) => {
-                        navigate("/user/ReportApplication");
+                        navigate("/user/ReportApplication", {
+                          state: { plantID: formData.plantID },
+                        });
                       }}
                     >
                       Application
@@ -249,7 +253,9 @@ function UserHome() {
                       variant="contained"
                       style={{ margin: "10px" }}
                       onClick={(e) => {
-                        navigate("/user/ReportInfrastructure");
+                        navigate("/user/ReportInfrastructure", {
+                          state: { plantID: formData.plantID },
+                        });
                       }}
                     >
                       Infrastructure

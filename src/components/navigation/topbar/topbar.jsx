@@ -9,6 +9,7 @@ import BreadCrumbs from "../../breadcrumbs/breadcrumbs.component";
 import { Button } from "@mui/material";
 import { logout } from "../../../modules/helper/AuthService";
 import { useNavigate } from "react-router-dom";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const drawerWidth = 240;
 
@@ -57,7 +58,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
           }}
           sx={{ marginLeft: "auto" }}
         >
-          LogOut
+          <LogoutIcon />
         </Button>
       </Toolbar>
     </AppBar>

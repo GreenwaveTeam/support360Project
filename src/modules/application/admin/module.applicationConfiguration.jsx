@@ -50,7 +50,7 @@ export default function ModuleConfiguration() {
     
   const urllist = [
     {pageName:'Admin Home',pagelink:'/AdminPage'},
-    { pageName: "Application", pagelink: "/Application" }
+    { pageName: "Application", pagelink: "/admin/ApplicationConfigure" }
   ];useEffect(() => {
     const fetchData = async () => {
       console.log("Ischjscnjqnck")
@@ -135,7 +135,7 @@ export default function ModuleConfiguration() {
     
     const handleRedirect=(appdata)=>{
       console.log(appdata)
-      navigate(`/Application/Modules`, {
+      navigate(`/admin/ApplicationConfigure/Modules`, {
         state: { application_name:appdata.application_name},
       });
     }
@@ -161,13 +161,13 @@ export default function ModuleConfiguration() {
         return true;
       }
       console.log("Application name:"+application_name);
-      navigate(`/Application/`+'Module', {
+      navigate(`/admin/ApplicationConfigure/Module`, {
         state: { application_name:application_name,modulelist:null},
       });
     };
-    if(plantid==null)
+    if(localStorage.getItem("token")===null)
     return(<NotFound/>)
-    
+
     return (
    
       <Box sx={{ display: 'flex' }}>

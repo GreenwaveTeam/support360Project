@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from '@mui/material/Button';
-import { Box, Container, MenuItem, Typography } from '@mui/material';
+import { Box, Container, Divider, MenuItem, Typography } from '@mui/material';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Cancel';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -22,7 +22,9 @@ import Snackbar from "../../../components/snackbar/customsnackbar.component";
 import TextField from "../../../components/textfield/textfield.component";
 import Dropdown from '../../../components/dropdown/dropdown.component';
 import CustomDialog from '../../../components/dialog/dialog.component';
+import NotFound from '../../../components/notfound/notfound.component';
 
+import styles from './module.module.css'
 
 const Application = () => {
   const [open, setOpen] = useState(false);
@@ -34,7 +36,7 @@ const Application = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const navigate = useNavigate();
   const [issueName,setIssueName]=useState(null)
-  const [severity,setSeverity]=useState(null)
+  const [severity,setSeverity]=useState('')
   const [issues,setissues]=useState([])
   const [dialogMessage,setDialogMessage]=useState(null)
   const [categories,setCategories]=useState([])
@@ -62,9 +64,8 @@ const Application = () => {
   //console.log("Module list====>"+JSON.stringify(modulelist))
   const [module_Name,setModule_Name]=useState(application_name+"_Module_")
   const urllist = [
-    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: "Application", pagelink: "/Application" },
-  { pageName: "Module", pagelink: "/Application"+'/Module'},
-];
+    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' },
+  { pageName: 'Module Upload', pagelink: '/admin/ApplicationConfigure/Module' }]
 const [categorySubmitted,setCategorySubmitted]=useState(false)
 const [snackbarSeverity,setsnackbarSeverity]=useState(null)
 const [deleteDialog,setDeleteDialog]=useState(false)
@@ -216,7 +217,7 @@ const handleAddCategory=()=>{
     return
   }
     
-    setSelectedFile(event.target.files[0]);
+    setSelectedFile(event.target.files[event.target.files.length - 1]);
     setImageUrl(null); // Clear previous image URL when selecting a new file
     const file = event.target.files[0];
     if (file) {
@@ -307,10 +308,17 @@ const handleAddCategory=()=>{
       const endX = (event.clientX - imageRect.left) / imageWidth;
       const endY = (event.clientY - imageRect.top) / imageHeight;
 
-      const left = Math.min(startX, endX);
-      const top = Math.min(startY, endY);
-      const width = Math.abs(endX - startX);
-      const height = Math.abs(endY - startY);
+      
+    let left = Math.min(startX, endX);
+    let top = Math.min(startY, endY);
+    let width = Math.abs(endX - startX);
+    let height = Math.abs(endY - startY);
+
+    // Ensure the selection box remains within the bounds of the image
+    left = Math.max(Math.min(left, 1), 0);
+    top = Math.max(Math.min(top, 1), 0);
+    width = Math.max(Math.min(width, 1 - left), 0);
+    height = Math.max(Math.min(height, 1 - top), 0);
 
       setSelection({ left, top, width, height });
       detailsToCheckOverlap={left, top, width, height }
@@ -355,10 +363,17 @@ const handleAddCategory=()=>{
 			const endX = (touch.clientX - imageRect.left) / imageWidth;
 			const endY = (touch.clientY - imageRect.top) / imageHeight;
 	
-			const left = Math.min(startX, endX);
-			const top = Math.min(startY, endY);
-			const width = Math.abs(endX - startX);
-			const height = Math.abs(endY - startY);
+			
+      let left = Math.min(startX, endX);
+      let top = Math.min(startY, endY);
+      let width = Math.abs(endX - startX);
+      let height = Math.abs(endY - startY);
+  
+      // Ensure the selection box remains within the bounds of the image
+      left = Math.max(Math.min(left, 1), 0);
+      top = Math.max(Math.min(top, 1), 0);
+      width = Math.max(Math.min(width, 1 - left), 0);
+      height = Math.max(Math.min(height, 1 - top), 0);
 	
 			setSelection({ left, top, width, height });
 			detailsToCheckOverlap = { left, top, width, height };
@@ -560,6 +575,10 @@ const handleAddCategory=()=>{
     }
     return false
 }
+
+if(localStorage.getItem("token")===null)
+    return(<NotFound/>)
+
   return (
     <Box sx={{ display: 'flex' }}>
       <Topbar open={open} handleDrawerOpen={() => setOpen(true)} urllist={urllist} />
@@ -592,7 +611,12 @@ const handleAddCategory=()=>{
       />
       <Main open={open}>
         <DrawerHeader />
-        <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
+        
+        {!imageUrl && (
+            
+        <form  style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          
+          <div style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
               <TextField
                 label={'Enter Module  Name'}
                 id="issuecategory"
@@ -602,11 +626,6 @@ const handleAddCategory=()=>{
               />
               
           </div>
-        {!imageUrl && (
-            
-        <form  style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          
-          
           <Button
             variant="contained"
             component="label"
@@ -622,10 +641,38 @@ const handleAddCategory=()=>{
           </Button>
         </form>
         )}
-        
-        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        {imageUrl && (
+          
+          <Box><Box sx={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+          
+          <Typography
+            variant="h6"
+            color="#333"
+            component="h2"
+            gutterBottom
+            fontWeight={500} // Set the fontWeight to match Material-UI tab
+            sx={{
+              fontFamily: 'Roboto', // Use Roboto font family for Material-UI tabs
+              letterSpacing: '0.01071em', // Set the letterSpacing to match Material-UI tab
+              lineHeight: '1.75', // Set the lineHeight to match Material-UI tab
+            }}
+          >
+            {module_Name}
+          </Typography>
+        </Box>
+          <Divider sx={{
+            height: '2px', // Adjust the height as needed
+            backgroundColor: '#000', // Change the color as needed
+            margin: '16px 0', // Add margin for spacing
+          }}/>
+        </Box>
+        )}
+  
+        <Box sx={{ position: 'relative', width: '80vw', height: '80vh', objectFit:'contain'}}>
+        <Box style={{ position: 'relative', width: '100%', height: '100%' }}>
           {imageUrl && (
-            <img
+            <img draggable={false}
+            className={styles.imagestyle}
               src={imageUrl}
               alt=""
               onMouseDown={handleMouseDown} onTouchStart={handleTouchStart}
@@ -690,29 +737,20 @@ const handleAddCategory=()=>{
 
           {/* Render the pop-up */}
           {showPopup && selection && (
-            <Box
-           sx={{
-                display: showPopup ? 'block' : 'none',
-                position: 'fixed',
-                left: '50%',
-                bottom:'20%',
-                transform: 'translate(-50%)',
-                //width: '30%',
-                minWidth:'500px',
-                top: '20%',
-                backgroundColor: 'white',
-                padding: '20px',
-                overflow:'auto',
-                height: 'auto', 
-                boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-                borderRadius:'30px'
-										}}
+            <Dialog
+            open={showPopup}
+            onClose={handleClosePopupForm}
+            maxWidth="md" // Adjust maxWidth as needed
+            PaperProps={{
+              sx: {
+                padding: '20px', // Add padding in the four corners
+                borderRadius: '30px',
+                overflowX: 'hidden', // Hide horizontal overflow
+              },
+            }}
           >
-            <CloseIcon
-              style={{ cursor: 'pointer',  }}
-              onClick={handleClosePopupForm}
-            />
-            <Container style={{ margin: '5%' }}>
+            
+            <Container >
               <form onSubmit={(event) => { handleAddIssue(event, module) }}>
                 {!categorySubmitted && (
                   <Box sx={{ display: 'flex',  alignItems:'center',flexDirection: 'column' }}>
@@ -755,7 +793,7 @@ const handleAddCategory=()=>{
 													gutterBottom
 													fontWeight={900}
 												>
-													Current Snippetpet Name ➥ &nbsp;
+													Current Snippet Name ➥ &nbsp;
 													<span style={{ color: "red" }}>{categoryname}</span>
 												</Typography>
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems:'center' }}>
@@ -783,9 +821,7 @@ const handleAddCategory=()=>{
                           sx={{ color: "white" }}
                         />
                       </Button>
-                      
-                    </Box>
-                    
+                      </Box>
                     <Table
                       rows={issues}
                       setRows={setissues}
@@ -798,12 +834,12 @@ const handleAddCategory=()=>{
                 )}
               </form>
             </Container>
-          </Box>
+          </Dialog>
           
           
           )}
-        </div>
-        
+        </Box>
+        </Box>
         <Snackbar openPopup={dialogPopup} snackbarSeverity={snackbarSeverity}setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
         <CustomDialog open={deleteDialog}setOpen={setDeleteDialog}proceedButtonText={"Delete"}
 				proceedButtonClick={handleDeleteAreaConfirm}cancelButtonText="Cancel"/>

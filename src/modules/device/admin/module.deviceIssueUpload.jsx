@@ -18,6 +18,7 @@ import Dropdown from "../../../components/dropdown/dropdown.component";
 
 
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
+import NotFound from '../../../components/notfound/notfound.component';
 
 
 const DeviceIssue = () => {
@@ -27,14 +28,16 @@ const DeviceIssue = () => {
   const location = useLocation();
   const categoryname  = location.state.categoryname;
   console.log("Category:  ", categoryname);
-  const issues = location.state.issuelist;
-  const [issueList, setIssueList] = useState(issues);
-  const [filteredRows,setFilteredRows]=useState(issues)
+  //const issues = location.state.issuelist;
+  const [issueList, setIssueList] = useState([]);
+  const [filteredRows,setFilteredRows]=useState([])
   const urllist = [
     {pageName:'Admin Home',pagelink:'/AdminPage'},
-    { pageName: "Device Issue Category", pagelink: "/Device/Category" },
-    { pageName: "Device Issue", pagelink: "/"+categoryname+"/Device/Category/Issue" }
+    { pageName: "Device Issue Category", pagelink: "/admin/Device/CategoryConfigure" },
+    { pageName: "Device Issue", pagelink: "/admin/Device/CategoryConfigure/Issue" }
   ];
+  
+
   const columns=[
     {
       "id": "issuename",
@@ -67,8 +70,35 @@ const DeviceIssue = () => {
   //   // Replace the location with the updated one
   //   window.history.replaceState({issuelist: issueList}, '', location.pathname );
   // }, [issueList]);
+
+  useEffect(() => {
+    console.log('UseEffect for Device Issue');
+    const fetchData = async () => {
+      try {
+        console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+        // Make the API call to fetch data
+        const response = await axios.get(`http://localhost:8081/device/admin/${plantid}/${categoryname}`,
+        {headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },});
+        
+        // Extract data from the response
+        const data = await response.data;
+        console.log("data=====>", JSON.stringify(data)); 
+        if (data) {
+          setIssueList(data.issueList)
+          setFilteredRows(data.issueList)
+          }
+        }
+       catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    fetchData();
+  }, []);
     const addIssueCategory = async () => {
-      console.log("useEffectIssue")
+      console.log("Add Issue")
       
         try {
           const requestData = {
@@ -76,14 +106,17 @@ const DeviceIssue = () => {
             plantid: plantid,
             issueList: [{issuename: issueName, severity: severity }]
           };
-          const response = await axios.post(`http://19:8081/device/admin/${plantid}/categories/`+categoryname, requestData, {
+          const response = await axios.post(`http://localhost:8081/device/admin/${plantid}/categories/`+categoryname, requestData, {
             headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
               'Content-Type': 'application/json',
             },
           });
-          console.log(response.data); // Handle response data
+          console.log(response.data); 
+          return true// Handle response data
         } catch (error) {
           console.error('Error:', error);
+          return false
         }
       
     };
@@ -98,13 +131,18 @@ const DeviceIssue = () => {
             issueList: [{issuename: rowData.issuename, severity: rowData.severity }]
           };
           console.log("Edit Issue called")
-          const response = await axios.put(`http://192.168.7.8:8081/device/admin/${plantid}/categories/${categoryname}/`+prev.issuename, requestData, {headers:{
+          const response = await axios.put(`http://localhost:8081/device/admin/${plantid}/categories/${categoryname}/`+prev.issuename, requestData, {headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },});
-          console.log(response.data); // Handle response data
+          console.log(response.data);
+          return true; // Handle response data
         } catch (error) {
           console.error('Error:', error);
+          setOpenPopup(true);
+          setDialogMessage('Database Error');
+          setsnackbarSeverity('error')
+          return false
         }
       
     };
@@ -118,7 +156,7 @@ const DeviceIssue = () => {
     } 
         try {
           
-          const response = await axios.delete('http://192.168.7.8:8081/device/admin/categories/issue', {data: requestBody},{headers:{
+          const response = await axios.delete('http://localhost:8081/device/admin/categories/issue', {data: requestBody},{headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },});
@@ -126,10 +164,13 @@ const DeviceIssue = () => {
           console.log("Successfully deleted")
           } catch (error) {
           console.error('Error:', error);
+          setOpenPopup(true);
+          setDialogMessage('Database Error');
+          setsnackbarSeverity('error')
         }
     };
   
-  const submitIssue = (event) => {
+  const submitIssue = async (event) => {
     event.preventDefault();
     if (issueName.trim() !== '' && severity.trim() !== '') {
       const issueExists = issueList.some(issue => issue.issuename === issueName);
@@ -140,6 +181,22 @@ const DeviceIssue = () => {
             setsnackbarSeverity('error')
             return
         } 
+        const regex = /[^A-Za-z0-9 _]/;
+        if (regex.test(issueName.trim())) {
+          setOpenPopup(true);
+          setDialogMessage("Special Character is not allowed");
+          setsnackbarSeverity("error")
+          return;
+        }
+        const check=await addIssueCategory()
+        
+        if(check===false){
+          
+          setOpenPopup(true);
+          setDialogMessage('Database Error');
+          setsnackbarSeverity('error')
+          return
+        }
       const newIssue = { issuename: issueName, severity: severity };
       setIssueList(prevIssues => [...prevIssues, newIssue]);
       setFilteredRows(prevIssues => [...prevIssues, newIssue]);
@@ -149,7 +206,7 @@ const DeviceIssue = () => {
       setsnackbarSeverity('error')
       return
     }
-    addIssueCategory()
+    
     setIssueName('');
     setSeverity('');
   };
@@ -165,7 +222,8 @@ const DeviceIssue = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  if(localStorage.getItem("token")===null)
+    return(<NotFound/>)
   return (
     <Box sx={{ display: 'flex' }}>
       <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={urllist} />

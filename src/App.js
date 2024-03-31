@@ -57,7 +57,7 @@ function App() {
             element={<DeviceIssueCategoryUpload />}
           />
           <Route
-            path="/Device/Category/Issue"
+            path="/admin/Device/CategoryConfigure/Issue"
             element={<DeviceIssueUpload />}
           />
           <Route
@@ -65,10 +65,10 @@ function App() {
             element={<ApplicationConfiguration />}
           />
           <Route
-            path="/Application/Modules"
+            path="/admin/ApplicationConfigure/Modules"
             element={<ModuleConfiguration />}
           />
-          <Route path="/Application/Module" element={<ModuleUpload />} />
+          <Route path="/admin/ApplicationConfigure/Module" element={<ModuleUpload />} />
           <Route path="/AdminPage" element={<AdminPage />} />
 
           {/* Application Report */}

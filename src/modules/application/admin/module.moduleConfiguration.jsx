@@ -22,7 +22,9 @@ import Snackbar from "../../../components/snackbar/customsnackbar.component";
 import TextField from "../../../components/textfield/textfield.component";
 import Dropdown from "../../../components/dropdown/dropdown.component";
 import CustomDialog from '../../../components/dialog/dialog.component';
+import NotFound from '../../../components/notfound/notfound.component';
 
+import styles from './module.module.css'
 
 export default function ModuleConfigure ()  {
 	const plantid='P009'
@@ -97,7 +99,7 @@ export default function ModuleConfigure ()  {
   }, []);
 
 	
-	//useEffect(()=>handleDataChange,[selectedAreas])
+	useEffect(()=>handleDataChange,[selectedAreas])
 	const handleAddCategory=()=>{
   if(categories.includes(categoryname)){
     setDialogPopup(true);
@@ -138,6 +140,7 @@ export default function ModuleConfigure ()  {
 	}
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
+		setSelection(null)
 		const moduleIndex = parseInt(newValue) - 1;
 	 const selectedModule = data.modulelist[moduleIndex];
 		setModule_Name(selectedModule.modulename)
@@ -197,8 +200,9 @@ export default function ModuleConfigure ()  {
 					});
 					// Optionally, update the UI or perform any additional actions after successful deletion
 					setSelectedAreas(prev => prev.filter(areatodel => areatodel.categoryname !== categoryName));
-					setCategories(prev => prev.filter(category => category !== area.categoryName));
-					
+					setCategories(prev => prev.filter(category => category !== categoryName));
+					console.log("Category name=>"+categoryName)
+
 					
 				} catch (error) {
 					// Handle errors, such as displaying an error message to the user
@@ -437,10 +441,17 @@ export default function ModuleConfigure ()  {
 			const endX = (event.clientX - imageRect.left) / imageWidth;
 			const endY = (event.clientY - imageRect.top) / imageHeight;
 
-			const left = Math.min(startX, endX);
-			const top = Math.min(startY, endY);
-			const width = Math.abs(endX - startX);
-			const height = Math.abs(endY - startY);
+			
+			let left = Math.min(startX, endX);
+			let top = Math.min(startY, endY);
+			let width = Math.abs(endX - startX);
+			let height = Math.abs(endY - startY);
+		
+			// Ensure the selection box remains within the bounds of the image
+			left = Math.max(Math.min(left, 1), 0);
+			top = Math.max(Math.min(top, 1), 0);
+			width = Math.max(Math.min(width, 1 - left), 0);
+			height = Math.max(Math.min(height, 1 - top), 0);
 
 			setSelection({ left, top, width, height });
 			detailsToCheckOverlap = { left, top, width, height };
@@ -484,10 +495,17 @@ export default function ModuleConfigure ()  {
 			const endX = (touch.clientX - imageRect.left) / imageWidth;
 			const endY = (touch.clientY - imageRect.top) / imageHeight;
 	
-			const left = Math.min(startX, endX);
-			const top = Math.min(startY, endY);
-			const width = Math.abs(endX - startX);
-			const height = Math.abs(endY - startY);
+			
+			let left = Math.min(startX, endX);
+			let top = Math.min(startY, endY);
+			let width = Math.abs(endX - startX);
+			let height = Math.abs(endY - startY);
+		
+			// Ensure the selection box remains within the bounds of the image
+			left = Math.max(Math.min(left, 1), 0);
+			top = Math.max(Math.min(top, 1), 0);
+			width = Math.max(Math.min(width, 1 - left), 0);
+			height = Math.max(Math.min(height, 1 - top), 0);
 	
 			setSelection({ left, top, width, height });
 			detailsToCheckOverlap = { left, top, width, height };
@@ -535,16 +553,18 @@ export default function ModuleConfigure ()  {
 	};
 
 	const handleRedirect = () => {
-		navigate(`/Application/Module`, {
+		navigate(`/admin/ApplicationConfigure/Module`, {
 			state: { application_name:data.application_name ,modulelist:data.modulelist},
 		});
 	};
-
+	if(localStorage.getItem("token")===null)
+    return(<NotFound/>)
 	return (
 		
 		 <Box sx={{ display: 'flex' }}>
 			<Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[
-    			{pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/Application' }]} />
+    			{pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' },
+				{ pageName: 'Modules Configure', pagelink: '/admin/ApplicationConfigure/Modules' }]} />
 			<Sidebar open={open} handleDrawerClose={handleDrawerClose} 
 			adminList={[
 				{
@@ -572,7 +592,7 @@ export default function ModuleConfigure ()  {
 			  ]}/>
 			<Main open={open}>
 				<DrawerHeader />
-				<Box sx={{ width: '100%', typography: 'body1' }}>
+				<Box >
 				
 					{data && data.modulelist.length > 0 && (
 						<TabContext value={value}>
@@ -581,15 +601,16 @@ export default function ModuleConfigure ()  {
 									{data.modulelist.map((module, index) => (
 										<Tab key={index} label={module.modulename} value={(index + 1).toString()} />
 									))}
-									<Tab key="button" label={<div style={{color:'red' }}  variant="contained" type="submit" onClick={handleRedirect}>
+									<Tab key="button" label={<div style={{color:'red',cursor: 'pointer',  background:'blue',padding: '8px 16px', borderRadius:'10px' }}  variant="contained" type="submit" onClick={handleRedirect}>
 										Add Module
 									</div>}  ></Tab>
 								</TabList>
 							</Box>
 							{data.modulelist.map((module, index) => (
 								<TabPanel key={index} value={(index + 1).toString()}>
+									<Box sx={{ position: 'relative', width: '80vw', height: '80vh', objectFit:'contain'}}>
 									<Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
-										{module && module.moduleimage && <img src={`data:image/jpeg;base64,${module.moduleimage}`} alt={`Module ${index + 1}`} style={{ cursor: 'crosshair', width: '100%', height: '100%', userSelect:'none'}} onMouseDown={handleMouseDown} onTouchStart={handleTouchStart}/>}
+										{module && module.moduleimage && <img draggable={false} className={styles.imagestyle} src={`data:image/jpeg;base64,${module.moduleimage}`} alt={`Module ${index + 1}`} style={{ cursor: 'crosshair', width: '100%', height: '100%' }}  onMouseDown={handleMouseDown} onTouchStart={handleTouchStart}/>}
 										{selection && (
 											<Box
 												sx={{
@@ -599,6 +620,9 @@ export default function ModuleConfigure ()  {
 													width: `${selection.width * 100}%`,
 													height: `${selection.height * 100}%`,
 													border: '2px dashed red',
+													maxWidth: '100%',
+   													 maxHeight: '100%',
+    												overflow: 'hidden',
 												}}
 											/>
 										)}
@@ -644,30 +668,19 @@ export default function ModuleConfigure ()  {
 									</Box>
 									{/* Render the pop-up */}
 									{showPopup && selection && (
-										<Box
-										sx={{
-												display: showPopup ? 'block' : 'none',
-												position: 'fixed',
-												left: '50%',
-												bottom:'20%',
-												transform: 'translate(-50%)',
-												//width: '30%',
-												minWidth:'500px',
-												top: '20%',
-												backgroundColor: 'white',
-												padding: '20px',
-												overflowX:'auto',
-												height: 'auto', 
-												boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.5)',
-												borderRadius:'30px'
-												 // Ensure the box is above other content
-											}}
-									   >
-										<CloseIcon
-											  style={{ cursor: 'pointer',  }}
-											  onClick={handleClosePopupForm}
-											/>
-										<Container style={{ margin: '5%' }}>
+										<Dialog
+										open={showPopup}
+										onClose={handleClosePopupForm}
+										maxWidth="md" // Adjust maxWidth as needed
+										PaperProps={{
+										  sx: {
+											padding: '20px', // Add padding in the four corners
+											borderRadius: '30px',
+											overflowX: 'hidden', // Hide horizontal overflow
+										  },
+										}}
+									  >
+										<Container >
 										  <Box className="addIssue">
 											
 											<form onSubmit={(event) => { handleAddIssue(event,module) }}>
@@ -749,10 +762,11 @@ export default function ModuleConfigure ()  {
 											</form>
 										  </Box>
 										</Container>
-									  </Box>
-									  
+									  </Dialog>
 									)}
+									</Box>
 								</TabPanel>
+								
 							))}
 						</TabContext>
 					)}

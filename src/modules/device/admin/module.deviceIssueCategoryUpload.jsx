@@ -51,7 +51,7 @@ const DeviceCategory = () => {
       try {
         console.log(`userhome Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
-        const response = await axios.get(`http://192.168.7.8:8081/device/admin/${plantid}/categories`,{headers:{
+        const response = await axios.get(`http://localhost:8081/device/admin/${plantid}/categories`,{headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },});
@@ -119,13 +119,16 @@ const DeviceCategory = () => {
 
     try {
         // Send requestBody as request body in the DELETE request
-        await axios.delete('http://192.168.7.8:8081/device/admin/categories', { data: requestBody } ,{headers:{
+        await axios.delete('http://localhost:8081/device/admin/categories', { data: requestBody } ,{headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },});
         setCategorylist(categorylist.filter((category)=>(category!==rowData)))
       } catch (error) {
         console.error('Error:', error);
+        setOpenPopup(true);
+        setDialogMessage("Database error");
+        setsnackbarSeverity("error")
         // Handle errors, such as displaying an error message to the user
     }
 };
@@ -139,7 +142,7 @@ const DeviceCategory = () => {
   const handleRedirect = (category) => {
     const categoryname = category.categoryname;
     console.log("Category==========>"+category.categoryname);
-    navigate(`/Device/Category/Issue`, {
+    navigate(`/admin/Device/CategoryConfigure/Issue`, {
       state: { issuelist: category.issuelist, categoryname: category.categoryname },
     });
   };
@@ -153,14 +156,19 @@ const DeviceCategory = () => {
         issueList: updatedCategory.issuelist
       };
       try {
-        const response = await axios.put(`http://192.168.7.8:8081/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
+        const response = await axios.put(`http://localhost:8081/device/admin/${plantid}/categories/` + selectedCategory.categoryname, requestData, {
           headers: {
             'Content-Type': 'application/json',
           },
         });
+        return true;
         console.log(response.data); // Handle response data
       } catch (error) {
         console.error('Error:', error);
+        setOpenPopup(true);
+        setDialogMessage("Databse Error");
+        setsnackbarSeverity("error")
+        return false
       }
     }
   };
@@ -194,15 +202,17 @@ const DeviceCategory = () => {
   const handleClosePopup = () => {
     setOpenPopup(false);
   };
-  if(plantid==null)
+  if(localStorage.getItem("token")===null){
+   console.log("Not found")
     return(<NotFound/>)
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <Topbar
         open={open}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Device Issue Category', pagelink: '/Device/Category' }
+          {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Device Issue Category', pagelink: '/admin/Device/CategoryConfigure' }
         ]}
       />
       <Sidebar

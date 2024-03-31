@@ -32,6 +32,11 @@ export const logout = () => {
   // navigate("/login");
 };
 
+export const isAuthenticated = () => {
+  const token = localStorage.getItem("token");
+  return !!token; // Returns true if token, false otherwise
+};
+
 // export const handleFetchResponse = (response, redirectTo) => {
 //   const navigate = useNavigate();
 //   if (response.status === 403) {

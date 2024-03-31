@@ -16,7 +16,7 @@ import {
 import Textfield from "../../components/textfield/textfield.component";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import { useNavigate } from "react-router";
-import { login } from "../helper/AuthService";
+import { isAuthenticated, login } from "../helper/AuthService";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function UserLogin() {
@@ -31,9 +31,11 @@ export default function UserLogin() {
     e.preventDefault();
   };
 
-  // useEffect(() => {
-  //   localStorage.clear();
-  // }, []);
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/UserHome");
+    }
+  }, []);
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -46,6 +48,10 @@ export default function UserLogin() {
   const handlePasswordInputChange = (event) => {
     setPassword(event.target.value);
   };
+
+  // if (isAuthenticated()) {
+  //   return navigate("/UserHome");
+  // }
 
   return (
     <Container component="main" maxWidth="md">
@@ -141,25 +147,22 @@ export default function UserLogin() {
               const loggedIn = await login(userID, password);
               if (loggedIn) {
                 let token = localStorage.getItem("token");
-                let attempts = 0; 
-                while (token === null && attempts < 5) { 
-                  await new Promise(resolve => setTimeout(resolve, 100)); 
+                let attempts = 0;
+                while (token === null && attempts < 5) {
+                  await new Promise((resolve) => setTimeout(resolve, 100));
                   token = localStorage.getItem("token");
                   attempts++;
                 }
-                if (token !== null) { 
+                if (token !== null) {
                   navigate("/UserHome");
                   console.log("Logged in");
-                } 
-                else {
+                } else {
                   setError("Failed to login.");
                 }
-              }
-              else {
+              } else {
                 setError("Failed to login.");
-              } 
+              }
             }}
-            
           >
             Login
           </Button>

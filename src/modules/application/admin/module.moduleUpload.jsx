@@ -35,7 +35,7 @@ const Application = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const navigate = useNavigate();
-  const [issueName,setIssueName]=useState(null)
+  const [issueName,setIssueName]=useState('')
   const [severity,setSeverity]=useState('')
   const [issues,setissues]=useState([])
   const [dialogMessage,setDialogMessage]=useState(null)
@@ -57,7 +57,7 @@ const Application = () => {
     },
   ]  
   const [selectedByteArray,setSelectedByteArray]=useState([])
-  const [categoryname,setCategoryname]=useState(null)
+  const [categoryname,setCategoryname]=useState('')
   const location = useLocation();
   const application_name=location.state.application_name
   const modulelist=location.state.modulelist

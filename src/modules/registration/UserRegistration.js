@@ -14,6 +14,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  IconButton,
+  OutlinedInput,
+  InputLabel,
+  FormControl,
+  InputAdornment,
+  Tooltip,
 } from "@mui/material";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
@@ -23,6 +29,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function UserRegistration() {
   const { userID } = useParams();
@@ -56,9 +64,14 @@ export default function UserRegistration() {
   // const [showPlantTextField, setShowPlantTextField] = useState(false);
   // const [hideBtn, setHideBtn] = useState(false);
   const [userExist, setUserExist] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -375,7 +388,7 @@ export default function UserRegistration() {
               </Grid>
               {!userExist && (
                 <Grid item xs={12}>
-                  <Textfield
+                  {/* <Textfield
                     required
                     style={{ width: "90%" }}
                     name="password"
@@ -400,7 +413,34 @@ export default function UserRegistration() {
                     ) : (
                       <VisibilityOutlinedIcon />
                     )}
-                  </Button>
+                  </Button> */}
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <OutlinedInput
+                      label="Password"
+                      autoComplete="password"
+                      name="password"
+                      required
+                      fullWidth
+                      id="password"
+                      // label="Password"
+                      value={pass}
+                      onChange={hashedPasswordChange}
+                      type={showPassword ? "text" : "password"}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </FormControl>
                 </Grid>
               )}
               {!userExist && (
@@ -459,8 +499,7 @@ export default function UserRegistration() {
               </Grid>
               <Grid item xs={12}>
                 <Dropdown
-                  style={{ width: "400px" }}
-                  // fullWidth={true}
+                  fullWidth={true}
                   id="plantName"
                   value={formData.plantName}
                   label="Plant Name"
@@ -479,28 +518,63 @@ export default function UserRegistration() {
                   }}
                   list={plantList.map((p) => p.plantName)}
                 />
-                <Textfield
+              </Grid>
+              <Grid item xs={12}>
+                {/* <Textfield
                   required
-                  style={{ width: "39%" }}
+                  style={{ width: "90%" }}
                   name="plantID"
                   label="PlantID"
                   id="plantID"
                   value={formData.plantID}
                 />
-                <Button
-                  id="addPlantName"
-                  onClick={handleAddPlantClick}
+                <Box
                   style={{
-                    width: "9%",
+                    width: "10%",
                     height: "56px",
                     // display: hideBtn ? "none" : "inline",
-                    display: "inline",
                     borderRadius: "50px",
                   }}
-                  variant="contained"
                 >
-                  Add New Plant
-                </Button>
+                  <IconButton
+                    id="addPlantName"
+                    onClick={handleAddPlantClick}
+                    // style={{
+                    //   width: "10%",
+                    //   height: "56px",
+                    //   // display: hideBtn ? "none" : "inline",
+                    //   display: "inline",
+                    //   borderRadius: "50px",
+                    // }}
+                    variant="contained"
+                  >
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                </Box> */}
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                  <OutlinedInput
+                    inputProps={{
+                      readOnly: true,
+                    }}
+                    label="PlantID"
+                    autoComplete="PlantID"
+                    name="PlantID"
+                    required
+                    fullWidth
+                    id="PlantID"
+                    value={formData.plantID}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <Tooltip title="Add Plant" placement="right">
+                          <IconButton onClick={handleAddPlantClick} edge="end">
+                            <AddCircleOutlineIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </InputAdornment>
+                    }
+                  />
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <Textfield
@@ -656,14 +730,14 @@ export default function UserRegistration() {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">{"Add New Plant"}</DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ padding: "10px" }}>
               {/* <DialogContentText id="alert-dialog-description">
                         Are you sure you want to delete this user :{" "}
                         {item.userID} ?
                       </DialogContentText> */}
               <Textfield
                 required
-                style={{ width: "40%" }}
+                fullWidth={true}
                 name="plantName"
                 label="Plant Name"
                 id="plantName"
@@ -671,8 +745,9 @@ export default function UserRegistration() {
                 onChange={handlenewPlantNameInputChange}
               />
               <Textfield
+                style={{ marginTop: "20px" }}
                 required
-                style={{ width: "40%" }}
+                fullWidth={true}
                 name="plantID"
                 label="PlantID"
                 id="plantID"

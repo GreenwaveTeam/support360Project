@@ -43,6 +43,20 @@ export default function AdminLogin() {
     setPassword(event.target.value);
   };
 
+  const handleLogin = async (event) => {
+    try {
+      const token = await login(adminID, password);
+      if (token) {
+        navigate("/AdminHome");
+      } else {
+        setError("Failed to login.");
+      }
+    } catch (error) {
+      setError("An error occurred while logging in.");
+      console.error(error);
+    }
+  };
+
   return (
     <Container component="main" maxWidth="md">
       <CssBaseline />
@@ -148,7 +162,7 @@ export default function AdminLogin() {
           </Typography>
         )}
         <Grid item xs={12} marginTop={"50px"}>
-          <Button
+          {/* <Button
             type="submit"
             fullWidth
             variant="contained"
@@ -163,6 +177,14 @@ export default function AdminLogin() {
                 setError("Failed to login.");
               }
             }}
+          >
+            Login
+          </Button> */}
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            onClick={handleLogin}
           >
             Login
           </Button>

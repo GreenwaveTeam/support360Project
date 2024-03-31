@@ -12,7 +12,7 @@ const AdminPage = () => {
   // const { userID } = useParams();
   // const location = useLocation();
   const { state } = useLocation();
-  const [userName, setUserName] = useState(state.userID);
+  const [userPlantID, setUserPlantID] = useState(state.plantID);
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -26,12 +26,12 @@ const AdminPage = () => {
 
   useEffect(() => {
     // const { userName } = location.state || (" UserID : ", userID);
-    if (userName) {
-      setUserName(userName);
+    if (userPlantID) {
+      setUserPlantID(userPlantID);
     }
   }, []);
 
-  console.log("userID : ", userName);
+  console.log("plantID : ", userPlantID);
   return (
     <Box sx={{ display: "flex" }}>
       <TopbarPage
@@ -92,7 +92,9 @@ const AdminPage = () => {
                   color="primary"
                   fullWidth
                   onClick={() => {
-                    navigate("/admin/ApplicationConfigure");
+                    navigate("/admin/ApplicationConfigure", {
+                      state: { plantID: userPlantID },
+                    });
                   }}
                 >
                   Application
@@ -104,7 +106,9 @@ const AdminPage = () => {
                   color="primary"
                   fullWidth
                   onClick={() => {
-                    navigate("/admin/DeviceConfigure");
+                    navigate("/admin/DeviceConfigure", {
+                      state: { plantID: userPlantID },
+                    });
                   }}
                 >
                   Device
@@ -116,7 +120,9 @@ const AdminPage = () => {
                   color="primary"
                   fullWidth
                   onClick={() => {
-                    navigate("/admin/InfrastructureConfigure");
+                    navigate("/admin/InfrastructureConfigure", {
+                      state: { plantID: userPlantID },
+                    });
                   }}
                 >
                   Infrastructure

@@ -266,64 +266,98 @@ export default function AdminHome() {
               </Typography>
               <TableContainer>
                 <Table>
-                  <TableRow>
-                    <TableCell
-                      colSpan={4}
-                      sx={{
-                        textAlign: "center",
-                        fontSize: "15px",
-                        fontWeight: "bold",
-                        backgroundColor: "#B5C0D0",
-                        lineHeight: 4,
-                      }}
-                    >
-                      <Textfield
-                        onChange={(e) => handleSearchChange(e)}
-                        variant={"outlined"}
-                        size="small"
-                        label={
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <SearchOutlinedIcon
-                              style={{ marginRight: "5px" }}
-                            />
-                            Search...
-                          </div>
-                        }
-                        value={search}
-                        sx={{
-                          marginLeft: "5px",
-                          width: "200px",
-                          // Set the background color to white
-                        }}
-                        //   InputProps={{
-                        //     startAdornment: (
-                        //         <InputAdornment position="start">
-                        //             <SearchOutlinedIcon />
-                        //         </InputAdornment>
-                        //     ),
-                        // }}
-                      />
-                      <Tooltip title="Clear">
-                        <Button
-                          onClick={() => {
-                            setSearch("");
-                            setFilteredRows(list);
-                          }}
-                          style={{ color: "black" }}
-                        >
-                          <DisabledByDefaultRoundedIcon />
-                        </Button>
-                      </Tooltip>
-                    </TableCell>
-                  </TableRow>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">Name</TableCell>
-                      <TableCell align="center">Email</TableCell>
-                      <TableCell align="center">User ID</TableCell>
-                      <TableCell align="center"></TableCell>
+                      <TableCell
+                        colSpan={4}
+                        sx={{
+                          textAlign: "center",
+                          fontSize: "15px",
+                          fontWeight: "bold",
+                          backgroundColor: "#B5C0D0",
+                          lineHeight: 4,
+                        }}
+                      >
+                        <Textfield
+                          onChange={(e) => handleSearchChange(e)}
+                          variant={"outlined"}
+                          size="small"
+                          label={
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <SearchOutlinedIcon
+                                style={{ marginRight: "5px" }}
+                              />
+                              Search...
+                            </div>
+                          }
+                          value={search}
+                          sx={{
+                            marginLeft: "5px",
+                            width: "200px",
+                            // Set the background color to white
+                          }}
+                          //   InputProps={{
+                          //     startAdornment: (
+                          //         <InputAdornment position="start">
+                          //             <SearchOutlinedIcon />
+                          //         </InputAdornment>
+                          //     ),
+                          // }}
+                        />
+                        <Tooltip title="Clear">
+                          <Button
+                            onClick={() => {
+                              setSearch("");
+                              setFilteredRows(list);
+                            }}
+                            style={{ color: "black" }}
+                          >
+                            <DisabledByDefaultRoundedIcon />
+                          </Button>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableHead>
+                    <TableRow sx={{ backgroundColor: "#B5C0D0" }}>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: "14px",
+                        }}
+                        align="center"
+                      >
+                        Name
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: "14px",
+                        }}
+                        align="center"
+                      >
+                        Email
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: "14px",
+                        }}
+                        align="center"
+                      >
+                        User ID
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: "14px",
+                        }}
+                        align="center"
+                      >
+                        Edit
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -335,7 +369,7 @@ export default function AdminHome() {
                         <TableCell
                           onClick={() =>
                             navigate("/AdminPage", {
-                              state: { userID: item.userID },
+                              state: { plantID: item.plantID },
                             })
                           }
                           align="center"
@@ -361,42 +395,40 @@ export default function AdminHome() {
                               onClick={(e) => handleDelete(item.userID)}
                             />
                           </Link>
-                          <>
-                            <Dialog
-                              open={openDeleteDialog}
-                              onClose={() => setOpenDeleteDialog(false)}
-                              aria-labelledby="alert-dialog-title"
-                              aria-describedby="alert-dialog-description"
-                            >
-                              <DialogTitle id="alert-dialog-title">
-                                {"Delete User?"}
-                              </DialogTitle>
-                              <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                  Are you sure you want to delete this user :{" "}
-                                  {item.userID} ?
-                                </DialogContentText>
-                              </DialogContent>
-                              <DialogActions>
-                                <Button
-                                  onClick={() => setOpenDeleteDialog(false)}
-                                  color="primary"
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    deleteUserByUserID(item.userID);
-                                    setOpenDeleteDialog(false);
-                                  }}
-                                  color="error"
-                                  autoFocus
-                                >
-                                  Delete
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
-                          </>
+                          <Dialog
+                            open={openDeleteDialog}
+                            onClose={() => setOpenDeleteDialog(false)}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                          >
+                            <DialogTitle id="alert-dialog-title">
+                              {"Delete User?"}
+                            </DialogTitle>
+                            <DialogContent>
+                              <DialogContentText id="alert-dialog-description">
+                                Are you sure you want to delete this user :{" "}
+                                {item.userID} ?
+                              </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={() => setOpenDeleteDialog(false)}
+                                color="primary"
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  deleteUserByUserID(item.userID);
+                                  setOpenDeleteDialog(false);
+                                }}
+                                color="error"
+                                autoFocus
+                              >
+                                Delete
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
                         </TableCell>
                       </TableRow>
                     ))}

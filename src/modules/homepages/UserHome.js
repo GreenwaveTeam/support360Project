@@ -62,6 +62,10 @@ function UserHome() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
+      if (response.status === 403) {
+        navigate("/userlogin");
+        return;
+      }
       const data = await response.json();
       console.log("fetchUser data : ", data);
       setFormData((prevData) => ({
@@ -108,6 +112,10 @@ function UserHome() {
           },
         }
       );
+      if (response.status === 403) {
+        navigate("/userlogin");
+        return;
+      }
       const data = await response.json();
       console.log("fetchTicketDetails data : ", data);
       setTicketData((prevData) => ({

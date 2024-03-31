@@ -148,14 +148,15 @@ const handleAddCategory=()=>{
 				categoryname: categoryname,
 				issues: issues.filter(issue => issue.issuename !== prev.issuename).concat({issuename: rowData.issuename, severity: rowData.severity}),
 			};
-			setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
-      
+			
 				// Here requestData contains entire module data including module_image
 				const response = await axios.post('http://localhost:8081/application/admin/plant_id/application_name/moduleName',requestData, {headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
         });
+        setSelectedAreas([...selectedAreas.filter(area => area.categoryname!== detail.categoryname), detail]);
+      
     }
 			} catch (error) {
 				console.error('Error:', error);

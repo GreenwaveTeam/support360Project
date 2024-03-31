@@ -24,7 +24,7 @@ import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
 import Datepicker from "../../components/datepicker/datepicker.component";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -49,20 +49,39 @@ export default function UserRegistration() {
     accountOwnerGW: "",
     role: "",
   });
+
+  const [updateFormData, setUpdateFormData] = useState({
+    userID: "",
+    name: "",
+    designation: "",
+    email: "",
+    phoneNumber: "",
+    plantID: "",
+    plantName: "",
+    address: "",
+    division: "",
+    customerName: "",
+    supportStartDate: "",
+    supportEndDate: "",
+    accountOwnerCustomer: "",
+    accountOwnerGW: "",
+    role: "",
+  });
+
   const [newPlantName, setNewPlantName] = useState({
     plantName: "",
     plantID: "",
   });
+
   const [cnfpass, setCnfpass] = useState("");
   const [pass, setPass] = useState("");
   const [showPasswordError, setShowPasswordError] = useState(false);
   const [showDateError, setShowDateError] = useState(false);
   const [plantList, setPlantList] = useState([]);
-  // const [showPlantTextField, setShowPlantTextField] = useState(false);
-  // const [hideBtn, setHideBtn] = useState(false);
   const [userExist, setUserExist] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const navigate = useNavigate();
+  const [isStatePresent, setIsStatePresent] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -74,15 +93,43 @@ export default function UserRegistration() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
+  const { state } = useLocation();
+  // const user = state.user || null;
+
+  const checkstate = () => {
+    // console.log(typeof state.user);
+    if (state === null) {
+      setIsStatePresent(false);
+    } else {
+      setIsStatePresent(true);
+      setUpdateFormData({
+        userID: state.user.userID,
+        name: state.user.name,
+        designation: state.user.designation,
+        email: state.user.email,
+        phoneNumber: state.user.phoneNumber,
+        plantID: state.user.plantID,
+        plantName: state.user.plantName,
+        address: state.user.address,
+        division: state.user.division,
+        customerName: state.user.customerName,
+        supportStartDate: state.user.supportStartDate,
+        supportEndDate: state.user.supportEndDate,
+        accountOwnerCustomer: state.user.accountOwnerCustomer,
+        accountOwnerGW: state.user.accountOwnerGW,
+        role: state.user.role,
+      });
+    }
+  };
+
   useEffect(() => {
+    // console.log("user : ", state.user);
+    checkstate();
     fetchData();
-    // fetchExistingUser();
   }, []);
 
   const handleAddPlantClick = () => {
-    // setShowPlantTextField(true);
     setOpenDeleteDialog(true);
-    // setHideBtn(true);
   };
 
   const hashedPasswordChange = (e) => {
@@ -116,6 +163,28 @@ export default function UserRegistration() {
     }
   };
 
+  const updateHandleFormdataInputChange = (event) => {
+    const { name, value } = event.target;
+    setUpdateFormData({ ...updateFormData, [name]: value });
+  };
+
+  const updateHandleDesignationChange = (event) => {
+    const { value } = event.target;
+    setUpdateFormData({ ...updateFormData, designation: value });
+  };
+
+  const updateHandleRoleChange = (event) => {
+    const { value } = event.target;
+    setUpdateFormData({ ...updateFormData, role: value });
+  };
+
+  const updateHandlePhoneNumberChange = (event) => {
+    const { value } = event.target;
+    if (!isNaN(value) && value.length <= 10) {
+      setUpdateFormData({ ...updateFormData, phoneNumber: value });
+    }
+  };
+
   const confirmPassword = async (e) => {
     const passwordsMatch = pass === e;
     if (!passwordsMatch) {
@@ -129,89 +198,6 @@ export default function UserRegistration() {
     const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
   }
-
-  // const checkExixtingUser = async () => {
-  //   // const { userID } = useParams;
-  //   for (let i of userList) {
-  //     // if (i.userID === userID) {
-  //     //   setFormData(i);
-  //     // }
-  //     console.log("i.userID", i.userID);
-  //   }
-  // };
-
-  // const checkExistingUser = async () => {
-  //   const { userID } = useParams;
-  //   for (let i of userList) {
-  //     if (i.userID === userID) {
-  //       setFormData({
-  //         userID: i.userID,
-  //         name: i.name,
-  //         designation: i.designation,
-  //         email: i.email,
-  //         password: i.password,
-  //         phoneNumber: i.phoneNumber,
-  //         plantID: i.plantID,
-  //         plantName: i.plantName,
-  //         address: i.address,
-  //         division: i.division,
-  //         customerName: i.customerName,
-  //         supportStartDate: i.supportStartDate,
-  //         supportEndDate: i.supportEndDate,
-  //         accountOwnerCustomer: i.accountOwnerCustomer,
-  //         accountOwnerGW: i.accountOwnerGW,
-  //       });
-  //     }
-  //     console.log("i.userID", i.userID);
-  //   }
-  // };
-
-  // const fetchExistingUser = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:8081/users/", {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     checkExistingUser(data);
-  //   } catch (error) {
-  //     console.error("Error fetching user list:", error);
-  //   }
-  // };
-
-  // const checkExistingUser = (data) => {
-  //   for (let i of data) {
-  //     if (i.userID === userID) {
-  //       setUserExist(true);
-  //       setFormData((prevData) => ({
-  //         ...prevData,
-  //         userID: i.userID,
-  //         name: i.name,
-  //         designation: i.designation,
-  //         email: i.email,
-  //         // password: i.password,
-  //         phoneNumber: i.phoneNumber,
-  //         plantID: i.plantID,
-  //         plantName: i.plantName,
-  //         address: i.address,
-  //         division: i.division,
-  //         customerName: i.customerName,
-  //         supportStartDate: dayjs(
-  //           convertDateFormat(i.supportStartDate),
-  //           "DD-MM-YYYY"
-  //         ),
-  //         supportEndDate: dayjs(
-  //           convertDateFormat(i.supportEndDate),
-  //           "DD-MM-YYYY"
-  //         ),
-  //         accountOwnerCustomer: i.accountOwnerCustomer,
-  //         accountOwnerGW: i.accountOwnerGW,
-  //       }));
-  //     }
-  //   }
-  // };
 
   const fetchData = async () => {
     try {
@@ -254,21 +240,27 @@ export default function UserRegistration() {
   const handleUpdate = async (event) => {
     event.preventDefault();
     try {
+      console.log(
+        "updateFormData.userID : ",
+        `http://localhost:8081/users/user/${updateFormData.userID}`
+      );
+      console.log("updateFormData : ", updateFormData);
       const response = await fetch(
-        `http://localhost:8081/users/user/${formData.userID}`,
+        `http://localhost:8081/users/user/${updateFormData.userID}`,
         {
           method: "PUT",
           headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(updateFormData),
         }
       );
       if (response.ok) {
         console.log("User Updated successfully");
-        navigate(`/abc/${formData.userID}`, {
-          state: { userName: formData.name },
-        });
+        // navigate(`/abc/${formData.userID}`, {
+        //   state: { userName: formData.name },
+        // });
       } else {
         console.error("Failed to update user");
       }
@@ -318,157 +310,125 @@ export default function UserRegistration() {
         <Typography component="h1" variant="h5">
           User Registration Page
         </Typography>
-        <form>
-          <Box noValidate sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Textfield
-                  name="name"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Name"
-                  autoFocus
-                  value={formData.name}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  autoComplete="userID"
-                  name="userID"
-                  required
-                  fullWidth
-                  id="userID"
-                  label="User ID"
-                  value={formData.userID}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                {/* <FormControl fullWidth>
-                  <InputLabel>Designation</InputLabel>
-                  <Select
-                    required
-                    id="designation"
-                    value={formData.designation}
-                    label="Designation"
-                    onChange={handleDesignationChange}
-                  >
-                    <MenuItem value={""}>Select</MenuItem>
-                    <MenuItem value={"Ten"}>Ten</MenuItem>
-                    <MenuItem value={"Twenty"}>Twenty</MenuItem>
-                    <MenuItem value={"Thirty"}>Thirty</MenuItem>
-                  </Select>
-                </FormControl> */}
-                <Dropdown
-                  id="designation"
-                  value={formData.designation}
-                  label="Designation"
-                  onChange={handleDesignationChange}
-                  list={["Operator", "Supervisor", "Lab Tester"]}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  id="email"
-                  type="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              {!userExist && (
-                <Grid item xs={12}>
-                  {/* <Textfield
-                    required
-                    style={{ width: "90%" }}
-                    name="password"
-                    label="Password"
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    value={pass}
-                    onChange={hashedPasswordChange}
-                  />
-                  <Button
-                    id="showpasswoed"
-                    onClick={handleShowPasswordClick}
-                    style={{
-                      width: "10%",
-                      height: "56px",
-                    }}
-                    variant="contained"
-                    color="inherit"
-                  >
-                    {showPassword ? (
-                      <VisibilityOffOutlinedIcon />
-                    ) : (
-                      <VisibilityOutlinedIcon />
-                    )}
-                  </Button> */}
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <OutlinedInput
-                      label="Password"
-                      autoComplete="password"
-                      name="password"
+
+        {isStatePresent ? (
+          // update form starts here...
+
+          <>
+            <form>
+              <Box noValidate sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Textfield
+                      name="name"
                       required
                       fullWidth
-                      id="password"
-                      // label="Password"
-                      value={pass}
-                      onChange={hashedPasswordChange}
-                      type={showPassword ? "text" : "password"}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
+                      id="name"
+                      label="Name"
+                      autoFocus
+                      value={updateFormData.name}
+                      onChange={updateHandleFormdataInputChange}
                     />
-                  </FormControl>
-                </Grid>
-              )}
-              {!userExist && (
-                <Grid item xs={12}>
-                  <Textfield
-                    required
-                    fullWidth
-                    name="confirmPassword"
-                    label="Confirm Password"
-                    type="password"
-                    id="confirmPassword"
-                    value={cnfpass}
-                    onBlur={(e) => confirmPassword(e.target.value)}
-                    onChange={(e) => {
-                      const confirmPass = e.target.value;
-                      setCnfpass(confirmPass);
-                    }}
-                  />
-                  {showPasswordError && (
-                    <Stack
-                      sx={{ display: "flex", justifyContent: "right" }}
-                      spacing={2}
-                    >
-                      <Alert variant="filled" severity="error">
-                        Password Does Not Match
-                      </Alert>
-                    </Stack>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      autoComplete="userID"
+                      name="userID"
+                      required
+                      fullWidth
+                      id="userID"
+                      label="User ID"
+                      value={updateFormData.userID}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      id="designation"
+                      value={updateFormData.designation}
+                      label="Designation"
+                      onChange={updateHandleDesignationChange}
+                      list={["Operator", "Supervisor", "Lab Tester"]}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      id="email"
+                      type="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      value={updateFormData.email}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  {/* {!userExist && (
+                    <Grid item xs={12}>
+                      <FormControl fullWidth>
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <OutlinedInput
+                          label="Password"
+                          autoComplete="password"
+                          name="password"
+                          required
+                          fullWidth
+                          id="password"
+                          // label="Password"
+                          value={pass}
+                          onChange={hashedPasswordChange}
+                          type={showPassword ? "text" : "password"}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                        />
+                      </FormControl>
+                    </Grid>
                   )}
-                </Grid>
-              )}
-              {/* {showPasswordError && (
+                  {!userExist && (
+                    <Grid item xs={12}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirmPassword"
+                        value={cnfpass}
+                        onBlur={(e) => confirmPassword(e.target.value)}
+                        onChange={(e) => {
+                          const confirmPass = e.target.value;
+                          setCnfpass(confirmPass);
+                        }}
+                      />
+                      {showPasswordError && (
+                        <Stack
+                          sx={{ display: "flex", justifyContent: "right" }}
+                          spacing={2}
+                        >
+                          <Alert variant="filled" severity="error">
+                            Password Does Not Match
+                          </Alert>
+                        </Stack>
+                      )}
+                    </Grid>
+                  )} */}
+                  {/* {showPasswordError && (
                 <Box
                   sx={{
                     position: "fixed",
@@ -482,135 +442,407 @@ export default function UserRegistration() {
                   </Alert>
                 </Box>
               )} */}
-              <Grid item xs={12}>
-                <Textfield
-                  required
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="phoneNumber"
+                      label="Phone Number"
+                      id="phoneNumber"
+                      autoComplete="phoneNumber"
+                      value={updateFormData.phoneNumber}
+                      onChange={updateHandlePhoneNumberChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      fullWidth={true}
+                      id="plantName"
+                      value={updateFormData.plantName}
+                      label="Plant Name"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        for (let i of plantList) {
+                          if (i.plantName === value) {
+                            setUpdateFormData({
+                              ...updateFormData,
+                              plantID: i.plantID,
+                              plantName: value,
+                            });
+                            return;
+                          }
+                        }
+                      }}
+                      list={plantList.map((p) => p.plantName)}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                      <OutlinedInput
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        label="PlantID"
+                        autoComplete="PlantID"
+                        name="PlantID"
+                        required
+                        fullWidth
+                        id="PlantID"
+                        value={updateFormData.plantID}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <Tooltip title="Add Plant" placement="right">
+                              <IconButton
+                                onClick={handleAddPlantClick}
+                                edge="end"
+                              >
+                                <AddCircleOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="address"
+                      label="Address"
+                      id="address"
+                      autoComplete="address"
+                      value={updateFormData.address}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="division"
+                      label="Division"
+                      id="division"
+                      autoComplete="division"
+                      value={updateFormData.division}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="customerName"
+                      label="Customer Name"
+                      id="customerName"
+                      autoComplete="customerName"
+                      value={updateFormData.customerName}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Datepicker
+                      label="Support Start Date"
+                      value={dayjs(updateFormData.supportStartDate)}
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Datepicker
+                      label="Support End Date"
+                      value={dayjs(updateFormData.supportEndDate)}
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  </Grid>
+                  {showDateError && (
+                    <Stack
+                      sx={{ display: "flex", justifyContent: "right" }}
+                      spacing={2}
+                    >
+                      <Alert variant="filled" severity="error">
+                        SupportEndDate Should Not be less than SupportStartDate
+                      </Alert>
+                    </Stack>
+                  )}
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="accountOwnerCustomer"
+                      label="Account Owner Customer"
+                      id="accountOwnerCustomer"
+                      autoComplete="accountOwnerCustomer"
+                      value={updateFormData.accountOwnerCustomer}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="accountOwnerGW"
+                      label="Account Owner GW"
+                      id="accountOwnerGW"
+                      autoComplete="accountOwnerGW"
+                      value={updateFormData.accountOwnerGW}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      fullWidth
+                      id="role"
+                      value={updateFormData.role}
+                      label="Role"
+                      onChange={updateHandleRoleChange}
+                      list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
                   fullWidth
-                  name="phoneNumber"
-                  label="Phone Number"
-                  id="phoneNumber"
-                  autoComplete="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handlePhoneNumberChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Dropdown
-                  fullWidth={true}
-                  id="plantName"
-                  value={formData.plantName}
-                  label="Plant Name"
-                  onChange={(event) => {
-                    const { value } = event.target;
-                    for (let i of plantList) {
-                      if (i.plantName === value) {
-                        setFormData({
-                          ...formData,
-                          plantID: i.plantID,
-                          plantName: value,
-                        });
-                        return;
-                      }
-                    }
-                  }}
-                  list={plantList.map((p) => p.plantName)}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                {/* <Textfield
-                  required
-                  style={{ width: "90%" }}
-                  name="plantID"
-                  label="PlantID"
-                  id="plantID"
-                  value={formData.plantID}
-                />
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  onClick={handleUpdate}
+                >
+                  Update User
+                </Button>
+              </Box>
+            </form>
+          </>
+        ) : (
+          // registration form starts here...
+
+          <>
+            <form>
+              <Box noValidate sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Textfield
+                      name="name"
+                      required
+                      fullWidth
+                      id="name"
+                      label="Name"
+                      autoFocus
+                      value={formData.name}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      autoComplete="userID"
+                      name="userID"
+                      required
+                      fullWidth
+                      id="userID"
+                      label="User ID"
+                      value={formData.userID}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      id="designation"
+                      value={formData.designation}
+                      label="Designation"
+                      onChange={handleDesignationChange}
+                      list={["Operator", "Supervisor", "Lab Tester"]}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      id="email"
+                      type="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  {!userExist && (
+                    <Grid item xs={12}>
+                      <FormControl fullWidth>
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <OutlinedInput
+                          label="Password"
+                          autoComplete="password"
+                          name="password"
+                          required
+                          fullWidth
+                          id="password"
+                          value={pass}
+                          onChange={hashedPasswordChange}
+                          type={showPassword ? "text" : "password"}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                        />
+                      </FormControl>
+                    </Grid>
+                  )}
+                  {!userExist && (
+                    <Grid item xs={12}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirmPassword"
+                        value={cnfpass}
+                        onBlur={(e) => confirmPassword(e.target.value)}
+                        onChange={(e) => {
+                          const confirmPass = e.target.value;
+                          setCnfpass(confirmPass);
+                        }}
+                      />
+                      {showPasswordError && (
+                        <Stack
+                          sx={{ display: "flex", justifyContent: "right" }}
+                          spacing={2}
+                        >
+                          <Alert variant="filled" severity="error">
+                            Password Does Not Match
+                          </Alert>
+                        </Stack>
+                      )}
+                    </Grid>
+                  )}
+                  {/* {showPasswordError && (
                 <Box
-                  style={{
-                    width: "10%",
-                    height: "56px",
-                    // display: hideBtn ? "none" : "inline",
-                    borderRadius: "50px",
+                  sx={{
+                    position: "fixed",
+                    top: "10px",
+                    right: "10px",
+                    zIndex: 9999,
                   }}
                 >
-                  <IconButton
-                    id="addPlantName"
-                    onClick={handleAddPlantClick}
-                    // style={{
-                    //   width: "10%",
-                    //   height: "56px",
-                    //   // display: hideBtn ? "none" : "inline",
-                    //   display: "inline",
-                    //   borderRadius: "50px",
-                    // }}
-                    variant="contained"
-                  >
-                    <AddCircleOutlineIcon />
-                  </IconButton>
-                </Box> */}
-                <FormControl fullWidth>
-                  <InputLabel htmlFor="PlantID">PlantID</InputLabel>
-                  <OutlinedInput
-                    inputProps={{
-                      readOnly: true,
-                    }}
-                    label="PlantID"
-                    autoComplete="PlantID"
-                    name="PlantID"
-                    required
-                    fullWidth
-                    id="PlantID"
-                    value={formData.plantID}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <Tooltip title="Add Plant" placement="right">
-                          <IconButton onClick={handleAddPlantClick} edge="end">
-                            <AddCircleOutlineIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  name="address"
-                  label="Address"
-                  id="address"
-                  autoComplete="address"
-                  value={formData.address}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  name="division"
-                  label="Division"
-                  id="division"
-                  autoComplete="division"
-                  value={formData.division}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  name="customerName"
-                  label="Customer Name"
-                  id="customerName"
-                  autoComplete="customerName"
-                  value={formData.customerName}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Alert variant="filled" severity="error">
+                    Password Does Not Match
+                  </Alert>
+                </Box>
+              )} */}
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="phoneNumber"
+                      label="Phone Number"
+                      id="phoneNumber"
+                      autoComplete="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handlePhoneNumberChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      fullWidth={true}
+                      id="plantName"
+                      value={formData.plantName}
+                      label="Plant Name"
+                      onChange={(event) => {
+                        const { value } = event.target;
+                        for (let i of plantList) {
+                          if (i.plantName === value) {
+                            setFormData({
+                              ...formData,
+                              plantID: i.plantID,
+                              plantName: value,
+                            });
+                            return;
+                          }
+                        }
+                      }}
+                      list={plantList.map((p) => p.plantName)}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth>
+                      <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                      <OutlinedInput
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        label="PlantID"
+                        autoComplete="PlantID"
+                        name="PlantID"
+                        required
+                        fullWidth
+                        id="PlantID"
+                        value={formData.plantID}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <Tooltip title="Add Plant" placement="right">
+                              <IconButton
+                                onClick={handleAddPlantClick}
+                                edge="end"
+                              >
+                                <AddCircleOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="address"
+                      label="Address"
+                      id="address"
+                      autoComplete="address"
+                      value={formData.address}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="division"
+                      label="Division"
+                      id="division"
+                      autoComplete="division"
+                      value={formData.division}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="customerName"
+                      label="Customer Name"
+                      id="customerName"
+                      autoComplete="customerName"
+                      value={formData.customerName}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Support Start Date"
                     value={formData.supportStartDate}
@@ -621,104 +853,97 @@ export default function UserRegistration() {
                     slotProps={{ textField: { fullWidth: true } }}
                   />
                 </LocalizationProvider> */}
-                <Datepicker
-                  label="Support Start Date"
-                  value={formData.supportStartDate}
-                  onChange={(startDate) =>
-                    setFormData({ ...formData, supportStartDate: startDate })
-                  }
-                  // defaultValue={dayjs("04/17/2022")}
-                  // convertDateFormat(i.supportStartDate),
-                  // "DD-MM-YYYY"
-                  // format="DD-MM-YYYY"
-                  slotProps={{ textField: { fullWidth: true } }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Datepicker
-                  label="Support End Date"
-                  value={formData.supportEndDate}
-                  onChange={(endDate) => {
-                    if (endDate < formData.supportEndDate) {
-                      setShowDateError(true);
-                    } else {
-                      setShowDateError(false);
-                      setFormData({ ...formData, supportEndDate: endDate });
-                    }
-                  }}
-                  // defaultValue={dayjs("2022-04-17")}
-                  // format="DD-MM-YYYY"
-                  slotProps={{ textField: { fullWidth: true } }}
-                />
-              </Grid>
-              {showDateError && (
-                <Stack
-                  sx={{ display: "flex", justifyContent: "right" }}
-                  spacing={2}
+                    <Datepicker
+                      label="Support Start Date"
+                      value={formData.supportStartDate}
+                      onChange={(startDate) =>
+                        setFormData({
+                          ...formData,
+                          supportStartDate: startDate,
+                        })
+                      }
+                      // defaultValue={dayjs("04/17/2022")}
+                      // convertDateFormat(i.supportStartDate),
+                      // "DD-MM-YYYY"
+                      // format="DD-MM-YYYY"
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Datepicker
+                      label="Support End Date"
+                      value={formData.supportEndDate}
+                      onChange={(endDate) => {
+                        if (endDate < formData.supportEndDate) {
+                          setShowDateError(true);
+                        } else {
+                          setShowDateError(false);
+                          setFormData({ ...formData, supportEndDate: endDate });
+                        }
+                      }}
+                      // defaultValue={dayjs("2022-04-17")}
+                      // format="DD-MM-YYYY"
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  </Grid>
+                  {showDateError && (
+                    <Stack
+                      sx={{ display: "flex", justifyContent: "right" }}
+                      spacing={2}
+                    >
+                      <Alert variant="filled" severity="error">
+                        SupportEndDate Should Not be less than SupportStartDate
+                      </Alert>
+                    </Stack>
+                  )}
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="accountOwnerCustomer"
+                      label="Account Owner Customer"
+                      id="accountOwnerCustomer"
+                      autoComplete="accountOwnerCustomer"
+                      value={formData.accountOwnerCustomer}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="accountOwnerGW"
+                      label="Account Owner GW"
+                      id="accountOwnerGW"
+                      autoComplete="accountOwnerGW"
+                      value={formData.accountOwnerGW}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      fullWidth
+                      id="role"
+                      value={formData.role}
+                      label="Role"
+                      onChange={handleRoleChange}
+                      list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  onClick={handleSubmit}
                 >
-                  <Alert variant="filled" severity="error">
-                    SupportEndDate Should Not be less than SupportStartDate
-                  </Alert>
-                </Stack>
-              )}
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  name="accountOwnerCustomer"
-                  label="Account Owner Customer"
-                  id="accountOwnerCustomer"
-                  autoComplete="accountOwnerCustomer"
-                  value={formData.accountOwnerCustomer}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  name="accountOwnerGW"
-                  label="Account Owner GW"
-                  id="accountOwnerGW"
-                  autoComplete="accountOwnerGW"
-                  value={formData.accountOwnerGW}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Dropdown
-                  fullWidth
-                  id="role"
-                  value={formData.role}
-                  label="Role"
-                  onChange={handleRoleChange}
-                  list={["ROLE_USER", "ROLE_SUPERVISOR"]}
-                />
-              </Grid>
-            </Grid>
-            {userExist ? (
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                onClick={handleUpdate}
-              >
-                Update User
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                onClick={handleSubmit}
-              >
-                Register User
-              </Button>
-            )}
-          </Box>
-        </form>
+                  Register User
+                </Button>
+              </Box>
+            </form>
+          </>
+        )}
         <>
           <Dialog
             open={openDeleteDialog}
@@ -728,10 +953,6 @@ export default function UserRegistration() {
           >
             <DialogTitle id="alert-dialog-title">{"Add New Plant"}</DialogTitle>
             <DialogContent style={{ padding: "10px" }}>
-              {/* <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete this user :{" "}
-                        {item.userID} ?
-                      </DialogContentText> */}
               <Textfield
                 required
                 fullWidth={true}
@@ -763,8 +984,6 @@ export default function UserRegistration() {
                 onClick={() => {
                   setOpenDeleteDialog(false);
                   postPlantName();
-                  // setShowPlantTextField(false);
-                  // setHideBtn(false);
                   fetchData();
                 }}
                 color="error"

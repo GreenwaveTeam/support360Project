@@ -1,34 +1,34 @@
-import { Alert, Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useEffect, useState } from "react";
 
 import Swal from "sweetalert2";
 
-import Textfield from "../../components/textfield/textfield.component";
-import CustomTable from "../../components/table/table.component";
-import AnimatedPage from "../../components/animation_/AnimatedPage";
 import { useNavigate } from "react-router-dom";
-import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
+import AnimatedPage from "../../components/animation_/AnimatedPage";
 import CustomButton from "../../components/button/button.component";
-import TopbarPage from "../../components/navigation/topbar/topbar";
-import SidebarPage from "../../components/navigation/sidebar/sidebar";
-import Main from "../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
+import Main from "../../components/navigation/mainbody/mainbody";
+import SidebarPage from "../../components/navigation/sidebar/sidebar";
+import TopbarPage from "../../components/navigation/topbar/topbar";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
+import CustomTable from "../../components/table/table.component";
+import Textfield from "../../components/textfield/textfield.component";
 
 export default function ConfigureInfrastructure() {
-  const [search, setSearch] = useState("");
+ // const [search, setSearch] = useState("");
   const [newCateogry, setNewCategory] = useState("");
-  const [editRowIndex, setEditRowIndex] = useState(null);
-  const [editValue, setEditValue] = useState("");
+  // const [editRowIndex, setEditRowIndex] = useState(null);
+  // const [editValue, setEditValue] = useState("");
   const [originalInfrarows, setoriginalInfraRows] = useState([]);
   const [infraList, setInfraList] = useState([]);
   const [snackbarText, setSnackbarText] = useState("Data saved !");
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
   const [open, setOpen] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
-  const [onEditError, setOnEditError] = useState(false);
-  const [progressVisible, setProgressVisible] = useState(false);
-  const [clearVisible, setClearVisible] = useState(false);
+  //const [onEditError, setOnEditError] = useState(false);
+  //const [progressVisible, setProgressVisible] = useState(false);
+  //const [clearVisible, setClearVisible] = useState(false);
   //Modified
   const [drawerOpen, setDrawerOpen] = useState(false);
   const handleDrawerOpen = () => {
@@ -40,64 +40,9 @@ export default function ConfigureInfrastructure() {
 
   const navigate = useNavigate();
 
-  const fetchInfraFromDb = async () => {
-    setProgressVisible(true);
-    const plantID = "P009";
-    console.log(
-      "Fetched Token from LS=>  ",
-      `Bearer ${localStorage.getItem("token")}`
-    );
-    console.log("fetchInfraFromDb() called");
-    try {
-      const response = await fetch(
-        `http://localhost:8081/infrastructure/admin/${plantID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        console.log("Response => " + response.status);
-        throw new Error("HTTP error " + response.status);
-      }
-      const data = await response.json();
-      let infrastructure = [];
-      if (data.infraDetails) {
-        console.log("infraDetails from Db => ", data.infraDetails);
-        data.infraDetails.map((item) => {
-          console.log("inf name => ", item.infrastructure_name);
-          let tempItem = { categoryname: item.infrastructure_name };
-          infrastructure.push(tempItem);
-          console.log("infrastructure array => ", infrastructure);
-        });
-      }
-      setInfraList(infrastructure);
-      setoriginalInfraRows(infrastructure);
-      setProgressVisible(false);
-      // setsnackbarSeverity("success")
-      // setSnackbarText("Data refereshed successfully !")
-      // setOpen(true)
-    } catch (error) {
-      setProgressVisible(false);
-      setsnackbarSeverity("error");
-      setSnackbarText(error.toString());
-      setOpen(true);
-      console.log("Error fetching data from database !");
-      navigate("/notfound");
-    }
-  };
+ 
+  
 
-  useEffect(() => {
-    fetchInfraFromDb();
-  }, []);
-
-  useEffect(() => {
-    //This useEffect is keeping track of the search whenever it is visible  or not
-    console.log("useEffect for search");
-    setClearVisible(search === "" ? false : true);
-  }, [search]);
 
   //Will include id later on to implement the same to identify the list item .....
   //Will include plantID too..
@@ -109,13 +54,13 @@ export default function ConfigureInfrastructure() {
   //   history.push({ pathname: "/conf", state: data });
   // };
 
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 1000,
-    timerProgressBar: true,
-  });
+  // const Toast = Swal.mixin({
+  //   toast: true,
+  //   position: "top-end",
+  //   showConfirmButton: false,
+  //   timer: 1000,
+  //   timerProgressBar: true,
+  // });
   const handleAddIssues = () => {
     console.log("handleAddIssues called !");
     setCategoryError(false);
@@ -158,37 +103,23 @@ export default function ConfigureInfrastructure() {
     navigate("/admin/infrastructure/addIssues", { state: data });
   };
 
-  const classes = {
-    conatiner: {
-      marginTop: "10px",
-    },
-    tablehead: {
-      fontWeight: "bold",
-      backgroundColor: "#B5C0D0",
-      lineHeight: 4,
-    },
-    textField: {
-      width: "300px",
-    },
-    btn: {
-      transition: "0.3s",
-      "&:hover": { borderBottomWidth: 0, transform: "translateY(5px)" },
-    },
-  };
+  
 
-  const handleAlertClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+  // const handleAlertClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
 
-    setOpen(false);
-  };
+  //   setOpen(false);
+  // };
 
-  const handleEditClick = (issue, index) => {
-    console.log("edit click for issue ", issue, " with index ", index);
-    setEditRowIndex(index);
-    setEditValue(issue);
-  };
+  // const handleEditClick = (issue, index) => {
+  //   console.log("edit click for issue ", issue, " with index ", index);
+  //   setEditRowIndex(index);
+  //   setEditValue(issue);
+  // };
+
+  /**************************************************   API    **************************************************** */
 
   const updateInfraNameDB = async (prev_infra, new_infraname) => {
     console.log("updateInfraNameDB() called");
@@ -215,19 +146,6 @@ export default function ConfigureInfrastructure() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       if (response.ok) {
-        //   const foundindex = originalInfrarows.indexOf(prev_infra);
-        //   console.log('Modificaition initiated')
-        //   const newInfraList = [...originalInfrarows];
-        //   newInfraList[foundindex] = editValue.trim();
-        //   setInfraList(newInfraList);
-        //   setoriginalInfraRows(newInfraList);
-        //   console.log("newInfraList => ", newInfraList);
-        //   setSearch("");
-        //   setEditRowIndex(null);
-        //   setEditValue("");
-        //   setsnackbarSeverity("success");
-        //   setSnackbarText("Changes are saved !");
-        // setOpen(true);
         return true;
       }
     } catch (error) {
@@ -235,9 +153,9 @@ export default function ConfigureInfrastructure() {
       setsnackbarSeverity("error");
       setSnackbarText("Database Error !");
       setOpen(true);
-      setSearch("");
-      setEditRowIndex(null);
-      setEditValue("");
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
       return false;
     }
   };
@@ -268,7 +186,7 @@ export default function ConfigureInfrastructure() {
           (item) => item.categoryname !== infra_name
         );
         setInfraList(filterArray);
-        setSearch("");
+       // setSearch("");
         setsnackbarSeverity("success");
         setSnackbarText("Data deleted successfully ! ");
         setOpen(true);
@@ -279,6 +197,58 @@ export default function ConfigureInfrastructure() {
       setOpen(true);
     }
   };
+
+  const fetchInfraFromDb = async () => {
+    // setProgressVisible(true);
+     const plantID = "P009";
+     console.log(
+       "Fetched Token from LS=>  ",
+       `Bearer ${localStorage.getItem("token")}`
+     );
+     console.log("fetchInfraFromDb() called");
+     try {
+       const response = await fetch(
+         `http://localhost:8081/infrastructure/admin/${plantID}`,
+         {
+           headers: {
+             Authorization: `Bearer ${localStorage.getItem("token")}`,
+             "Content-Type": "application/json",
+           },
+         }
+       );
+       if (!response.ok) {
+         console.log("Response => " + response.status);
+         throw new Error("HTTP error " + response.status);
+       }
+       const data = await response.json();
+       let infrastructure = [];
+       if (data.infraDetails) {
+         console.log("infraDetails from Db => ", data.infraDetails);
+         data.infraDetails.map((item) => {
+           console.log("inf name => ", item.infrastructure_name);
+           let tempItem = { categoryname: item.infrastructure_name };
+           infrastructure.push(tempItem);
+           console.log("infrastructure array => ", infrastructure);
+         });
+       }
+       setInfraList(infrastructure);
+       setoriginalInfraRows(infrastructure);
+       //setProgressVisible(false);
+       // setsnackbarSeverity("success")
+       // setSnackbarText("Data refereshed successfully !")
+       // setOpen(true)
+     } catch (error) {
+       //setProgressVisible(false);
+       setsnackbarSeverity("error");
+       setSnackbarText(error.toString());
+       setOpen(true);
+       console.log("Error fetching data from database !");
+       navigate("/notfound");
+     }
+   };
+ 
+ /******************************************************* API ends ************************************************* */
+ 
 
   const handleDeleteClick = async (row) => {
     console.log("handleDeleteClick() called");
@@ -360,36 +330,36 @@ export default function ConfigureInfrastructure() {
     }
   };
 
-  const handleCancelClick = (issue, index) => {
-    setEditRowIndex(null);
-    setEditValue("");
-  };
+  // const handleCancelClick = (issue, index) => {
+  //   setEditRowIndex(null);
+  //   setEditValue("");
+  // };
 
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-    const currentSearch = event.target.value;
-    console.log("Search => ", search);
+  // const handleSearchChange = (event) => {
+  //   //setSearch(event.target.value);
+  //   const currentSearch = event.target.value;
+  //   console.log("Search => ", search);
 
-    if (currentSearch === "" || currentSearch.length === 0) {
-      setInfraList(originalInfrarows);
-    } else {
-      const regex = /[^A-Za-z0-9 _/]/;
-      if (regex.test(currentSearch.trim())) {
-        setsnackbarSeverity("error");
-        setSnackbarText("Special Characters are not allowed ! ");
-        setCategoryError(true);
-        setOpen(true);
-        return;
-      }
-      const updatedRows = [...originalInfrarows];
-      const filteredRows = updatedRows.filter((infra) =>
-        infra.toLowerCase().includes(currentSearch.trim().toLowerCase())
-      );
-      console.log("Filtered Rows => ", filteredRows);
-      setInfraList(filteredRows);
-      setEditRowIndex(null);
-    }
-  };
+  //   if (currentSearch === "" || currentSearch.length === 0) {
+  //     setInfraList(originalInfrarows);
+  //   } else {
+  //     const regex = /[^A-Za-z0-9 _/]/;
+  //     if (regex.test(currentSearch.trim())) {
+  //       setsnackbarSeverity("error");
+  //       setSnackbarText("Special Characters are not allowed ! ");
+  //       setCategoryError(true);
+  //       setOpen(true);
+  //       return;
+  //     }
+  //     const updatedRows = [...originalInfrarows];
+  //     const filteredRows = updatedRows.filter((infra) =>
+  //       infra.toLowerCase().includes(currentSearch.trim().toLowerCase())
+  //     );
+  //     console.log("Filtered Rows => ", filteredRows);
+  //     setInfraList(filteredRows);
+  //     setEditRowIndex(null);
+  //   }
+  // };
 
   const handleCategoryChange = (e) => {
     console.log("handleCategoryChange() called");
@@ -461,6 +431,32 @@ export default function ConfigureInfrastructure() {
     // });
   };
 
+  const classes = {
+    conatiner: {
+      marginTop: "10px",
+    },
+    tablehead: {
+      fontWeight: "bold",
+      backgroundColor: "#B5C0D0",
+      lineHeight: 4,
+    },
+    textField: {
+      width: "300px",
+    },
+    btn: {
+      transition: "0.3s",
+      "&:hover": { borderBottomWidth: 0, transform: "translateY(5px)" },
+    },
+  };
+
+
+  /******************************* useEffect()********************************/
+
+  useEffect(() => {
+    fetchInfraFromDb();
+  }, []);
+
+  /******************************* Component Return ********************************* */
   return (
     <Box sx={{ display: "flex" }}>
       <TopbarPage
@@ -553,21 +549,6 @@ export default function ConfigureInfrastructure() {
                 <br />
                 <br />
               </center>
-              {/* <Snackbar
-            open={open}
-            autoHideDuration={2000}
-            onClose={handleAlertClose}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          >
-            <Alert
-              onClose={handleAlertClose}
-              severity={snackbarSeverity}
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
-              {snackbarText}
-            </Alert>
-          </Snackbar> */}
               <SnackbarComponent
                 openPopup={open}
                 setOpenPopup={setOpen}

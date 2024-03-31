@@ -1,10 +1,5 @@
-//import React, { useState } from 'react'
-// import List from '@mui/material/List';
-// import ListItem from '@mui/material/ListItem';
-// import ListItemButton from '@mui/material/ListItemButton';
-// import ListItemIcon from '@mui/material/ListItemIcon';
-// import ListItemText from '@mui/material/ListItemText';
-import { Alert, Box, Button, Typography } from "@mui/material";
+
+import { Box, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 //import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { useEffect, useState } from "react";
@@ -13,18 +8,17 @@ import { useEffect, useState } from "react";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { motion } from "framer-motion";
 import { useLocation } from "react-router-dom";
-import Swal from "sweetalert2";
 
+import AnimatedPage from "../../components/animation_/AnimatedPage";
+import CustomButton from "../../components/button/button.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
+import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
+import Main from "../../components/navigation/mainbody/mainbody";
+import SidebarPage from "../../components/navigation/sidebar/sidebar";
+import TopbarPage from "../../components/navigation/topbar/topbar";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
-import AnimatedPage from "../../components/animation_/AnimatedPage";
-import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
-import CustomButton from "../../components/button/button.component";
-import TopbarPage from "../../components/navigation/topbar/topbar";
-import SidebarPage from "../../components/navigation/sidebar/sidebar";
-import Main from "../../components/navigation/mainbody/mainbody";
-import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 
 
 export default function AddInfrastructureIssue() {
@@ -81,24 +75,52 @@ export default function AddInfrastructureIssue() {
     setDrawerOpen(false);
   };
 
-  //Note the plantID is harcoded currently
-  //********************* Style classes ***************
-  const classes = {
-    conatiner: {
-      marginTop: "10px",
-    },
-    tablehead: {
-      fontWeight: "bold",
-      backgroundColor: "#B5C0D0",
-    },
-    btn: {
-      transition: "0.3s",
-      "&:hover": { borderBottomWidth: 0, transform: "translateY(5px)" },
-    },
+  
+
+  // ***************************************************  API  **************************************************
+  //Database functions  for CRUD operations
+   //Note the plantID is harcoded currently
+  const fetchDBdata = async (plantId, inf) => {
+    console.log("fetchDBdata() called ");
+    console.log("plantID => ", plantId);
+    console.log("Infrastructure => ", inf);
+    if (plantId && inf) {
+      try {
+        console.log("fetchDBdata() called ");
+        console.log("plant ID => ", plantId);
+        console.log("infrastructure => ", inf);
+        const response = await fetch(
+          `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        if (data.infraDetails) {
+          console.log("issues are => ", data.infraDetails[0].issues);
+          setRows(data.infraDetails[0].issues);
+          setFilteredRows(data.infraDetails[0].issues);
+          setOriginalRows(data.infraDetails[0].issues);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    } else {
+      setsnackbarSeverity("errror");
+      setSnackbarText("Error in fetching data !");
+      setOpen(true);
+    }
+
+    console.log("fetchDBdata() ends");
   };
 
-  // *****************  Functions  *****************
-  //Database functions  for CRUD operations
+
   const deletedataDb = async (issue) => {
     console.log("Issue to be deleted => ", issue);
     console.log(
@@ -272,13 +294,9 @@ export default function AddInfrastructureIssue() {
     }
   };
 
-  const handlechangepage = (event, newpage) => {
-    pagechange(newpage);
-  };
-  const handleRowsPerPage = (event) => {
-    rowperpagechange(+event.target.value);
-    pagechange(0);
-  };
+  
+
+  /**************************************************************************************************************** */
 
   const handleAddClick = () => {
     setSnackbarText("Data saved !");
@@ -350,84 +368,13 @@ export default function AddInfrastructureIssue() {
   const handleDeleteClick = (row) => {
     console.log("handleDeleteClick() called");
     console.log("Row to delete => ", row.issue_name);
-    // Swal.fire({
-    //   title: "Do you really want to delete ? ",
-    //   showDenyButton: true,
-    //   confirmButtonText: "Delete",
-    //   denyButtonText: `Cancel`,
-    // }).then((result) => {
-    //   /* Read more about isConfirmed, isDenied below */
-    //   if (result.isConfirmed) {
-    // Swal.fire("Saved!", "", "success");
 
     deletedataDb(row.issue_name);
-
-    //   }
-    // });
-    console.log("handleDeleteClick()");
-
-    //setSearch('');
   };
 
-  const handleEditClick = (issue_name, index, selectedrow) => {
-    console.log("handleEditClick()");
-    console.log(
-      "Edit clicked for row with issue => ",
-      issue_name,
-      "Index => ",
-      index
-    );
-    setEditRowIndex(index);
-
-    setEditValue(rows.find((row) => row.issue_name === issue_name).issue_name);
-    console.log("Selected Row severity => ", selectedrow.severity);
-    setOnEditSeverity(selectedrow.severity);
-    console.log("Current Edit Value =>", editValue);
-  };
 
   const handleSaveClick = async (selected_row, updated_row) => {
-    //Updating by creating a shallow copy good !!
-    // setSnackbarText("Changes are saved !");
-    // setsnackbarSeverity("success");
-    // console.log("Save clicked");
-    // setEditRequire(false);
-    // //updatedRows[index].issueName = editValue;
-    // console.log("edited issue => " + editValue);
-    // if (editValue.trim() === "") {
-    //   console.log("edit is blank");
-    //   setSnackbarText("Issues cannot be blank !");
-    //   setsnackbarSeverity("error");
-    //   setOpen(true);
-
-    //   setEditRequire(true);
-
-    //   return;
-    // }
-    // console.log("Current Edit Value => ",editValue)
-    // const regex = /[^A-Za-z0-9 _]/;
-    // if(regex.test(editValue.trim())) {
-    //   console.log("Special Characters found ! for => ",editValue)
-    //   setsnackbarSeverity("error")
-    //   setSnackbarText("Special Characters are not allowed ! ")
-    //   setEditRequire(true);
-    //   setOpen(true)
-    //   return ;
-    // }
-
-    // if (
-    //   rows.find(
-    //     (row) => row.issue_name.toLowerCase() === editValue.trim().toLowerCase()
-    //   ) &&
-    //   selectedRow.severity.toLowerCase() === onEditSeverity.trim().toLowerCase()
-    // ) {
-    //   console.log("Issue already exists");
-    //   // setSnackbarText('This issue is already added');
-    //   // setsnackbarSeverity('error')
-    //   // setOpen(true)
-    //   setEditRowIndex(null);
-    //   return;
-    // }
-
+    
     console.log("selected_row : ", selected_row);
     console.log("updated row : ", updated_row);
     const updatedRows = [...rows];
@@ -456,179 +403,60 @@ export default function AddInfrastructureIssue() {
     // updatedRows.find((row) => row.issue_name === issue_name).edited = true;
   };
 
-  const handleCancelClick = (index) => {
-    // Resetting editRowIndex and editValue
-    console.log("Cancel clicked");
-    setEditRequire(false);
-    setEditRowIndex(null);
-    setEditValue("");
-    setSearch("");
-  };
+  // const handleCancelClick = (index) => {
+  //   // Resetting editRowIndex and editValue
+  //   console.log("Cancel clicked");
+  //   setEditRequire(false);
+  //   setEditRowIndex(null);
+  //   setEditValue("");
+  //   setSearch("");
+  // };
 
-  const handleSeverityChange = (index, issue_name, event) => {
-    console.log("handleSeverityChange() called");
-    console.log("event selection => ", event.target.value);
-    console.log("id=> ", issue_name);
-    // const updatedRows = [...rows];
-    // updatedRows.find((row) => row.issue_name === issue_name).severity = event.target.value;
-    // console.log("Updated Rows are => ", updatedRows);
-    // setRows(updatedRows);
-    setOnEditSeverity(event.target.value);
-    //setFilteredRows(updatedRows)
-  };
+  // const handleSeverityChange = (index, issue_name, event) => {
+  //   console.log("handleSeverityChange() called");
+  //   console.log("event selection => ", event.target.value);
+  //   console.log("id=> ", issue_name);
+  //   // const updatedRows = [...rows];
+  //   // updatedRows.find((row) => row.issue_name === issue_name).severity = event.target.value;
+  //   // console.log("Updated Rows are => ", updatedRows);
+  //   // setRows(updatedRows);
+  //   setOnEditSeverity(event.target.value);
+  //   //setFilteredRows(updatedRows)
+  // };
 
   const handleAddSeverityChange = (event) => {
     setAddSeverity(event.target.value);
   };
 
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-    const currentSearch = event.target.value;
-    console.log("Search => ", search);
+  // const handleSearchChange = (event) => {
+  //   setSearch(event.target.value);
+  //   const currentSearch = event.target.value;
+  //   console.log("Search => ", search);
 
-    if (currentSearch === "" || currentSearch.length === 0) {
-      setFilteredRows(rows); //Keeping the  original list of rows
-    } else {
-      const updatedRows = [...rows];
-      const filteredRows = updatedRows.filter((issue) =>
-        issue.issue_name
-          .toLowerCase()
-          .includes(currentSearch.trim().toLowerCase())
-      );
-      console.log("Filtered Rows => ", filteredRows);
-      setFilteredRows(filteredRows);
-      setEditRowIndex(null);
-    }
-  };
+  //   if (currentSearch === "" || currentSearch.length === 0) {
+  //     setFilteredRows(rows); //Keeping the  original list of rows
+  //   } else {
+  //     const updatedRows = [...rows];
+  //     const filteredRows = updatedRows.filter((issue) =>
+  //       issue.issue_name
+  //         .toLowerCase()
+  //         .includes(currentSearch.trim().toLowerCase())
+  //     );
+  //     console.log("Filtered Rows => ", filteredRows);
+  //     setFilteredRows(filteredRows);
+  //     setEditRowIndex(null);
+  //   }
+  // };
 
-  const fetchDBdata = async (plantId, inf) => {
-    console.log("fetchDBdata() called ");
-    console.log("plantID => ", plantId);
-    console.log("Infrastructure => ", inf);
-    if (plantId && inf) {
-      try {
-        console.log("fetchDBdata() called ");
-        console.log("plant ID => ", plantId);
-        console.log("infrastructure => ", inf);
-        const response = await fetch(
-          `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
-        if (data.infraDetails) {
-          console.log("issues are => ", data.infraDetails[0].issues);
-          setRows(data.infraDetails[0].issues);
-          setFilteredRows(data.infraDetails[0].issues);
-          setOriginalRows(data.infraDetails[0].issues);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    } else {
-      setsnackbarSeverity("errror");
-      setSnackbarText("Error in fetching data !");
-      setOpen(true);
-    }
 
-    console.log("fetchDBdata() ends");
-  };
 
-  //useEffect Hook
-  useEffect(() => {
-    console.log("useEffect() called");
-    console.log("plantId", plantId);
-    console.log("Infrastructure : ", inf);
-    console.log("search value is ", search);
-    fetchDBdata(plantId, inf);
-    //console.log('History => ',history);
+ 
+  // useEffect(() => {
+  //   //This useEffect is keeping track of the search whenever it is visible  or not
+  //   console.log("useEffect for search");
+  //   setClearVisible(search === "" ? false : true);
+  // }, [search]);
 
-    //  initializing DB connection  and fetching data from the database
-
-    // function handleOnBeforeUnload(event)
-    // {
-    //   event.preventDefault();
-    //  // return (event.returnValue='')
-    //  //setOpen(true)
-    //  Swal.fire({
-    //   title: "The Internet?",
-    //   text: "That thing is still around?",
-    //   icon: "question"
-    // });
-
-    // }
-
-    //   window.addEventListener('beforeunload',handleOnBeforeUnload)
-
-    // window.addEventListener('beforeunload',openDialog)
-
-    const handleOnBeforeUnload = (event) => {
-      // event.preventDefault();
-
-      console.log("issueName :", addIssue);
-
-      console.log(
-        "state true or false",
-        filteredRows.toString === rows.toString
-      );
-
-      console.log("Filtered Rows :" + JSON.stringify(filteredRows));
-      console.log("Original Rows :", JSON.stringify(originalRows));
-
-      if (
-        JSON.stringify(filteredRows) === JSON.stringify(originalRows) &&
-        addIssue.length === 0
-      ) {
-        console.log("return from beforeUnload");
-        return;
-      }
-      event.preventDefault();
-      // event.preventDefault();
-      // Show the SweetAlert dialog
-      // Swal.fire({
-      //   title: "The Internet?",
-      //   text: "That thing is still around?",
-      //   icon: "question",
-      // }).then((result) => {
-      //   if (result.isConfirmed) {
-      //     // Continue with the leave action or navigate to a different page
-      //     console.log('I am here');
-      //   }
-      // });
-    };
-
-    window.addEventListener("beforeunload", handleOnBeforeUnload);
-    //console.log(process.env.REACT_APP_NOT_SECRET_CODE);
-
-    // remember  this is a cleanup function which will be executed before the next execution of the effect or when the component is unmounted.
-    //they are treated as options of useEffect
-    return () => {
-      window.removeEventListener("beforeunload", handleOnBeforeUnload);
-    };
-  }, []); //useEffect ends here
-
-  useEffect(() => {
-    //This useEffect is keeping track of the search whenever it is visible  or not
-    console.log("useEffect for search");
-    setClearVisible(search === "" ? false : true);
-  }, [search]);
-
-  const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 2000,
-    timerProgressBar: true,
-    color: "green",
-    showCloseButton: true,
-  });
 
   // const handleSubmit = () => {
   //   console.log("handleSubmit()");
@@ -642,18 +470,20 @@ export default function AddInfrastructureIssue() {
   //   });
   // };
 
-  const handleAlertClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
+  // const handleAlertClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
 
-    setOpen(false);
-  };
+  //   setOpen(false);
+  // };
 
-  const handleClick = (id) => {
-    console.log("ID=> " + id);
-  };
+  // const handleClick = (id) => {
+  //   console.log("ID=> " + id);
+  // };
 
+
+  //This filter method will be required later
   const handlefilter = (event) => {
     if (event.target.value === "All") {
       console.log("default rows => ", rows);
@@ -692,7 +522,16 @@ export default function AddInfrastructureIssue() {
     }
   };
 
-  //for framer motion
+  const addIssueToCurrentCategory = (selectedCategory, updatedCategory) => {
+    console.log("Save to database method called");
+    console.log("Selected category : ", selectedCategory);
+    console.log("Updated Category : ", updatedCategory);
+    const success = handleSaveClick(selectedCategory, updatedCategory);
+    return success;
+  };
+
+
+  // For framer motion
   const icon = {
     hidden: {
       opacity: 0,
@@ -706,43 +545,43 @@ export default function AddInfrastructureIssue() {
     },
   };
   //for dropdown
-  const severityColors = {
-    critical: "#B80000",
-    major: "#610C9F",
-    minor: "#1B3C73",
-  };
+  // const severityColors = {
+  //   critical: "#B80000",
+  //   major: "#610C9F",
+  //   minor: "#1B3C73",
+  // };
 
-  const severityValues = {
-    major: "Major",
-    minor: "Minor",
-    critical: "Critical",
-  };
+  // const severityValues = {
+  //   major: "Major",
+  //   minor: "Minor",
+  //   critical: "Critical",
+  // };
 
-  const onEditseveritydropdown = ["Critical", "Major", "Minor"];
+  // const onEditseveritydropdown = ["Critical", "Major", "Minor"];
 
   const customSeverity = [
-    // {
-    //   label: "Select One...",
-    //   value: "",
-    // },
-    // {
-    //   label: "Critical",
-    //   value: "critical",
-    // },
-    // {
-    //   label: "Major",
-    //   value: "major",
-    // },
-    // {
-    //   label: "Minor",
-    //   value: "minor",
-    // },
     "None",
     "Critical",
     "Major",
     "Minor",
   ];
-  const customfilterList = ["All", "Critical", "Major", "Minor"];
+
+ 
+  //********************* Style classes ***************
+  const classes = {
+    conatiner: {
+      marginTop: "10px",
+    },
+    tablehead: {
+      fontWeight: "bold",
+      backgroundColor: "#B5C0D0",
+    },
+    btn: {
+      transition: "0.3s",
+      "&:hover": { borderBottomWidth: 0, transform: "translateY(5px)" },
+    },
+  };
+  // const customfilterList = ["All", "Critical", "Major", "Minor"];
 
   const columns = [
     {
@@ -759,13 +598,51 @@ export default function AddInfrastructureIssue() {
       values: ["Critical", "Major", "Minor"],
     },
   ];
-  const addIssueToCurrentCategory = (selectedCategory, updatedCategory) => {
-    console.log("Save to database method called");
-    console.log("Selected category : ", selectedCategory);
-    console.log("Updated Category : ", updatedCategory);
-    const success = handleSaveClick(selectedCategory, updatedCategory);
-    return success;
-  };
+ 
+
+
+   /**********************************************useEffect Hook***********************************************/
+   useEffect(() => {
+    console.log("useEffect() called");
+    console.log("plantId", plantId);
+    console.log("Infrastructure : ", inf);
+    console.log("search value is ", search);
+    fetchDBdata(plantId, inf);
+   
+
+    const handleOnBeforeUnload = (event) => {
+      // event.preventDefault();
+
+      console.log("issueName :", addIssue);
+
+      console.log(
+        "state true or false",
+        filteredRows.toString === rows.toString
+      );
+
+      console.log("Filtered Rows :" + JSON.stringify(filteredRows));
+      console.log("Original Rows :", JSON.stringify(originalRows));
+
+      if (
+        JSON.stringify(filteredRows) === JSON.stringify(originalRows) &&
+        addIssue.length === 0
+      ) {
+        console.log("return from beforeUnload");
+        return;
+      }
+      event.preventDefault();
+    };
+
+    window.addEventListener("beforeunload", handleOnBeforeUnload);
+    //console.log(process.env.REACT_APP_NOT_SECRET_CODE);
+
+    // remember  this is a cleanup function which will be executed before the next execution of the effect or when the component is unmounted.
+    //they are treated as options of useEffect
+    return () => {
+      window.removeEventListener("beforeunload", handleOnBeforeUnload);
+    };
+  }, []); //useEffect ends here
+
 
   //************** Returned Component  **************
   return (

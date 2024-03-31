@@ -1,22 +1,15 @@
+import TabContext from "@mui/lab/TabContext";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
-import TabContext from "@mui/lab/TabContext";
 
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
-import { Fragment, useEffect, useState } from "react";
-import Tabs from "@mui/material/Tabs";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  Alert,
   Badge,
   CircularProgress,
   Collapse,
   Container,
-  Dialog,
-  DialogActions,
-  DialogTitle,
   Divider,
   FormControl,
   IconButton,
@@ -29,40 +22,41 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Tooltip,
+  Tooltip
 } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+import Tabs from "@mui/material/Tabs";
+import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
-import DeleteIcon from "@mui/icons-material/Delete";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useEffect, useState } from "react";
 
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-import { motion } from "framer-motion";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { styled } from "@mui/material/styles";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import { motion } from "framer-motion";
 
-import AnimatedPage from "../../../components/animation_/AnimatedPage";
-import './modules.application.css'
-import Dropdown from "../../../components/dropdown/dropdown.component";
-import Textfield from "../../../components/textfield/textfield.component";
-import CustomTable from "../../../components/table/table.component";
 import { useNavigate } from "react-router-dom";
-import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
-import VerifiedIcon from '@mui/icons-material/Verified';
-import InfoIcon from '@mui/icons-material/Info';
-import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
+import AnimatedPage from "../../../components/animation_/AnimatedPage";
 import CustomButton from "../../../components/button/button.component";
-import TopbarPage from "../../../components/navigation/topbar/topbar";
-import SidebarPage from "../../../components/navigation/sidebar/sidebar";
-import Main from "../../../components/navigation/mainbody/mainbody";
+import Dropdown from "../../../components/dropdown/dropdown.component";
 import DrawerHeader from "../../../components/navigation/drawerheader/drawerheader.component";
+import Main from "../../../components/navigation/mainbody/mainbody";
+import SidebarPage from "../../../components/navigation/sidebar/sidebar";
+import TopbarPage from "../../../components/navigation/topbar/topbar";
+import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
+import CustomTable from "../../../components/table/table.component";
+import Textfield from "../../../components/textfield/textfield.component";
+import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
+import './modules.application.css';
  
 
-
-export default function ApplicationUser() {
+//The main export starts here....
+export default function ApplicationUser()
+ {
   const [value, setValue] = useState("");
   const [appDropdown, setAppDropdown] = useState([]);
   const [dropdownValue, setDropdownValue] = useState("");
@@ -109,7 +103,7 @@ const handleDrawerClose = () => {
   const [mainAlert, setMainAlert] = useState(false);
 
   const severityList = ["Critical", "Major", "Minor"];
-
+  //for Modal height and width
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const modalWidth = isSmallScreen ? "90%" : 760;
@@ -129,7 +123,9 @@ const handleDrawerClose = () => {
   const [additionalMiscellaneousSeverityError,setAdditionallMiscellaneousSeverityError]=useState(false)
   const [ticketDialogOpen,setTicketDialogOpen]=useState(false);
   const navigate =useNavigate()
-const [progressVisible,setprogressVisible]=useState(false);
+  const [progressVisible,setprogressVisible]=useState(false);
+
+
 
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
@@ -195,34 +191,9 @@ const [progressVisible,setprogressVisible]=useState(false);
     //console.log('Overview Table Data : ',updatedData)
   };
 
-  const saveCurrentTabModuleInformation = (info) => {
+  const saveCurrentTabModuleInformation = () => {
     console.log("saveCurentTabModuleInformation() called ");
     const PlantID = "P009";
-    // const fetchMiscellaneousInput=info.miscellaneousInput && info.miscellaneousInput ?info.miscellaneousInput:''
-    // const fetchRemarks=info.remarks&& info.remarks?info.remarks:'';
-    // let fetchMiscellaneousInput='';
-    // let fetchRemarks='';
-    // if(info)
-    // {
-    //   if(info.miscellaneousInput)
-    //   {
-    //     console.log('Miscellaneous Incoming : ',info.miscellaneousInput);
-    //     fetchMiscellaneousInput=info.miscellaneousInput;
-    //   }
-    //   else{
-    //     fetchMiscellaneousInput=miscellaneousInput;
-    //   }
-    // if(info.remarks)
-    // {
-    //   console.log('Remarks Incoming : ',info.remarks);
-    //   fetchRemarks=info.remarks;
-    // }
-    // else
-    // {
-    //   fetchRemarks=remarksInput;
-    // }
-    // }
-
     console.log("Current Miscellaneous Issue : ", miscellaneousInput);
     console.log("Current Remarks Issue : ", remarksInput);
     const updatedfinalUserInput = finalUserInput.filter((item) => {
@@ -275,6 +246,7 @@ const [progressVisible,setprogressVisible]=useState(false);
     }
   };
 
+  //This function is invoked to restore the previous information while navigating the tabs
   const checkAndRestoreFromSuperInformationofAllModules = (
     module,
     application
@@ -334,11 +306,11 @@ const [progressVisible,setprogressVisible]=useState(false);
 
     checkAndRestoreFromSuperInformationofAllModules(newValue, dropdownValue); // This method is reserved for restoring the previous user I/P based on the current selected module  i.e you only need to set the final userInput because on each div click check is already made in the finalUserInput list
 
-    // setting the remarks and miscellaneous is essential
+    // Resetting the remarks and miscellaneous is essential
     //changing the final FinaluserInput will handle automatically other useCases
   };
 
-
+/* ********************** API ************************** */
   const fetchApplicationNames = async (plantID) => {
     try {
       const response = await fetch(
@@ -408,41 +380,6 @@ const [progressVisible,setprogressVisible]=useState(false);
     }
   };
 
-  const fetchIssueList = (area) => {
-    //Fetching the issues
-    let issueArray = [];
-    if (mainData && mainData.issuesList) {
-      console.log("Fetching IssueList");
-      mainData.issuesList.forEach((data) => {
-        if (
-          data.top === area.top &&
-          data.left === area.left &&
-          data.width === area.width &&
-          data.height === area.height
-        ) {
-          data.issues.forEach((issue) => {
-            issueArray.push(issue.issue_name);
-          });
-          //Current Selected AREA 
-          setAreaName(
-            " " +
-              dropdownValue +
-              " / " +
-              value +
-              " / " +
-              data.selected_coordinates_acronym
-          );
-        }
-      });
-    }
-    if (issueArray.length === 0) {
-      console.log("No Issues Found in this Area");
-    }
-    console.log("Issues for this coordinates => ", issueArray);
-    setIssuesDropdown(issueArray);
-    setOriginalIssuesDropdown(issueArray);
-  };
-
   const fetchTabData = async (module, application) => {
     console.log("fetchTabData() called");
     console.log("Tab Value : ", module);
@@ -478,6 +415,77 @@ const [progressVisible,setprogressVisible]=useState(false);
     }
   };
 
+
+  const postDatainDB = async (json_data) => {
+    console.log("postDatainDB() called");
+    console.log("current JSON_data is => ", JSON.stringify(json_data));
+    try {
+      const response = await fetch(`http://localhost:8081/application/user`, {
+        method: "POST",
+       
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+       
+        body: JSON.stringify(json_data),
+      });
+      if (response.ok) {
+        console.log("Data has been updated successfully ! ");
+        return true;
+      }
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+    } catch (error) {
+      console.log("Error in posting Data to the database : ", error);
+      setSnackbarSeverity("error");
+      setSnackbarText("Error in Database  Connection ");
+      setMainAlert(true);
+      return false;
+      // return 0;
+    }
+  };
+
+  /* ******************************************************************** */
+
+
+  const fetchIssueList = (area) => {
+    //Fetching the issues
+    let issueArray = [];
+    if (mainData && mainData.issuesList) {
+      console.log("Fetching IssueList");
+      mainData.issuesList.forEach((data) => {
+        if (
+          data.top === area.top &&
+          data.left === area.left &&
+          data.width === area.width &&
+          data.height === area.height
+        ) {
+          data.issues.forEach((issue) => {
+            issueArray.push(issue.issue_name);
+          });
+          //Current Selected AREA 
+          setAreaName(
+            " " +
+              dropdownValue +
+              " / " +
+              value +
+              " / " +
+              data.selected_coordinates_acronym
+          );
+        }
+      });
+    }
+    if (issueArray.length === 0) {
+      console.log("No Issues Found in this Area");
+    }
+    console.log("Issues for this coordinates => ", issueArray);
+    setIssuesDropdown(issueArray);
+    setOriginalIssuesDropdown(issueArray);
+  };
+
+ 
   // const checkForDialog=((event)=>
   // {
   //    console.log(event);
@@ -485,53 +493,7 @@ const [progressVisible,setprogressVisible]=useState(false);
   //    console.log("Y : ",event.clientY)
   // })
 
-  useEffect(() => {
-    console.log("useEffect() called ");
-    const plantID = "P009";
-    console.log("useEffect() for fetching data for first time....");
-    fetchApplicationNames(plantID);
-    setTicketNumber(generateRandomNumber());
-  }, []);
 
-  useEffect(() => {
-    console.log("useEffect() for mainData called ");
-    console.log("mainData : ", mainData);
-    //mainData.forEach(item)
-    console.log("finalUserInput", finalUserInput);
-    setUpdatedMainData(mainData);
-    // const updatedMainData = { ...mainData };
-    console.log("mainData.issuesList : ", mainData.issuesList);
-    mainData.issuesList &&
-      mainData.issuesList.forEach((main) => {
-        console.log("Main Loop entered ! ");
-        finalUserInput.forEach((user) => {
-          console.log("Comparison TOP :", main.top, " ", user.top);
-          console.log("Comparison LEFT :", main.left, " ", user.left);
-          console.log("Comparison HEIGHT :", main.height, " ", user.height);
-          console.log("Comparison WIDTH :", main.width, " ", user.width);
-          console.log(
-            "Comparison acronym",
-            main.selected_coordinates_acronym,
-            " ",
-            user.selected_coordinates_acronym
-          );
-          if (
-            main.top === user.top &&
-            main.left === user.left &&
-            main.width === user.width &&
-            main.height === user.height &&
-            main.selected_coordinates_acronym ===
-              user.selected_coordinates_acronym &&
-            user.issues.length > 0
-          ) {
-            console.log("Found Edited Properties");
-            main.edited = true;
-          } else {
-            console.log("Match was not found");
-          }
-        });
-      });
-  }, [mainData, finalUserInput]);
 
   const handleAppDropdownChange = (e) => {
     console.log("Changed value in Dropdown => ", e.target.value);
@@ -745,27 +707,28 @@ const [progressVisible,setprogressVisible]=useState(false);
     }
   };
 
-  const handleTableSearch = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    console.log("handleTableSearch()");
-    console.log("Current Table Search =>", e.target.value);
-    setTableSearchText(e.target.value);
-    console.log("useState value => ", tableSearchText);
-    const currentSearch = e.target.value;
-    if (currentSearch === "" || currentSearch.length === 0) {
-      setTableIssuesForCurrentDiv(originalTableIssues);
-    } else {
-      const updatedRows = [...tableIssuesForCurrentDiv];
-      const filteredRows = updatedRows.filter((issue) =>
-        issue.issue_name
-          .toLowerCase()
-          .includes(currentSearch.trim().toLowerCase())
-      );
-      console.log("Filtered Rows => ", filteredRows);
-      setTableIssuesForCurrentDiv(filteredRows);
-    }
-  };
+  //This has been handled in the Table component made in the components directory
+  // const handleTableSearch = (e) => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  //   console.log("handleTableSearch()");
+  //   console.log("Current Table Search =>", e.target.value);
+  //   setTableSearchText(e.target.value);
+  //   console.log("useState value => ", tableSearchText);
+  //   const currentSearch = e.target.value;
+  //   if (currentSearch === "" || currentSearch.length === 0) {
+  //     setTableIssuesForCurrentDiv(originalTableIssues);
+  //   } else {
+  //     const updatedRows = [...tableIssuesForCurrentDiv];
+  //     const filteredRows = updatedRows.filter((issue) =>
+  //       issue.issue_name
+  //         .toLowerCase()
+  //         .includes(currentSearch.trim().toLowerCase())
+  //     );
+  //     console.log("Filtered Rows => ", filteredRows);
+  //     setTableIssuesForCurrentDiv(filteredRows);
+  //   }
+  // };
 
   const addEditedPropertyMainData = (booleanValue) => {
     console.log("addEditedPropertyMainData");
@@ -1103,13 +1066,6 @@ return;
       setSnackbarSeverity("success");
       setSnackbarText(ticket);
       setMainAlert(true);
-      // Swal.fire({
-      //   title: "Ticket raised successfully",
-      //   text: " Ticket No - " + ticketNumber,
-      //   icon: "success",
-      //   allowOutsideClick: false,
-      //   confirmButtonText: "OK",
-      // });
       // const ticket="Tiket raised successfully ! Ticket No - "+ticketNumber ;
        setTicketDialogOpen(true)
     } else {
@@ -1123,102 +1079,23 @@ return;
     return "A" + randomNumber;
   };
 
-  const postDatainDB = async (json_data) => {
-    console.log("postDatainDB() called");
-    console.log("current JSON_data is => ", JSON.stringify(json_data));
-    try {
-      const response = await fetch(`http://localhost:8085/application/user`, {
-        method: "POST",
-       
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-       
-        body: JSON.stringify(json_data),
-      });
-      if (response.ok) {
-        console.log("Data has been updated successfully ! ");
-        return true;
-      }
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-    } catch (error) {
-      console.log("Error in posting Data to the database : ", error);
-      setSnackbarSeverity("error");
-      setSnackbarText("Error in Database  Connection ");
-      setMainAlert(true);
-      return false;
-      // return 0;
-    }
-  };
+ 
 
-  const handleAlertClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setModalAlertOpen(false);
-  };
+  // const handleAlertClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
+  //   setModalAlertOpen(false);
+  // };
 
-  const handleMainAlertClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setMainAlert(false);
-  };
+  // const handleMainAlertClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //     return;
+  //   }
+  //   setMainAlert(false);
+  // };
 
-  const classes = {
-    // conatiner: {
-    //   marginTop: "10px",
-    // },
-    // tablehead: {
-    //   fontWeight: "bold",
-    //   backgroundColor: "#B5C0D0",
-    //   lineHeight:4
 
-    // },
-    // textField: {
-    //   width: "300px",
-    // },
-    btn: {
-      transition: "0.3s",
-      "&:hover": { borderBottomWidth: 0, transform: "translateY(5px)" },
-    },
-  };
-  //for framer motion
-  const icon = {
-    hidden: {
-      opacity: 0,
-      pathLength: 0,
-      fill: "rgba(255, 255, 255, 0)",
-    },
-    visible: {
-      opacity: 1,
-      pathLength: 1,
-      fill: "rgba(255, 255, 255, 1)",
-    },
-  };
-
-  const severityColors = {
-    critical: "#B80000",
-    major: "#610C9F",
-    minor: "#1B3C73",
-  };
-  const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-  })(({ theme, expand }) => ({
-    transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-    marginLeft: "auto",
-    transition: theme.transitions.create("transform", {
-      duration: theme.transitions.duration.shortest,
-    }),
-  }));
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
 
   const updateOverviewTable = (item) => {
     let filtered_current_overview = [];
@@ -1481,6 +1358,12 @@ return;
     setMainAlert(true);
   };
 
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
+  //columns for Table component i.e the Table headers 
   const columns=[
     {
       "id": "issue_name",
@@ -1504,12 +1387,117 @@ return;
       },
   ] 
 
-  const handleTicketDialogClose = (event,reason) => {
-    if (reason && reason === "backdropClick") 
-          return;
-      setTicketDialogOpen(false);
-    };
+  const classes = {
+    // conatiner: {
+    //   marginTop: "10px",
+    // },
+    // tablehead: {
+    //   fontWeight: "bold",
+    //   backgroundColor: "#B5C0D0",
+    //   lineHeight:4
 
+    // },
+    // textField: {
+    //   width: "300px",
+    // },
+    btn: {
+      transition: "0.3s",
+      "&:hover": { borderBottomWidth: 0, transform: "translateY(5px)" },
+    },
+  };
+  //for framer motion
+  const icon = {
+    hidden: {
+      opacity: 0,
+      pathLength: 0,
+      fill: "rgba(255, 255, 255, 0)",
+    },
+    visible: {
+      opacity: 1,
+      pathLength: 1,
+      fill: "rgba(255, 255, 255, 1)",
+    },
+  };
+
+  const severityColors = {
+    critical: "#B80000",
+    major: "#610C9F",
+    minor: "#1B3C73",
+  };
+  const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+  })(({ theme, expand }) => ({
+    transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
+    marginLeft: "auto",
+    transition: theme.transitions.create("transform", {
+      duration: theme.transitions.duration.shortest,
+    }),
+  }));
+
+ 
+
+  // const handleTicketDialogClose = (event,reason) => {
+  //   if (reason && reason === "backdropClick") 
+  //         return;
+  //     setTicketDialogOpen(false);
+  //   };
+
+
+  
+/**************************************   UseEffect()   ******************************* */
+useEffect(() => {
+  console.log("useEffect() called ");
+  const plantID = "P009";
+  console.log("useEffect() for fetching data for first time....");
+  fetchApplicationNames(plantID);
+  setTicketNumber(generateRandomNumber());
+}, []);
+
+//This useEffect is used to restore the checks in the Image while Tab change
+useEffect(() => {
+  console.log("useEffect() for mainData called ");
+  console.log("mainData : ", mainData);
+  //mainData.forEach(item)
+  console.log("finalUserInput", finalUserInput);
+  setUpdatedMainData(mainData);
+  // const updatedMainData = { ...mainData };
+  console.log("mainData.issuesList : ", mainData.issuesList);
+  mainData.issuesList &&
+    mainData.issuesList.forEach((main) => {
+      console.log("Main Loop entered ! ");
+      finalUserInput.forEach((user) => {
+        console.log("Comparison TOP :", main.top, " ", user.top);
+        console.log("Comparison LEFT :", main.left, " ", user.left);
+        console.log("Comparison HEIGHT :", main.height, " ", user.height);
+        console.log("Comparison WIDTH :", main.width, " ", user.width);
+        console.log(
+          "Comparison acronym",
+          main.selected_coordinates_acronym,
+          " ",
+          user.selected_coordinates_acronym
+        );
+        if (
+          main.top === user.top &&
+          main.left === user.left &&
+          main.width === user.width &&
+          main.height === user.height &&
+          main.selected_coordinates_acronym ===
+            user.selected_coordinates_acronym &&
+          user.issues.length > 0
+        ) {
+          console.log("Found Edited Properties");
+          main.edited = true;
+        } else {
+          console.log("Match was not found");
+        }
+      });
+    });
+}, [mainData, finalUserInput]);
+
+
+
+  /*************************************************** Component return ************************************** */
   return (
     <Box sx={{ display: "flex" }}>
     <TopbarPage
@@ -2269,24 +2257,6 @@ return;
                   <br />
                 </div>
 
-                {/* </Grid> */}
-
-                {/* <Snackbar
-                  id="modal-alert"
-                  open={modalAlertOpen}
-                  autoHideDuration={2000}
-                  onClose={handleAlertClose}
-                  anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                >
-                  <Alert
-                    onClose={handleAlertClose}
-                    severity={snackbarSeverity}
-                    variant="filled"
-                    sx={{ width: "100%" }}
-                  >
-                    {snackbarText}
-                  </Alert>
-                </Snackbar> */}
                 <SnackbarComponent
                   openPopup={modalAlertOpen}
                   setOpenPopup={setModalAlertOpen}
@@ -2298,23 +2268,6 @@ return;
             </Modal>
           </div>
 
-          {/* <Paper elevation={5}> */}
-          {/* <Snackbar
-            id="mainreport-alert"
-            open={mainAlert}
-            autoHideDuration={1500}
-            onClose={handleMainAlertClose}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          >
-            <Alert
-              onClose={handleMainAlertClose}
-              severity={snackbarSeverity}
-              variant="filled"
-              sx={{ width: "100%" }}
-            >
-              {snackbarText}
-            </Alert>
-          </Snackbar> */}
           <SnackbarComponent
             openPopup={mainAlert}
             setOpenPopup={setMainAlert}

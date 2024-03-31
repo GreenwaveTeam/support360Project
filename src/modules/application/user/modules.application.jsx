@@ -351,6 +351,10 @@ const [progressVisible,setprogressVisible]=useState(false);
         }
       );
       if (!response.ok) {
+        if(response.status===403)
+        {       
+          navigate('/*')
+        }
         throw new Error("Failed to fetch data");
       }
       const data = await response.json();
@@ -361,6 +365,7 @@ const [progressVisible,setprogressVisible]=useState(false);
         setDropdownValue("Select an application");
       }
     } catch (error) {
+      
       console.log("Error fetching data ", error);
       
     }
@@ -1053,6 +1058,7 @@ const [progressVisible,setprogressVisible]=useState(false);
       setSnackbarSeverity('warning')
       setSnackbarText('Please select an issue to report !')
       setMainAlert(true);
+      setprogressVisible(false)
       return;
     }
 
@@ -1121,7 +1127,7 @@ return;
     console.log("postDatainDB() called");
     console.log("current JSON_data is => ", JSON.stringify(json_data));
     try {
-      const response = await fetch(`http://localhost:8081/application/user`, {
+      const response = await fetch(`http://localhost:8085/application/user`, {
         method: "POST",
        
           headers: {
@@ -1739,7 +1745,7 @@ return;
 
               )}
               &nbsp;
-               {progressVisible&&<CircularProgress color="secondary" size={20} />}
+               {progressVisible&&<CircularProgress color="info" thickness={5} size={20} />}
               </div>
             </center>
           </center>

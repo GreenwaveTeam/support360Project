@@ -12,7 +12,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   IconButton,
   OutlinedInput,
@@ -27,8 +26,6 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 

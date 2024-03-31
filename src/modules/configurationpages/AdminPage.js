@@ -11,8 +11,9 @@ import TopbarPage from "../../components/navigation/topbar/topbar";
 const AdminPage = () => {
   // const { userID } = useParams();
   // const location = useLocation();
-  const { state } = useLocation();
-  const [userPlantID, setUserPlantID] = useState(state.plantID);
+  const [userPlantID, setUserPlantID] = useState(
+    localStorage.getItem("adminPlantID")
+  );
   const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
@@ -120,9 +121,7 @@ const AdminPage = () => {
                   color="primary"
                   fullWidth
                   onClick={() => {
-                    navigate("/admin/InfrastructureConfigure", {
-                      state: { plantID: userPlantID },
-                    });
+                    navigate("/admin/InfrastructureConfigure");
                   }}
                 >
                   Infrastructure

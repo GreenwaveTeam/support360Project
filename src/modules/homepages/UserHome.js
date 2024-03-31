@@ -88,6 +88,7 @@ function UserHome() {
         accountOwnerGW: data.accountOwnerGW,
         role: data.role,
       }));
+      localStorage.setItem("userPlantID", data.plantID);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }

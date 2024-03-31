@@ -367,11 +367,10 @@ export default function AdminHome() {
                         <TableCell align="center">{item.email}</TableCell>
                         {/* <Link to={"/AdminPage"} style={{ color: "inherit" }}> */}
                         <TableCell
-                          onClick={() =>
-                            navigate("/AdminPage", {
-                              state: { plantID: item.plantID },
-                            })
-                          }
+                          onClick={() => {
+                            localStorage.setItem("adminPlantID", item.plantID);
+                            navigate("/AdminPage");
+                          }}
                           align="center"
                         >
                           {item.userID}

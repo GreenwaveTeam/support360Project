@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   CssBaseline,
@@ -30,6 +30,10 @@ export default function UserLogin() {
   const handleMouseDownPassword = (e) => {
     e.preventDefault();
   };
+
+  // useEffect(() => {
+  //   localStorage.clear();
+  // }, []);
 
   const handleShowPasswordClick = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -133,7 +137,7 @@ export default function UserLogin() {
             fullWidth
             variant="contained"
             onClick={(event) => {
-              event.preventDefault();
+              // event.preventDefault();
               const loggedIn = login(userID, password);
               if (loggedIn && localStorage.getItem("token") !== null) {
                 navigate("/UserHome");

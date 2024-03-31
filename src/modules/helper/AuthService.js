@@ -27,7 +27,7 @@ export const login = async (username, password) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("token");
+  localStorage.clear();
   // const navigate = useNavigate();
   // navigate("/login");
 };

@@ -85,10 +85,11 @@ export default function ModuleConfiguration() {
                 // Add other properties from rowData if needed
               };     
               console.log("Request body=>"+JSON.stringify(requestBody))
-              await axios.delete(`http://localhost:8081/application/admin/plantid/applicationname`,{ data: requestBody },{headers:{
+              await axios.delete(`http://localhost:8081/application/admin/plantid/applicationname`,{headers:{
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
-              },});
+                
+              },data: requestBody });
              const updatedCategories = data.filter(app => app.application_name !== rowData.application_name);
             setData(updatedCategories);
           }catch(e)
@@ -112,7 +113,7 @@ export default function ModuleConfiguration() {
 
   try {
     // Send requestBody as request body in the PUT request
-    const response = await axios.put(`http://localhost:8081/application/admin/${plantid}/${prev.application_name}`, rowData,{headers:{
+    const response = await axios.put(`http://localhost:8081/application/admin/${plantid}/${prev.application_name}`,rowData,{headers:{
       Authorization: `Bearer ${localStorage.getItem("token")}`,
       "Content-Type": "application/json",
     },});

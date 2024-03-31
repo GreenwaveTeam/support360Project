@@ -156,10 +156,14 @@ const DeviceIssue = () => {
     } 
         try {
           
-          const response = await axios.delete('http://localhost:8081/device/admin/categories/issue', {data: requestBody},{headers:{
+          const response = await axios.delete('http://localhost:8081/device/admin/categories/issue',{
+            headers:{
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
-          },});
+            
+          },
+          data:requestBody
+        },);
           setIssueList(issueList.filter((issue)=>(issue!==rowdata)));
           console.log("Successfully deleted")
           } catch (error) {

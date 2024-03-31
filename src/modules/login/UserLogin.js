@@ -136,13 +136,17 @@ export default function UserLogin() {
             type="submit"
             fullWidth
             variant="contained"
-            onClick={(event) => {
-              // event.preventDefault();
-              const loggedIn = login(userID, password);
-              if (loggedIn && localStorage.getItem("token") !== null) {
+            onClick={async (event) => {
+              event.preventDefault();
+              const loggedIn = await login(userID, password);
+              if (loggedIn) {
+                let token = localStorage.getItem("token");
+                while (token === null) {
+                  await new Promise(resolve => setTimeout(resolve, 100)); 
+                  token = localStorage.getItem("token");
+                }
                 navigate("/UserHome");
-                console.log("Loggedin");
-                return;
+                console.log("Logged in");
               } else {
                 setError("Failed to login.");
               }

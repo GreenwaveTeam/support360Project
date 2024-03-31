@@ -561,7 +561,8 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 				(existing.top < bottomNew && bottomExisting > bottomNew && existing.left < details.left && rightExisting > rightNew) ||
 				(rightExisting > rightNew && existing.left < rightNew && existing.top < details.top && bottomExisting > details.top) ||
 				(existing.left < details.left && rightExisting > details.left && existing.top < details.top && bottomExisting > details.top) ||
-				(existing.top < bottomNew && bottomExisting > bottomNew && existing.left < details.left && rightExisting > details.left)
+				(existing.top < bottomNew && bottomExisting > bottomNew && existing.left < details.left && rightExisting > details.left)||
+				(existing.top < bottomNew && bottomExisting > bottomNew  && existing.left>details.left  && rightExisting < rightNew)
 			);
 		});
 	};

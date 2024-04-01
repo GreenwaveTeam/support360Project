@@ -208,6 +208,10 @@ export default function UserRegistration() {
           "Content-Type": "application/json",
         },
       });
+      if (response.status === 403) {
+        navigate("/userhome");
+        return;
+      }
       const data = await response.json();
       console.log("plantDetails : ", data);
       setPlantList(data);

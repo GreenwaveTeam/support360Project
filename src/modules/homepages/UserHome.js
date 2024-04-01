@@ -63,6 +63,7 @@ function UserHome() {
         },
       });
       if (response.status === 403) {
+        localStorage.clear();
         navigate("/userlogin");
         return;
       }
@@ -112,10 +113,6 @@ function UserHome() {
           },
         }
       );
-      if (response.status === 403) {
-        navigate("/userlogin");
-        return;
-      }
       const data = await response.json();
       console.log("fetchTicketDetails data : ", data);
       setTicketData((prevData) => ({

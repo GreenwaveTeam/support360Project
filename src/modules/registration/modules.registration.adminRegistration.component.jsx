@@ -9,37 +9,110 @@ import {
   Container,
   Stack,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  OutlinedInput,
+  InputLabel,
+  FormControl,
+  InputAdornment,
+  Tooltip,
 } from "@mui/material";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
-import { useNavigate, useParams } from "react-router-dom";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
+import Datepicker from "../../components/datepicker/datepicker.component";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import dayjs from "dayjs";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function AdminRegistration() {
   const { adminID } = useParams();
   const [formData, setFormData] = useState({
     adminID: "",
     name: "",
+    designation: "",
     email: "",
     password: "",
-    role: "",
     phoneNumber: "",
+    plantID: "",
+    plantName: "",
+    address: "",
+    division: "",
+    customerName: "",
+    supportStartDate: "",
+    supportEndDate: "",
+    accountOwnerCustomer: "",
+    accountOwnerGW: "",
+    role: "",
   });
+
+  const [updateFormData, setUpdateFormData] = useState({
+    adminID: "",
+    name: "",
+    designation: "",
+    email: "",
+    phoneNumber: "",
+    plantID: "",
+    plantName: "",
+    address: "",
+    division: "",
+    customerName: "",
+    supportStartDate: "",
+    supportEndDate: "",
+    accountOwnerCustomer: "",
+    accountOwnerGW: "",
+    role: "",
+  });
+
   const [cnfpass, setCnfpass] = useState("");
   const [pass, setPass] = useState("");
   const [showPasswordError, setShowPasswordError] = useState(false);
   const [adminExist, setAdminExist] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [isStatePresent, setIsStatePresent] = useState(false);
 
-  const handleShowPasswordClick = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (e) => {
+    e.preventDefault();
+  };
+
+  const { state } = useLocation();
+  // const admin = state.admin || null;
+
+  const checkstate = () => {
+    // console.log(typeof state.admin);
+    if (state === null) {
+      setIsStatePresent(false);
+    } else {
+      setIsStatePresent(true);
+      setUpdateFormData({
+        adminID: state.admin.adminID,
+        name: state.admin.name,
+        designation: state.admin.designation,
+        email: state.admin.email,
+        phoneNumber: state.admin.phoneNumber,
+        plantID: state.admin.plantID,
+        plantName: state.admin.plantName,
+        address: state.admin.address,
+        division: state.admin.division,
+        customerName: state.admin.customerName,
+        supportStartDate: state.admin.supportStartDate,
+        supportEndDate: state.admin.supportEndDate,
+        accountOwnerCustomer: state.admin.accountOwnerCustomer,
+        accountOwnerGW: state.admin.accountOwnerGW,
+        role: state.admin.role,
+      });
+    }
   };
 
   useEffect(() => {
-    fetchExistingAdmin();
+    // console.log("admin : ", state.admin);
+    checkstate();
   }, []);
 
   const hashedPasswordChange = (e) => {
@@ -63,9 +136,29 @@ export default function AdminRegistration() {
     }
   };
 
+  const updateHandleFormdataInputChange = (event) => {
+    const { name, value } = event.target;
+    setUpdateFormData({ ...updateFormData, [name]: value });
+  };
+
+  const updateHandleDesignationChange = (event) => {
+    const { value } = event.target;
+    setUpdateFormData({ ...updateFormData, designation: value });
+  };
+
+  const updateHandleRoleChange = (event) => {
+    const { value } = event.target;
+    setUpdateFormData({ ...updateFormData, role: value });
+  };
+
+  const updateHandlePhoneNumberChange = (event) => {
+    const { value } = event.target;
+    if (!isNaN(value) && value.length <= 10) {
+      setUpdateFormData({ ...updateFormData, phoneNumber: value });
+    }
+  };
+
   const confirmPassword = async (e) => {
-    const confirmPass = e.target.value;
-    setCnfpass(confirmPass);
     const passwordsMatch = pass === e;
     if (!passwordsMatch) {
       setShowPasswordError(true);
@@ -74,56 +167,30 @@ export default function AdminRegistration() {
     }
   };
 
-  const fetchExistingAdmin = async () => {
-    try {
-      const response = await fetch("http://localhost:8081/admins/", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      });
-      const data = await response.json();
-      checkExistingAdmin(data);
-    } catch (error) {
-      console.error("Error fetching Admin list:", error);
-    }
-  };
-
-  const checkExistingAdmin = (data) => {
-    for (let i of data) {
-      if (i.adminID === adminID) {
-        setAdminExist(true);
-        setFormData((prevData) => ({
-          ...prevData,
-          adminID: i.adminID,
-          name: i.name,
-          email: i.email,
-          password: i.password,
-          role: i.role,
-          phoneNumber: i.phoneNumber,
-        }));
-      }
-    }
-  };
-
   const handleUpdate = async (event) => {
     event.preventDefault();
     try {
+      console.log(
+        "updateFormData.adminID : ",
+        `http://localhost:8081/admins/admin/${updateFormData.adminID}`
+      );
+      console.log("updateFormData : ", updateFormData);
       const response = await fetch(
-        `http://localhost:8081/admins/admin/${formData.adminID}`,
+        `http://localhost:8081/admins/admin/${updateFormData.adminID}`,
         {
           method: "PUT",
           headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(updateFormData),
         }
       );
       if (response.ok) {
-        console.log("admin Updated successfully");
-        navigate(`/ad/${formData.adminID}`, {
-          state: { adminName: formData.name },
-        });
+        console.log("Admin Updated successfully");
+        // navigate(`/abc/${formData.adminID}`, {
+        //   state: { adminName: formData.name },
+        // });
       } else {
         console.error("Failed to update admin");
       }
@@ -134,8 +201,9 @@ export default function AdminRegistration() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     try {
-      const response = await fetch("http://localhost:8081/admins/admin", {
+      const response = await fetch("http://localhost:8081/auth/admin/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -144,11 +212,11 @@ export default function AdminRegistration() {
       });
       if (response.ok) {
         console.log("Admin registered successfully");
-        navigate(`/ad/${formData.adminID}`, {
-          state: { adminName: formData.name },
-        });
+        navigate(`/AdminHome`);
+      } else if (response.status === 400) {
+        console.error("Admin Already Exist");
       } else {
-        console.error("Failed to register Admin");
+        console.error("Failed to register admin");
       }
     } catch (error) {
       console.error("Error : ", error);
@@ -172,157 +240,252 @@ export default function AdminRegistration() {
         <Typography component="h1" variant="h5">
           Admin Registration Page
         </Typography>
-        <form>
-          <Box noValidate sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Textfield
-                  name="name"
-                  required
-                  fullWidth
-                  id="name"
-                  label="Name"
-                  autoFocus
-                  value={formData.name}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  autoComplete="adminID"
-                  name="adminID"
-                  required
-                  fullWidth
-                  id="adminID"
-                  label="Admin ID"
-                  value={formData.adminID}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Dropdown
-                  id="role"
-                  value={formData.role}
-                  label="Role"
-                  onChange={handleRoleChange}
-                  list={["Manager", "Developer", "Support Team"]}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Textfield
-                  required
-                  fullWidth
-                  id="email"
-                  type="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  value={formData.email}
-                  onChange={handleFormdataInputChange}
-                />
-              </Grid>
-              {!adminExist && (
-                <Grid item xs={12}>
-                  <Textfield
-                    required
-                    style={{ width: "90%" }}
-                    name="password"
-                    label="Password"
-                    type={showPassword ? "text" : "password"}
-                    id="password"
-                    // autoComplete="new-password"
-                    value={pass}
-                    onChange={hashedPasswordChange}
-                  />
-                  <Button
-                    id="showpasswoed"
-                    onClick={handleShowPasswordClick}
-                    style={{
-                      width: "10%",
-                      height: "56px",
-                    }}
-                    variant="contained"
-                    color="inherit"
-                  >
-                    {showPassword ? (
-                      <VisibilityOffOutlinedIcon />
-                    ) : (
-                      <VisibilityOutlinedIcon />
-                    )}
-                  </Button>
+
+        {isStatePresent ? (
+          // update form starts here...
+
+          <>
+            <form>
+              <Box noValidate sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Textfield
+                      name="name"
+                      required
+                      fullWidth
+                      id="name"
+                      label="Name"
+                      autoFocus
+                      value={updateFormData.name}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      autoComplete="adminID"
+                      name="adminID"
+                      required
+                      fullWidth
+                      id="adminID"
+                      label="Admin ID"
+                      value={updateFormData.adminID}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      id="designation"
+                      value={updateFormData.designation}
+                      label="Designation"
+                      onChange={updateHandleDesignationChange}
+                      list={["Operator", "Supervisor", "Lab Tester"]}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      id="email"
+                      type="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      value={updateFormData.email}
+                      onChange={updateHandleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="phoneNumber"
+                      label="Phone Number"
+                      id="phoneNumber"
+                      autoComplete="phoneNumber"
+                      value={updateFormData.phoneNumber}
+                      onChange={updateHandlePhoneNumberChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      fullWidth
+                      id="role"
+                      value={updateFormData.role}
+                      label="Role"
+                      onChange={updateHandleRoleChange}
+                      list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                    />
+                  </Grid>
                 </Grid>
-              )}
-              {!adminExist && (
-                <Grid item xs={12}>
-                  <Textfield
-                    required
-                    fullWidth
-                    name="confirmPassword"
-                    label="Confirm Password"
-                    type="password"
-                    id="confirmPassword"
-                    value={cnfpass}
-                    onChange={(e) => confirmPassword(e)}
-                  />
-                  {showPasswordError && (
-                    <Stack
-                      sx={{ display: "flex", justifyContent: "right" }}
-                      spacing={2}
-                    >
-                      <Alert variant="filled" severity="error">
-                        Password Does Not Match
-                      </Alert>
-                    </Stack>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  onClick={handleUpdate}
+                >
+                  Update Admin
+                </Button>
+              </Box>
+            </form>
+          </>
+        ) : (
+          // registration form starts here...
+
+          <>
+            <form>
+              <Box noValidate sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Textfield
+                      name="name"
+                      required
+                      fullWidth
+                      id="name"
+                      label="Name"
+                      autoFocus
+                      value={formData.name}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      autoComplete="adminID"
+                      name="adminID"
+                      required
+                      fullWidth
+                      id="adminID"
+                      label="Admin ID"
+                      value={formData.adminID}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      id="email"
+                      type="email"
+                      label="Email Address"
+                      name="email"
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={handleFormdataInputChange}
+                    />
+                  </Grid>
+                  {!adminExist && (
+                    <Grid item xs={12}>
+                      <FormControl fullWidth>
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <OutlinedInput
+                          label="Password"
+                          autoComplete="password"
+                          name="password"
+                          required
+                          fullWidth
+                          id="password"
+                          value={pass}
+                          onChange={hashedPasswordChange}
+                          type={showPassword ? "text" : "password"}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                        />
+                      </FormControl>
+                    </Grid>
                   )}
-                </Grid>
-              )}
-              {/* {showPasswordError && (
-                <Stack
-                  sx={{ display: "flex", justifyContent: "right" }}
-                  spacing={2}
+                  {!adminExist && (
+                    <Grid item xs={12}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirmPassword"
+                        value={cnfpass}
+                        onBlur={(e) => confirmPassword(e.target.value)}
+                        onChange={(e) => {
+                          const confirmPass = e.target.value;
+                          setCnfpass(confirmPass);
+                        }}
+                      />
+                      {showPasswordError && (
+                        <Stack
+                          sx={{ display: "flex", justifyContent: "right" }}
+                          spacing={2}
+                        >
+                          <Alert variant="filled" severity="error">
+                            Password Does Not Match
+                          </Alert>
+                        </Stack>
+                      )}
+                    </Grid>
+                  )}
+                  {/* {showPasswordError && (
+                <Box
+                  sx={{
+                    position: "fixed",
+                    top: "10px",
+                    right: "10px",
+                    zIndex: 9999,
+                  }}
                 >
                   <Alert variant="filled" severity="error">
                     Password Does Not Match
                   </Alert>
-                </Stack>
+                </Box>
               )} */}
-              <Grid item xs={12}>
-                <Textfield
-                  required
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth
+                      name="phoneNumber"
+                      label="Phone Number"
+                      id="phoneNumber"
+                      autoComplete="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handlePhoneNumberChange}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Dropdown
+                      fullWidth
+                      id="role"
+                      value={formData.role}
+                      label="Role"
+                      onChange={handleRoleChange}
+                      list={["ROLE_DEVELOPER", "ROLE_ADMIN", "ROLE_TESTER"]}
+                    />
+                  </Grid>
+                </Grid>
+                <Button
+                  type="submit"
                   fullWidth
-                  name="phoneNumber"
-                  label="Phone Number"
-                  id="phoneNumber"
-                  autoComplete="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handlePhoneNumberChange}
-                />
-              </Grid>
-            </Grid>
-            {adminExist ? (
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                onClick={handleUpdate}
-              >
-                Update Admin
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                onClick={handleSubmit}
-              >
-                Register Admin
-              </Button>
-            )}
-          </Box>
-        </form>
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                  onClick={handleSubmit}
+                >
+                  Register Admin
+                </Button>
+              </Box>
+            </form>
+          </>
+        )}
       </Box>
     </Container>
   );

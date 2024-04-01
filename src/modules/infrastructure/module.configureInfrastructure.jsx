@@ -463,7 +463,7 @@ export default function ConfigureInfrastructure() {
         open={drawerOpen}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: "Home", pagelink: "/AdminPage" },
+          { pageName: "Home", pagelink: "/UserHome" },
           {
             pageName: "Configure Infrastructure",
             pagelink: "/admin/InfrastructureConfigure",

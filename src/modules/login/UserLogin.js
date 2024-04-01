@@ -36,7 +36,7 @@ export default function UserLogin() {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      navigate("/UserHome");
+      fetchUser();
     }
   }, []);
 
@@ -85,7 +85,7 @@ export default function UserLogin() {
         // attempts++;
       }
       if (token !== null) {
-        navigate("/UserHome");
+        fetchUser();
         console.log("Logged in");
       } else {
         handleClick();
@@ -98,6 +98,66 @@ export default function UserLogin() {
       setsnackbarSeverity("error");
     }
     setLoading(false);
+  };
+
+  const fetchUser = async () => {
+    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status === 403) {
+        localStorage.clear();
+        navigate("/login");
+        return;
+      }
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      const role = data.role;
+      console.log("role : ", role);
+      const roleArray = role.split(",");
+      console.log("roles: ", roleArray);
+      if (roleArray.includes("ROLE_USER")) {
+        navigate("/UserHome");
+      } else {
+        fetchAdmin();
+      }
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const fetchAdmin = async () => {
+    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+    try {
+      const response = await fetch("http://localhost:8081/admins/admin", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status === 403) {
+        localStorage.clear();
+        navigate("/login");
+        return;
+      }
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      const role = data.role;
+      console.log("role : ", role);
+      const roleArray = role.split(",");
+      console.log("roles: ", roleArray);
+      if (roleArray.includes("ROLE_ADMIN")) {
+        navigate("/AdminHome");
+      }
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
   };
 
   return (
@@ -134,7 +194,7 @@ export default function UserLogin() {
             <HowToRegTwoToneIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            User Login Page
+            Login Page
           </Typography>
           <form>
             <Box noValidate sx={{ mt: 3 }}>

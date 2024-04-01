@@ -34,37 +34,17 @@ export default function AdminRegistration() {
   const [formData, setFormData] = useState({
     adminID: "",
     name: "",
-    designation: "",
     email: "",
     password: "",
     phoneNumber: "",
-    plantID: "",
-    plantName: "",
-    address: "",
-    division: "",
-    customerName: "",
-    supportStartDate: "",
-    supportEndDate: "",
-    accountOwnerCustomer: "",
-    accountOwnerGW: "",
     role: "",
   });
 
   const [updateFormData, setUpdateFormData] = useState({
     adminID: "",
     name: "",
-    designation: "",
     email: "",
     phoneNumber: "",
-    plantID: "",
-    plantName: "",
-    address: "",
-    division: "",
-    customerName: "",
-    supportStartDate: "",
-    supportEndDate: "",
-    accountOwnerCustomer: "",
-    accountOwnerGW: "",
     role: "",
   });
 
@@ -93,18 +73,8 @@ export default function AdminRegistration() {
       setUpdateFormData({
         adminID: state.admin.adminID,
         name: state.admin.name,
-        designation: state.admin.designation,
         email: state.admin.email,
         phoneNumber: state.admin.phoneNumber,
-        plantID: state.admin.plantID,
-        plantName: state.admin.plantName,
-        address: state.admin.address,
-        division: state.admin.division,
-        customerName: state.admin.customerName,
-        supportStartDate: state.admin.supportStartDate,
-        supportEndDate: state.admin.supportEndDate,
-        accountOwnerCustomer: state.admin.accountOwnerCustomer,
-        accountOwnerGW: state.admin.accountOwnerGW,
         role: state.admin.role,
       });
     }
@@ -273,16 +243,6 @@ export default function AdminRegistration() {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Dropdown
-                      id="designation"
-                      value={updateFormData.designation}
-                      label="Designation"
-                      onChange={updateHandleDesignationChange}
-                      list={["Operator", "Supervisor", "Lab Tester"]}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
                     <Textfield
                       required
                       fullWidth
@@ -314,7 +274,7 @@ export default function AdminRegistration() {
                       value={updateFormData.role}
                       label="Role"
                       onChange={updateHandleRoleChange}
-                      list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                      list={["ROLE_ADMIN", "ROLE_DEVELOPER", "ROLE_TESTER"]}
                     />
                   </Grid>
                 </Grid>

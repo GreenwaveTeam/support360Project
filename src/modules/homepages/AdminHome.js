@@ -656,22 +656,33 @@ export default function AdminHome() {
                         <TableRow key={index}>
                           <TableCell align="center">{item.name}</TableCell>
                           <TableCell align="center">{item.email}</TableCell>
-                          <TableCell
+                          <TableCell align="center">{item.adminID}</TableCell>
+                          {/* <TableCell
                             style={{
                               cursor: "pointer",
                               fontWeight: "bold",
                               fontSize: "14px",
                             }}
+                            onClick={() => {
+                              localStorage.setItem(
+                                "adminPlantID",
+                                item.plantID
+                              );
+                              navigate("/AdminPage");
+                            }}
                             align="center"
                           >
-                            {item.adminID}
-                          </TableCell>
+                            {item.userID}
+                          </TableCell> */}
                           <TableCell align="center">
                             <BorderColorOutlinedIcon
                               color="primary"
                               style={{ cursor: "pointer" }}
                               onClick={() => {
-                                // Handle edit action
+                                console.log("item : ", item);
+                                navigate("/AdminRegistration", {
+                                  state: { admin: item },
+                                });
                               }}
                             />
                           </TableCell>

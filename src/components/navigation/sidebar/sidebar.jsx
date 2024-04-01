@@ -13,11 +13,14 @@ import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import { ColorModeContext, tokens } from "../../../theme";
+
 
 const drawerWidth = 240;
 
+
 const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
-  const theme = useTheme();
+  
   const [openAdmin, setOpenAdmin] = useState(true);
   const [openUser, setOpenUser] = useState(true);
 
@@ -28,7 +31,9 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
   const handleClickUser = () => {
     setOpenUser(!openUser);
   };
-
+//For theme 
+const theme = useTheme();
+const colors = tokens(theme.palette.mode);
   return (
     <Drawer
       sx={{
@@ -48,7 +53,7 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
     >
       <div>
         <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon sx={{color:'#0C0C0C'}} /> : <ChevronRightIcon sx={{color:'#0C0C0C'}}/>}
+          {theme.direction === 'ltr' ? <ChevronLeftIcon sx={{color:colors.primary[100]}} /> : <ChevronRightIcon sx={{color:colors.primary[100]}}/>}
         </IconButton>
       </div>
       <Divider />
@@ -60,7 +65,7 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
         <Collapse in={openAdmin} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             {adminList.map(({pagename, pagelink},index) => (
-              <ListItem key={index} disablePadding sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
+              <ListItem key={index} disablePadding sx={{ '&:hover': { backgroundColor: '' } }}>
                 <ListItemButton component={Link} to={pagelink}>
                   <ListItemText primary={pagename} />
                 </ListItemButton>
@@ -79,7 +84,7 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
         <Collapse in={openUser} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
           {userList.map(({pagename, pagelink},index) => (
-              <ListItem key={index} disablePadding sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
+              <ListItem key={index} disablePadding sx={{ '&:hover': { backgroundColor: '' } }}>
                 <ListItemButton component={Link} to={pagelink}>
                   <ListItemText primary={pagename} />
                 </ListItemButton>

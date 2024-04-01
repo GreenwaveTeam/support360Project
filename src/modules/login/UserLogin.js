@@ -36,7 +36,8 @@ export default function UserLogin() {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      fetchUser();
+      // fetchUser();
+      navigate("/userhome");
     }
   }, []);
 
@@ -85,7 +86,8 @@ export default function UserLogin() {
         // attempts++;
       }
       if (token !== null) {
-        fetchUser();
+        // fetchUser();
+        navigate("/userhome");
         console.log("Logged in");
       } else {
         handleClick();

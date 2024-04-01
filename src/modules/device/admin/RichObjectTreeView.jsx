@@ -720,7 +720,7 @@ export default function RichObjectTreeView() {
                         className="button"
                         variant="contained"
                         color="secondary" // Use secondary color for delete button
-                        onClick={handleDialogOpen}
+                        onClick={handleDeleteNode}
                       >
                         Delete Node
                       </Button>
@@ -1449,13 +1449,13 @@ export default function RichObjectTreeView() {
                 </>
               )}
             </div>
-            <CustomDialog
+            {/* <CustomDialog
               open={delOpen}
               setOpen={setDelOpen}
               proceedButtonText={"YES"}
               proceedButtonClick={handleDeleteNode}
               cancelButtonText={"NO"}
-            ></CustomDialog>
+            ></CustomDialog> */}
           </div>
         </Box>
       </Main>

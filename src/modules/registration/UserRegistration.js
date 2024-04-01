@@ -24,13 +24,21 @@ import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
 import Datepicker from "../../components/datepicker/datepicker.component";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import TopbarPage from "../../components/navigation/topbar/topbar";
+import SidebarPage from "../../components/navigation/sidebar/sidebar";
+import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
+import Main from "../../components/navigation/mainbody/mainbody";
 
 export default function UserRegistration() {
-  const { userID } = useParams();
+  const [newPlantName, setNewPlantName] = useState({
+    plantName: "",
+    plantID: "",
+  });
+
   const [formData, setFormData] = useState({
     userID: "",
     name: "",
@@ -39,7 +47,7 @@ export default function UserRegistration() {
     password: "",
     phoneNumber: "",
     plantID: "",
-    plantName: "",
+    plantName: newPlantName.plantName,
     address: "",
     division: "",
     customerName: "",
@@ -57,7 +65,7 @@ export default function UserRegistration() {
     email: "",
     phoneNumber: "",
     plantID: "",
-    plantName: "",
+    plantName: newPlantName.plantName,
     address: "",
     division: "",
     customerName: "",
@@ -66,11 +74,6 @@ export default function UserRegistration() {
     accountOwnerCustomer: "",
     accountOwnerGW: "",
     role: "",
-  });
-
-  const [newPlantName, setNewPlantName] = useState({
-    plantName: "",
-    plantID: "",
   });
 
   const [cnfpass, setCnfpass] = useState("");
@@ -87,6 +90,16 @@ export default function UserRegistration() {
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (e) => {
     e.preventDefault();
+  };
+
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
   };
 
   const handleShowPasswordClick = () => {
@@ -144,6 +157,8 @@ export default function UserRegistration() {
   const handlenewPlantNameInputChange = (event) => {
     const { name, value } = event.target;
     setNewPlantName({ ...newPlantName, [name]: value });
+    setFormData({ ...formData, [name]: value });
+    setUpdateFormData({ ...updateFormData, [name]: value });
   };
 
   const handleDesignationChange = (event) => {
@@ -298,78 +313,116 @@ export default function UserRegistration() {
   };
 
   return (
-    <Container component="main" maxWidth="md">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <HowToRegTwoToneIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          User Registration Page
-        </Typography>
+    <Box sx={{ display: "flex" }}>
+      <TopbarPage
+        open={open}
+        handleDrawerOpen={handleDrawerOpen}
+        urllist={[{ pageName: "Admin Home Page", pagelink: "/AdminHome" }]}
+      />
+      <SidebarPage
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[
+          {
+            pagename: "Device Issue Category",
+            pagelink: "/admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
+      />
+      <Main open={open}>
+        <DrawerHeader />
+        <Box
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+          <Container component="main" maxWidth="md">
+            <CssBaseline />
+            <Box
+              sx={{
+                marginTop: 8,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                <HowToRegTwoToneIcon />
+              </Avatar>
+              <Typography component="h1" variant="h5">
+                User Registration Page
+              </Typography>
 
-        {isStatePresent ? (
-          // update form starts here...
+              {isStatePresent ? (
+                // update form starts here...
 
-          <>
-            <form>
-              <Box noValidate sx={{ mt: 3 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Textfield
-                      name="name"
-                      required
-                      fullWidth
-                      id="name"
-                      label="Name"
-                      autoFocus
-                      value={updateFormData.name}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      autoComplete="userID"
-                      name="userID"
-                      required
-                      fullWidth
-                      id="userID"
-                      label="User ID"
-                      value={updateFormData.userID}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Dropdown
-                      id="designation"
-                      value={updateFormData.designation}
-                      label="Designation"
-                      onChange={updateHandleDesignationChange}
-                      list={["Operator", "Supervisor", "Lab Tester"]}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      id="email"
-                      type="email"
-                      label="Email Address"
-                      name="email"
-                      autoComplete="email"
-                      value={updateFormData.email}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  {/* {!userExist && (
+                <>
+                  <form>
+                    <Box noValidate sx={{ mt: 3 }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <Textfield
+                            name="name"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Name"
+                            autoFocus
+                            value={updateFormData.name}
+                            onChange={updateHandleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            autoComplete="userID"
+                            name="userID"
+                            required
+                            fullWidth
+                            id="userID"
+                            label="User ID"
+                            value={updateFormData.userID}
+                            onChange={updateHandleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Dropdown
+                            id="designation"
+                            value={updateFormData.designation}
+                            label="Designation"
+                            onChange={updateHandleDesignationChange}
+                            list={["Operator", "Supervisor", "Lab Tester"]}
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            id="email"
+                            type="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            value={updateFormData.email}
+                            onChange={updateHandleFormdataInputChange}
+                          />
+                        </Grid>
+                        {/* {!userExist && (
                     <Grid item xs={12}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor="password">Password</InputLabel>
@@ -432,7 +485,7 @@ export default function UserRegistration() {
                       )}
                     </Grid>
                   )} */}
-                  {/* {showPasswordError && (
+                        {/* {showPasswordError && (
                 <Box
                   sx={{
                     position: "fixed",
@@ -446,293 +499,299 @@ export default function UserRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="phoneNumber"
-                      label="Phone Number"
-                      id="phoneNumber"
-                      autoComplete="phoneNumber"
-                      value={updateFormData.phoneNumber}
-                      onChange={updateHandlePhoneNumberChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Dropdown
-                      fullWidth={true}
-                      id="plantName"
-                      value={updateFormData.plantName}
-                      label="Plant Name"
-                      onChange={(event) => {
-                        const { value } = event.target;
-                        for (let i of plantList) {
-                          if (i.plantName === value) {
-                            setUpdateFormData({
-                              ...updateFormData,
-                              plantID: i.plantID,
-                              plantName: value,
-                            });
-                            return;
-                          }
-                        }
-                      }}
-                      list={plantList.map((p) => p.plantName)}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <InputLabel htmlFor="PlantID">PlantID</InputLabel>
-                      <OutlinedInput
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        label="PlantID"
-                        autoComplete="PlantID"
-                        name="PlantID"
-                        required
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="phoneNumber"
+                            label="Phone Number"
+                            id="phoneNumber"
+                            autoComplete="phoneNumber"
+                            value={updateFormData.phoneNumber}
+                            onChange={updateHandlePhoneNumberChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Dropdown
+                            fullWidth={true}
+                            id="plantName"
+                            value={updateFormData.plantName}
+                            label="Plant Name"
+                            onChange={(event) => {
+                              const { value } = event.target;
+                              for (let i of plantList) {
+                                if (i.plantName === value) {
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    plantID: i.plantID,
+                                    plantName: value,
+                                  });
+                                  return;
+                                }
+                              }
+                            }}
+                            list={plantList.map((p) => p.plantName)}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <FormControl fullWidth>
+                            <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                            <OutlinedInput
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              label="PlantID"
+                              autoComplete="PlantID"
+                              name="PlantID"
+                              required
+                              fullWidth
+                              id="PlantID"
+                              value={updateFormData.plantID}
+                              endAdornment={
+                                <InputAdornment position="end">
+                                  <Tooltip title="Add Plant" placement="right">
+                                    <IconButton
+                                      onClick={handleAddPlantClick}
+                                      edge="end"
+                                    >
+                                      <AddCircleOutlineIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </InputAdornment>
+                              }
+                            />
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="address"
+                            label="Address"
+                            id="address"
+                            autoComplete="address"
+                            value={updateFormData.address}
+                            onChange={updateHandleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="division"
+                            label="Division"
+                            id="division"
+                            autoComplete="division"
+                            value={updateFormData.division}
+                            onChange={updateHandleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="customerName"
+                            label="Customer Name"
+                            id="customerName"
+                            autoComplete="customerName"
+                            value={updateFormData.customerName}
+                            onChange={updateHandleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Datepicker
+                            label="Support Start Date"
+                            value={dayjs(updateFormData.supportStartDate)}
+                            slotProps={{ textField: { fullWidth: true } }}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Datepicker
+                            label="Support End Date"
+                            value={dayjs(updateFormData.supportEndDate)}
+                            slotProps={{ textField: { fullWidth: true } }}
+                          />
+                        </Grid>
+                        {showDateError && (
+                          <Stack
+                            sx={{ display: "flex", justifyContent: "right" }}
+                            spacing={2}
+                          >
+                            <Alert variant="filled" severity="error">
+                              SupportEndDate Should Not be less than
+                              SupportStartDate
+                            </Alert>
+                          </Stack>
+                        )}
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="accountOwnerCustomer"
+                            label="Account Owner Customer"
+                            id="accountOwnerCustomer"
+                            autoComplete="accountOwnerCustomer"
+                            value={updateFormData.accountOwnerCustomer}
+                            onChange={updateHandleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="accountOwnerGW"
+                            label="Account Owner GW"
+                            id="accountOwnerGW"
+                            autoComplete="accountOwnerGW"
+                            value={updateFormData.accountOwnerGW}
+                            onChange={updateHandleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Dropdown
+                            fullWidth
+                            id="role"
+                            value={updateFormData.role}
+                            label="Role"
+                            onChange={updateHandleRoleChange}
+                            list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                          />
+                        </Grid>
+                      </Grid>
+                      <Button
+                        type="submit"
                         fullWidth
-                        id="PlantID"
-                        value={updateFormData.plantID}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <Tooltip title="Add Plant" placement="right">
-                              <IconButton
-                                onClick={handleAddPlantClick}
-                                edge="end"
-                              >
-                                <AddCircleOutlineIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="address"
-                      label="Address"
-                      id="address"
-                      autoComplete="address"
-                      value={updateFormData.address}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="division"
-                      label="Division"
-                      id="division"
-                      autoComplete="division"
-                      value={updateFormData.division}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="customerName"
-                      label="Customer Name"
-                      id="customerName"
-                      autoComplete="customerName"
-                      value={updateFormData.customerName}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Datepicker
-                      label="Support Start Date"
-                      value={dayjs(updateFormData.supportStartDate)}
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Datepicker
-                      label="Support End Date"
-                      value={dayjs(updateFormData.supportEndDate)}
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  </Grid>
-                  {showDateError && (
-                    <Stack
-                      sx={{ display: "flex", justifyContent: "right" }}
-                      spacing={2}
-                    >
-                      <Alert variant="filled" severity="error">
-                        SupportEndDate Should Not be less than SupportStartDate
-                      </Alert>
-                    </Stack>
-                  )}
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="accountOwnerCustomer"
-                      label="Account Owner Customer"
-                      id="accountOwnerCustomer"
-                      autoComplete="accountOwnerCustomer"
-                      value={updateFormData.accountOwnerCustomer}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="accountOwnerGW"
-                      label="Account Owner GW"
-                      id="accountOwnerGW"
-                      autoComplete="accountOwnerGW"
-                      value={updateFormData.accountOwnerGW}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Dropdown
-                      fullWidth
-                      id="role"
-                      value={updateFormData.role}
-                      label="Role"
-                      onChange={updateHandleRoleChange}
-                      list={["ROLE_USER", "ROLE_SUPERVISOR"]}
-                    />
-                  </Grid>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                  onClick={handleUpdate}
-                >
-                  Update User
-                </Button>
-              </Box>
-            </form>
-          </>
-        ) : (
-          // registration form starts here...
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                        onClick={handleUpdate}
+                      >
+                        Update User
+                      </Button>
+                    </Box>
+                  </form>
+                </>
+              ) : (
+                // registration form starts here...
 
-          <>
-            <form>
-              <Box noValidate sx={{ mt: 3 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Textfield
-                      name="name"
-                      required
-                      fullWidth
-                      id="name"
-                      label="Name"
-                      autoFocus
-                      value={formData.name}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      autoComplete="userID"
-                      name="userID"
-                      required
-                      fullWidth
-                      id="userID"
-                      label="User ID"
-                      value={formData.userID}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Dropdown
-                      id="designation"
-                      value={formData.designation}
-                      label="Designation"
-                      onChange={handleDesignationChange}
-                      list={["Operator", "Supervisor", "Lab Tester"]}
-                      fullWidth
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      id="email"
-                      type="email"
-                      label="Email Address"
-                      name="email"
-                      autoComplete="email"
-                      value={formData.email}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  {!userExist && (
-                    <Grid item xs={12}>
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
-                        <OutlinedInput
-                          label="Password"
-                          autoComplete="password"
-                          name="password"
-                          required
-                          fullWidth
-                          id="password"
-                          value={pass}
-                          onChange={hashedPasswordChange}
-                          type={showPassword ? "text" : "password"}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
+                <>
+                  <form>
+                    <Box noValidate sx={{ mt: 3 }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <Textfield
+                            name="name"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Name"
+                            autoFocus
+                            value={formData.name}
+                            onChange={handleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            autoComplete="userID"
+                            name="userID"
+                            required
+                            fullWidth
+                            id="userID"
+                            label="User ID"
+                            value={formData.userID}
+                            onChange={handleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Dropdown
+                            id="designation"
+                            value={formData.designation}
+                            label="Designation"
+                            onChange={handleDesignationChange}
+                            list={["Operator", "Supervisor", "Lab Tester"]}
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            id="email"
+                            type="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            value={formData.email}
+                            onChange={handleFormdataInputChange}
+                          />
+                        </Grid>
+                        {!userExist && (
+                          <Grid item xs={12}>
+                            <FormControl fullWidth>
+                              <InputLabel htmlFor="password">
+                                Password
+                              </InputLabel>
+                              <OutlinedInput
+                                label="Password"
+                                autoComplete="password"
+                                name="password"
+                                required
+                                fullWidth
+                                id="password"
+                                value={pass}
+                                onChange={hashedPasswordChange}
+                                type={showPassword ? "text" : "password"}
+                                endAdornment={
+                                  <InputAdornment position="end">
+                                    <IconButton
+                                      aria-label="toggle password visibility"
+                                      onClick={handleClickShowPassword}
+                                      onMouseDown={handleMouseDownPassword}
+                                      edge="end"
+                                    >
+                                      {showPassword ? (
+                                        <VisibilityOff />
+                                      ) : (
+                                        <Visibility />
+                                      )}
+                                    </IconButton>
+                                  </InputAdornment>
+                                }
+                              />
+                            </FormControl>
+                          </Grid>
+                        )}
+                        {!userExist && (
+                          <Grid item xs={12}>
+                            <Textfield
+                              required
+                              fullWidth
+                              name="confirmPassword"
+                              label="Confirm Password"
+                              type="password"
+                              id="confirmPassword"
+                              value={cnfpass}
+                              onBlur={(e) => confirmPassword(e.target.value)}
+                              onChange={(e) => {
+                                const confirmPass = e.target.value;
+                                setCnfpass(confirmPass);
+                              }}
+                            />
+                            {showPasswordError && (
+                              <Stack
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "right",
+                                }}
+                                spacing={2}
                               >
-                                {showPassword ? (
-                                  <VisibilityOff />
-                                ) : (
-                                  <Visibility />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                      </FormControl>
-                    </Grid>
-                  )}
-                  {!userExist && (
-                    <Grid item xs={12}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="confirmPassword"
-                        label="Confirm Password"
-                        type="password"
-                        id="confirmPassword"
-                        value={cnfpass}
-                        onBlur={(e) => confirmPassword(e.target.value)}
-                        onChange={(e) => {
-                          const confirmPass = e.target.value;
-                          setCnfpass(confirmPass);
-                        }}
-                      />
-                      {showPasswordError && (
-                        <Stack
-                          sx={{ display: "flex", justifyContent: "right" }}
-                          spacing={2}
-                        >
-                          <Alert variant="filled" severity="error">
-                            Password Does Not Match
-                          </Alert>
-                        </Stack>
-                      )}
-                    </Grid>
-                  )}
-                  {/* {showPasswordError && (
+                                <Alert variant="filled" severity="error">
+                                  Password Does Not Match
+                                </Alert>
+                              </Stack>
+                            )}
+                          </Grid>
+                        )}
+                        {/* {showPasswordError && (
                 <Box
                   sx={{
                     position: "fixed",
@@ -746,107 +805,107 @@ export default function UserRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="phoneNumber"
-                      label="Phone Number"
-                      id="phoneNumber"
-                      autoComplete="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handlePhoneNumberChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Dropdown
-                      fullWidth={true}
-                      id="plantName"
-                      value={formData.plantName}
-                      label="Plant Name"
-                      onChange={(event) => {
-                        const { value } = event.target;
-                        for (let i of plantList) {
-                          if (i.plantName === value) {
-                            setFormData({
-                              ...formData,
-                              plantID: i.plantID,
-                              plantName: value,
-                            });
-                            return;
-                          }
-                        }
-                      }}
-                      list={plantList.map((p) => p.plantName)}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <FormControl fullWidth>
-                      <InputLabel htmlFor="PlantID">PlantID</InputLabel>
-                      <OutlinedInput
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        label="PlantID"
-                        autoComplete="PlantID"
-                        name="PlantID"
-                        required
-                        fullWidth
-                        id="PlantID"
-                        value={formData.plantID}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <Tooltip title="Add Plant" placement="right">
-                              <IconButton
-                                onClick={handleAddPlantClick}
-                                edge="end"
-                              >
-                                <AddCircleOutlineIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="address"
-                      label="Address"
-                      id="address"
-                      autoComplete="address"
-                      value={formData.address}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="division"
-                      label="Division"
-                      id="division"
-                      autoComplete="division"
-                      value={formData.division}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="customerName"
-                      label="Customer Name"
-                      id="customerName"
-                      autoComplete="customerName"
-                      value={formData.customerName}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="phoneNumber"
+                            label="Phone Number"
+                            id="phoneNumber"
+                            autoComplete="phoneNumber"
+                            value={formData.phoneNumber}
+                            onChange={handlePhoneNumberChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Dropdown
+                            fullWidth={true}
+                            id="plantName"
+                            value={formData.plantName}
+                            label="Plant Name"
+                            onChange={(event) => {
+                              const { value } = event.target;
+                              for (let i of plantList) {
+                                if (i.plantName === value) {
+                                  setFormData({
+                                    ...formData,
+                                    plantID: i.plantID,
+                                    plantName: value,
+                                  });
+                                  return;
+                                }
+                              }
+                            }}
+                            list={plantList.map((p) => p.plantName)}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <FormControl fullWidth>
+                            <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                            <OutlinedInput
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              label="PlantID"
+                              autoComplete="PlantID"
+                              name="PlantID"
+                              required
+                              fullWidth
+                              id="PlantID"
+                              value={formData.plantID}
+                              endAdornment={
+                                <InputAdornment position="end">
+                                  <Tooltip title="Add Plant" placement="right">
+                                    <IconButton
+                                      onClick={handleAddPlantClick}
+                                      edge="end"
+                                    >
+                                      <AddCircleOutlineIcon />
+                                    </IconButton>
+                                  </Tooltip>
+                                </InputAdornment>
+                              }
+                            />
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="address"
+                            label="Address"
+                            id="address"
+                            autoComplete="address"
+                            value={formData.address}
+                            onChange={handleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="division"
+                            label="Division"
+                            id="division"
+                            autoComplete="division"
+                            value={formData.division}
+                            onChange={handleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="customerName"
+                            label="Customer Name"
+                            id="customerName"
+                            autoComplete="customerName"
+                            value={formData.customerName}
+                            onChange={handleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Support Start Date"
                     value={formData.supportStartDate}
@@ -857,148 +916,157 @@ export default function UserRegistration() {
                     slotProps={{ textField: { fullWidth: true } }}
                   />
                 </LocalizationProvider> */}
-                    <Datepicker
-                      label="Support Start Date"
-                      value={formData.supportStartDate}
-                      onChange={(startDate) =>
-                        setFormData({
-                          ...formData,
-                          supportStartDate: startDate,
-                        })
-                      }
-                      // defaultValue={dayjs("04/17/2022")}
-                      // convertDateFormat(i.supportStartDate),
-                      // "DD-MM-YYYY"
-                      // format="DD-MM-YYYY"
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Datepicker
-                      label="Support End Date"
-                      value={formData.supportEndDate}
-                      onChange={(endDate) => {
-                        if (endDate < formData.supportEndDate) {
-                          setShowDateError(true);
-                        } else {
-                          setShowDateError(false);
-                          setFormData({ ...formData, supportEndDate: endDate });
-                        }
-                      }}
-                      // defaultValue={dayjs("2022-04-17")}
-                      // format="DD-MM-YYYY"
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  </Grid>
-                  {showDateError && (
-                    <Stack
-                      sx={{ display: "flex", justifyContent: "right" }}
-                      spacing={2}
-                    >
-                      <Alert variant="filled" severity="error">
-                        SupportEndDate Should Not be less than SupportStartDate
-                      </Alert>
-                    </Stack>
-                  )}
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="accountOwnerCustomer"
-                      label="Account Owner Customer"
-                      id="accountOwnerCustomer"
-                      autoComplete="accountOwnerCustomer"
-                      value={formData.accountOwnerCustomer}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="accountOwnerGW"
-                      label="Account Owner GW"
-                      id="accountOwnerGW"
-                      autoComplete="accountOwnerGW"
-                      value={formData.accountOwnerGW}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Dropdown
-                      fullWidth
-                      id="role"
-                      value={formData.role}
-                      label="Role"
-                      onChange={handleRoleChange}
-                      list={["ROLE_USER", "ROLE_SUPERVISOR"]}
-                    />
-                  </Grid>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                  onClick={handleSubmit}
+                          <Datepicker
+                            label="Support Start Date"
+                            value={formData.supportStartDate}
+                            onChange={(startDate) =>
+                              setFormData({
+                                ...formData,
+                                supportStartDate: startDate,
+                              })
+                            }
+                            // defaultValue={dayjs("04/17/2022")}
+                            // convertDateFormat(i.supportStartDate),
+                            // "DD-MM-YYYY"
+                            // format="DD-MM-YYYY"
+                            slotProps={{ textField: { fullWidth: true } }}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Datepicker
+                            label="Support End Date"
+                            value={formData.supportEndDate}
+                            onChange={(endDate) => {
+                              if (endDate < formData.supportEndDate) {
+                                setShowDateError(true);
+                              } else {
+                                setShowDateError(false);
+                                setFormData({
+                                  ...formData,
+                                  supportEndDate: endDate,
+                                });
+                              }
+                            }}
+                            // defaultValue={dayjs("2022-04-17")}
+                            // format="DD-MM-YYYY"
+                            slotProps={{ textField: { fullWidth: true } }}
+                          />
+                        </Grid>
+                        {showDateError && (
+                          <Stack
+                            sx={{ display: "flex", justifyContent: "right" }}
+                            spacing={2}
+                          >
+                            <Alert variant="filled" severity="error">
+                              SupportEndDate Should Not be less than
+                              SupportStartDate
+                            </Alert>
+                          </Stack>
+                        )}
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="accountOwnerCustomer"
+                            label="Account Owner Customer"
+                            id="accountOwnerCustomer"
+                            autoComplete="accountOwnerCustomer"
+                            value={formData.accountOwnerCustomer}
+                            onChange={handleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth
+                            name="accountOwnerGW"
+                            label="Account Owner GW"
+                            id="accountOwnerGW"
+                            autoComplete="accountOwnerGW"
+                            value={formData.accountOwnerGW}
+                            onChange={handleFormdataInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Dropdown
+                            fullWidth
+                            id="role"
+                            value={formData.role}
+                            label="Role"
+                            onChange={handleRoleChange}
+                            list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                          />
+                        </Grid>
+                      </Grid>
+                      <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                        onClick={handleSubmit}
+                      >
+                        Register User
+                      </Button>
+                    </Box>
+                  </form>
+                </>
+              )}
+              <>
+                <Dialog
+                  open={openDeleteDialog}
+                  onClose={() => setOpenDeleteDialog(false)}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
                 >
-                  Register User
-                </Button>
-              </Box>
-            </form>
-          </>
-        )}
-        <>
-          <Dialog
-            open={openDeleteDialog}
-            onClose={() => setOpenDeleteDialog(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">{"Add New Plant"}</DialogTitle>
-            <DialogContent style={{ padding: "10px" }}>
-              <Textfield
-                required
-                fullWidth={true}
-                name="plantName"
-                label="Plant Name"
-                id="plantName"
-                value={newPlantName.plantName}
-                onChange={handlenewPlantNameInputChange}
-              />
-              <Textfield
-                style={{ marginTop: "20px" }}
-                required
-                fullWidth={true}
-                name="plantID"
-                label="PlantID"
-                id="plantID"
-                value={newPlantName.plantID}
-                onChange={handlenewPlantNameInputChange}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => setOpenDeleteDialog(false)}
-                color="primary"
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={() => {
-                  setOpenDeleteDialog(false);
-                  postPlantName();
-                  fetchData();
-                }}
-                color="error"
-                autoFocus
-              >
-                Save
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      </Box>
-    </Container>
+                  <DialogTitle id="alert-dialog-title">
+                    {"Add New Plant"}
+                  </DialogTitle>
+                  <DialogContent style={{ padding: "10px" }}>
+                    <Textfield
+                      required
+                      fullWidth={true}
+                      name="plantName"
+                      label="Plant Name"
+                      id="plantName"
+                      value={newPlantName.plantName}
+                      onChange={handlenewPlantNameInputChange}
+                    />
+                    <Textfield
+                      style={{ marginTop: "20px" }}
+                      required
+                      fullWidth={true}
+                      name="plantID"
+                      label="PlantID"
+                      id="plantID"
+                      value={newPlantName.plantID}
+                      onChange={handlenewPlantNameInputChange}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={() => setOpenDeleteDialog(false)}
+                      color="primary"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setOpenDeleteDialog(false);
+                        postPlantName();
+                        fetchData();
+                      }}
+                      color="error"
+                      autoFocus
+                    >
+                      Save
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </>
+            </Box>
+          </Container>
+        </Box>
+      </Main>
+    </Box>
   );
 }

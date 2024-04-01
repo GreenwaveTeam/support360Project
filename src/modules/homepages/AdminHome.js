@@ -19,13 +19,12 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Textfield from "../../components/textfield/textfield.component";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
-import { CategoryOutlined } from "@mui/icons-material";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import Main from "../../components/navigation/mainbody/mainbody";
 import TopbarPage from "../../components/navigation/topbar/topbar";
@@ -44,7 +43,6 @@ export default function AdminHome() {
   const [filteredAdminRows, setFilteredAdminRows] = useState(adminList);
   const [openAdminDeleteDialog, setOpenAdminDeleteDialog] = useState(false);
   const [deleteAdminID, setDeleteAdminId] = useState("");
-  const [adminOpen, setAdminOpen] = useState(false);
 
   const navigate = useNavigate();
   const [switchLabel, setSwitchLabel] = useState("User List");
@@ -161,53 +159,6 @@ export default function AdminHome() {
     setOpenDeleteDialog(true);
     setDeleteUserId(userID);
   };
-
-  // const columns = [
-  //   {
-  //     id: "name",
-  //     label: "Name",
-  //     type: "textbox",
-  //     canRepeatSameValue: false,
-  //   },
-  //   {
-  //     id: "email",
-  //     label: "Email",
-  //     type: "textbox",
-  //     canRepeatSameValue: false,
-  //   },
-  //   {
-  //     id: "userID",
-  //     label: "UserID",
-  //     type: "textbox",
-  //     canRepeatSameValue: false,
-  //   },
-  // ];
-
-  // const handleDeleteClick = async (rowData) => {
-  //   try {
-  //     const requestBody = {
-  //       userID: rowData.userID,
-  //     };
-  //     console.log("Request body=>" + JSON.stringify(requestBody));
-  //     // axios.delete(`http://localhost:8081/users/user/${rowData.userID}`, {
-  //     //   data: requestBody,
-  //     //   headers:
-  //     // });
-  //     await fetch("http://localhost:8081/users/", {
-  //       method: "GET",
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-  //     const updatedCategories = filteredRows.filter(
-  //       (app) => app.userID !== rowData.userID
-  //     );
-  //     setFilteredRows(updatedCategories);
-  //   } catch (e) {
-  //     console.log("Exception");
-  //   }
-  // };
 
   const fetchAdminData = async () => {
     try {
@@ -335,20 +286,23 @@ export default function AdminHome() {
               label={switchLabel} // Dynamically set label based on state
               labelPlacement="bottom"
             />
-            <Button
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={() => navigate("/UserRegistration")}
-            >
-              Register New User
-            </Button>
-            <Button
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={() => navigate("/AdminRegistration")}
-            >
-              Register New Admin
-            </Button>
+            {!switchChecked ? (
+              <Button
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={() => navigate("/UserRegistration")}
+              >
+                Register New User
+              </Button>
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={() => navigate("/AdminRegistration")}
+              >
+                Register New Admin
+              </Button>
+            )}
           </Grid>
           {!switchChecked ? (
             <>
@@ -369,7 +323,7 @@ export default function AdminHome() {
                     <TableHead>
                       <TableRow>
                         <TableCell
-                          colSpan={4}
+                          colSpan={6}
                           sx={{
                             textAlign: "center",
                             fontSize: "15px",
@@ -449,6 +403,15 @@ export default function AdminHome() {
                           }}
                           align="center"
                         >
+                          Plant Name
+                        </TableCell>
+                        <TableCell
+                          sx={{
+                            fontWeight: "bold",
+                            fontSize: "14px",
+                          }}
+                          align="center"
+                        >
                           User ID
                         </TableCell>
                         <TableCell
@@ -460,6 +423,15 @@ export default function AdminHome() {
                         >
                           Edit
                         </TableCell>
+                        <TableCell
+                          sx={{
+                            fontWeight: "bold",
+                            fontSize: "14px",
+                          }}
+                          align="center"
+                        >
+                          Delete
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -467,6 +439,7 @@ export default function AdminHome() {
                         <TableRow key={index}>
                           <TableCell align="center">{item.name}</TableCell>
                           <TableCell align="center">{item.email}</TableCell>
+                          <TableCell align="center">{item.plantName}</TableCell>
                           {/* <Link to={"/AdminPage"} style={{ color: "inherit" }}> */}
                           <TableCell
                             onClick={() => {
@@ -495,6 +468,8 @@ export default function AdminHome() {
                                 });
                               }}
                             />
+                          </TableCell>
+                          <TableCell align="center">
                             <DeleteForeverOutlinedIcon
                               color="error"
                               style={{ cursor: "pointer" }}
@@ -563,7 +538,7 @@ export default function AdminHome() {
                     <TableHead>
                       <TableRow>
                         <TableCell
-                          colSpan={4}
+                          colSpan={5}
                           sx={{
                             textAlign: "center",
                             fontSize: "15px",
@@ -646,15 +621,24 @@ export default function AdminHome() {
                         >
                           Edit
                         </TableCell>
+                        <TableCell
+                          sx={{
+                            fontWeight: "bold",
+                            fontSize: "14px",
+                          }}
+                          align="center"
+                        >
+                          Delete
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {filteredAdminRows.map((item, index) => (
                         <TableRow key={index}>
-                          <TableCell>{item.name}</TableCell>
-                          <TableCell>{item.email}</TableCell>
-                          <TableCell>{item.adminID}</TableCell>
-                          <TableCell>
+                          <TableCell align="center">{item.name}</TableCell>
+                          <TableCell align="center">{item.email}</TableCell>
+                          <TableCell align="center">{item.adminID}</TableCell>
+                          <TableCell align="center">
                             <BorderColorOutlinedIcon
                               color="primary"
                               style={{ cursor: "pointer" }}
@@ -662,6 +646,8 @@ export default function AdminHome() {
                                 // Handle edit action
                               }}
                             />
+                          </TableCell>
+                          <TableCell align="center">
                             <DeleteForeverOutlinedIcon
                               color="error"
                               style={{ cursor: "pointer" }}

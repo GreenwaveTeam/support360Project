@@ -375,7 +375,7 @@ export default function UserRegistration() {
                   <form>
                     <Box noValidate sx={{ mt: 3 }}>
                       <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             name="name"
                             required
@@ -387,7 +387,7 @@ export default function UserRegistration() {
                             onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             autoComplete="userID"
                             name="userID"
@@ -399,7 +399,7 @@ export default function UserRegistration() {
                             onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Dropdown
                             id="designation"
                             value={updateFormData.designation}
@@ -409,7 +409,7 @@ export default function UserRegistration() {
                             fullWidth
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -423,7 +423,7 @@ export default function UserRegistration() {
                           />
                         </Grid>
                         {/* {!userExist && (
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor="password">Password</InputLabel>
                         <OutlinedInput
@@ -458,7 +458,7 @@ export default function UserRegistration() {
                     </Grid>
                   )}
                   {!userExist && (
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
                       <Textfield
                         required
                         fullWidth
@@ -499,7 +499,7 @@ export default function UserRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -511,7 +511,7 @@ export default function UserRegistration() {
                             onChange={updateHandlePhoneNumberChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Dropdown
                             fullWidth={true}
                             id="plantName"
@@ -533,7 +533,7 @@ export default function UserRegistration() {
                             list={plantList.map((p) => p.plantName)}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <FormControl fullWidth>
                             <InputLabel htmlFor="PlantID">PlantID</InputLabel>
                             <OutlinedInput
@@ -562,7 +562,7 @@ export default function UserRegistration() {
                             />
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -574,7 +574,7 @@ export default function UserRegistration() {
                             onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -586,7 +586,7 @@ export default function UserRegistration() {
                             onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -598,14 +598,14 @@ export default function UserRegistration() {
                             onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Datepicker
                             label="Support Start Date"
                             value={dayjs(updateFormData.supportStartDate)}
                             slotProps={{ textField: { fullWidth: true } }}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Datepicker
                             label="Support End Date"
                             value={dayjs(updateFormData.supportEndDate)}
@@ -623,7 +623,7 @@ export default function UserRegistration() {
                             </Alert>
                           </Stack>
                         )}
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -635,7 +635,7 @@ export default function UserRegistration() {
                             onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -677,7 +677,7 @@ export default function UserRegistration() {
                   <form>
                     <Box noValidate sx={{ mt: 3 }}>
                       <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             name="name"
                             required
@@ -689,7 +689,7 @@ export default function UserRegistration() {
                             onChange={handleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             autoComplete="userID"
                             name="userID"
@@ -701,7 +701,7 @@ export default function UserRegistration() {
                             onChange={handleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Dropdown
                             id="designation"
                             value={formData.designation}
@@ -711,7 +711,7 @@ export default function UserRegistration() {
                             fullWidth
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -725,7 +725,7 @@ export default function UserRegistration() {
                           />
                         </Grid>
                         {!userExist && (
-                          <Grid item xs={12}>
+                          <Grid item xs={6}>
                             <FormControl fullWidth>
                               <InputLabel htmlFor="password">
                                 Password
@@ -761,7 +761,7 @@ export default function UserRegistration() {
                           </Grid>
                         )}
                         {!userExist && (
-                          <Grid item xs={12}>
+                          <Grid item xs={6}>
                             <Textfield
                               required
                               fullWidth
@@ -805,7 +805,7 @@ export default function UserRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -817,7 +817,7 @@ export default function UserRegistration() {
                             onChange={handlePhoneNumberChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Dropdown
                             fullWidth={true}
                             id="plantName"
@@ -839,7 +839,7 @@ export default function UserRegistration() {
                             list={plantList.map((p) => p.plantName)}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <FormControl fullWidth>
                             <InputLabel htmlFor="PlantID">PlantID</InputLabel>
                             <OutlinedInput
@@ -868,7 +868,7 @@ export default function UserRegistration() {
                             />
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -880,7 +880,7 @@ export default function UserRegistration() {
                             onChange={handleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -892,7 +892,7 @@ export default function UserRegistration() {
                             onChange={handleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -904,7 +904,7 @@ export default function UserRegistration() {
                             onChange={handleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Support Start Date"
@@ -932,7 +932,7 @@ export default function UserRegistration() {
                             slotProps={{ textField: { fullWidth: true } }}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Datepicker
                             label="Support End Date"
                             value={formData.supportEndDate}
@@ -963,7 +963,7 @@ export default function UserRegistration() {
                             </Alert>
                           </Stack>
                         )}
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth
@@ -975,7 +975,7 @@ export default function UserRegistration() {
                             onChange={handleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Textfield
                             required
                             fullWidth

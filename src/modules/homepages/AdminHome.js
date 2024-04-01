@@ -45,11 +45,11 @@ export default function AdminHome() {
   const [deleteAdminID, setDeleteAdminId] = useState("");
 
   const navigate = useNavigate();
-  const [switchLabel, setSwitchLabel] = useState("User List");
+  const [switchLabel, setSwitchLabel] = useState("Toggle Admin");
   const [switchChecked, setSwitchChecked] = useState(false);
   const handleSwitchChange = (event) => {
     setSwitchChecked(event.target.checked);
-    setSwitchLabel(event.target.checked ? "Admin List" : "User List");
+    setSwitchLabel(event.target.checked ? "Toggle User" : "Toggle Admin");
   };
 
   const handleDrawerOpen = () => {
@@ -283,7 +283,7 @@ export default function AdminHome() {
                   onChange={handleSwitchChange}
                 />
               }
-              label={switchLabel} // Dynamically set label based on state
+              label={switchLabel}
               labelPlacement="bottom"
             />
             {!switchChecked ? (
@@ -306,10 +306,16 @@ export default function AdminHome() {
           </Grid>
           {!switchChecked ? (
             <>
-              {/* <h3>Existing Users</h3> */}
-              <Typography component="h1" variant="h5">
-                Existing Users
-              </Typography>
+              <Box
+                alignItems="center"
+                justifyContent="center"
+                display="flex"
+                margin="1rem"
+              >
+                <Typography component="h1" variant="h5">
+                  Existing Users
+                </Typography>
+              </Box>
               <Grid
                 item
                 xs={12}
@@ -440,8 +446,12 @@ export default function AdminHome() {
                           <TableCell align="center">{item.name}</TableCell>
                           <TableCell align="center">{item.email}</TableCell>
                           <TableCell align="center">{item.plantName}</TableCell>
-                          {/* <Link to={"/AdminPage"} style={{ color: "inherit" }}> */}
                           <TableCell
+                            style={{
+                              cursor: "pointer",
+                              fontWeight: "bold",
+                              fontSize: "14px",
+                            }}
                             onClick={() => {
                               localStorage.setItem(
                                 "adminPlantID",
@@ -460,7 +470,9 @@ export default function AdminHome() {
                           > */}
                             <BorderColorOutlinedIcon
                               color="primary"
-                              style={{ cursor: "pointer" }}
+                              style={{
+                                cursor: "pointer",
+                              }}
                               onClick={() => {
                                 console.log("item : ", item);
                                 navigate("/UserRegistration", {
@@ -522,9 +534,16 @@ export default function AdminHome() {
             </>
           ) : (
             <>
-              <Typography component="h1" variant="h5">
-                Existing Admins
-              </Typography>
+              <Box
+                alignItems="center"
+                justifyContent="center"
+                display="flex"
+                margin="1rem"
+              >
+                <Typography component="h1" variant="h5">
+                  Existing Admins
+                </Typography>
+              </Box>
               <Grid
                 item
                 xs={12}
@@ -637,7 +656,16 @@ export default function AdminHome() {
                         <TableRow key={index}>
                           <TableCell align="center">{item.name}</TableCell>
                           <TableCell align="center">{item.email}</TableCell>
-                          <TableCell align="center">{item.adminID}</TableCell>
+                          <TableCell
+                            style={{
+                              cursor: "pointer",
+                              fontWeight: "bold",
+                              fontSize: "14px",
+                            }}
+                            align="center"
+                          >
+                            {item.adminID}
+                          </TableCell>
                           <TableCell align="center">
                             <BorderColorOutlinedIcon
                               color="primary"

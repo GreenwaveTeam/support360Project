@@ -16,7 +16,7 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../../theme";
-import {useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -67,20 +67,23 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
         <Typography variant="h6" noWrap component="div">
           <BreadCrumbs urllist={urllist} />
         </Typography>
-        <Tooltip title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"} placement="right">
-        <IconButton onClick={colorMode.toggleColorMode}>
-          {theme.palette.mode === "dark" ? (
-            <DarkModeOutlinedIcon />
-          ) : (
-            <LightModeOutlinedIcon />
-          )}
-        </IconButton>
+        <Tooltip
+          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          placement="right"
+        >
+          <IconButton onClick={colorMode.toggleColorMode}>
+            {theme.palette.mode === "dark" ? (
+              <DarkModeOutlinedIcon />
+            ) : (
+              <LightModeOutlinedIcon />
+            )}
+          </IconButton>
         </Tooltip>
         <Tooltip title="Logout" placement="right">
           <Button
             onClick={() => {
               logout();
-              navigate("/userlogin");
+              navigate("/login");
             }}
             sx={{ marginLeft: "auto" }}
           >

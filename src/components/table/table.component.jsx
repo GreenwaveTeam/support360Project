@@ -209,6 +209,15 @@ const handleSaveClick = async (selectedRow) => {
       setOpen(true);
       checkError = true;
     }
+    else if (column.type !== 'calender' && updatedRow[column.id].trim()==='Miscellaneous') {
+      console.log("Miscellaneous is reserved")
+      setSnackbarText('Miscellaneous is reserved!');
+      setsnackbarSeverity('error');
+      setErrorValue(selectedRow[column.id])
+      console.log("Check")
+      setOpen(true);
+      checkError = true;
+    }
   });
   if (countChange === 0) {
     setEditRowIndex(null);
@@ -275,7 +284,7 @@ const handleSaveClick = async (selectedRow) => {
                 <TableCell
                   align="center"
                   sx={{ backgroundColor: "#B5C0D0" }}
-                  colSpan={columns.length+1}
+                  colSpan={columns.length+2}
                 >
                   <div
                     style={{
@@ -330,9 +339,10 @@ const handleSaveClick = async (selectedRow) => {
                     {column.label}
                   </TableCell>
                 ))}
-                <TableCell align='center' sx={{ backgroundColor: "#B5C0D0" ,fontWeight: "bold",fontSize:'14px'}}>
+                <TableCell align='center' colSpan={2}sx={{ backgroundColor: "#B5C0D0" ,fontWeight: "bold",fontSize:'14px'}}>
                   Actions
                 </TableCell>
+                
               </TableRow>
             </TableHead>
             <TableBody>
@@ -505,7 +515,21 @@ const handleSaveClick = async (selectedRow) => {
                               </Button>
                               </Tooltip>
                             )}
-                            {editRowIndex !== index && (
+                            {editRowIndex === index && (
+                            
+                                  <Tooltip TransitionComponent={Fade}  title="Save">
+                              <Button onClick={() => handleSaveClick(row)}>
+                                <CheckIcon color="primary" />
+                              </Button>
+                              </Tooltip>
+                              )}
+                            </div>
+
+                          
+                        </TableCell>
+                        <TableCell sx={{ width: "10%" }} align="right">
+                        <div style={{ display: "flex" }}>
+                        {editRowIndex !== index && (
                                 <Tooltip TransitionComponent={Fade}  title="Delete">
                               <Button onClick={(e) =>{e.preventDefault();handleDeleteClick(row)}}>
                                 <DeleteIcon
@@ -515,22 +539,15 @@ const handleSaveClick = async (selectedRow) => {
                               </Button>
                               </Tooltip>
                             )}
-                            
-                          </div>
-                          {editRowIndex === index && (
-                            <div style={{ display: "flex" }}>
-                                  <Tooltip TransitionComponent={Fade}  title="Save">
-                              <Button onClick={() => handleSaveClick(row)}>
-                                <CheckIcon color="primary" />
-                              </Button>
-                              </Tooltip>
+                            {editRowIndex === index && (
+                               
                               <Tooltip TransitionComponent={Fade}  title="Cancel">
                               <Button onClick={() => handleCancelClick(row)}>
                                 <CancelIcon sx={{ color: "#FE2E2E" }} />
                               </Button>
                               </Tooltip>
-                            </div>
                           )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     );

@@ -51,6 +51,33 @@ function UserHome() {
     fetchTicketDetails();
   }, []);
 
+  const fetchComponents = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8081/role/{role}/{pagename}",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (response.status === 403) {
+        localStorage.clear();
+        navigate("/login");
+        return;
+      }
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      localStorage.setItem("userPlantID", data.plantID);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const list = ["support_Till_Date", "Ticket_Informations"];
+
   const fetchUser = async () => {
     console.log(`userhome Bearer ${localStorage.getItem("token")}`);
     try {
@@ -189,137 +216,145 @@ function UserHome() {
           >
             <>
               <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-                <div
-                  style={{
-                    borderRadius: "20px",
-                    border: "2px solid black",
-                    marginTop: "20px",
-                    marginBottom: "20px",
-                    marginLeft: "20px",
-                    marginRight: "20px",
-                    width: "100%",
-                    height: "30%",
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                    alignItems: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Typography>Support Till Date</Typography>
-                  <Datepicker
-                    value={formData.supportEndDate}
-                    format="DD-MM-YYYY"
-                    // slotProps={{ textField: { fullWidth: true } }}
-                    readOnly
-                  />
-                </div>
-                <div
-                  style={{
-                    borderRadius: "20px",
-                    border: "2px solid black",
-                    marginTop: "20px",
-                    marginBottom: "20px",
-                    marginLeft: "20px",
-                    marginRight: "20px",
-                    width: "100%",
-                    height: "70%",
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                    alignItems: "stretch",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    <Typography>OPEN TICKETS</Typography>
+                {list.includes("support_Till_Date") && (
+                  <div
+                    style={{
+                      borderRadius: "20px",
+                      border: "2px solid black",
+                      marginTop: "20px",
+                      marginBottom: "20px",
+                      marginLeft: "20px",
+                      marginRight: "20px",
+                      width: "100%",
+                      height: "30%",
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                      alignItems: "center",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography>Support Till Date</Typography>
+                    <Datepicker
+                      value={formData.supportEndDate}
+                      format="DD-MM-YYYY"
+                      // slotProps={{ textField: { fullWidth: true } }}
+                      readOnly
+                    />
                   </div>
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    <Button
-                      variant="contained"
-                      style={{ margin: "10px" }}
-                      onClick={(e) => {
-                        navigate("/user/ReportDevice", {
-                          state: { plantID: formData.plantID },
-                        });
-                      }}
-                    >
-                      Device
-                    </Button>
-                    <Button
-                      variant="contained"
-                      style={{ margin: "10px" }}
-                      onClick={(e) => {
-                        navigate("/user/ReportApplication", {
-                          state: { plantID: formData.plantID },
-                        });
-                      }}
-                    >
-                      Application
-                    </Button>
-                    <Button
-                      variant="contained"
-                      style={{ margin: "10px" }}
-                      onClick={(e) => {
-                        navigate("/user/ReportInfrastructure", {
-                          state: { plantID: formData.plantID },
-                        });
-                      }}
-                    >
-                      Infrastructure
-                    </Button>
+                )}
+                {list.includes("open_Tickets") && (
+                  <div
+                    style={{
+                      borderRadius: "20px",
+                      border: "2px solid black",
+                      marginTop: "20px",
+                      marginBottom: "20px",
+                      marginLeft: "20px",
+                      marginRight: "20px",
+                      width: "100%",
+                      height: "70%",
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                      alignItems: "stretch",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <Typography>OPEN TICKETS</Typography>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <Button
+                        variant="contained"
+                        style={{ margin: "10px" }}
+                        onClick={(e) => {
+                          navigate("/user/ReportDevice", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                      >
+                        Device
+                      </Button>
+                      <Button
+                        variant="contained"
+                        style={{ margin: "10px" }}
+                        onClick={(e) => {
+                          navigate("/user/ReportApplication", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                      >
+                        Application
+                      </Button>
+                      <Button
+                        variant="contained"
+                        style={{ margin: "10px" }}
+                        onClick={(e) => {
+                          navigate("/user/ReportInfrastructure", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                      >
+                        Infrastructure
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
               <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-                <div
-                  style={{
-                    borderRadius: "20px",
-                    border: "2px solid black",
-                    marginTop: "20px",
-                    marginBottom: "20px",
-                    marginLeft: "20px",
-                    marginRight: "20px",
-                    width: "100%",
-                    height: "70%",
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                    alignItems: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Typography variant="h5">
-                    Total Issue Raised : {ticketData.total_ticket_raised}
-                  </Typography>
-                  <Typography variant="h5">
-                    Pending Tickets : {ticketData.pending_tickets}
-                  </Typography>
-                  <Typography variant="h5">
-                    Resolved Tickets : {ticketData.resolved_tickets}
-                  </Typography>
-                </div>
-                <div
-                  style={{
-                    borderRadius: "20px",
-                    border: "2px solid black",
-                    marginTop: "20px",
-                    marginBottom: "20px",
-                    marginLeft: "20px",
-                    marginRight: "20px",
-                    width: "100%",
-                    height: "30%",
-                    display: "flex",
-                    justifyContent: "space-evenly",
-                    alignItems: "center",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Typography>Last Ticket Raised</Typography>
-                  <Datepicker
-                    value={ticketData.last_ticket_raised}
-                    format="DD-MM-YYYY"
-                    // slotProps={{ textField: { fullWidth: true } }}
-                    readOnly
-                  />
-                </div>
+                {list.includes("Ticket_Informations") && (
+                  <div
+                    style={{
+                      borderRadius: "20px",
+                      border: "2px solid black",
+                      marginTop: "20px",
+                      marginBottom: "20px",
+                      marginLeft: "20px",
+                      marginRight: "20px",
+                      width: "100%",
+                      height: "70%",
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                      alignItems: "center",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography variant="h5">
+                      Total Issue Raised : {ticketData.total_ticket_raised}
+                    </Typography>
+                    <Typography variant="h5">
+                      Pending Tickets : {ticketData.pending_tickets}
+                    </Typography>
+                    <Typography variant="h5">
+                      Resolved Tickets : {ticketData.resolved_tickets}
+                    </Typography>
+                  </div>
+                )}
+                {list.includes("Last_Ticket_Raised") && (
+                  <div
+                    style={{
+                      borderRadius: "20px",
+                      border: "2px solid black",
+                      marginTop: "20px",
+                      marginBottom: "20px",
+                      marginLeft: "20px",
+                      marginRight: "20px",
+                      width: "100%",
+                      height: "30%",
+                      display: "flex",
+                      justifyContent: "space-evenly",
+                      alignItems: "center",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography>Last Ticket Raised</Typography>
+                    <Datepicker
+                      value={ticketData.last_ticket_raised}
+                      format="DD-MM-YYYY"
+                      // slotProps={{ textField: { fullWidth: true } }}
+                      readOnly
+                    />
+                  </div>
+                )}
               </div>
             </>
           </Container>

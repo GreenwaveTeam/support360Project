@@ -1,105 +1,121 @@
-import { Divider } from "@mui/material";
+import React from 'react'
+import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Checkbox, Button, TextField, Typography } from '@mui/material';
+import  { useState,useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Dropdown from "../../components/dropdown/dropdown.component";
-
-import { Box } from '@mui/system'
-import React, { useEffect, useState } from 'react'
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
-import CommentIcon from '@mui/icons-material/Comment';
-
-import Table from '../../components/table/table.component'
-
-
-export default function Roleconfig() {
-    const pageDetails=[{pagename:'Page1',components:['component1','component2']},{pagename:'Page2',components:['component3','component4']}]
-    const pagelist=['Page1','Page2']
-    const [selectedPage,setSelectedPage]=useState('')
-    const [componentList,setComponentList]=useState([])
-    const [selectedComponent,setSelectedComponent]=useState('')
+import Table from '../../components/table/table.component';
+import { Container } from '@mui/material';
+import axios from 'axios';
+export default function Role() {
+    
+    const [role,setRole]=useState('')
     const [rows,setRows]=useState([])
-    const handleCheck=()=>{}
+    const [filteredRows,setFilteredRows]=useState([])
+    const [openPopup, setOpenPopup] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [snackbarSeverity,setsnackbarSeverity]=useState(null)
+  
+    const navigate=useNavigate();
+
     const columns=[{
-        "id": "page",
-        "label": "Page Name",
-        "type": "textbox",
-        "canRepeatSameValue":false
-      },{
-        "id": "component",
-        "label": "Component Name",
+        "id": "role",
+        "label": "Role Name",
         "type": "textbox",
         "canRepeatSameValue":false
       },]
-    const handlePageChange=(event)=>{
-        setSelectedPage(event.target.value)
-        console.log("selected page==>"+event.target.value)
-        setComponentList(
-            pageDetails.find((page) => {
-              if (page.pagename === event.target.value) {
-                console.log(page.components);
-                return page;
-              }
-            }).components
-          );
+      useEffect(()=>{
+        const fetchData = async () => {
+          try {
+            console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+            // Make the API call to fetch data
+            const response = await axios.get(`http://localhost:8081/role`,{headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },});
+            
+            // Extract data from the response
+            const data = await response.data;
+            console.log("data=====>", JSON.stringify(data)); 
+            if (data) {
+              const renamedData = data.map(item => ({
+                role: item
+                
+              }));
+              console.log(renamedData)
+              setRows(renamedData);
+              setFilteredRows(renamedData)
+            }
+          }catch(e){
+            //console.error('Error:', error);
+        setOpenPopup(true);
+        setDialogMessage('Database Error');
+        setsnackbarSeverity('error')
+          }
+        }
+        fetchData();
+      },[])
+      const handleRedirect=()=>{
+          navigate(`/admin/role/Page`, {
+            state: { role: role},
+          });
+      }
+      const handleDelete=async(rowdata)=>{
+        const requestBody = {
+          role: rowdata.role,
+          
+        }; console.log("Delete=>"+JSON.stringify(requestBody))
+          try {
+            
+            const response = await axios.delete('http://localhost:8081/role/currentrole',{
+              headers:{
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
               
-    }
-    const handleComponentSelect=(event)=>{
-        setSelectedComponent(event.target.value)
-    }
-    const handleRoleSubmit=()=>{
-        setRows(prev => [...prev, { page: selectedPage, component: selectedComponent }]);
-
-    }
-   
+            },
+            data:requestBody
+          },);
+            setRows(rows.filter((row)=>(row!==rowdata)));
+            console.log("Successfully deleted")
+            } catch (error) {
+            console.error('Error:', error);
+            setOpenPopup(true);
+            setDialogMessage('Database Error');
+            setsnackbarSeverity('error')
+          }
+      }
+      const handleRedirectToRolePage=(row)=>{
+        navigate(`/admin/role/Page`, {
+          state: { role: row.role},
+        });
+      }
   return (
     <Box>
-        <Box>
-        <Dropdown
-            id="pageDetails"
-            label="Page"
-            value={selectedPage}
-            onChange={handlePageChange}
-            list={pagelist}/>&nbsp;&nbsp;
-          {componentList.length>0 &&(
-            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {componentList.map((value) => {
-              
-              return (
-                <ListItem
-                  key={value}
-                  
-                  disablePadding
-                >
-                  <ListItemButton role={undefined}  dense>
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        checked={handleCheck}
-                        tabIndex={-1}
-                        disableRipple
-                        //inputProps={{ 'aria-labelledby': labelId }}
-                      />
-                    </ListItemIcon>
-                    <ListItemText id={value} primary={value} />
-                  </ListItemButton>
-                </ListItem>
-              );
-            })}
-          </List>
-          )}
-            &nbsp;&nbsp;
-            <Button color="primary"
-              variant="contained" 
-              type='submit' onClick={handleRoleSubmit}>Add</Button>
-            </Box>
-             <Table rows={rows} setRows={setRows} columns={columns} editActive={false}/>
-           
-    </Box>  
+    <Container sx={{marginTop:'20px'}} >
+      <Box sx={{display:'flex' ,flexDirection:'column', alignItems:'center'}}>
+           <TextField
+                label={'Role '}
+                id="role"
+                value={role} style={{width:'200px'}}
+                onChange={(e) => setRole(e.target.value)}
+              />
+              &nbsp;
 
-    )
+            <Button 
+              color="primary"
+              variant="contained" style={{width:'200px'}}
+              type='submit' onClick={handleRedirect}
+            >
+              Add 
+            </Button>
+            </Box>
+            &nbsp;&nbsp;
+            <Table rows={rows}  columns={columns} setRows={setRows} handleRedirect={handleRedirectToRolePage} deleteFromDatabase={handleDelete}  redirectColumn={'role'} redirectIconActive={true}
+            // savetoDatabse={editCategory}   isDeleteDialog={true} 
+            // editActive={true} tablename={"Existing Device Issue Category"} 
+            // /*style={}*/  
+            />
+            
+          </Container>
+          </Box>
+  )
 }

@@ -28,6 +28,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import TopbarPage from "./components/navigation/topbar/topbar";
 import { ColorModeContext, useMode } from "./theme";
+import Roleconfig from "./modules/roleconfig/module.roleconfig";
 
 function App() {
   const urllist = [
@@ -135,6 +136,10 @@ function App() {
                 path="/admin/DeviceConfigure"
                 element={<RichObjectTreeView />}
               />
+              <Route
+            path="/admin/Role"
+            element={<Roleconfig />}
+          />
             </Routes>
           </div>
         </Router>

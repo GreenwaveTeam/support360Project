@@ -613,7 +613,7 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 						<TabContext value={value}>
 							<Box sx={{ borderBottom: 1}}>
 								<Box sx={{display:'flex', flexDirection:'row'}}>
-							<Textfield
+							{/* <Textfield
 							id="filter-input"
 							label={
 								<div style={{ display: "flex", alignItems: "center" }}>
@@ -625,7 +625,7 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 							value={filterValue}
 							onChange={handleFilterChange}
 							 // Adjust margin as needed
-						/>
+						/> */}
 						<Box sx={{ flexGrow: 1 }} />
 						 {/* Empty Box to fill remaining space */}
 							<Button

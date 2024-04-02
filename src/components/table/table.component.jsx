@@ -340,7 +340,7 @@ const handleSaveClick = async (selectedRow) => {
                   </TableCell>
                 ))}
                 <TableCell align='center' sx={{ backgroundColor: "#B5C0D0" ,fontWeight: "bold",fontSize:'14px'}}>
-                  Edit
+                {editActive&&(  <div>Edit</div>)}
                 </TableCell>
                 <TableCell align='center' sx={{ backgroundColor: "#B5C0D0" ,fontWeight: "bold",fontSize:'14px'}}>
                   Delete

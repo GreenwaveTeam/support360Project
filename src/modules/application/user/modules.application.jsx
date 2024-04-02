@@ -312,6 +312,9 @@ const handleDrawerClose = () => {
 
 /* ********************** API ************************** */
   const fetchApplicationNames = async (plantID) => {
+    const list = process.env.REACT_APP_ADMINPAGELIST; 
+    console.log("env : ",list)
+    console.log("list")
     try {
       const response = await fetch(
         `http://localhost:8081/application/user/${plantID}`,

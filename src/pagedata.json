@@ -1,0 +1,33 @@
+{
+    "pagelist": [
+      {
+        "page": "Infrastructure",
+        "modules":[{
+            "pagelink":"/admin/Infrastructure",
+            "components":["add-new-infrastructure-category","existing-infrastructure-table"]
+        },
+        {
+            "pagelink":"/admin/infrastructure/addIssues",
+            "components":["add-issues-selected-category","edit-issues-selected-category"]
+        }
+    
+    ]
+      },
+      {
+        "page": "Application",
+        "modules": [
+          "/admin/ApplicationConfigure",
+          "/admin/ApplicationConfigure/Modules",
+          "/admin/ApplicationConfigure/Module"
+        ]
+      },
+      {
+        "page": "Device",
+        "modules": [
+          "/admin/Device/CategoryConfigure",
+          "/admin/Device/CategoryConfigure/Issue",
+          "/admin/Device/Configure"
+        ]
+      }
+    ]
+  }

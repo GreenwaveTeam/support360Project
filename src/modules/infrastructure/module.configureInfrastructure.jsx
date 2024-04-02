@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import Swal from "sweetalert2";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import CustomButton from "../../components/button/button.component";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
@@ -26,6 +26,7 @@ export default function ConfigureInfrastructure() {
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
   const [open, setOpen] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
+ 
   //const [onEditError, setOnEditError] = useState(false);
   //const [progressVisible, setProgressVisible] = useState(false);
   //const [clearVisible, setClearVisible] = useState(false);
@@ -38,8 +39,10 @@ export default function ConfigureInfrastructure() {
     setDrawerOpen(false);
   };
 
-  const navigate = useNavigate();
+  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
 
+  const navigate = useNavigate();
+const currentPageLocation=useLocation().pathname;
  
   
 
@@ -121,6 +124,47 @@ export default function ConfigureInfrastructure() {
 
   /**************************************************   API    **************************************************** */
 
+
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+  
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=user1&pagename=admin/InfrastructureConfigure`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ",data)
+        console.log("Current Divs : ",data.components)
+        setDivIsVisibleList(data.components)
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
+  
+
+
+
+
   const updateInfraNameDB = async (prev_infra, new_infraname) => {
     console.log("updateInfraNameDB() called");
     console.log("Previous Infrastructure : ", prev_infra);
@@ -200,6 +244,7 @@ export default function ConfigureInfrastructure() {
 
   const fetchInfraFromDb = async () => {
     // setProgressVisible(true);
+    console.log("Current Pager Location : ",currentPageLocation)
      const plantID = "P009";
      console.log(
        "Fetched Token from LS=>  ",
@@ -454,6 +499,7 @@ export default function ConfigureInfrastructure() {
 
   useEffect(() => {
     fetchInfraFromDb();
+    fetchDivs();
   }, []);
 
   /******************************* Component Return ********************************* */
@@ -505,7 +551,9 @@ export default function ConfigureInfrastructure() {
           <AnimatedPage>
             <div>
               <center>
+             
                 <Container sx={classes.conatiner}>
+                {divIsVisibleList&&divIsVisibleList.includes("add-new-infrastructure-category")&&<div id="add-new-infrastructure-category">
                   <Textfield
                     label={"Infrastructure Category"}
                     variant={"outlined"}
@@ -526,11 +574,14 @@ export default function ConfigureInfrastructure() {
                     onClick={() => handleAddIssues()}
                     buttontext={" Add Issues ➥"}
                   ></CustomButton>
+                  </div>}
                   <br />
                   <br />
                   <b>OR</b>
                   <br />
                   <br />
+                  {divIsVisibleList&& divIsVisibleList.includes("existing-infrastructure-table")&&
+                  <div id="existing-infrastructure-table">
                   <CustomTable
                     rows={infraList}
                     columns={columns}
@@ -545,6 +596,7 @@ export default function ConfigureInfrastructure() {
                     redirectIconActive={true}
                     isDeleteDialog={true}
                   ></CustomTable>
+                  </div>}
                 </Container>
                 <br />
                 <br />

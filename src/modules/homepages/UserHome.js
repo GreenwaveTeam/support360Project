@@ -64,7 +64,7 @@ function UserHome() {
       });
       if (response.status === 403) {
         localStorage.clear();
-        navigate("/userlogin");
+        navigate("/login");
         return;
       }
       const data = await response.json();
@@ -209,7 +209,7 @@ function UserHome() {
                   <Datepicker
                     value={formData.supportEndDate}
                     format="DD-MM-YYYY"
-                    slotProps={{ textField: { fullWidth: true } }}
+                    // slotProps={{ textField: { fullWidth: true } }}
                     readOnly
                   />
                 </div>
@@ -316,7 +316,7 @@ function UserHome() {
                   <Datepicker
                     value={ticketData.last_ticket_raised}
                     format="DD-MM-YYYY"
-                    slotProps={{ textField: { fullWidth: true } }}
+                    // slotProps={{ textField: { fullWidth: true } }}
                     readOnly
                   />
                 </div>

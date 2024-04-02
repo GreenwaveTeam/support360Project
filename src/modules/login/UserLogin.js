@@ -243,23 +243,24 @@ export default function UserLogin() {
                 </Grid>
               </Grid>
             </Box>
+
+            {error && (
+              <Typography color="error" variant="body2">
+                {error}
+              </Typography>
+            )}
+            <Grid item xs={12} marginTop={"50px"}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                onClick={handleLogin}
+                autoFocus
+              >
+                Login
+              </Button>
+            </Grid>
           </form>
-          {error && (
-            <Typography color="error" variant="body2">
-              {error}
-            </Typography>
-          )}
-          <Grid item xs={12} marginTop={"50px"}>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={handleLogin}
-              autoFocus
-            >
-              Login
-            </Button>
-          </Grid>
         </Box>
       </Container>
       <Snackbar

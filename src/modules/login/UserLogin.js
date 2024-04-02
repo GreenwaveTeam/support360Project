@@ -255,6 +255,7 @@ export default function UserLogin() {
               fullWidth
               variant="contained"
               onClick={handleLogin}
+              autoFocus
             >
               Login
             </Button>

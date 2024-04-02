@@ -29,6 +29,8 @@ import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.
 import Main from "../../components/navigation/mainbody/mainbody";
 import TopbarPage from "../../components/navigation/topbar/topbar";
 import SidebarPage from "../../components/navigation/sidebar/sidebar";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 export default function AdminHome() {
   const [list, setList] = useState([]);
@@ -468,7 +470,7 @@ export default function AdminHome() {
                             {/* <Link
                             style={{ textDecoration: "none", color: "inherit" }}
                           > */}
-                            <BorderColorOutlinedIcon
+                            <EditIcon
                               color="primary"
                               style={{
                                 cursor: "pointer",
@@ -482,7 +484,7 @@ export default function AdminHome() {
                             />
                           </TableCell>
                           <TableCell align="center">
-                            <DeleteForeverOutlinedIcon
+                            <DeleteIcon
                               color="error"
                               style={{ cursor: "pointer" }}
                               // onClick={(e) => {
@@ -675,7 +677,7 @@ export default function AdminHome() {
                             {item.userID}
                           </TableCell> */}
                           <TableCell align="center">
-                            <BorderColorOutlinedIcon
+                            <EditIcon
                               color="primary"
                               style={{ cursor: "pointer" }}
                               onClick={() => {
@@ -687,7 +689,7 @@ export default function AdminHome() {
                             />
                           </TableCell>
                           <TableCell align="center">
-                            <DeleteForeverOutlinedIcon
+                            <DeleteIcon
                               color="error"
                               style={{ cursor: "pointer" }}
                               onClick={() => handleAdminDelete(item.adminID)}

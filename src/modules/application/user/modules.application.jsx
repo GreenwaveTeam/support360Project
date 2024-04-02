@@ -1585,7 +1585,7 @@ useEffect(() => {
                 <div
                   align="center"
                   style={{
-                    backgroundColor: "#B5C0D0",
+                    backgroundColor: "red",
                     padding: "5px",
                     flex: 1,
                     overflow: "auto",

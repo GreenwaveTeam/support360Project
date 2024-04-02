@@ -90,7 +90,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     <AppBar
       position="fixed"
       open={open}  
-      sx={{ backgroundColor: colors.primary[400], color: colors.primary[900] }}
+      sx={{ backgroundColor: colors.newColor[100], color: colors.primary[900] }}
     >
       
       <Toolbar>
@@ -104,7 +104,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          <BreadCrumbs urllist={urllist} style={{colors: "red"}}/>
+          <BreadCrumbs urllist={urllist} style={{ color: 'green !imporatnt' }}/>
           
         </Typography>
         <div style={{marginLeft:"auto"}}>

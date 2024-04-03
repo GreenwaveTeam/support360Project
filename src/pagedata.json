@@ -27,9 +27,9 @@
         },
         {
           "pagelink":"/admin/DeviceConfigure",
-          "components":["delete-selected-node"]
+          "components":["delete-selected-node,add-new-node"]
         }
-        
+      
         ]
         
       }

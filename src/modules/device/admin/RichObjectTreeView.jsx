@@ -22,6 +22,7 @@ import CustomDialog from "../../../components/dialog/dialog.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import CustomButton from "../../../components/button/button.component";
 import { useLocation, useNavigate } from "react-router-dom";
+import { display } from "@mui/system";
 
 export default function RichObjectTreeView() {
   const [selectedNode, setSelectedNode] = useState(null);
@@ -161,7 +162,7 @@ export default function RichObjectTreeView() {
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=user1&pagename=${currentPageLocation}`,
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -770,26 +771,39 @@ export default function RichObjectTreeView() {
             <div className={`right-panel ${data === null ? "hidden" : ""}`}>
               {data !== null && selectedNode && (
                 <>
-                  <Box>
+                  <Box style={{ display: "flex" }}>
                     <p className="selectedNodeInfo">
                       {selectedNode
                         ? `Selected Node: ${selectedNode.name}
                               `
                         : "Select a node          "}
-                      {divIsVisibleList &&
-                        divIsVisibleList.includes("delete-selected-node") && (
-                          <div id="delete-selected-node">
-                            <CustomButton
-                              className="button"
-                              variant="contained"
-                              color="secondary" // Use secondary color for delete button
-                              //onClick={handleDeleteNode}
-                              onClick={handleDialogOpen}
-                              buttontext={"Delete Node"}
-                            ></CustomButton>
-                          </div>
-                        )}
                     </p>
+                    {divIsVisibleList &&
+                      divIsVisibleList.includes("delete-selected-node") && (
+                        <div
+                          id="delete-selected-node"
+                          style={{ display: "flex" }}
+                        >
+                          <CustomButton
+                            className="button"
+                            variant="contained"
+                            color="secondary" // Use secondary color for delete button
+                            //onClick={handleDeleteNode}
+                            onClick={handleDialogOpen}
+                            buttontext={"Delete Node"}
+                          ></CustomButton>
+                        </div>
+                      )}
+                    <div id="add-new-node" style={{ display: "flex" }}>
+                      <CustomButton
+                        className="button"
+                        variant="contained"
+                        color="secondary" // Use secondary color for delete button
+                        //onClick={handleDeleteNode}
+                        onClick={() => setVisible(true)}
+                        buttontext={"Add Node"}
+                      ></CustomButton>
+                    </div>
                   </Box>
 
                   <div>
@@ -1485,13 +1499,13 @@ export default function RichObjectTreeView() {
                         zIndex: 9999,
                       }}
                     >
-                      <CustomButton
+                      {/* <CustomButton
                         className="button"
                         variant="contained"
                         color="secondary"
                         onClick={() => setVisible(true)}
                         buttontext={"Add Item"}
-                      ></CustomButton>
+                      ></CustomButton> */}
                     </div>
                   )}
                 </>

@@ -91,7 +91,7 @@ const currentPageLocation=useLocation().pathname;
       console.log("Current Page Location: ", currentPageLocation);
   
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=user1&pagename=admin/infrastructure/addIssues`,
+        `http://localhost:8081/role/roledetails?role=user1&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -651,6 +651,7 @@ const currentPageLocation=useLocation().pathname;
     console.log("Infrastructure : ", inf);
     console.log("search value is ", search);
     fetchDBdata(plantId, inf);
+    fetchDivs();
    
 
     const handleOnBeforeUnload = (event) => {

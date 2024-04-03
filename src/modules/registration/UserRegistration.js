@@ -58,6 +58,7 @@ export default function UserRegistration() {
     accountOwnerCustomer: "",
     accountOwnerGW: "",
     role: "",
+    homepage: "",
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -76,6 +77,7 @@ export default function UserRegistration() {
     accountOwnerCustomer: "",
     accountOwnerGW: "",
     role: "",
+    homepage: "",
   });
 
   const [cnfpass, setCnfpass] = useState("");
@@ -88,6 +90,7 @@ export default function UserRegistration() {
   const navigate = useNavigate();
   const [isStatePresent, setIsStatePresent] = useState(false);
   const [unchangedUserID, setUnchangedUserID] = useState("");
+  const [roleList, setRoleList] = useState([]);
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -134,6 +137,7 @@ export default function UserRegistration() {
         accountOwnerCustomer: state.user.accountOwnerCustomer,
         accountOwnerGW: state.user.accountOwnerGW,
         role: state.user.role,
+        homepage: state.user.homepage,
       });
     }
   };
@@ -142,6 +146,7 @@ export default function UserRegistration() {
     // console.log("user : ", state.user);
     checkstate();
     fetchData();
+    fetchRoles();
   }, []);
 
   const handleAddPlantClick = () => {
@@ -174,6 +179,11 @@ export default function UserRegistration() {
     setFormData({ ...formData, role: value });
   };
 
+  const handleHomepageChange = (event) => {
+    const { value } = event.target;
+    setFormData({ ...formData, homepage: value });
+  };
+
   const handlePhoneNumberChange = (event) => {
     const { value } = event.target;
     if (!isNaN(value) && value.length <= 10) {
@@ -194,6 +204,11 @@ export default function UserRegistration() {
   const updateHandleRoleChange = (event) => {
     const { value } = event.target;
     setUpdateFormData({ ...updateFormData, role: value });
+  };
+
+  const updateHandleHomepageChange = (event) => {
+    const { value } = event.target;
+    setUpdateFormData({ ...updateFormData, homepage: value });
   };
 
   const updateHandlePhoneNumberChange = (event) => {
@@ -258,6 +273,27 @@ export default function UserRegistration() {
       const data = await response.json();
       console.log("plantDetails : ", data);
       setPlantList(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch("http://localhost:8081/role", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 403) {
+        console.log("error featching roles");
+        return;
+      }
+      const data = await response.json();
+      console.log("Roles : ", data);
+      setRoleList(data);
     } catch (error) {
       console.log(error);
     }
@@ -691,14 +727,49 @@ export default function UserRegistration() {
                             onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Dropdown
                             fullWidth
                             id="role"
                             value={updateFormData.role}
                             label="Role"
-                            onChange={updateHandleRoleChange}
-                            list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                            // onChange={updateHandleRoleChange}
+                            // list={roleList}
+                            onChange={(event) => {
+                              const { value } = event.target;
+                              for (let i of roleList) {
+                                if (i === value) {
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    role: value,
+                                  });
+                                  return;
+                                }
+                              }
+                            }}
+                            list={roleList.map((p) => p)}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Dropdown
+                            fullWidth
+                            id="homepage"
+                            value={updateFormData.homepage}
+                            label="Homepage"
+                            onChange={updateHandleHomepageChange}
+                            list={["AdminHome", "UserHome"]}
+                            // onChange={(event) => {
+                            //   const { value } = event.target;
+                            //   for (let i of roleList) {
+                            //     if (i === value) {
+                            //       setUpdateFormData({
+                            //         ...updateFormData,
+                            //         role: value,
+                            //       });
+                            //       return;
+                            //     }
+                            //   }
+                            // }}
                           />
                         </Grid>
                       </Grid>
@@ -1057,14 +1128,37 @@ export default function UserRegistration() {
                             onChange={handleFormdataInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <Dropdown
                             fullWidth
                             id="role"
                             value={formData.role}
                             label="Role"
-                            onChange={handleRoleChange}
-                            list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                            // onChange={handleRoleChange}
+                            // list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                            onChange={(event) => {
+                              const { value } = event.target;
+                              for (let i of roleList) {
+                                if (i === value) {
+                                  setFormData({
+                                    ...formData,
+                                    role: value,
+                                  });
+                                  return;
+                                }
+                              }
+                            }}
+                            list={roleList.map((p) => p)}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Dropdown
+                            fullWidth
+                            id="homepage"
+                            value={formData.homepage}
+                            label="Homepage"
+                            onChange={handleHomepageChange}
+                            list={["AdminHome", "UserHome"]}
                           />
                         </Grid>
                       </Grid>

@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Grid,
+  Typography,
+} from "@mui/material";
 // import { useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -7,6 +14,7 @@ import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.
 import Main from "../../components/navigation/mainbody/mainbody";
 import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import TopbarPage from "../../components/navigation/topbar/topbar";
+import { useUserContext } from "../contexts/UserContext";
 
 const AdminPage = () => {
   // const { userID } = useParams();
@@ -23,6 +31,15 @@ const AdminPage = () => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const { userData, setUserData } = useUserContext();
+  console.log("userData ==>> ", userData);
+
+  const convertToInitials = (name) => {
+    const parts = name.split(" ");
+    const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
+    return initials;
   };
 
   useEffect(() => {
@@ -75,6 +92,18 @@ const AdminPage = () => {
         <Box
         // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
+          <Avatar>{convertToInitials(userData.name)}</Avatar>
+          <br></br>
+          <Typography component="h1" variant="h5">
+            Configure for :{"  "}
+            <Typography
+              component="span"
+              variant="h4"
+              sx={{ fontWeight: "bold" }}
+            >
+              {userData.userID}
+            </Typography>
+          </Typography>
           <Container component="main" maxWidth="md">
             {/* <Typography component="h1" variant="h5">
         Create Configuration for {userName}

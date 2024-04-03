@@ -232,14 +232,14 @@ export default function AdminRegistration() {
                   </Grid>
                   <Grid item xs={12}>
                     <Textfield
-                      autoComplete="adminID"
-                      name="adminID"
                       required
                       fullWidth
-                      id="adminID"
-                      label="Admin ID"
-                      value={updateFormData.adminID}
-                      onChange={updateHandleFormdataInputChange}
+                      name="phoneNumber"
+                      label="Phone Number"
+                      id="phoneNumber"
+                      autoComplete="phoneNumber"
+                      value={updateFormData.phoneNumber}
+                      onChange={updateHandlePhoneNumberChange}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -257,14 +257,14 @@ export default function AdminRegistration() {
                   </Grid>
                   <Grid item xs={12}>
                     <Textfield
+                      autoComplete="adminID"
+                      name="adminID"
                       required
                       fullWidth
-                      name="phoneNumber"
-                      label="Phone Number"
-                      id="phoneNumber"
-                      autoComplete="phoneNumber"
-                      value={updateFormData.phoneNumber}
-                      onChange={updateHandlePhoneNumberChange}
+                      id="adminID"
+                      label="Admin ID"
+                      value={updateFormData.adminID}
+                      onChange={updateHandleFormdataInputChange}
                     />
                   </Grid>
                   <Grid item xs={12}>

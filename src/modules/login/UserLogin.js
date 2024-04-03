@@ -121,9 +121,9 @@ export default function UserLogin() {
       console.log("fetchUser data : ", data);
       const role = data.role;
       console.log("role : ", role);
-      const roleArray = role.split(",");
-      console.log("roles: ", roleArray);
-      if (roleArray.includes("ROLE_USER")) {
+      // const roleArray = role.split(",");
+      // console.log("roles: ", roleArray);
+      if (role.includes("ROLE_USER")) {
         navigate("/UserHome");
       } else {
         fetchAdmin();

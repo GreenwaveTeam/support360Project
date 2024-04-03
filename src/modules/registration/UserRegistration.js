@@ -19,6 +19,8 @@ import {
   FormControl,
   InputAdornment,
   Tooltip,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
@@ -85,6 +87,7 @@ export default function UserRegistration() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const navigate = useNavigate();
   const [isStatePresent, setIsStatePresent] = useState(false);
+  const [unchangedUserID, setUnchangedUserID] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -209,6 +212,31 @@ export default function UserRegistration() {
     }
   };
 
+  const handleUserIDChange = (event) => {
+    setFormData({ ...formData, userID: event.target.value });
+    setUnchangedUserID(event.target.value);
+    setUpdateFormData({ ...updateFormData, userID: event.target.value });
+  };
+
+  const handleEmailChange = (event) => {
+    setFormData({ ...formData, email: event.target.value });
+    setUpdateFormData({ ...updateFormData, email: event.target.value });
+  };
+
+  const handleCheckboxChange = () => {
+    setFormData({
+      ...formData,
+      userID:
+        formData.userID === formData.email ? unchangedUserID : formData.email,
+    });
+  };
+
+  const convertToInitials = (name) => {
+    const parts = name.split(" ");
+    const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
+    return initials;
+  };
+
   function convertDateFormat(dateString) {
     const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
@@ -277,9 +305,7 @@ export default function UserRegistration() {
       );
       if (response.ok) {
         console.log("User Updated successfully");
-        // navigate(`/abc/${formData.userID}`, {
-        //   state: { userName: formData.name },
-        // });
+        navigate("/AdminHome");
       } else {
         console.error("Failed to update user");
       }
@@ -301,7 +327,7 @@ export default function UserRegistration() {
       });
       if (response.ok) {
         console.log("User registered successfully");
-        navigate(`/AdminHome`);
+        navigate("/AdminHome");
       } else if (response.status === 400) {
         console.error("User Already Exist");
       } else {
@@ -361,17 +387,22 @@ export default function UserRegistration() {
                 alignItems: "center",
               }}
             >
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <HowToRegTwoToneIcon />
-              </Avatar>
-              <Typography component="h1" variant="h5">
-                User Registration Page
-              </Typography>
-
               {isStatePresent ? (
                 // update form starts here...
 
                 <>
+                  <Avatar>{convertToInitials(updateFormData.name)}</Avatar>
+                  <br></br>
+                  <Typography component="h1" variant="h5">
+                    Update for :{"  "}
+                    <Typography
+                      component="span"
+                      variant="h4"
+                      sx={{ fontWeight: "bold" }}
+                    >
+                      {updateFormData.userID}
+                    </Typography>
+                  </Typography>
                   <form>
                     <Box noValidate sx={{ mt: 3 }}>
                       <Grid container spacing={2}>
@@ -384,18 +415,6 @@ export default function UserRegistration() {
                             label="Name"
                             autoFocus
                             value={updateFormData.name}
-                            onChange={updateHandleFormdataInputChange}
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Textfield
-                            autoComplete="userID"
-                            name="userID"
-                            required
-                            fullWidth
-                            id="userID"
-                            label="User ID"
-                            value={updateFormData.userID}
                             onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
@@ -419,7 +438,20 @@ export default function UserRegistration() {
                             name="email"
                             autoComplete="email"
                             value={updateFormData.email}
-                            onChange={updateHandleFormdataInputChange}
+                            onChange={handleEmailChange}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Textfield
+                            InputProps={{ readOnly: true }}
+                            autoComplete="userID"
+                            name="userID"
+                            required
+                            fullWidth
+                            id="userID"
+                            label="User ID"
+                            value={updateFormData.userID}
+                            onChange={handleUserIDChange}
                           />
                         </Grid>
                         {/* {!userExist && (
@@ -602,6 +634,12 @@ export default function UserRegistration() {
                           <Datepicker
                             label="Support Start Date"
                             value={dayjs(updateFormData.supportStartDate)}
+                            onChange={(startDate) =>
+                              setUpdateFormData({
+                                ...updateFormData,
+                                supportStartDate: startDate,
+                              })
+                            }
                             slotProps={{ textField: { fullWidth: true } }}
                           />
                         </Grid>
@@ -609,6 +647,12 @@ export default function UserRegistration() {
                           <Datepicker
                             label="Support End Date"
                             value={dayjs(updateFormData.supportEndDate)}
+                            onChange={(endDate) =>
+                              setUpdateFormData({
+                                ...updateFormData,
+                                supportEndDate: endDate,
+                              })
+                            }
                             slotProps={{ textField: { fullWidth: true } }}
                           />
                         </Grid>
@@ -674,6 +718,11 @@ export default function UserRegistration() {
                 // registration form starts here...
 
                 <>
+                  <Avatar>{convertToInitials(formData.name)}</Avatar>
+                  <br></br>
+                  <Typography component="h1" variant="h5">
+                    User Registration Page
+                  </Typography>
                   <form>
                     <Box noValidate sx={{ mt: 3 }}>
                       <Grid container spacing={2}>
@@ -686,18 +735,6 @@ export default function UserRegistration() {
                             label="Name"
                             autoFocus
                             value={formData.name}
-                            onChange={handleFormdataInputChange}
-                          />
-                        </Grid>
-                        <Grid item xs={6}>
-                          <Textfield
-                            autoComplete="userID"
-                            name="userID"
-                            required
-                            fullWidth
-                            id="userID"
-                            label="User ID"
-                            value={formData.userID}
                             onChange={handleFormdataInputChange}
                           />
                         </Grid>
@@ -721,8 +758,41 @@ export default function UserRegistration() {
                             name="email"
                             autoComplete="email"
                             value={formData.email}
-                            onChange={handleFormdataInputChange}
+                            onChange={handleEmailChange}
                           />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <FormControl fullWidth>
+                            <InputLabel htmlFor="userID">userID</InputLabel>
+                            <OutlinedInput
+                              autoComplete="userID"
+                              name="userID"
+                              required
+                              fullWidth
+                              id="userID"
+                              label="User ID"
+                              value={formData.userID}
+                              onChange={handleUserIDChange}
+                              endAdornment={
+                                <InputAdornment position="end">
+                                  <Tooltip title="Auto-fill UserID with Email Address">
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          checked={
+                                            formData.userID === formData.email
+                                          }
+                                          onChange={handleCheckboxChange}
+                                          name="autoFillUserID"
+                                          color="primary"
+                                        />
+                                      }
+                                    />
+                                  </Tooltip>
+                                </InputAdornment>
+                              }
+                            />
+                          </FormControl>
                         </Grid>
                         {!userExist && (
                           <Grid item xs={6}>
@@ -855,7 +925,7 @@ export default function UserRegistration() {
                               value={formData.plantID}
                               endAdornment={
                                 <InputAdornment position="end">
-                                  <Tooltip title="Add Plant" placement="right">
+                                  <Tooltip title="Add Plant">
                                     <IconButton
                                       onClick={handleAddPlantClick}
                                       edge="end"

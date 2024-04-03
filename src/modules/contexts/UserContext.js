@@ -6,6 +6,8 @@ export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState({
     userID: "",
     name: "",
+    role: "",
+    plantID: "",
   });
 
   return (

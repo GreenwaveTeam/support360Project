@@ -8,6 +8,7 @@ import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import Main from "../../components/navigation/mainbody/mainbody";
 import TopbarPage from "../../components/navigation/topbar/topbar";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
+import { useUserContext } from "../contexts/UserContext";
 
 function UserHome() {
   const [formData, setFormData] = useState({
@@ -35,6 +36,9 @@ function UserHome() {
   });
   const [token, setToken] = useState("");
   const navigate = useNavigate();
+
+  const { userData, setUserData } = useUserContext();
+  console.log("userData ==>> ", userData);
 
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
@@ -70,16 +74,16 @@ function UserHome() {
       }
       const data = await response.json();
       console.log("fetchUser data : ", data);
-      localStorage.setItem("userPlantID", data.plantID);
+      // localStorage.setItem("userPlantID", data.plantID);
+      // setUserData(data.plantID);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
   };
 
-  const list = ["support_Till_Date", "Ticket_Informations"];
+  const list = ["support_Till_Date", "Ticket_Informations", "open_Tickets"];
 
   const fetchUser = async () => {
-    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
     try {
       const response = await fetch("http://localhost:8081/users/user", {
         method: "GET",
@@ -120,7 +124,13 @@ function UserHome() {
         accountOwnerGW: data.accountOwnerGW,
         role: data.role,
       }));
-      localStorage.setItem("userPlantID", data.plantID);
+      // localStorage.setItem("userPlantID", data.plantID);
+      setUserData({
+        ...userData,
+        plantID: data.plantID,
+        role: data.role,
+        userID: data.userID,
+      });
     } catch (error) {
       console.error("Error fetching user list:", error);
     }

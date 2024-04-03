@@ -26,6 +26,7 @@ import { Dialog } from "primereact/dialog";
 import AddIcon from "@mui/icons-material/Add";
 import CustomTable from "../../../components/table/table.component";
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
+import { useUserContext } from "../../contexts/UserContext";
 
 export default function InfrastructureUser() {
   const [open, setOpen] = useState(false);
@@ -45,6 +46,9 @@ export default function InfrastructureUser() {
   );
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
   const [ticketOpen, setTicketOpen] = useState(false);
+
+  const { userData, setUserData } = useUserContext();
+  console.log("userData ==>> ", userData);
 
   const infraTicketJSON = {
     plantId: "plant101",

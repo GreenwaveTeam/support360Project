@@ -778,6 +778,7 @@ export default function RichObjectTreeView() {
                               `
                         : "Select a node          "}
                     </p>
+                    &nbsp;&nbsp;&nbsp;
                     {divIsVisibleList &&
                       divIsVisibleList.includes("delete-selected-node") && (
                         <div
@@ -787,6 +788,7 @@ export default function RichObjectTreeView() {
                           <CustomButton
                             className="button"
                             variant="contained"
+                            size={"small"}
                             color="secondary" // Use secondary color for delete button
                             //onClick={handleDeleteNode}
                             onClick={handleDialogOpen}
@@ -794,11 +796,13 @@ export default function RichObjectTreeView() {
                           ></CustomButton>
                         </div>
                       )}
+                    &nbsp;&nbsp;
                     {divIsVisibleList &&
                       divIsVisibleList.includes("add-new-node") && (
                         <div id="add-new-node" style={{ display: "flex" }}>
                           <CustomButton
                             className="button"
+                            size={"small"}
                             variant="contained"
                             color="secondary" // Use secondary color for delete button
                             //onClick={handleDeleteNode}

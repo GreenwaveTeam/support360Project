@@ -597,7 +597,7 @@ export default function UserDeviceTree() {
                               onChange={handleSelectPriority}
                               label="Select Priority"
                             >
-                              <MenuItem value="Mejor">Mejor</MenuItem>
+                              <MenuItem value="Major">Major</MenuItem>
                               <MenuItem value="Minor">Minor</MenuItem>
                               <MenuItem value="Critical">Critical</MenuItem>
                             </Select>

@@ -57,6 +57,42 @@ export default function ModuleConfiguration() {
   const [divIsVisibleList,setDivIsVisibleList]=useState([]);
   const currentPageLocation=useLocation().pathname;
 
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+  
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/ApplicationConfigure`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Fetch div"+JSON.stringify(data))
+      if (response.ok) {
+        console.log("Current Response : ",data)
+        console.log("Current Divs : ",data.components)
+        setDivIsVisibleList(data.components)
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
   
   useEffect(() => {
     const fetchData = async () => {
@@ -76,6 +112,7 @@ export default function ModuleConfiguration() {
     };
 
     fetchData();
+    fetchDivs();
   }, []);
 
     const [editRow,setEditRow]=useState(false)

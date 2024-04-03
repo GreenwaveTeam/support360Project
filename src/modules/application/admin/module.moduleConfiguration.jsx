@@ -78,6 +78,46 @@ export default function ModuleConfigure ()  {
 	  ]  
 	  ;
 	
+	const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+  	const currentPageLocation=useLocation().pathname;
+
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+  
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/ApplicationConfigure/Modules`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Fetch div"+JSON.stringify(data))
+      if (response.ok) {
+        console.log("Current Response : ",data)
+        console.log("Current Divs : ",data.components)
+        setDivIsVisibleList(data.components)
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
+
 	  useEffect(() => {
 		const fetchData = async () => {
 			console.log("useFffect called*********************************************")
@@ -102,6 +142,7 @@ export default function ModuleConfigure ()  {
 		}
 
     fetchData();
+	fetchDivs();
   }, []);
 
 	
@@ -575,7 +616,8 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 	if(localStorage.getItem("token")===null)
     return(<NotFound/>)
 	return (
-		
+		<div>    
+      		{divIsVisibleList.length!==0 && divIsVisibleList.includes("add-module-existing-issues")&&
 		 <Box sx={{ display: 'flex' }}>
 			<Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[
     			{pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' },
@@ -627,7 +669,9 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 							 // Adjust margin as needed
 						/> */}
 						<Box sx={{ flexGrow: 1 }} />
-						 {/* Empty Box to fill remaining space */}
+						<div>
+						{divIsVisibleList&&divIsVisibleList.includes("add-application-module")&& 
+            
 							<Button
 								variant="contained"
 								onClick={handleRedirect}sx={{ marginRight: '50px',padding: '4px ', // Decrease padding to make the button smaller
@@ -637,6 +681,8 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 							>
 								Add Module
 							</Button>
+							}
+							</div>
 							{/* <Button
 								variant="contained"
 								onClick={handleDeleteModule}sx={{ marginRight: '50px',padding: '4px ', // Decrease padding to make the button smaller
@@ -826,6 +872,14 @@ const filteredModules = data!==null&&data.modulelist.filter(module =>
 				<Snackbar openPopup={dialogPopup} snackbarSeverity={snackbarSeverity} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
 			</Main>
 		</Box>
+
+		}
+		{divIsVisibleList.length===0 && 
+			<NotFound/>
+			}
+    
+		</div>
+													
 	);
 };
 

@@ -133,7 +133,7 @@ const currentPageLocation=useLocation().pathname;
       console.log("Currently passed Data : ",location.state)
   
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=user1&pagename=${currentPageLocation}`,
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {

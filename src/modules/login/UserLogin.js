@@ -36,8 +36,8 @@ export default function UserLogin() {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      // fetchUser();
-      navigate("/userhome");
+      fetchUser();
+      // navigate("/userhome");
     }
   }, []);
 
@@ -86,8 +86,8 @@ export default function UserLogin() {
         // attempts++;
       }
       if (token !== null) {
-        // fetchUser();
-        navigate("/userhome");
+        fetchUser();
+        // navigate("/userhome");
         console.log("Logged in");
       } else {
         handleClick();
@@ -119,48 +119,52 @@ export default function UserLogin() {
       }
       const data = await response.json();
       console.log("fetchUser data : ", data);
-      const role = data.role;
-      console.log("role : ", role);
+      const homepage = data.homePage;
+      console.log("data.homepage : ", data.homePage);
+      console.log("role : ", homepage);
       // const roleArray = role.split(",");
       // console.log("roles: ", roleArray);
-      if (role.includes("ROLE_USER")) {
-        navigate("/UserHome");
-      } else {
-        fetchAdmin();
-      }
+      // if (homepage === "ROLE_USER") {
+      //   navigate("/UserHome");
+      // }
+      // else {
+      //   // fetchAdmin();
+      // }
+      navigate(`/${homepage}`);
+      console.log(`navigate /${homepage}`);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
   };
 
-  const fetchAdmin = async () => {
-    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
-    try {
-      const response = await fetch("http://localhost:8081/admins/admin", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (response.status === 403) {
-        localStorage.clear();
-        navigate("/login");
-        return;
-      }
-      const data = await response.json();
-      console.log("fetchUser data : ", data);
-      const role = data.role;
-      console.log("role : ", role);
-      const roleArray = role.split(",");
-      console.log("roles: ", roleArray);
-      if (roleArray.includes("ROLE_ADMIN")) {
-        navigate("/AdminHome");
-      }
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
+  // const fetchAdmin = async () => {
+  //   console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+  //   try {
+  //     const response = await fetch("http://localhost:8081/admins/admin", {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
+  //     if (response.status === 403) {
+  //       localStorage.clear();
+  //       navigate("/login");
+  //       return;
+  //     }
+  //     const data = await response.json();
+  //     console.log("fetchUser data : ", data);
+  //     const role = data.role;
+  //     console.log("role : ", role);
+  //     const roleArray = role.split(",");
+  //     console.log("roles: ", roleArray);
+  //     if (roleArray.includes("ROLE_ADMIN")) {
+  //       navigate("/AdminHome");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
 
   return (
     <>

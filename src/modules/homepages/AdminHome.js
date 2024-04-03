@@ -457,11 +457,18 @@ export default function AdminHome() {
                               fontSize: "14px",
                             }}
                             onClick={() => {
-                              localStorage.setItem(
-                                "adminPlantID",
-                                item.plantID
-                              );
+                              // localStorage.setItem(
+                              //   "adminPlantID",
+                              //   item.plantID
+                              // );
                               navigate("/AdminPage");
+                              setUserData({
+                                ...userData,
+                                plantID: item.plantID,
+                                role: item.role,
+                                userID: item.userID,
+                                name: item.name,
+                              });
                             }}
                             align="center"
                           >

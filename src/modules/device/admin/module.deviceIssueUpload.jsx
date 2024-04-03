@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Box, MenuItem, Button, Container } from '@mui/material';
 import Swal from 'sweetalert2'
@@ -39,7 +39,7 @@ const DeviceIssue = () => {
   
   const [divIsVisibleList,setDivIsVisibleList]=useState([]);
   const currentPageLocation=useLocation().pathname;
-
+  const navigate=useNavigate()
 
   const columns=[
     {
@@ -99,9 +99,12 @@ const DeviceIssue = () => {
         console.log("Current Response : ",data)
         console.log("Current Divs : ",data.components)
         setDivIsVisibleList(data.components)
+        if(data.components.length===0)
+        navigate("/notfound");
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
+      navigate("/notfound");
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
       // setOpen(true); // Assuming setOpen is defined elsewhere
@@ -360,10 +363,7 @@ const DeviceIssue = () => {
     </Box>
     
     } 
-    {divIsVisibleList.length===0 && 
-    <NotFound/>
-
-    }
+    
     </div>
   );
 };

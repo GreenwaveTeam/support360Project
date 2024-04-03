@@ -76,9 +76,12 @@ const DeviceCategory = () => {
         console.log("Current Response : ",data)
         console.log("Current Divs : ",data.components)
         setDivIsVisibleList(data.components)
+        if(data.components.length===0)
+        navigate("/notfound");
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
+      navigate("/notfound");
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
       // setOpen(true); // Assuming setOpen is defined elsewhere
@@ -344,9 +347,7 @@ const DeviceCategory = () => {
       <DialogBox snackbarSeverity={snackbarSeverity} openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage}/>
     </Box>
     } 
-    {divIsVisibleList.length===0 && 
-    <NotFound/>
-    }
+    
     </div>
   
   );

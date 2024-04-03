@@ -100,8 +100,11 @@ const fetchDivs = async () => {
       console.log("Current Response : ",data)
       console.log("Current Divs : ",data.components)
       setDivIsVisibleList(data.components)
+      if(data.components.length===0)
+        navigate("/notfound");
     }
   } catch (error) {
+        navigate("/notfound");
     console.log("Error in getting divs name :", error);
     // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
     // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
@@ -913,10 +916,7 @@ if(localStorage.getItem("token")===null)
       </Main>
     </Box>
   }
-  {divIsVisibleList.length===0 && 
-      <NotFound/>
-    }
-    
+  
   </div>
 
   );

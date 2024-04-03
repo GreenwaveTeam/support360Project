@@ -36,6 +36,42 @@ const DeviceCategory = () => {
   const [globalFilter, setGlobalFilter] = useState('');
   const [filteredRows,setFilteredRows]=useState([])
   const [snackbarSeverity,setsnackbarSeverity]=useState(null)
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+  
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=adminrole&pagename=admin/InfrastructureConfigure`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ",data)
+        console.log("Current Divs : ",data.components)
+        setDivIsVisibleList(data.components)
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
+  
   const columns=[
     {
       "id": "categoryname",
@@ -77,6 +113,7 @@ const DeviceCategory = () => {
     };
 
     fetchData();
+    fetchDivs();
   }, []);
 
   const handleDrawerOpen = () => {

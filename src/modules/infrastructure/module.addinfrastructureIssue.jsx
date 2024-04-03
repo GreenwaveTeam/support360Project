@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import CustomButton from "../../components/button/button.component";
@@ -78,7 +78,7 @@ export default function AddInfrastructureIssue() {
 
   const [divIsVisibleList,setDivIsVisibleList]=useState([]);
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 const currentPageLocation=useLocation().pathname;
   
 
@@ -112,6 +112,7 @@ const currentPageLocation=useLocation().pathname;
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
+      navigate("/*")
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
       // setOpen(true); // Assuming setOpen is defined elsewhere
@@ -651,6 +652,7 @@ const currentPageLocation=useLocation().pathname;
     console.log("Infrastructure : ", inf);
     console.log("search value is ", search);
     fetchDBdata(plantId, inf);
+    fetchDivs();
    
 
     const handleOnBeforeUnload = (event) => {

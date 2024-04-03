@@ -131,7 +131,7 @@ const currentPageLocation=useLocation().pathname;
       console.log("Current Page Location: ", currentPageLocation);
   
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=user1&pagename=admin/InfrastructureConfigure`,
+        `http://localhost:8081/role/roledetails?role=user1&pagename=/admin/InfrastructureConfigure`,
         {
           method: "GET",
           headers: {
@@ -152,6 +152,7 @@ const currentPageLocation=useLocation().pathname;
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
+      navigate("/*")
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
       // setOpen(true); // Assuming setOpen is defined elsewhere

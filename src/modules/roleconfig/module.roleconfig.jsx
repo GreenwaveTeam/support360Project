@@ -6,7 +6,7 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import Table from '../../components/table/table.component';
 import { Container } from '@mui/material';
 import axios from 'axios';
-export default function Role() {
+export default function RoleConfiguration() {
     
     const [role,setRole]=useState('')
     const [rows,setRows]=useState([])
@@ -55,6 +55,7 @@ export default function Role() {
         fetchData();
       },[])
       const handleRedirect=()=>{
+        //if()
           navigate(`/admin/role/Page`, {
             state: { role: role},
           });

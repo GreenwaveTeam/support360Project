@@ -533,6 +533,7 @@ export default function RichObjectTreeView() {
     }
   };
   const handlePostData = async (dataLocal) => {
+    console.log("data for post ", dataLocal);
     try {
       const response = await fetch(
         "http://localhost:8081/device/admin/saveTree/" + plantId,
@@ -596,17 +597,26 @@ export default function RichObjectTreeView() {
       setSelectedNode(null);
       setDelOpen(false);
     } else if (selectedNode) {
-      let dataForDelete;
-      // For other nodes, delete the selected node
-      setData((prevData) => {
-        const updatedData = JSON.parse(JSON.stringify(prevData));
-        findAndDeleteNode(updatedData, selectedNode.id);
-        dataForDelete = updatedData;
-        return updatedData;
+      let localData;
+
+      const setDataPromise = new Promise((resolve, reject) => {
+        setData((prevData) => {
+          const updatedData = JSON.parse(JSON.stringify(prevData));
+          findAndDeleteNode(updatedData, selectedNode.id);
+          localData = updatedData;
+          resolve(); // Resolve the promise once data is updated
+          return updatedData;
+        });
       });
+
+      setDataPromise.then(() => {
+        // Now you can safely use localData
+        handlePostData(localData);
+      });
+
       setSelectedNode(null);
       setDelOpen(false);
-      handlePostData(dataForDelete);
+      // handlePostData(testData);
     }
   };
   function arrayBufferToBase64(buffer) {
@@ -720,7 +730,8 @@ export default function RichObjectTreeView() {
                         className="button"
                         variant="contained"
                         color="secondary" // Use secondary color for delete button
-                        onClick={handleDeleteNode}
+                        //onClick={handleDeleteNode}
+                        onClick={handleDialogOpen}
                       >
                         Delete Node
                       </Button>
@@ -1449,13 +1460,13 @@ export default function RichObjectTreeView() {
                 </>
               )}
             </div>
-            {/* <CustomDialog
+            <CustomDialog
               open={delOpen}
               setOpen={setDelOpen}
               proceedButtonText={"YES"}
               proceedButtonClick={handleDeleteNode}
               cancelButtonText={"NO"}
-            ></CustomDialog> */}
+            ></CustomDialog>
           </div>
         </Box>
       </Main>

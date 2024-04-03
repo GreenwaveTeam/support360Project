@@ -29,9 +29,9 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TopbarPage from "./components/navigation/topbar/topbar";
 import { ColorModeContext, useMode } from "./theme";
 
-import RolePageConfiguration from "./modules/roleconfig/module.rolePageconfig";
-import RoleConfiguration from "./modules/roleconfig/module.roleconfig";
 import { UserProvider } from "./modules/contexts/UserContext";
+import RolePageConfiguration from "./modules/roleconfiguration/module.rolePageConfiguration";
+import RoleConfiguration from "./modules/roleconfiguration/module.roleConfiguration";
 
 function App() {
   const urllist = [

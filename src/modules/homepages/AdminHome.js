@@ -29,6 +29,7 @@ import TopbarPage from "../../components/navigation/topbar/topbar";
 import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { useUserContext } from "../contexts/UserContext";
 
 export default function AdminHome() {
   const [list, setList] = useState([]);
@@ -51,6 +52,9 @@ export default function AdminHome() {
     setSwitchChecked(event.target.checked);
     setSwitchLabel(event.target.checked ? "Toggle User" : "Toggle Admin");
   };
+
+  const { userData, setUserData } = useUserContext();
+  console.log("userData ==>> ", userData);
 
   const handleDrawerOpen = () => {
     setOpen(true);

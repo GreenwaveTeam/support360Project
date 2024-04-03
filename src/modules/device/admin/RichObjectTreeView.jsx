@@ -794,16 +794,19 @@ export default function RichObjectTreeView() {
                           ></CustomButton>
                         </div>
                       )}
-                    <div id="add-new-node" style={{ display: "flex" }}>
-                      <CustomButton
-                        className="button"
-                        variant="contained"
-                        color="secondary" // Use secondary color for delete button
-                        //onClick={handleDeleteNode}
-                        onClick={() => setVisible(true)}
-                        buttontext={"Add Node"}
-                      ></CustomButton>
-                    </div>
+                    {divIsVisibleList &&
+                      divIsVisibleList.includes("add-new-node") && (
+                        <div id="add-new-node" style={{ display: "flex" }}>
+                          <CustomButton
+                            className="button"
+                            variant="contained"
+                            color="secondary" // Use secondary color for delete button
+                            //onClick={handleDeleteNode}
+                            onClick={() => setVisible(true)}
+                            buttontext={"Add Item"}
+                          ></CustomButton>
+                        </div>
+                      )}
                   </Box>
 
                   <div>

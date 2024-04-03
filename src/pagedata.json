@@ -3,7 +3,7 @@
     {
       "page": "Infrastructure",
       "modules":[{
-          "pagelink":"/admin/Infrastructure",
+          "pagelink":"/admin/InfrastructureConfigure",
           "components":["add-new-infrastructure-category","existing-infrastructure-table"]
       },
       {

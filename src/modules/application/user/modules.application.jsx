@@ -1504,10 +1504,11 @@ useEffect(() => {
   console.log("useEffect() called ");
   console.log("USER from context : ",userData)
   let plantID = "P009";
-  if(userData.plantID!=='')
-  {
-    plantID=userData.plantID
-  }
+  // if(userData.plantID!=='')
+  // {
+  //   plantID=userData.plantID
+  // }
+  console.log('Current plantID : ',plantID)
   console.log("useEffect() for fetching data for first time....");
   fetchApplicationNames(plantID);
   fetchDivs();

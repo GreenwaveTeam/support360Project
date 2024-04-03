@@ -28,8 +28,46 @@ export default function Roleconfig() {
   //   setSelectedComponents(prev => [...prev, value]);
   // };
   useEffect(()=>{
-    console.log("Selected component"+JSON.stringify(componentList))
-  },[componentList])
+    const fetchData = async () => {
+      try {
+        console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+        // Make the API call to fetch data
+        const response = await axios.get(`http://localhost:8081/role/${role}`,{headers:{
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },});
+        
+        // Extract data from the response
+        const data = await response.data;
+        //console.log("data=====>", JSON.stringify(data)); 
+        const convertedData = [];
+
+        data.pagedetails.forEach(page => {
+          page.components.forEach(component => {
+            convertedData.push({ page: page.pagename, component: component });
+          });
+        });
+        console.log("converted data=====>", JSON.stringify(convertedData)); 
+        setRows(convertedData);
+        setFilteredRows(convertedData)
+        // if (data) {
+        //   const renamedData = data.map(item => ({
+        //     role: item
+            
+        //   }));
+        //   console.log(renamedData)
+        //   
+        //   setFilteredRows(renamedData)
+        //}
+      }catch(e){
+        //console.error('Error:', error);
+    setOpenPopup(true);
+    setDialogMessage('Database Error');
+    setsnackbarSeverity('error')
+  }
+}
+fetchData();}
+  ,[]);
   useEffect(()=>{
     const fetchData = async () => {
       try {

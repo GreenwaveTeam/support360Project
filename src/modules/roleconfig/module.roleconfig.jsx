@@ -17,6 +17,7 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import Table from "../../components/table/table.component";
 import { Container } from "@mui/material";
 import axios from "axios";
+
 export default function RoleConfiguration() {
   const [role, setRole] = useState("");
   const [rows, setRows] = useState([]);

@@ -14,7 +14,7 @@ import Table from '../../../components/table/table.component'
 import DialogBox from "../../../components/snackbar/customsnackbar.component";
 import TextField from "../../../components/textfield/textfield.component";
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from'sweetalert2'
 import NotFound from '../../../components/notfound/notfound.component';
@@ -51,7 +51,14 @@ export default function ModuleConfiguration() {
   const urllist = [
     {pageName:'Admin Home',pagelink:'/AdminPage'},
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" }
-  ];useEffect(() => {
+  ];
+  
+  
+  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+  const currentPageLocation=useLocation().pathname;
+
+  
+  useEffect(() => {
     const fetchData = async () => {
       console.log("Ischjscnjqnck")
       try {
@@ -170,7 +177,8 @@ export default function ModuleConfiguration() {
     return(<NotFound/>)
 
     return (
-   
+      <div>    
+      {divIsVisibleList.length!==0 && 
       <Box sx={{ display: 'flex' }}>
       <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={urllist} />
       <Sidebar
@@ -204,6 +212,7 @@ export default function ModuleConfiguration() {
       <DrawerHeader />
       <Box >
         <Container>
+        {divIsVisibleList&&divIsVisibleList.includes("add-new-application")&& 
       <form onSubmit={handleSubmit} >
               <TextField
                 label={'Application Name'}
@@ -223,6 +232,7 @@ export default function ModuleConfiguration() {
               ></AddCircleOutlineOutlinedIcon>
             </Button>
             </form>
+          }
             {/* <Box boxShadow={3} p={3} borderRadius={10}  
             sx={{backgroundColor: "#B5C0D0",display: 'flex',flexDirection:'column',width:'40%',
             justifyContent: 'center',}}alignItems={'center'} marginTop={'10px'}>
@@ -258,13 +268,21 @@ export default function ModuleConfiguration() {
             </Box>*/}
             </Container>
             &nbsp;
+            {divIsVisibleList&&divIsVisibleList.includes("existing-application-table")&& 
             <Table rows={data} setRows={setData} 
             redirectColumn={'application_name'} isDeleteDialog={true} columns={columns} savetoDatabse={handleSaveClick} handleRedirect={handleRedirect} deleteFromDatabase={handleDeleteClick}
             editActive={true} tablename={"Existing Applications"} /*style={}*/ redirectIconActive={true}/>
+          }
             </Box>
             <DialogBox snackbarSeverity={snackbarSeverity}openPopup={dialogPopup} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
     </Main>
     </Box>
-
+  }
+    {divIsVisibleList.length===0 && 
+      <NotFound/>
+    }
+    
+  </div>
+  
   )
 }

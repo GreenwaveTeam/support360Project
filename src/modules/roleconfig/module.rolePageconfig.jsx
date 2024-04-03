@@ -6,13 +6,55 @@ import { useLocation } from 'react-router-dom';
 
 import Snackbar from "../../components/snackbar/customsnackbar.component";
 import axios from 'axios';
+//import jsonData from '../'
+export default function RolePageConfiguration() {
+ ;const jsonData = {
+    "pagelist": [
+      {
+        "page": "Infrastructure",
+        "modules":[{
+            "pagelink":"/admin/Infrastructure",
+            "components":["add-new-infrastructure-category","existing-infrastructure-table"]
+        },
+        {
+            "pagelink":"/admin/infrastructure/addIssues",
+            "components":["add-issues-selected-category","edit-issues-selected-category"]
+        }
+    
+    ]
+      },
+      
+      {
+        "page": "Device",
+        "modules": [
+          {
+            "pagelink":"/admin/Device/CategoryConfigure",
+            "components":["add-new-device-category","existing-device-table"]
+        },
+          
+        ]
+      }
+    ]
+  };
+  
+  const convertedData = [];
+  
+  jsonData.pagelist.forEach(page => {
+    page.modules.forEach(module => {
+      if (module.pagelink) {
+        convertedData.push({
+          pagename: module.pagelink,
+          components: module.components 
+        });
+      } 
+    });
+  });
+  
+  console.log(convertedData);
+  const pageDetails = convertedData;
+  const pagelist = pageDetails.map(page => page.pagename);
 
-export default function Roleconfig() {
-  const pageDetails = [
-    { pagename: 'Page1', components: ['component1', 'component2'] },
-    { pagename: 'Page2', components: ['component3', 'component4'] }
-  ];
-  const pagelist = ['Page1', 'Page2'];
+ // const pagelist = ['Page1', 'Page2'];
   const [selectedPage, setSelectedPage] = useState('');
   const [componentList, setComponentList] = useState([]);
   const [selectedComponents, setSelectedComponents] = useState([]);
@@ -121,6 +163,8 @@ fetchData();}
     setSelectedPage(selectedPage);
     const page = pageDetails.find(page => page.pagename === selectedPage);
     if (page) {
+      console.log("Comonents===>"+page.components)
+
       setComponentList(page.components);
     }
   };

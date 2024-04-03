@@ -390,10 +390,10 @@ export default function UserDeviceTree() {
             pagelink: "/admin/Device/CategoryConfigure",
           },
           { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "admin/DeviceConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
           {
             pagename: "Infrastructure ",
-            pagelink: "admin/InfrastructureConfigure",
+            pagelink: "/admin/InfrastructureConfigure",
           },
         ]}
         userList={[

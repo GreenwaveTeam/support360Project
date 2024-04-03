@@ -253,7 +253,7 @@ fetchData();}
         required
         onChange={handleRoleChange}
         /> &nbsp;&nbsp;&nbsp; */}
-        <Typography sx={{fontWeight:800,fontSize:25 ,fontStyle:'oblique'}}>Current Role : {<span style={{fontWeight:'bold',color:'red'}}>role</span>}</Typography>
+        <Typography sx={{fontWeight:800,fontSize:25 ,fontStyle:'oblique'}}>Current Role : {<span style={{fontWeight:'bold',color:'red'}}>{role}</span>}</Typography>
         <Dropdown
           id="pageDetails" style={{width:'200px'}}
           label="Page"

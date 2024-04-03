@@ -85,7 +85,7 @@ export default function AdminHome() {
       );
       if (response.status === 403) {
         localStorage.clear();
-        navigate("/adminlogin");
+        navigate("/login");
         return;
       }
       const data = await response.json();
@@ -175,7 +175,7 @@ export default function AdminHome() {
       });
       if (response.status === 403) {
         localStorage.clear();
-        navigate("/adminlogin");
+        navigate("/login");
         return;
       }
       const data = await response.json();

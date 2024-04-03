@@ -17,11 +17,12 @@ import Dropdown from "../../../components/dropdown/dropdown.component";
 
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { Box, Container } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2'
 
 import axios from 'axios';
 import NotFound from '../../../components/notfound/notfound.component';
+
 
 const DeviceCategory = () => {
   const plantid='P009'
@@ -36,6 +37,11 @@ const DeviceCategory = () => {
   const [globalFilter, setGlobalFilter] = useState('');
   const [filteredRows,setFilteredRows]=useState([])
   const [snackbarSeverity,setsnackbarSeverity]=useState(null)
+  
+  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+  const currentPageLocation=useLocation().pathname;
+
+
   const columns=[
     {
       "id": "categoryname",
@@ -45,6 +51,44 @@ const DeviceCategory = () => {
     },
     
   ]  
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+  
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/Device/CategoryConfigure`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Fetch div"+JSON.stringify(data))
+      if (response.ok) {
+        console.log("Current Response : ",data)
+        console.log("Current Divs : ",data.components)
+        setDivIsVisibleList(data.components)
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
+  
+  
   useEffect(() => {
     console.log('UseEffect for Device Category');
     const fetchData = async () => {
@@ -77,6 +121,7 @@ const DeviceCategory = () => {
     };
 
     fetchData();
+    fetchDivs();
   }, []);
 
   const handleDrawerOpen = () => {
@@ -212,7 +257,11 @@ const DeviceCategory = () => {
    console.log("Not found")
     return(<NotFound/>)
   }
+  
   return (
+    
+    <div>    
+      {divIsVisibleList.length!==0 && 
     <Box sx={{ display: 'flex' }}>
       <Topbar
         open={open}
@@ -255,7 +304,10 @@ const DeviceCategory = () => {
           
         >
           <Container >
+          {divIsVisibleList&&divIsVisibleList.includes("add-new-category")&& 
+                  
             <form onSubmit={submitCategory} style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
+              
               <Textfield
                 label={'Issue Category '}
                 id="issuecategory"
@@ -276,17 +328,27 @@ const DeviceCategory = () => {
               ></AddCircleOutlineOutlinedIcon>
             </Button>
             </form>
+            }
             &nbsp;&nbsp;
-          
+            {divIsVisibleList&&divIsVisibleList.includes("device-category-table")&& 
+            
             <Table rows={categorylist} columns={columns} setRows={setCategorylist}
             savetoDatabse={editCategory} redirectColumn={'categoryname'} handleRedirect={handleRedirect} isDeleteDialog={true} deleteFromDatabase={handleDeleteClick} 
             editActive={true} tablename={"Existing Device Issue Category"} /*style={}*/ redirectIconActive={true} />
-          </Container>
+            }
+            </Container>
+          
           {/* </Box> */}
         </div>
       </Main>
       <DialogBox snackbarSeverity={snackbarSeverity} openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage}/>
     </Box>
+    } 
+    {divIsVisibleList.length===0 && 
+    <NotFound/>
+    }
+    </div>
+  
   );
 };
 

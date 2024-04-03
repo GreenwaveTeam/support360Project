@@ -9,7 +9,12 @@
         {
             "pagelink":"/admin/infrastructure/addIssues",
             "components":["add-issues-selected-category","edit-issues-selected-category"]
+        },{
+         
+          "pagelink":"/user/ReportApplication",
+          "components":["app-dropdown-selection"]
         }
+   
     
     ]
       },
@@ -24,8 +29,12 @@
         {
             "pagelink":"/admin/Device/CategoryConfigure/Issue",
             "components":["add-new-issue","device-issue-table"]
+        },
+        {
+          "pagelink":"/admin/DeviceConfigure",
+          "components":["delete-selected-node","add-new-node"]
         }
-        
+      
         ]
         
       }

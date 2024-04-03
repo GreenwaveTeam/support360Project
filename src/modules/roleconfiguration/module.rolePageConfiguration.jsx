@@ -233,6 +233,11 @@ fetchData();}
       },
     });
     setRows(prev=>[...prev,...currentRow])
+    setsnackbarSeverity('success')
+      setDialogMessage("Changes are saved!!")
+      setOpenPopup(true)
+      setComponentList([])
+      setSelectedPage('')
     }
     catch(e){
       setsnackbarSeverity('error')

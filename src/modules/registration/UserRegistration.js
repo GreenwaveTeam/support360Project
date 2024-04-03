@@ -21,6 +21,8 @@ import {
   Tooltip,
   FormControlLabel,
   Checkbox,
+  Snackbar,
+  Slide,
 } from "@mui/material";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
@@ -91,6 +93,20 @@ export default function UserRegistration() {
   const [isStatePresent, setIsStatePresent] = useState(false);
   const [unchangedUserID, setUnchangedUserID] = useState("");
   const [roleList, setRoleList] = useState([]);
+
+  const [snackbarText, setSnackbarText] = useState("");
+  const [snackbarSeverity, setsnackbarSeverity] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const handleClick = () => {
+    setOpen(true);
+  };
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -929,6 +945,9 @@ export default function UserRegistration() {
                                   Password Does Not Match
                                 </Alert>
                               </Stack>
+                              // handleClick();
+                              // setSnackbarText("User ID and password are required.");
+                              // setsnackbarSeverity("error");
                             )}
                           </Grid>
                         )}
@@ -1229,6 +1248,22 @@ export default function UserRegistration() {
               </>
             </Box>
           </Container>
+          <Snackbar
+            open={open}
+            autoHideDuration={3000}
+            onClose={handleClose}
+            TransitionComponent={Slide}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <Alert
+              onClose={handleClose}
+              severity={snackbarSeverity}
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {snackbarText}
+            </Alert>
+          </Snackbar>
         </Box>
       </Main>
     </Box>

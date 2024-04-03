@@ -283,7 +283,7 @@ export default function UserRegistration() {
         },
       });
       if (response.status === 403) {
-        navigate("/userhome");
+        navigate("/admin/home");
         return;
       }
       const data = await response.json();
@@ -357,7 +357,7 @@ export default function UserRegistration() {
       );
       if (response.ok) {
         console.log("User Updated successfully");
-        navigate("/AdminHome");
+        navigate("/admin/home");
       } else {
         console.error("Failed to update user");
       }
@@ -379,7 +379,7 @@ export default function UserRegistration() {
       });
       if (response.ok) {
         console.log("User registered successfully");
-        navigate("/AdminHome");
+        navigate("/admin/home");
       } else if (response.status === 400) {
         console.error("User Already Exist");
       } else {

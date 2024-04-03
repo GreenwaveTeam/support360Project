@@ -294,7 +294,7 @@ export default function AdminHome() {
               <Button
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={() => navigate("/UserRegistration")}
+                onClick={() => navigate("/user/registration")}
               >
                 Register New User
               </Button>
@@ -302,7 +302,7 @@ export default function AdminHome() {
               <Button
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={() => navigate("/AdminRegistration")}
+                onClick={() => navigate("/admin/registration")}
               >
                 Register New Admin
               </Button>
@@ -461,7 +461,7 @@ export default function AdminHome() {
                               //   "adminPlantID",
                               //   item.plantID
                               // );
-                              navigate("/AdminPage");
+                              navigate("/admin/configurePage");
                               setUserData({
                                 ...userData,
                                 plantID: item.plantID,
@@ -486,7 +486,7 @@ export default function AdminHome() {
                               }}
                               onClick={() => {
                                 console.log("item : ", item);
-                                navigate("/UserRegistration", {
+                                navigate("/user/registration", {
                                   state: { user: item },
                                 });
                               }}
@@ -691,7 +691,7 @@ export default function AdminHome() {
                               style={{ cursor: "pointer" }}
                               onClick={() => {
                                 console.log("item : ", item);
-                                navigate("/AdminRegistration", {
+                                navigate("/admin/registration", {
                                   state: { admin: item },
                                 });
                               }}

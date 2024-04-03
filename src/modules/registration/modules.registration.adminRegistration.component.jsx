@@ -182,7 +182,7 @@ export default function AdminRegistration() {
       });
       if (response.ok) {
         console.log("Admin registered successfully");
-        navigate(`/AdminHome`);
+        navigate(`/admin/home`);
       } else if (response.status === 400) {
         console.error("Admin Already Exist");
       } else {

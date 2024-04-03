@@ -72,7 +72,7 @@ export default function RolePageConfiguration() {
   useEffect(()=>{
     const fetchData = async () => {
       try {
-        console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+        console.log(`user/home Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
         const response = await axios.get(`http://localhost:8081/role/${role}`,{headers:{
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -113,7 +113,7 @@ fetchData();}
   useEffect(()=>{
     const fetchData = async () => {
       try {
-        console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+        console.log(`user/home Bearer ${localStorage.getItem("token")}`);
         console.log("Role"+role)
         // Make the API call to fetch data
         const response = await axios.get(`http://localhost:8081/role/${role}`,{headers:{

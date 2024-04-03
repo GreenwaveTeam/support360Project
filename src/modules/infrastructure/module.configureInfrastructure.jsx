@@ -26,6 +26,7 @@ export default function ConfigureInfrastructure() {
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
   const [open, setOpen] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
+  const location=useLocation();
  
   //const [onEditError, setOnEditError] = useState(false);
   //const [progressVisible, setProgressVisible] = useState(false);
@@ -129,6 +130,7 @@ const currentPageLocation=useLocation().pathname;
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
+      console.log("Currently passed Data : ",location.state)
   
       const response = await fetch(
         `http://localhost:8081/role/roledetails?role=user1&pagename=${currentPageLocation}`,
@@ -152,6 +154,10 @@ const currentPageLocation=useLocation().pathname;
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
+      if(fetchDivs.length===0)
+      {
+        navigate("/*")
+      }
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
       // setOpen(true); // Assuming setOpen is defined elsewhere

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import AnimatedPage from "../../components/animation_/AnimatedPage";
 import CustomButton from "../../components/button/button.component";
@@ -74,6 +74,7 @@ export default function AddInfrastructureIssue() {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
+  const navigate=useNavigate();
 
 
   const [divIsVisibleList,setDivIsVisibleList]=useState([]);
@@ -112,6 +113,10 @@ const currentPageLocation=useLocation().pathname;
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
+      if(fetchDivs.length===0)
+      {
+        navigate("/*")
+      }
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
       // setOpen(true); // Assuming setOpen is defined elsewhere

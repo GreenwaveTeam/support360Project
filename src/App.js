@@ -30,7 +30,7 @@ import TopbarPage from "./components/navigation/topbar/topbar";
 import { ColorModeContext, useMode } from "./theme";
 
 import RolePageConfig from "./modules/roleconfig/module.rolePageconfig";
-import Roleconfig from "./modules/roleconfig/module.roleConfig";
+import Roleconfig from "./modules/roleconfig/module.roleconfig";
 
 function App() {
   const urllist = [
@@ -138,14 +138,8 @@ function App() {
                 path="/admin/DeviceConfigure"
                 element={<RichObjectTreeView />}
               />
-              <Route
-            path="/admin/Role"
-            element={<Roleconfig />}
-          />
-          <Route
-            path="/admin/Role/Page"
-            element={<RolePageConfig/>}
-          />
+              <Route path="/admin/Role" element={<Roleconfig />} />
+              <Route path="/admin/Role/Page" element={<RolePageConfig />} />
             </Routes>
           </div>
         </Router>

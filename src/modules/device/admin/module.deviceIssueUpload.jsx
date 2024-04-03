@@ -37,6 +37,9 @@ const DeviceIssue = () => {
     { pageName: "Device Issue", pagelink: "/admin/Device/CategoryConfigure/Issue" }
   ];
   
+  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+  const currentPageLocation=useLocation().pathname;
+
 
   const columns=[
     {
@@ -71,6 +74,45 @@ const DeviceIssue = () => {
   //   window.history.replaceState({issuelist: issueList}, '', location.pathname );
   // }, [issueList]);
 
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+  
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/Device/CategoryConfigure/Issue`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Fetch div"+JSON.stringify(data))
+      if (response.ok) {
+        console.log("Current Response : ",data)
+        console.log("Current Divs : ",data.components)
+        setDivIsVisibleList(data.components)
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
+  
+  
+
   useEffect(() => {
     console.log('UseEffect for Device Issue');
     const fetchData = async () => {
@@ -95,7 +137,7 @@ const DeviceIssue = () => {
         console.error('Error fetching data:', error);
       }
     }
-    fetchData();
+    fetchData(); fetchDivs();
   }, []);
     const addIssueCategory = async () => {
       console.log("Add Issue")
@@ -229,6 +271,9 @@ const DeviceIssue = () => {
   if(localStorage.getItem("token")===null)
     return(<NotFound/>)
   return (
+    <div>    
+      {divIsVisibleList.length!==0 && 
+    
     <Box sx={{ display: 'flex' }}>
       <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={urllist} />
       <Sidebar
@@ -313,6 +358,13 @@ const DeviceIssue = () => {
         <DialogBox openPopup={openPopup}  snackbarSeverity={snackbarSeverity} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage} />
       </Main>
     </Box>
+    
+    } 
+    {divIsVisibleList.length===0 && 
+    <NotFound/>
+
+    }
+    </div>
   );
 };
 

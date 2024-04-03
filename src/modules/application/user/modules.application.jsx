@@ -30,7 +30,7 @@ import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -39,7 +39,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { styled } from "@mui/material/styles";
 import { motion } from "framer-motion";
 
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AnimatedPage from "../../../components/animation_/AnimatedPage";
 import CustomButton from "../../../components/button/button.component";
 import Dropdown from "../../../components/dropdown/dropdown.component";
@@ -52,6 +52,7 @@ import CustomTable from "../../../components/table/table.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 import './modules.application.css';
+import { useUserContext } from "../../contexts/UserContext";
  
 
 //The main export starts here....
@@ -74,6 +75,7 @@ export default function ApplicationUser()
 
   const [miscellaneousInput, setMiscellaneousInput] = useState("");
   const [remarksInput, setRemarksInput] = useState("");
+  
 
   //Modified
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -122,10 +124,15 @@ const handleDrawerClose = () => {
   const [additionalMiscellaneousError,setAdditionalMiscellaneousError]=useState(false)
   const [additionalMiscellaneousSeverityError,setAdditionallMiscellaneousSeverityError]=useState(false)
   const [ticketDialogOpen,setTicketDialogOpen]=useState(false);
-  const navigate =useNavigate()
+  //const navigate =useNavigate()
   const [progressVisible,setprogressVisible]=useState(false);
 
+  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+  const navigate = useNavigate();
+  const currentPageLocation=useLocation().pathname;
 
+
+  const { userData, setUserData } = useUserContext();  
 
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
@@ -311,10 +318,54 @@ const handleDrawerClose = () => {
   };
 
 /* ********************** API ************************** */
+
+
+const fetchDivs = async () => {
+  try {
+    console.log("fetchDivs() called");
+    console.log("Current Page Location: ", currentPageLocation);
+   // console.log("Currently passed Data : ",location.state)
+
+    const response = await fetch(
+      `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    if (response.ok) {
+      console.log("Current Response : ",data)
+      console.log("Current Divs : ",data.components)
+      setDivIsVisibleList(data.components)
+    }
+  } catch (error) {
+    console.log("Error in getting divs name :", error);
+    if(fetchDivs.length===0)
+    {
+      navigate("/*")
+    }
+    // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+    // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+    // setOpen(true); // Assuming setOpen is defined elsewhere
+    // setSearch("");
+    // setEditRowIndex(null);
+    // setEditValue("");
+  }
+};
+
   const fetchApplicationNames = async (plantID) => {
     const list = process.env.REACT_APP_ADMINPAGELIST; 
     console.log("env : ",list)
     console.log("list")
+    console.log("Current user : ",userData)
     try {
       const response = await fetch(
         `http://localhost:8081/application/user/${plantID}`,
@@ -1451,9 +1502,15 @@ return;
 /**************************************   UseEffect()   ******************************* */
 useEffect(() => {
   console.log("useEffect() called ");
-  const plantID = "P009";
+  console.log("USER from context : ",userData)
+  let plantID = "P009";
+  if(userData.plantID!=='')
+  {
+    plantID=userData.plantID
+  }
   console.log("useEffect() for fetching data for first time....");
   fetchApplicationNames(plantID);
+  fetchDivs();
   setTicketNumber(generateRandomNumber());
 }, []);
 
@@ -1562,6 +1619,7 @@ useEffect(() => {
         >
           <br></br>
           <center>
+          {divIsVisibleList&&divIsVisibleList.includes("app-dropdown-selection")&&<div  id="app-dropdown-selection">
             <Dropdown
               style={{ width: "200px" }}
               id={"app-dropdown"}
@@ -1570,6 +1628,7 @@ useEffect(() => {
               value={dropdownValue}
               onChange={handleAppDropdownChange}
             ></Dropdown>
+            </div>}
           </center>
 
           <br />

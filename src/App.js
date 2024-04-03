@@ -30,7 +30,7 @@ import TopbarPage from "./components/navigation/topbar/topbar";
 import { ColorModeContext, useMode } from "./theme";
 
 import RolePageConfiguration from "./modules/roleconfig/module.rolePageconfig";
-import RoleConfiguration from "./modules/roleconfig/module.roleconfig";
+import RoleConfiguration from "./modules/roleconfig/module.roleConfig";
 
 function App() {
   const urllist = [

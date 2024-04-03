@@ -577,7 +577,8 @@ const currentPageLocation=useLocation().pathname;
                   </div>}
                   <br />
                   <br />
-                  <b>OR</b>
+                  {divIsVisibleList&& divIsVisibleList.includes("existing-infrastructure-table")&&divIsVisibleList.includes("add-new-infrastructure-category")&&<div id="or-div">
+                  <b>OR</b></div>}
                   <br />
                   <br />
                   {divIsVisibleList&& divIsVisibleList.includes("existing-infrastructure-table")&&

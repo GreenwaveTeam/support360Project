@@ -75,9 +75,52 @@ export default function AddInfrastructureIssue() {
     setDrawerOpen(false);
   };
 
+
+  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+
+  // const navigate = useNavigate();
+const currentPageLocation=useLocation().pathname;
   
 
   // ***************************************************  API  **************************************************
+
+
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+  
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=user1&pagename=admin/infrastructure/addIssues`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ",data)
+        console.log("Current Divs : ",data.components)
+        setDivIsVisibleList(data.components)
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
+  
   //Database functions  for CRUD operations
    //Note the plantID is harcoded currently
   const fetchDBdata = async (plantId, inf) => {
@@ -715,6 +758,7 @@ export default function AddInfrastructureIssue() {
                   </Box>
                   <br />
                   {/* issue name */}
+                  {divIsVisibleList&&divIsVisibleList.includes("add-issues-selected-category")&&<div id="add-issues-selected-category"> 
                   <Textfield
                     onChange={(e) => handleAddIssueText(e)}
                     // sx={classes.txt}
@@ -802,6 +846,9 @@ export default function AddInfrastructureIssue() {
                       sx={{ color: "white" }}
                     ></AddCircleOutlineOutlinedIcon>
                   </CustomButton>
+                  </div>}
+
+
                   <br />
                   <br />
                   <motion.div
@@ -813,6 +860,7 @@ export default function AddInfrastructureIssue() {
                       fill: { duration: 4, ease: [1, 0, 0.8, 1] },
                     }}
                   >
+                     {divIsVisibleList&&divIsVisibleList.includes("edit-issues-table")&&<div id="edit-issues-table" >
                     <CustomTable
                       rows={filteredRows}
                       columns={columns}
@@ -824,6 +872,7 @@ export default function AddInfrastructureIssue() {
                       redirectIconActive={false}
                       isDeleteDialog={true}
                     ></CustomTable>
+                    </div>}
                   </motion.div>
                   <br />
                   <center>

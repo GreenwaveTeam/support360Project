@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import Device from "./modules/device/modules.device";
+import Device from "./modules/device/module.device";
 import AdminPage from "./modules/configurationpages/AdminPage";
 import AdminHome from "./modules/homepages/AdminHome";
 import UserRegistration from "./modules/registration/UserRegistration";

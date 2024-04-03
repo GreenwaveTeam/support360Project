@@ -13,21 +13,21 @@
     
     ]
       },
-      {
-        "page": "Application",
-        "modules": [
-          "/admin/ApplicationConfigure",
-          "/admin/ApplicationConfigure/Modules",
-          "/admin/ApplicationConfigure/Module"
-        ]
-      },
+      
       {
         "page": "Device",
         "modules": [
-          "/admin/Device/CategoryConfigure",
-          "/admin/Device/CategoryConfigure/Issue",
-          "/admin/Device/Configure"
+          {
+            "pagelink":"/admin/Device/CategoryConfigure",
+            "components":["add-new-category","device-category-table"]
+        },
+        {
+            "pagelink":"/admin/Device/CategoryConfigure/Issue",
+            "components":["add-new-issue","device-issue-table"]
+        }
+        
         ]
+        
       }
     ]
   }

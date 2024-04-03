@@ -1,69 +1,4 @@
 {
-    "pagelist": [
-      {
-        "page": "Infrastructure",
-        "modules":[{
-            "pagelink":"/admin/Infrastructure",
-            "components":["add-new-infrastructure-category","existing-infrastructure-table"]
-        },
-        {
-            "pagelink":"/admin/infrastructure/addIssues",
-            "components":["add-issues-selected-category","edit-issues-selected-category"]
-        },{
-         
-          "pagelink":"/user/ReportApplication",
-          "components":["app-dropdown-selection"]
-        }
-   
-    
-    ]
-      },
-      
-      {
-        "page": "Device",
-        "modules": [
-          {
-            "pagelink":"/admin/Device/CategoryConfigure",
-            "components":["add-new-category","device-category-table"]
-        },
-        {
-            "pagelink":"/admin/Device/CategoryConfigure/Issue",
-            "components":["add-new-issue","device-issue-table"]
-        },
-        {
-          "pagelink":"/admin/DeviceConfigure",
-          "components":["delete-selected-node","add-new-node"]
-        }
-      
-        ]
-        
-      },
-      {
-        "page": "Application",
-        "modules": [
-          {
-            "pagelink":"/admin/ApplicationConfigure",
-            "components":["add-new-application","existing-application-table"]
-        },
-        {
-            "pagelink":"/admin/ApplicationConfigure/Modules",
-            "components":["add-application-module","add-module-existing-issues"]
-        },
-        {
-          "pagelink":"/admin/ApplicationConfigure/Module",
-          "components":["add-module-existing-issues"]
-      },{
-         
-        "pagelink":"/user/ReportApplication",
-        "components":["app-dropdown-selection"]
-      }
- 
-       
-        ]
-       
-      }
-    ]
-  }
   "pagelist": [
     {
       "page": "Infrastructure",
@@ -74,7 +9,12 @@
       {
           "pagelink":"/admin/infrastructure/addIssues",
           "components":["add-issues-selected-category","edit-issues-selected-category"]
+      },{
+       
+        "pagelink":"/user/ReportApplication",
+        "components":["app-dropdown-selection"]
       }
+ 
  
   ]
     },
@@ -89,13 +29,12 @@
       {
           "pagelink":"/admin/Device/CategoryConfigure/Issue",
           "components":["add-new-issue","device-issue-table"]
+      },
+      {
+        "pagelink":"/admin/DeviceConfigure",
+        "components":["delete-selected-node","add-new-node"]
       }
-      ,{
-       "pagelink":"/user/ReportApplication",
-        "components":["app-dropdown-selection"]
-      }
- 
-     
+   
       ]
      
     },
@@ -113,7 +52,12 @@
       {
         "pagelink":"/admin/ApplicationConfigure/Module",
         "components":["add-module-existing-issues"]
+    },{
+       
+      "pagelink":"/user/ReportApplication",
+      "components":["app-dropdown-selection"]
     }
+
      
       ]
      

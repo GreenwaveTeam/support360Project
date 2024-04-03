@@ -6,37 +6,37 @@ import { useLocation } from 'react-router-dom';
 
 import Snackbar from "../../components/snackbar/customsnackbar.component";
 import axios from 'axios';
-//import jsonData from '../'
+import packagedata from '../../pagedata.json'
 export default function RolePageConfiguration() {
- ;const jsonData = {
-    "pagelist": [
-      {
-        "page": "Infrastructure",
-        "modules":[{
-            "pagelink":"/admin/Infrastructure",
-            "components":["add-new-infrastructure-category","existing-infrastructure-table"]
-        },
-        {
-            "pagelink":"/admin/infrastructure/addIssues",
-            "components":["add-issues-selected-category","edit-issues-selected-category"]
-        }
+//  ;const jsonData = {
+//     "pagelist": [
+//       {
+//         "page": "Infrastructure",
+//         "modules":[{
+//             "pagelink":"/admin/Infrastructure",
+//             "components":["add-new-infrastructure-category","existing-infrastructure-table"]
+//         },
+//         {
+//             "pagelink":"/admin/infrastructure/addIssues",
+//             "components":["add-issues-selected-category","edit-issues-selected-category"]
+//         }
     
-    ]
-      },
+//     ]
+//       },
       
-      {
-        "page": "Device",
-        "modules": [
-          {
-            "pagelink":"/admin/Device/CategoryConfigure",
-            "components":["add-new-device-category","existing-device-table"]
-        },
+//       {
+//         "page": "Device",
+//         "modules": [
+//           {
+//             "pagelink":"/admin/Device/CategoryConfigure",
+//             "components":["add-new-device-category","existing-device-table"]
+//         },
           
-        ]
-      }
-    ]
-  };
-  
+//         ]
+//       }
+//     ]
+//   };
+  const jsonData=packagedata;
   const convertedData = [];
   
   jsonData.pagelist.forEach(page => {

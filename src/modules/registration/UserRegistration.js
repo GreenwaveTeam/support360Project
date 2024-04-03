@@ -215,12 +215,10 @@ export default function UserRegistration() {
   const handleUserIDChange = (event) => {
     setFormData({ ...formData, userID: event.target.value });
     setUnchangedUserID(event.target.value);
-    setUpdateFormData({ ...updateFormData, userID: event.target.value });
   };
 
   const handleEmailChange = (event) => {
     setFormData({ ...formData, email: event.target.value });
-    setUpdateFormData({ ...updateFormData, email: event.target.value });
   };
 
   const handleCheckboxChange = () => {
@@ -438,7 +436,7 @@ export default function UserRegistration() {
                             name="email"
                             autoComplete="email"
                             value={updateFormData.email}
-                            onChange={handleEmailChange}
+                            onChange={updateHandleFormdataInputChange}
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -451,7 +449,6 @@ export default function UserRegistration() {
                             id="userID"
                             label="User ID"
                             value={updateFormData.userID}
-                            onChange={handleUserIDChange}
                           />
                         </Grid>
                         {/* {!userExist && (

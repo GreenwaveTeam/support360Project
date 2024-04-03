@@ -130,6 +130,7 @@ function UserHome() {
         plantID: data.plantID,
         role: data.role,
         userID: data.userID,
+        name: data.name,
       });
     } catch (error) {
       console.error("Error fetching user list:", error);

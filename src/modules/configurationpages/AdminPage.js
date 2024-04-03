@@ -36,11 +36,16 @@ const AdminPage = () => {
   const { userData, setUserData } = useUserContext();
   console.log("userData ==>> ", userData);
 
-  const convertToInitials = (name) => {
-    const parts = name.split(" ");
-    const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
-    return initials;
-  };
+  // const convertToInitials = (name) => {
+  //   if (name !== null) {
+  //     const parts = name.split(" ");
+  //     const initials = parts
+  //       .map((part) => part.charAt(0).toUpperCase())
+  //       .join("");
+  //     return initials;
+  //   }
+
+  // };
 
   useEffect(() => {
     // const { userName } = location.state || (" UserID : ", userID);
@@ -92,8 +97,8 @@ const AdminPage = () => {
         <Box
         // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
-          <Avatar>{convertToInitials(userData.name)}</Avatar>
-          <br></br>
+          {/* <Avatar>{convertToInitials(userData.name)}</Avatar>
+          <br></br> */}
           <Typography component="h1" variant="h5">
             Configure for :{"  "}
             <Typography

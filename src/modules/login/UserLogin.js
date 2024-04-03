@@ -52,6 +52,14 @@ export default function UserLogin() {
     setOpen(false);
   };
 
+  function extractPageNames(data) {
+    const pageNamesSet = new Set();
+    data.pagedetails.forEach((page) => {
+      pageNamesSet.add(page.pagename);
+    });
+    return Array.from(pageNamesSet);
+  }
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (e) => {
     e.preventDefault();
@@ -131,7 +139,24 @@ export default function UserLogin() {
       //   // fetchAdmin();
       // }
       navigate(`/${homepage}`);
+      fetchPageName(data.role);
       console.log(`navigate /${homepage}`);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const fetchPageName = async (role) => {
+    try {
+      const response = await fetch(`http://localhost:8081/role/${role}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      console.log("pages data : ", extractPageNames(data));
     } catch (error) {
       console.error("Error fetching user list:", error);
     }

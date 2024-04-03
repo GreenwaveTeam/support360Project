@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./styles.css";
 import dayjs from "dayjs";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
+
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { TreeView } from "@mui/x-tree-view/TreeView";
@@ -20,6 +19,9 @@ import SidebarPage from "../../../components/navigation/sidebar/sidebar";
 import Main from "../../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../../components/navigation/drawerheader/drawerheader.component";
 import CustomDialog from "../../../components/dialog/dialog.component";
+import Textfield from "../../../components/textfield/textfield.component";
+import CustomButton from "../../../components/button/button.component";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function RichObjectTreeView() {
   const [selectedNode, setSelectedNode] = useState(null);
@@ -65,12 +67,22 @@ export default function RichObjectTreeView() {
   const [editedCategory, setEditedCategory] = useState("");
   const [open, setOpen] = useState(false);
   const [delOpen, setDelOpen] = useState(false);
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+
+  const navigate = useNavigate();
+  const currentPageLocation = useLocation().pathname;
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    fetchDivs();
+  }, []);
+
   React.useEffect(() => {
     const fetchData = async () => {
       try {
@@ -143,6 +155,42 @@ export default function RichObjectTreeView() {
     }
   }, [data]);
 
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=user1&pagename=${currentPageLocation}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ", data);
+        console.log("Current Divs : ", data.components);
+        setDivIsVisibleList(data.components);
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
+
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
   };
@@ -177,7 +225,7 @@ export default function RichObjectTreeView() {
         setIsEditingWarrantyDate(true);
         break;
       case "SupportDate":
-        setEditedSupportDate(selectedNode.warranty_support_end_date);
+        setEditedSupportDate(dayjs());
         setIsEditingSupportDate(true);
         break;
       case "ImageFile":
@@ -684,39 +732,41 @@ export default function RichObjectTreeView() {
         >
           <div className="split-screen" onClick={handleClickOutsideNode}>
             <div className="left-panel">
-              {data === null && (
-                <>
-                  <TextField
-                    className="textInput"
-                    label="Enter Parent Node Name"
-                    variant="outlined"
-                    fullWidth
-                    value={rootNodeName}
-                    onChange={(e) => setRootNodeName(e.target.value)}
-                  />
-                  <Button
-                    className="button"
-                    variant="contained"
-                    color="primary"
-                    onClick={handleRootNodeCreate}
-                  >
-                    Create Parent Node
-                  </Button>
-                </>
-              )}
-              {data !== null && (
-                <div className="treeViewContainer">
-                  <p>Device Tree:</p>
-                  <CustomTreeView
-                    data={data}
-                    renderTree={renderTree}
-                    handleNodeClick={handleNodeClick}
-                    handleContextMenu={handleContextMenu}
-                  />
-                  <br />
-                </div>
-              )}
+              <div id="create-device-tree">
+                {data === null && (
+                  <>
+                    <Textfield
+                      className="textInput"
+                      label="Enter Parent Node Name"
+                      variant="outlined"
+                      fullWidth
+                      value={rootNodeName}
+                      onChange={(e) => setRootNodeName(e.target.value)}
+                    />
+                    <CustomButton
+                      className="button"
+                      variant="contained"
+                      color="primary"
+                      onClick={handleRootNodeCreate}
+                      buttontext={"Create Parent Device"}
+                    ></CustomButton>
+                  </>
+                )}
+                {data !== null && (
+                  <div className="treeViewContainer">
+                    <p>Device Tree:</p>
+                    <CustomTreeView
+                      data={data}
+                      renderTree={renderTree}
+                      handleNodeClick={handleNodeClick}
+                      handleContextMenu={handleContextMenu}
+                    />
+                    <br />
+                  </div>
+                )}
+              </div>
             </div>
+
             <div className={`right-panel ${data === null ? "hidden" : ""}`}>
               {data !== null && selectedNode && (
                 <>
@@ -726,15 +776,19 @@ export default function RichObjectTreeView() {
                         ? `Selected Node: ${selectedNode.name}
                               `
                         : "Select a node          "}
-                      <Button
-                        className="button"
-                        variant="contained"
-                        color="secondary" // Use secondary color for delete button
-                        //onClick={handleDeleteNode}
-                        onClick={handleDialogOpen}
-                      >
-                        Delete Node
-                      </Button>
+                      {divIsVisibleList &&
+                        divIsVisibleList.includes("delete-selected-node") && (
+                          <div id="delete-selected-node">
+                            <CustomButton
+                              className="button"
+                              variant="contained"
+                              color="secondary" // Use secondary color for delete button
+                              //onClick={handleDeleteNode}
+                              onClick={handleDialogOpen}
+                              buttontext={"Delete Node"}
+                            ></CustomButton>
+                          </div>
+                        )}
                     </p>
                   </Box>
 
@@ -759,7 +813,7 @@ export default function RichObjectTreeView() {
                             boxShadow: "0 4px 8px rgba(0, 0, 0, 10)",
                           }}
                         >
-                          <TextField
+                          <Textfield
                             required
                             className="textInput"
                             label="Enter Child Node"
@@ -771,7 +825,7 @@ export default function RichObjectTreeView() {
                           <br />
                           <br />
 
-                          <TextField
+                          <Textfield
                             required
                             className="textInput"
                             label="Enter Make"
@@ -782,7 +836,7 @@ export default function RichObjectTreeView() {
                           />
                           <br />
                           <br />
-                          <TextField
+                          <Textfield
                             required
                             className="textInput"
                             label="Enter Model"
@@ -793,7 +847,7 @@ export default function RichObjectTreeView() {
                           />
                           <br />
                           <br />
-                          <TextField
+                          <Textfield
                             required
                             className="textInput"
                             label="Enter Capacity"
@@ -805,7 +859,7 @@ export default function RichObjectTreeView() {
                           />
                           <br />
                           <br />
-                          <TextField
+                          <Textfield
                             required
                             className="textInput"
                             label="Enter Description"
@@ -878,14 +932,13 @@ export default function RichObjectTreeView() {
                           )}
                           <br />
                           <br />
-                          <Button
+                          <CustomButton
                             className="button"
                             variant="contained"
                             color="primary"
                             onClick={handleChildNodeAdd}
-                          >
-                            Add Node
-                          </Button>
+                            buttontext={"Add Node"}
+                          ></CustomButton>
                         </Card>
                         <br />
                         <br />
@@ -911,7 +964,10 @@ export default function RichObjectTreeView() {
                           >
                             <div className="Card-Components">
                               <h3
-                                style={{ marginBottom: "15px", color: "#333" }}
+                                style={{
+                                  marginBottom: "15px",
+                                  color: "#333",
+                                }}
                               >
                                 Node Details:
                               </h3>
@@ -930,7 +986,7 @@ export default function RichObjectTreeView() {
                               <div>
                                 {isEditing ? (
                                   <>
-                                    <TextField
+                                    <Textfield
                                       label="Edit Node Name"
                                       variant="outlined"
                                       value={editedName}
@@ -938,22 +994,20 @@ export default function RichObjectTreeView() {
                                         setEditedName(e.target.value)
                                       }
                                     />
-                                    <Button
+                                    <CustomButton
                                       variant="contained"
                                       color="primary"
                                       onClick={() => handleSaveName("Name")}
-                                    >
-                                      Save
-                                    </Button>
-                                    <Button
+                                      buttontext={"Save"}
+                                    ></CustomButton>
+                                    <CustomButton
                                       variant="contained"
                                       color="secondary"
                                       onClick={() =>
                                         handleCancelNameEdit("Name")
                                       }
-                                    >
-                                      Cancel
-                                    </Button>
+                                      buttontext={"Cancel"}
+                                    ></CustomButton>
                                   </>
                                 ) : (
                                   <>
@@ -981,7 +1035,7 @@ export default function RichObjectTreeView() {
                               <div>
                                 {isEditingMake ? (
                                   <>
-                                    <TextField
+                                    <Textfield
                                       label="Edit Node Name"
                                       variant="outlined"
                                       value={editedMake}
@@ -989,22 +1043,20 @@ export default function RichObjectTreeView() {
                                         setEditedMake(e.target.value)
                                       }
                                     />
-                                    <Button
+                                    <CustomButton
                                       variant="contained"
                                       color="primary"
                                       onClick={() => handleSaveName("Make")}
-                                    >
-                                      Save
-                                    </Button>
-                                    <Button
+                                      buttontext={"Save"}
+                                    ></CustomButton>
+                                    <CustomButton
                                       variant="contained"
                                       color="secondary"
                                       onClick={() =>
                                         handleCancelNameEdit("Make")
                                       }
-                                    >
-                                      Cancel
-                                    </Button>
+                                      buttontext={"Cancel"}
+                                    ></CustomButton>
                                   </>
                                 ) : (
                                   <>
@@ -1030,7 +1082,7 @@ export default function RichObjectTreeView() {
                               <div>
                                 {isEditingModel ? (
                                   <>
-                                    <TextField
+                                    <Textfield
                                       label="Edit Node Name"
                                       variant="outlined"
                                       value={editedModel}
@@ -1038,22 +1090,20 @@ export default function RichObjectTreeView() {
                                         setEditedModel(e.target.value)
                                       }
                                     />
-                                    <Button
+                                    <CustomButton
                                       variant="contained"
                                       color="primary"
                                       onClick={() => handleSaveName("Model")}
-                                    >
-                                      Save
-                                    </Button>
-                                    <Button
+                                      buttontext={"Save"}
+                                    ></CustomButton>
+                                    <CustomButton
                                       variant="contained"
                                       color="secondary"
                                       onClick={() =>
                                         handleCancelNameEdit("Model")
                                       }
-                                    >
-                                      Cancel
-                                    </Button>
+                                      buttontext={"Cancel"}
+                                    ></CustomButton>
                                   </>
                                 ) : (
                                   <>
@@ -1079,7 +1129,7 @@ export default function RichObjectTreeView() {
                               <div>
                                 {isEditingCapacity ? (
                                   <>
-                                    <TextField
+                                    <Textfield
                                       label="Edit Node Name"
                                       variant="outlined"
                                       type="number"
@@ -1088,22 +1138,20 @@ export default function RichObjectTreeView() {
                                         setEditedCapacity(e.target.value)
                                       }
                                     />
-                                    <Button
+                                    <CustomButton
                                       variant="contained"
                                       color="primary"
                                       onClick={() => handleSaveName("Capacity")}
-                                    >
-                                      Save
-                                    </Button>
-                                    <Button
+                                      buttontext={"Save"}
+                                    ></CustomButton>
+                                    <CustomButton
                                       variant="contained"
                                       color="secondary"
                                       onClick={() =>
                                         handleCancelNameEdit("Capacity")
                                       }
-                                    >
-                                      Cancel
-                                    </Button>
+                                      buttontext={"Cancel"}
+                                    ></CustomButton>
                                   </>
                                 ) : (
                                   <>
@@ -1131,7 +1179,7 @@ export default function RichObjectTreeView() {
                               <div>
                                 {isEditingDescription ? (
                                   <>
-                                    <TextField
+                                    <Textfield
                                       label="Edit Node Name"
                                       variant="outlined"
                                       value={editedDescription}
@@ -1139,24 +1187,22 @@ export default function RichObjectTreeView() {
                                         setEditedDescription(e.target.value)
                                       }
                                     />
-                                    <Button
+                                    <CustomButton
                                       variant="contained"
                                       color="primary"
                                       onClick={() =>
                                         handleSaveName("Description")
                                       }
-                                    >
-                                      Save
-                                    </Button>
-                                    <Button
+                                      buttontext={"Save"}
+                                    ></CustomButton>
+                                    <CustomButton
                                       variant="contained"
                                       color="secondary"
                                       onClick={() =>
                                         handleCancelNameEdit("Description")
                                       }
-                                    >
-                                      Cancel
-                                    </Button>
+                                      buttontext={"Cancel"}
+                                    ></CustomButton>
                                   </>
                                 ) : (
                                   <>
@@ -1177,7 +1223,7 @@ export default function RichObjectTreeView() {
                                     marginBottom: "5px",
                                   }}
                                 >
-                                  Warranty End Date:
+                                  Support End Date:
                                 </p>
                               </div>
 
@@ -1185,30 +1231,28 @@ export default function RichObjectTreeView() {
                                 {isEditingSupportDate ? (
                                   <>
                                     <CustomDatePicker
-                                      label="Warranty End Date"
+                                      label="Support End Date"
                                       value={editedSupportDate}
                                       onChange={(newDate) =>
                                         setEditedSupportDate(newDate)
                                       }
                                     />
-                                    <Button
+                                    <CustomButton
                                       variant="contained"
                                       color="primary"
                                       onClick={() =>
                                         handleSaveName("SupportDate")
                                       }
-                                    >
-                                      Save
-                                    </Button>
-                                    <Button
+                                      buttontext={"Save"}
+                                    ></CustomButton>
+                                    <CustomButton
                                       variant="contained"
                                       color="secondary"
                                       onClick={() =>
                                         handleCancelNameEdit("SupportDate")
                                       }
-                                    >
-                                      Cancel
-                                    </Button>
+                                      buttontext={"Cancel"}
+                                    ></CustomButton>
                                   </>
                                 ) : (
                                   <>
@@ -1229,7 +1273,7 @@ export default function RichObjectTreeView() {
                                     marginBottom: "5px",
                                   }}
                                 >
-                                  Support End Date:
+                                  Warranty End Date:
                                 </p>
                               </div>
 
@@ -1243,24 +1287,22 @@ export default function RichObjectTreeView() {
                                         setEditedWarrantyDate(newDate)
                                       }
                                     />
-                                    <Button
+                                    <CustomButton
                                       variant="contained"
                                       color="primary"
                                       onClick={() =>
                                         handleSaveName("WarrantyDate")
                                       }
-                                    >
-                                      Save
-                                    </Button>
-                                    <Button
+                                      buttontext={"Save"}
+                                    ></CustomButton>
+                                    <CustomButton
                                       variant="contained"
                                       color="secondary"
                                       onClick={() =>
                                         handleCancelNameEdit("WarrantyDate")
                                       }
-                                    >
-                                      Cancel
-                                    </Button>
+                                      buttontext={"Cancel"}
+                                    ></CustomButton>
                                   </>
                                 ) : (
                                   <>
@@ -1307,22 +1349,20 @@ export default function RichObjectTreeView() {
                                         </MenuItem>
                                       ))}
                                     </Select>
-                                    <Button
+                                    <CustomButton
                                       variant="contained"
                                       color="primary"
                                       onClick={() => handleSaveName("Catagory")}
-                                    >
-                                      Save
-                                    </Button>
-                                    <Button
+                                      buttontext={"Save"}
+                                    ></CustomButton>
+                                    <CustomButton
                                       variant="contained"
                                       color="secondary"
                                       onClick={() =>
                                         handleCancelNameEdit("Catagory")
                                       }
-                                    >
-                                      Cancel
-                                    </Button>
+                                      buttontext={"Cancel"}
+                                    ></CustomButton>
                                   </>
                                 ) : (
                                   <>
@@ -1357,24 +1397,22 @@ export default function RichObjectTreeView() {
                                           accept="image/*"
                                           onChange={handleEditImageChange}
                                         />
-                                        <Button
+                                        <CustomButton
                                           variant="contained"
                                           color="primary"
                                           onClick={() =>
                                             handleSaveName("ImageFile")
                                           }
-                                        >
-                                          Save
-                                        </Button>
-                                        <Button
+                                          buttontext={"Save"}
+                                        ></CustomButton>
+                                        <CustomButton
                                           variant="contained"
                                           color="secondary"
                                           onClick={() =>
                                             handleCancelNameEdit("ImageFile")
                                           }
-                                        >
-                                          Cancel
-                                        </Button>
+                                          buttontext={"Cancel"}
+                                        ></CustomButton>
                                       </>
                                     ) : (
                                       <>
@@ -1420,22 +1458,22 @@ export default function RichObjectTreeView() {
                     )}
 
                   {/* <Button
-              className="button"
-              variant="contained"
-              color="primary"
-              onClick={handlePrintJson}
-            >
-              Print JSON
-            </Button> */}
+                            className="button"
+                            variant="contained"
+                            color="primary"
+                            onClick={handlePrintJson}
+                          >
+                            Print JSON
+                          </Button> */}
                   <br></br>
                   {/* <Button
-              className="button"
-              variant="contained"
-              color="primary"
-              onClick={handlePostData}
-            >
-              Save
-            </Button> */}
+                            className="button"
+                            variant="contained"
+                            color="primary"
+                            onClick={handlePostData}
+                          >
+                            Save
+                          </Button> */}
                   <br />
 
                   {showAddItemButton && (
@@ -1447,19 +1485,19 @@ export default function RichObjectTreeView() {
                         zIndex: 9999,
                       }}
                     >
-                      <Button
+                      <CustomButton
                         className="button"
                         variant="contained"
                         color="secondary"
                         onClick={() => setVisible(true)}
-                      >
-                        Add Item
-                      </Button>
+                        buttontext={"Add Item"}
+                      ></CustomButton>
                     </div>
                   )}
                 </>
               )}
             </div>
+
             <CustomDialog
               open={delOpen}
               setOpen={setDelOpen}

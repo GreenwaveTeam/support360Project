@@ -24,6 +24,10 @@
         {
             "pagelink":"/admin/Device/CategoryConfigure/Issue",
             "components":["add-new-issue","device-issue-table"]
+        },
+        {
+          "pagelink":"/admin/DeviceConfigure",
+          "components":["delete-selected-node"]
         }
         
         ]

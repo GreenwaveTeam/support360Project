@@ -22,7 +22,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-  Tooltip
+  Tooltip,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
@@ -51,13 +51,11 @@ import SnackbarComponent from "../../../components/snackbar/customsnackbar.compo
 import CustomTable from "../../../components/table/table.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
-import './modules.application.css';
+import "./modules.application.css";
 import { useUserContext } from "../../contexts/UserContext";
- 
 
 //The main export starts here....
-export default function ApplicationUser()
- {
+export default function ApplicationUser() {
   const [value, setValue] = useState("");
   const [appDropdown, setAppDropdown] = useState([]);
   const [dropdownValue, setDropdownValue] = useState("");
@@ -75,16 +73,15 @@ export default function ApplicationUser()
 
   const [miscellaneousInput, setMiscellaneousInput] = useState("");
   const [remarksInput, setRemarksInput] = useState("");
-  
 
   //Modified
   const [drawerOpen, setDrawerOpen] = useState(false);
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
-};
-const handleDrawerClose = () => {
-  setDrawerOpen(false);
-};
+  };
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+  };
 
   //for keeping track of the clicked div
   const [selectedDivArea, setSelectedDivArea] = useState({});
@@ -119,20 +116,23 @@ const handleDrawerClose = () => {
   const [ticketNumber, setTicketNumber] = useState("");
   const [expanded, setExpanded] = useState(false);
   const [miscellaneousSeverity, setmiscellaneousSeverity] = useState("");
-// const [ additionalMiscellaneousIssueArray,setAdditionalMiscellaneosIssueArray] = useState([]);
+  // const [ additionalMiscellaneousIssueArray,setAdditionalMiscellaneosIssueArray] = useState([]);
   const [miscellaneousRemarks, setmiscellaneousRemarks] = useState("");
-  const [additionalMiscellaneousError,setAdditionalMiscellaneousError]=useState(false)
-  const [additionalMiscellaneousSeverityError,setAdditionallMiscellaneousSeverityError]=useState(false)
-  const [ticketDialogOpen,setTicketDialogOpen]=useState(false);
+  const [additionalMiscellaneousError, setAdditionalMiscellaneousError] =
+    useState(false);
+  const [
+    additionalMiscellaneousSeverityError,
+    setAdditionallMiscellaneousSeverityError,
+  ] = useState(false);
+  const [ticketDialogOpen, setTicketDialogOpen] = useState(false);
   //const navigate =useNavigate()
-  const [progressVisible,setprogressVisible]=useState(false);
+  const [progressVisible, setprogressVisible] = useState(false);
 
-  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const navigate = useNavigate();
-  const currentPageLocation=useLocation().pathname;
+  const currentPageLocation = useLocation().pathname;
 
-
-  const { userData, setUserData } = useUserContext();  
+  const { userData, setUserData } = useUserContext();
 
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
@@ -306,8 +306,8 @@ const handleDrawerClose = () => {
     setFinalUserInput([]);
     setTableIssuesForCurrentDiv([]);
     setOriginalIssuesDropdown([]);
-    setmiscellaneousRemarks('')
-    setmiscellaneousSeverity("")
+    setmiscellaneousRemarks("");
+    setmiscellaneousSeverity("");
     //Now feed with new data
     fetchTabData(newValue, dropdownValue);
 
@@ -317,55 +317,53 @@ const handleDrawerClose = () => {
     //changing the final FinaluserInput will handle automatically other useCases
   };
 
-/* ********************** API ************************** */
+  /* ********************** API ************************** */
 
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+      // console.log("Currently passed Data : ",location.state)
 
-const fetchDivs = async () => {
-  try {
-    console.log("fetchDivs() called");
-    console.log("Current Page Location: ", currentPageLocation);
-   // console.log("Currently passed Data : ",location.state)
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    const response = await fetch(
-      `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ", data);
+        console.log("Current Divs : ", data.components);
+        setDivIsVisibleList(data.components);
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      if (fetchDivs.length === 0) {
+        navigate("/*");
+      }
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
     }
-    const data = await response.json();
-    if (response.ok) {
-      console.log("Current Response : ",data)
-      console.log("Current Divs : ",data.components)
-      setDivIsVisibleList(data.components)
-    }
-  } catch (error) {
-    console.log("Error in getting divs name :", error);
-    if(fetchDivs.length===0)
-    {
-      navigate("/*")
-    }
-    // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
-    // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
-    // setOpen(true); // Assuming setOpen is defined elsewhere
-    // setSearch("");
-    // setEditRowIndex(null);
-    // setEditValue("");
-  }
-};
+  };
 
   const fetchApplicationNames = async (plantID) => {
-    const list = process.env.REACT_APP_ADMINPAGELIST; 
-    console.log("env : ",list)
-    console.log("list")
-    console.log("Current user : ",userData)
+    const list = process.env.REACT_APP_ADMINPAGELIST;
+    console.log("env : ", list);
+    console.log("list");
+    console.log("Current user : ", userData);
     try {
       const response = await fetch(
         `http://localhost:8081/application/user/${plantID}`,
@@ -377,9 +375,8 @@ const fetchDivs = async () => {
         }
       );
       if (!response.ok) {
-        if(response.status===403)
-        {       
-          navigate('/*')
+        if (response.status === 403) {
+          navigate("/*");
         }
         throw new Error("Failed to fetch data");
       }
@@ -391,9 +388,7 @@ const fetchDivs = async () => {
         setDropdownValue("Select an application");
       }
     } catch (error) {
-      
       console.log("Error fetching data ", error);
-      
     }
     setTabsModuleNames([]);
   };
@@ -430,7 +425,7 @@ const fetchDivs = async () => {
     } catch (error) {
       console.log("Error fetching data ", error);
       setTabsModuleNames([]);
-      navigate('/notfound')
+      navigate("/notfound");
     }
   };
 
@@ -453,8 +448,7 @@ const fetchDivs = async () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
         },
-      }
-    );
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
@@ -469,19 +463,18 @@ const fetchDivs = async () => {
     }
   };
 
-
   const postDatainDB = async (json_data) => {
     console.log("postDatainDB() called");
     console.log("current JSON_data is => ", JSON.stringify(json_data));
     try {
       const response = await fetch(`http://localhost:8081/application/user`, {
         method: "POST",
-       
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-       
+
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+
         body: JSON.stringify(json_data),
       });
       if (response.ok) {
@@ -503,7 +496,6 @@ const fetchDivs = async () => {
 
   /* ******************************************************************** */
 
-
   const fetchIssueList = (area) => {
     //Fetching the issues
     let issueArray = [];
@@ -519,7 +511,7 @@ const fetchDivs = async () => {
           data.issues.forEach((issue) => {
             issueArray.push(issue.issue_name);
           });
-          //Current Selected AREA 
+          //Current Selected AREA
           setAreaName(
             " " +
               dropdownValue +
@@ -539,15 +531,12 @@ const fetchDivs = async () => {
     setOriginalIssuesDropdown(issueArray);
   };
 
- 
   // const checkForDialog=((event)=>
   // {
   //    console.log(event);
   //    console.log("X : ",event.clientX)
   //    console.log("Y : ",event.clientY)
   // })
-
-
 
   const handleAppDropdownChange = (e) => {
     console.log("Changed value in Dropdown => ", e.target.value);
@@ -573,8 +562,8 @@ const fetchDivs = async () => {
       setSeverityError(false);
       setIssueDropDownError(false);
       //Added
-      setmiscellaneousSeverity('');
-      setmiscellaneousRemarks('');
+      setmiscellaneousSeverity("");
+      setmiscellaneousRemarks("");
     }
   };
 
@@ -683,7 +672,6 @@ const fetchDivs = async () => {
       return true;
     }
   };
-
 
   // For adding issues to the table
   const handleAddUserIssues = (e) => {
@@ -997,8 +985,8 @@ const fetchDivs = async () => {
       },
     },
   };
-  const handleFinalReportClick = async() => {
-    setprogressVisible(true)
+  const handleFinalReportClick = async () => {
+    setprogressVisible(true);
     console.log("handleFinalReportClick() called");
     //Modified
     let currentSuperInformation = saveCurrentTabModuleInformation(); //Remember if the array with the particular value doesn't exist how will i ever change the value inside  it, I cannot replace a const array but definitely can change the value inside one of the array Index value  but in usestate while runtime if you set something and expect to get the set value , it won't be possible
@@ -1071,37 +1059,36 @@ const fetchDivs = async () => {
     });
 
     console.log("Final Json for POST : ", final_Json);
-    if(final_Json.length === 0){
-      setSnackbarSeverity('warning')
-      setSnackbarText('Please select an issue to report !')
+    if (final_Json.length === 0) {
+      setSnackbarSeverity("warning");
+      setSnackbarText("Please select an issue to report !");
       setMainAlert(true);
-      setprogressVisible(false)
+      setprogressVisible(false);
       return;
     }
 
     let json_Count = 0;
     for (const json_data of final_Json) {
       try {
-          const posted = await postDatainDB(json_data);
-          if (!posted) {
-              break; 
-          }
-          json_Count++;
+        const posted = await postDatainDB(json_data);
+        if (!posted) {
+          break;
+        }
+        json_Count++;
       } catch (error) {
-          console.error("Error posting data:", error.message);
+        console.error("Error posting data:", error.message);
       }
-  }
+    }
     //   )
-     console.log('Number of JSON posted => ',json_Count)
+    console.log("Number of JSON posted => ", json_Count);
 
-     if(json_Count===0)
-{
-setSnackbarSeverity("error")
-setSnackbarText("Error in raising the ticket !")
-setMainAlert(true)
-setprogressVisible(false)
-return;
-}
+    if (json_Count === 0) {
+      setSnackbarSeverity("error");
+      setSnackbarText("Error in raising the ticket !");
+      setMainAlert(true);
+      setprogressVisible(false);
+      return;
+    }
     //Resetting Data
     setDropdownValue("Select an application");
     setTabsModuleNames([]);
@@ -1114,14 +1101,14 @@ return;
     setOverviewTableData([]);
     setSeverityError(false);
     setIssueDropDownError(false);
-    setprogressVisible(false)
+    setprogressVisible(false);
     if (json_Count > 0) {
       const ticket = "Ticket raised successfully ! Ticket No - " + ticketNumber;
       setSnackbarSeverity("success");
       setSnackbarText(ticket);
       setMainAlert(true);
       // const ticket="Tiket raised successfully ! Ticket No - "+ticketNumber ;
-       setTicketDialogOpen(true)
+      setTicketDialogOpen(true);
     } else {
       setSnackbarSeverity("error");
       setSnackbarText("No Tickets were raised");
@@ -1132,8 +1119,6 @@ return;
     const randomNumber = Math.floor(10000 + Math.random() * 90000);
     return "A" + randomNumber;
   };
-
- 
 
   // const handleAlertClose = (event, reason) => {
   //   if (reason === "clickaway") {
@@ -1148,8 +1133,6 @@ return;
   //   }
   //   setMainAlert(false);
   // };
-
-
 
   const updateOverviewTable = (item) => {
     let filtered_current_overview = [];
@@ -1356,38 +1339,32 @@ return;
     console.log("Current overview Table : ", overviewTableData);
     console.log("Current Module : ", value);
     //Check for validations
-    setAdditionalMiscellaneousError(false)
-    setAdditionallMiscellaneousSeverityError(false)
-    if(miscellaneousInput===''&& miscellaneousSeverity==='')
-    {
-      setAdditionalMiscellaneousError(true)
-      setAdditionallMiscellaneousSeverityError(true)
-      setSnackbarSeverity('error')
-      setSnackbarText('Fill the required data ! ')
-      setMainAlert(true)
+    setAdditionalMiscellaneousError(false);
+    setAdditionallMiscellaneousSeverityError(false);
+    if (miscellaneousInput === "" && miscellaneousSeverity === "") {
+      setAdditionalMiscellaneousError(true);
+      setAdditionallMiscellaneousSeverityError(true);
+      setSnackbarSeverity("error");
+      setSnackbarText("Fill the required data ! ");
+      setMainAlert(true);
       return;
     }
 
-    if(miscellaneousInput==='')
-    {
-      setAdditionalMiscellaneousError(true)
-      setSnackbarSeverity('error')
-      setSnackbarText('Fill the required data ! ')
-      setMainAlert(true)
+    if (miscellaneousInput === "") {
+      setAdditionalMiscellaneousError(true);
+      setSnackbarSeverity("error");
+      setSnackbarText("Fill the required data ! ");
+      setMainAlert(true);
       return;
     }
 
-    if( miscellaneousSeverity==='')
-    {
-      setAdditionallMiscellaneousSeverityError(true)
-      setSnackbarSeverity('error')
-      setSnackbarText('Fill the required data ! ')
-      setMainAlert(true)
+    if (miscellaneousSeverity === "") {
+      setAdditionallMiscellaneousSeverityError(true);
+      setSnackbarSeverity("error");
+      setSnackbarText("Fill the required data ! ");
+      setMainAlert(true);
       return;
     }
-
-
-
 
     let overviewData = {};
     overviewData.module_name = value;
@@ -1412,34 +1389,33 @@ return;
     setMainAlert(true);
   };
 
-
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  //columns for Table component i.e the Table headers 
-  const columns=[
+  //columns for Table component i.e the Table headers
+  const columns = [
     {
-      "id": "issue_name",
-      "label": "Issue Name",
-      "type": "textbox",
-      "canRepeatSameValue":false
+      id: "issue_name",
+      label: "Issue Name",
+      type: "textbox",
+      canRepeatSameValue: false,
     },
     {
-      "id": "severity",
-      "label": "Severity",
-      "type": "textbox",
-      "canRepeatSameValue":true,
-    //   values:["Critical","Major","Minor"]
-    },
-    {
-        "id": "remarks",
-        "label": "Remarks",
-        "type": "textbox",
-        "canRepeatSameValue":true,
+      id: "severity",
+      label: "Severity",
+      type: "textbox",
+      canRepeatSameValue: true,
       //   values:["Critical","Major","Minor"]
-      },
-  ] 
+    },
+    {
+      id: "remarks",
+      label: "Remarks",
+      type: "textbox",
+      canRepeatSameValue: true,
+      //   values:["Critical","Major","Minor"]
+    },
+  ];
 
   const classes = {
     // conatiner: {
@@ -1489,375 +1465,406 @@ return;
     }),
   }));
 
- 
-
   // const handleTicketDialogClose = (event,reason) => {
-  //   if (reason && reason === "backdropClick") 
+  //   if (reason && reason === "backdropClick")
   //         return;
   //     setTicketDialogOpen(false);
   //   };
 
+  /**************************************   UseEffect()   ******************************* */
+  useEffect(() => {
+    console.log("useEffect() called ");
+    console.log("USER from context : ", userData);
+    let plantID = "P009";
+    // if(userData.plantID!=='')
+    // {
+    //   plantID=userData.plantID
+    // }
+    console.log("Current plantID : ", plantID);
+    console.log("useEffect() for fetching data for first time....");
+    fetchApplicationNames(plantID);
+    fetchDivs();
+    setTicketNumber(generateRandomNumber());
+  }, []);
 
-  
-/**************************************   UseEffect()   ******************************* */
-useEffect(() => {
-  console.log("useEffect() called ");
-  console.log("USER from context : ",userData)
-  let plantID = "P009";
-  // if(userData.plantID!=='')
-  // {
-  //   plantID=userData.plantID
-  // }
-  console.log('Current plantID : ',plantID)
-  console.log("useEffect() for fetching data for first time....");
-  fetchApplicationNames(plantID);
-  fetchDivs();
-  setTicketNumber(generateRandomNumber());
-}, []);
-
-//This useEffect is used to restore the checks in the Image while Tab change
-useEffect(() => {
-  console.log("useEffect() for mainData called ");
-  console.log("mainData : ", mainData);
-  //mainData.forEach(item)
-  console.log("finalUserInput", finalUserInput);
-  setUpdatedMainData(mainData);
-  // const updatedMainData = { ...mainData };
-  console.log("mainData.issuesList : ", mainData.issuesList);
-  mainData.issuesList &&
-    mainData.issuesList.forEach((main) => {
-      console.log("Main Loop entered ! ");
-      finalUserInput.forEach((user) => {
-        console.log("Comparison TOP :", main.top, " ", user.top);
-        console.log("Comparison LEFT :", main.left, " ", user.left);
-        console.log("Comparison HEIGHT :", main.height, " ", user.height);
-        console.log("Comparison WIDTH :", main.width, " ", user.width);
-        console.log(
-          "Comparison acronym",
-          main.selected_coordinates_acronym,
-          " ",
-          user.selected_coordinates_acronym
-        );
-        if (
-          main.top === user.top &&
-          main.left === user.left &&
-          main.width === user.width &&
-          main.height === user.height &&
-          main.selected_coordinates_acronym ===
-            user.selected_coordinates_acronym &&
-          user.issues.length > 0
-        ) {
-          console.log("Found Edited Properties");
-          main.edited = true;
-        } else {
-          console.log("Match was not found");
-        }
+  //This useEffect is used to restore the checks in the Image while Tab change
+  useEffect(() => {
+    console.log("useEffect() for mainData called ");
+    console.log("mainData : ", mainData);
+    //mainData.forEach(item)
+    console.log("finalUserInput", finalUserInput);
+    setUpdatedMainData(mainData);
+    // const updatedMainData = { ...mainData };
+    console.log("mainData.issuesList : ", mainData.issuesList);
+    mainData.issuesList &&
+      mainData.issuesList.forEach((main) => {
+        console.log("Main Loop entered ! ");
+        finalUserInput.forEach((user) => {
+          console.log("Comparison TOP :", main.top, " ", user.top);
+          console.log("Comparison LEFT :", main.left, " ", user.left);
+          console.log("Comparison HEIGHT :", main.height, " ", user.height);
+          console.log("Comparison WIDTH :", main.width, " ", user.width);
+          console.log(
+            "Comparison acronym",
+            main.selected_coordinates_acronym,
+            " ",
+            user.selected_coordinates_acronym
+          );
+          if (
+            main.top === user.top &&
+            main.left === user.left &&
+            main.width === user.width &&
+            main.height === user.height &&
+            main.selected_coordinates_acronym ===
+              user.selected_coordinates_acronym &&
+            user.issues.length > 0
+          ) {
+            console.log("Found Edited Properties");
+            main.edited = true;
+          } else {
+            console.log("Match was not found");
+          }
+        });
       });
-    });
-}, [mainData, finalUserInput]);
-
-
+  }, [mainData, finalUserInput]);
 
   /*************************************************** Component return ************************************** */
   return (
     <Box sx={{ display: "flex" }}>
-    <TopbarPage
-      open={drawerOpen}
-      handleDrawerOpen={handleDrawerOpen}
-      urllist={[
-        { pageName: "Home", pagelink: "/UserHome" },
-        { pageName: "Report Application", pagelink: "/user/ReportApplication" },
-      ]}
-    />
-    <SidebarPage
-      open={drawerOpen}
-      handleDrawerClose={handleDrawerClose}
-      adminList={[
-        {
-          pagename: "Device Issue Category",
-          pagelink: "/admin/Device/CategoryConfigure",
-        },
-        { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-        { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-        {
-          pagename: "Infrastructure ",
-          pagelink: "/admin/InfrastructureConfigure",
-        },
-      ]}
-      userList={[
-        {
-          pagename: "Report Application",
-          pagelink: "/user/ReportApplication",
-        },
-        {
-          pagename: "Report Infrastructure",
-          pagelink: "/user/ReportInfrastructure",
-        },
-        { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-      ]}
-    />
-    <Main open={drawerOpen}>
-      <DrawerHeader />
-      <Box
-      // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-      >
-    <div>
-      <AnimatedPage>
-        {/* <CustomDropDown>
-    </CustomDropDown> */}
-    
+      <TopbarPage
+        open={drawerOpen}
+        handleDrawerOpen={handleDrawerOpen}
+        urllist={[
+          { pageName: "Home", pagelink: "/UserHome" },
+          {
+            pageName: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+        ]}
+      />
+      <SidebarPage
+        open={drawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[
+          {
+            pagename: "Device Issue Category",
+            pagelink: "/admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
+      />
+      <Main open={drawerOpen}>
+        <DrawerHeader />
         <Box
-          // mt={2}
-          // ml={2}
-          // mr={2}
-          // mb={2}
-          // sx={{
-          //   // typography: "body1",
-          //   boxShadow: "0px 3px 5px black",
-          //   borderRadius: "10px",
-          // }}
-          className="mainPage"
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
-          <br></br>
-          <center>
-          {divIsVisibleList&&divIsVisibleList.includes("app-dropdown-selection")&&<div  id="app-dropdown-selection">
-            <Dropdown
-              style={{ width: "200px" }}
-              id={"app-dropdown"}
-              list={appDropdown}
-              label={"Application Name"}
-              value={dropdownValue}
-              onChange={handleAppDropdownChange}
-            ></Dropdown>
-            </div>}
-          </center>
+          <div>
+            <AnimatedPage>
+              {/* <CustomDropDown>
+    </CustomDropDown> */}
 
-          <br />
-          <center>
-            {tabsmoduleNames.length !== 0 && (
-              <div
-                style={{
-                  maxHeight: "400px",
-                  maxWidth: "1200px",
-                  overflowY: "auto",
-                  boxShadow: "0px 4px 8px black",
-                  borderRadius: "10px",
-                  backgroundColor: "#B5C0D0",
-                }}
+              <Box
+                // mt={2}
+                // ml={2}
+                // mr={2}
+                // mb={2}
+                // sx={{
+                //   // typography: "body1",
+                //   boxShadow: "0px 3px 5px black",
+                //   borderRadius: "10px",
+                // }}
+                className="mainPage"
               >
-                <div
-                  align="center"
-                  style={{
-                    backgroundColor: "red",
-                    padding: "5px",
-                    flex: 1,
-                    overflow: "auto",
-                  }}
-                >
-                  <span
-                    style={{ fontSize: "14px", fontWeight: "bold", flex: 1 }}
-                  >
-                    Issues Overview{" "}
-                  </span>
-                  <span
-                    style={{
-                      color: "#610C9F",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    [{dropdownValue}]{" "}
-                  </span>
-                  <ExpandMore
-                    expand={expanded}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                  >
-                    <ExpandMoreIcon />
-                    {/* &nbsp; */}
-                  </ExpandMore>
-                  <Badge
-                    badgeContent={overviewTableData.length}
-                    color="primary"
-                  >
-                    {/* <NotificationsActiveIcon color="secondary" /> */}
-                  </Badge>
-                  &nbsp;
-                </div>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                  <Table sx={{ borderRadius: "100px" }}>
-                    <TableBody>
-                      <TableRow colSpan={7}>
-                        <TableCell
-                          align="left"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Module Name </b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Area </b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Issue Name </b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Severity</b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Remarks</b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Action</b>
-                        </TableCell>
-                      </TableRow>
-                      {overviewTableData.length === 0 && (
-                        <TableRow style={{ backgroundColor: "white" }}>
-                          <TableCell colSpan={6}>No Issues Added...</TableCell>
-                        </TableRow>
-                      )}
-                      {overviewTableData.length > 0 &&
-                        overviewTableData.map((item, index) => (
-                          <TableRow
-                            key={index}
-                            style={{ backgroundColor: "white" }}
-                          >
-                            <TableCell align="left">
-                              {item.module_name}
-                            </TableCell>
-                            <TableCell align="center">
-                              {item.selected_coordinates_acronym}
-                            </TableCell>
-                            <TableCell align="center">
-                              {item.issue_name}
-                            </TableCell>
+                <br></br>
+                <center>
+                  {divIsVisibleList &&
+                    divIsVisibleList.includes("app-dropdown-selection") && (
+                      <div id="app-dropdown-selection">
+                        <Dropdown
+                          style={{ width: "200px" }}
+                          id={"app-dropdown"}
+                          list={appDropdown}
+                          label={"Application Name"}
+                          value={dropdownValue}
+                          onChange={handleAppDropdownChange}
+                        ></Dropdown>
+                      </div>
+                    )}
+                </center>
 
-                            <TableCell
-                              align="center"
+                <br />
+                <center>
+                  {tabsmoduleNames.length !== 0 && (
+                    <div
+                      style={{
+                        maxHeight: "400px",
+                        maxWidth: "1200px",
+                        overflowY: "auto",
+                        boxShadow: "0px 4px 8px black",
+                        borderRadius: "10px",
+                        backgroundColor: "#B5C0D0",
+                      }}
+                    >
+                      <div
+                        align="center"
+                        style={{
+                          backgroundColor: "red",
+                          padding: "5px",
+                          flex: 1,
+                          overflow: "auto",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                            flex: 1,
+                          }}
+                        >
+                          Issues Overview{" "}
+                        </span>
+                        <span
+                          style={{
+                            color: "#610C9F",
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          [{dropdownValue}]{" "}
+                        </span>
+                        <ExpandMore
+                          expand={expanded}
+                          onClick={handleExpandClick}
+                          aria-expanded={expanded}
+                          aria-label="show more"
+                        >
+                          <ExpandMoreIcon />
+                          {/* &nbsp; */}
+                        </ExpandMore>
+                        <Badge
+                          badgeContent={overviewTableData.length}
+                          color="primary"
+                        >
+                          {/* <NotificationsActiveIcon color="secondary" /> */}
+                        </Badge>
+                        &nbsp;
+                      </div>
+                      <Collapse in={expanded} timeout="auto" unmountOnExit>
+                        <Table sx={{ borderRadius: "100px" }}>
+                          <TableBody>
+                            <TableRow colSpan={7}>
+                              <TableCell
+                                align="left"
+                                sx={{ backgroundColor: "#B5C0D0" }}
+                              >
+                                <b> Module Name </b>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ backgroundColor: "#B5C0D0" }}
+                              >
+                                <b> Area </b>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ backgroundColor: "#B5C0D0" }}
+                              >
+                                <b> Issue Name </b>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ backgroundColor: "#B5C0D0" }}
+                              >
+                                <b> Severity</b>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ backgroundColor: "#B5C0D0" }}
+                              >
+                                <b> Remarks</b>
+                              </TableCell>
+                              <TableCell
+                                align="center"
+                                sx={{ backgroundColor: "#B5C0D0" }}
+                              >
+                                <b> Action</b>
+                              </TableCell>
+                            </TableRow>
+                            {overviewTableData.length === 0 && (
+                              <TableRow style={{ backgroundColor: "white" }}>
+                                <TableCell colSpan={6}>
+                                  No Issues Added...
+                                </TableCell>
+                              </TableRow>
+                            )}
+                            {overviewTableData.length > 0 &&
+                              overviewTableData.map((item, index) => (
+                                <TableRow
+                                  key={index}
+                                  style={{ backgroundColor: "white" }}
+                                >
+                                  <TableCell align="left">
+                                    {item.module_name}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {item.selected_coordinates_acronym}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {item.issue_name}
+                                  </TableCell>
+
+                                  <TableCell
+                                    align="center"
+                                    style={{
+                                      color:
+                                        severityColors[
+                                          item.severity.toLowerCase()
+                                        ] || severityColors.minor,
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    {item.severity}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {item.remarks}
+                                  </TableCell>
+
+                                  <TableCell align="center">
+                                    <Button
+                                      onClick={() =>
+                                        handleOverviewDeleteClick(item)
+                                      }
+                                    >
+                                      <DeleteIcon
+                                        align="right"
+                                        sx={{ color: "#FE2E2E" }}
+                                      />
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </Collapse>
+                    </div>
+                  )}
+
+                  <center>
+                    <br />
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {tabsmoduleNames.length !== 0 && (
+                        <CustomButton
+                          size={"medium"}
+                          id={"final-submit"}
+                          variant={"contained"}
+                          color={"success"}
+                          onClick={handleFinalReportClick}
+                          style={classes.btn}
+                          buttontext={
+                            <div
                               style={{
-                                color:
-                                  severityColors[item.severity.toLowerCase()] ||
-                                  severityColors.minor,
-                                fontWeight: "bold",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
                               }}
                             >
-                              {item.severity}
-                            </TableCell>
-                            <TableCell align="center">{item.remarks}</TableCell>
-
-                            <TableCell align="center">
-                              <Button
-                                onClick={() => handleOverviewDeleteClick(item)}
-                              >
-                                <DeleteIcon
-                                  align="right"
-                                  sx={{ color: "#FE2E2E" }}
-                                />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
+                              Raise a Ticket
+                              <ArrowRightIcon fontSize="small" />
+                            </div>
+                          }
+                        ></CustomButton>
+                      )}
+                      &nbsp;
+                      {progressVisible && (
+                        <CircularProgress
+                          color="info"
+                          thickness={5}
+                          size={20}
+                        />
+                      )}
+                    </div>
+                  </center>
+                </center>
+                <br />
+                {tabsmoduleNames.length !== 0 && (
+                  <TabContext value={value}>
+                    <Box
+                      // style={{
+                      //   border: 1,
+                      //   borderColor: "divider",
+                      //   borderRadius: "10px",
+                      //   backgroundColor: "#EEEEEE",
+                      //   display: "flex",
+                      //   justifyContent: "center", // Center the content horizontally
+                      //   alignItems: "center", // Center the content vertically
+                      // }}
+                      className="tab"
+                    >
+                      <Tabs
+                        onChange={handleTabsChange}
+                        value={value}
+                        variant="scrollable"
+                      >
+                        {tabsmoduleNames.map((module, index) => (
+                          <Tab
+                            className="tab-names"
+                            label={module}
+                            value={module}
+                            key={index}
+                          ></Tab>
                         ))}
-                    </TableBody>
-                  </Table>
-                </Collapse>
-              </div>
-            )}
+                      </Tabs>
+                    </Box>
 
-            <center>
-              <br />
-              <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
-              {tabsmoduleNames.length !== 0 && (
-                <CustomButton
-                  size={"medium"}
-                  id={"final-submit"}
-                  variant={"contained"}
-                  color={"success"}
-                  onClick={handleFinalReportClick}
-                  style={classes.btn}
-                  buttontext={<div style={{display:'flex',alignItems: 'center', justifyContent: 'center' }}>Raise a Ticket
-                    <ArrowRightIcon fontSize="small" /></div>}
-                >  
-                </CustomButton>
-
-              )}
-              &nbsp;
-               {progressVisible&&<CircularProgress color="info" thickness={5} size={20} />}
-              </div>
-            </center>
-          </center>
-          <br />
-          {tabsmoduleNames.length !== 0 && (
-            <TabContext value={value}>
-              <Box
-                // style={{
-                //   border: 1,
-                //   borderColor: "divider",
-                //   borderRadius: "10px",
-                //   backgroundColor: "#EEEEEE",
-                //   display: "flex",
-                //   justifyContent: "center", // Center the content horizontally
-                //   alignItems: "center", // Center the content vertically
-                // }}
-                className="tab"
-              >
-                <Tabs
-                  onChange={handleTabsChange}
-                  value={value}
-                  variant="scrollable"
-                >
-                  {tabsmoduleNames.map((module, index) => (
-                    <Tab
-                      className="tab-names"
-                      label={module}
-                      value={module}
-                      key={index}
-                    ></Tab>
-                  ))}
-                </Tabs>
-              </Box>
-
-              <center>
-                <div
-                  className="floating-div"
-                  // style={{
-                  //   fontWeight: "bold",
-                  //   color: "red",
-                  //   marginTop: "5px",
-                  //   animationName: "floating",
-                  //   animationDuration: "3s",
-                  //   animationIterationCount: "infinite",
-                  //   animationTimingFunction: "ease-in-out",
-                  // }}
-                >
-                  <span
-                    // style={{
-                    //   fontSize: "12px",
-                    //   display: "flex",
-                    //   alignItems: "center",
-                    //   justifyContent: "center",
-                    //   fontWeight: "bold",
-                    // }}
-                    className="floating-div-text"
-                  >
-                    Click on the Image below to add Issue{" "}
-                    <KeyboardDoubleArrowDownIcon />
-                  </span>
-                  {/* <style>
+                    <center>
+                      <div
+                        className="floating-div"
+                        // style={{
+                        //   fontWeight: "bold",
+                        //   color: "red",
+                        //   marginTop: "5px",
+                        //   animationName: "floating",
+                        //   animationDuration: "3s",
+                        //   animationIterationCount: "infinite",
+                        //   animationTimingFunction: "ease-in-out",
+                        // }}
+                      >
+                        <span
+                          // style={{
+                          //   fontSize: "12px",
+                          //   display: "flex",
+                          //   alignItems: "center",
+                          //   justifyContent: "center",
+                          //   fontWeight: "bold",
+                          // }}
+                          className="floating-div-text"
+                        >
+                          Click on the Image below to add Issue{" "}
+                          <KeyboardDoubleArrowDownIcon />
+                        </span>
+                        {/* <style>
                     {`
         @keyframes floating {
           0% { transform: translate(0, 0px); }
@@ -1866,311 +1873,331 @@ useEffect(() => {
         }
         `}
                   </style> */}
-                </div>
-              </center>
-              <br />
-              <div style={{ display: "flex" }}>
-                <CheckCircleIcon fontSize="small" sx={{ color: "#66FF00" }} />
-                <span> - * Indicates Issues have been added </span>
-              </div>
-              <motion.div
-                variants={icon}
-                initial="hidden"
-                animate="visible"
-                transition={{
-                  default: { duration: 2, ease: "easeInOut" },
-                  fill: { duration: 4, ease: [1, 0, 0.8, 1] },
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                  // Note : Don't disturb the inline styling because then the click even is not getting triggered
-                  //className="main-image-div"
-                >
-                  {mainData.module_image && (
-                    <Paper
-                      elevation={3}
-                      // style={{
-                      //   width: "95%",
-                      //   height: "95%",
-                      //   margin: "auto",
-                      //   borderRadius: "40px",
-                      // }}
-                      className="paper-img-style"
-                    >
-                      <img
-                        src={`data:image/jpeg;base64,${mainData.module_image}`}
-                        alt={mainData.module_name}
-                        // style={{
-                        //   borderRadius: "10px",
-                        //   width: "100%",
-                        //   height: "100%",
-                        //   // userSelect:'none',
-                        //   // pointerEvents:'none'
-                        // }}
-                        className="img-style"
-                        // onClick={(e) => checkForDialog(e)}
+                      </div>
+                    </center>
+                    <br />
+                    <div style={{ display: "flex" }}>
+                      <CheckCircleIcon
+                        fontSize="small"
+                        sx={{ color: "#66FF00" }}
                       />
-                    </Paper>
-                  )}
-                  {updatedMainData &&
-                    updatedMainData.issuesList &&
-                    updatedMainData.issuesList.map((area, areaIndex) => (
-                      <Tooltip
-                        key={areaIndex}
-                        title="Click me ! "
-                        placement="top-start"
-                      >
-                        <div
-                          onClick={(event) => handleDivClick(event, area)}
-                          key={areaIndex}
-                          style={{
-                            position: "absolute",
-                            left: `${area.left * 100}%`,
-                            top: `${area.top * 100}%`,
-                            width: `${area.width * 100}%`,
-                            height: `${area.height * 100}%`,
-                            // border: '2px solid #2196f3', // Blue color
-                            // backgroundColor: 'rgba(33, 150, 243, 0.5)', // Semi-transparent blue
-                            // display: 'flex',
-                            // justifyContent: 'center',
-                            // alignItems: 'center',
-                            // color: 'white',
-                            // fontSize: '16px',
-                            // fontWeight: 'bold',
-                            // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                            //transition: 'all 0.3s ease',
-                            cursor: "pointer",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor =
-                              "rgba(128, 128, 128, 0.5)";
-                            // e.target.style.filter = "blur(5px)";
-                            e.target.style.transition =
-                              "background-color 0.3s, filter 0.3s";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = "rgba(0,0,0,0)";
-                            e.target.style.filter = "blur(0px)";
-                          }}
-                        >
-                          {area.edited && (
-                            <CheckCircleIcon
-                              // style={{
-                              //   position: "absolute",
-                              //   top: "50%",
-                              //   left: "50%",
-                              //   transform: "translate(-50%, -50%)",
-                              //   color: "#66FF00",
-                              // }}
-                              className="check-icon"
-                              fontSize="small"
-                              // onClick={(e) => {
-                              //   e.stopPropagation();
-                              //   handleDivClick(area); // Call a function to delete the area when delete icon is clicked
-                              // }}
-                            />
-                          )}
-                        </div>
-                      </Tooltip>
-                    ))}
-                </div>
-              </motion.div>
-
-              <center>
-                <Container>
-                  <Paper
-                    elevation={4}
-                    style={{
-                      borderRadius: "10px",
-                      boxShadow: "0px 4px 8px black",
-                      maxHeight: "200px",
-                      maxWidth: "900px",
-                    }}
-                  >
-                    <center>
+                      <span> - * Indicates Issues have been added </span>
+                    </div>
+                    <motion.div
+                      variants={icon}
+                      initial="hidden"
+                      animate="visible"
+                      transition={{
+                        default: { duration: 2, ease: "easeInOut" },
+                        fill: { duration: 4, ease: [1, 0, 0.8, 1] },
+                      }}
+                    >
                       <div
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          backgroundColor: "#B5C0D0",
-                          padding: "10px",
-                          borderRadius: "10px",
-                          justifyContent: "center",
+                          position: "relative",
+                          width: "100%",
+                          height: "100%",
                         }}
+                        // Note : Don't disturb the inline styling because then the click even is not getting triggered
+                        //className="main-image-div"
                       >
-                        <span
+                        {mainData.module_image && (
+                          <Paper
+                            elevation={3}
+                            // style={{
+                            //   width: "95%",
+                            //   height: "95%",
+                            //   margin: "auto",
+                            //   borderRadius: "40px",
+                            // }}
+                            className="paper-img-style"
+                          >
+                            <img
+                              src={`data:image/jpeg;base64,${mainData.module_image}`}
+                              alt={mainData.module_name}
+                              // style={{
+                              //   borderRadius: "10px",
+                              //   width: "100%",
+                              //   height: "100%",
+                              //   // userSelect:'none',
+                              //   // pointerEvents:'none'
+                              // }}
+                              className="img-style"
+                              // onClick={(e) => checkForDialog(e)}
+                            />
+                          </Paper>
+                        )}
+                        {updatedMainData &&
+                          updatedMainData.issuesList &&
+                          updatedMainData.issuesList.map((area, areaIndex) => (
+                            <Tooltip
+                              key={areaIndex}
+                              title="Click me ! "
+                              placement="top-start"
+                            >
+                              <div
+                                onClick={(event) => handleDivClick(event, area)}
+                                key={areaIndex}
+                                style={{
+                                  position: "absolute",
+                                  left: `${area.left * 100}%`,
+                                  top: `${area.top * 100}%`,
+                                  width: `${area.width * 100}%`,
+                                  height: `${area.height * 100}%`,
+                                  // border: '2px solid #2196f3', // Blue color
+                                  // backgroundColor: 'rgba(33, 150, 243, 0.5)', // Semi-transparent blue
+                                  // display: 'flex',
+                                  // justifyContent: 'center',
+                                  // alignItems: 'center',
+                                  // color: 'white',
+                                  // fontSize: '16px',
+                                  // fontWeight: 'bold',
+                                  // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                                  //transition: 'all 0.3s ease',
+                                  cursor: "pointer",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.backgroundColor =
+                                    "rgba(128, 128, 128, 0.5)";
+                                  // e.target.style.filter = "blur(5px)";
+                                  e.target.style.transition =
+                                    "background-color 0.3s, filter 0.3s";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.backgroundColor =
+                                    "rgba(0,0,0,0)";
+                                  e.target.style.filter = "blur(0px)";
+                                }}
+                              >
+                                {area.edited && (
+                                  <CheckCircleIcon
+                                    // style={{
+                                    //   position: "absolute",
+                                    //   top: "50%",
+                                    //   left: "50%",
+                                    //   transform: "translate(-50%, -50%)",
+                                    //   color: "#66FF00",
+                                    // }}
+                                    className="check-icon"
+                                    fontSize="small"
+                                    // onClick={(e) => {
+                                    //   e.stopPropagation();
+                                    //   handleDivClick(area); // Call a function to delete the area when delete icon is clicked
+                                    // }}
+                                  />
+                                )}
+                              </div>
+                            </Tooltip>
+                          ))}
+                      </div>
+                    </motion.div>
+
+                    <center>
+                      <Container>
+                        <Paper
+                          elevation={4}
                           style={{
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            marginLeft: "20px",
+                            borderRadius: "10px",
+                            boxShadow: "0px 4px 8px black",
+                            maxHeight: "200px",
+                            maxWidth: "900px",
                           }}
                         >
-                          Additional Information [
-                          <span
+                          <center>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                backgroundColor: "#B5C0D0",
+                                padding: "10px",
+                                borderRadius: "10px",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "bold",
+                                  marginLeft: "20px",
+                                }}
+                              >
+                                Additional Information [
+                                <span
+                                  style={{
+                                    color: "#610C9F",
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {value}
+                                </span>
+                                ] :
+                              </span>
+                            </div>
+                            <br></br>
+                          </center>
+                          <div
                             style={{
-                              color: "#610C9F",
-                              fontSize: "14px",
-                              fontWeight: "bold",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              padding: "10px",
                             }}
                           >
-                            {value}
-                          </span>
-                          ] :
-                        </span>
-                      </div>
-                      <br></br>
+                            <Textfield
+                              id="user-misc-issue"
+                              label={
+                                <span
+                                  style={{
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Miscellaneous Issue
+                                </span>
+                              }
+                              multiline={true}
+                              rows={3}
+                              InputProps={{
+                                style: {
+                                  borderRadius: "15px",
+                                },
+                              }}
+                              style={{
+                                flex: "1",
+                                marginRight: "10px",
+                                marginBottom: "15px",
+                              }}
+                              value={miscellaneousInput}
+                              onChange={(e) => {
+                                setMiscellaneousInput(e.target.value);
+                                console.log(
+                                  "Miscellaneous Issue:",
+                                  e.target.value
+                                );
+                              }}
+                              error={additionalMiscellaneousError}
+                            />
+
+                            <Textfield
+                              id="user-misc-remarks"
+                              label={
+                                <span
+                                  style={{
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Remarks
+                                </span>
+                              }
+                              multiline
+                              rows={3}
+                              InputProps={{
+                                style: {
+                                  borderRadius: "15px",
+                                },
+                              }}
+                              style={{
+                                flex: "1",
+                                marginRight: "10px",
+                                marginBottom: "15px",
+                              }}
+                              value={miscellaneousRemarks}
+                              onChange={(e) => {
+                                setmiscellaneousRemarks(e.target.value);
+                                console.log("Remarks:", e.target.value);
+                              }}
+                            />
+
+                            <div style={{ marginBottom: "40px" }}>
+                              <Dropdown
+                                style={{ width: "200px", marginRight: "10px" }}
+                                id={"modal-severity-dropdown"}
+                                list={severityList}
+                                label={
+                                  <span
+                                    style={{
+                                      fontSize: "14px",
+                                      fontWeight: "bold",
+                                    }}
+                                  >
+                                    Severity
+                                  </span>
+                                }
+                                value={miscellaneousSeverity}
+                                onChange={(e) => {
+                                  setmiscellaneousSeverity(e.target.value);
+                                  console.log(e.target.value);
+                                }}
+                                error={additionalMiscellaneousSeverityError}
+                              />
+                              <Button
+                                size="small"
+                                id="miscellaneous-add"
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                  height: "50px",
+                                  width: "80px",
+                                  borderRadius: "10px",
+                                }}
+                                onClick={handleAdditionalMiscellaneous}
+                              >
+                                Add
+                                {/* <AddCircleOutlineOutlinedIcon fontSize="small"/> */}
+                              </Button>
+                            </div>
+                          </div>
+                        </Paper>
+                      </Container>
                     </center>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "10px",
-                      }}
-                    >
-                      <Textfield
-                        id="user-misc-issue"
-                        label={
-                          <span
-                            style={{ fontSize: "14px", fontWeight: "bold" }}
+
+                    {/* {test} */}
+                    <br />
+                    <br />
+                  </TabContext>
+                )}
+                <div>
+                  <Modal
+                    keepMounted
+                    open={openDialog}
+                    onClose={handleClose}
+                    disableScrollLock
+                  >
+                    <TableContainer sx={modalstyle}>
+                      {/* <Grid item xs={12} md={6} lg={4}> */}
+                      <Typography
+                        id="modal-modal-title"
+                        variant="h6"
+                        component="h2"
+                      >
+                        Selected Area : {areaName}
+                      </Typography>
+                      <br />
+                      <div style={{ display: "flex" }}>
+                        <FormControl style={{ minWidth: 200, maxWidth: 200 }}>
+                          <InputLabel>{"Issue Name"}</InputLabel>
+                          <Select
+                            MenuProps={MenuProps}
+                            //style= {style}
+                            //id={id}
+                            // style={{
+                            //   whiteSpace: "nowrap",
+                            //   overflow: "scroll",
+                            //   textOverflow: "ellipsis",
+                            //   maxWidth: "100%",color:'red'}}
+                            value={userIssue}
+                            label="Issue Name"
+                            onChange={handleModalDropdown}
+                            error={issuedropdownError}
+                            //className={value}
+                            //error={showerror}
+                            onClose={() => {
+                              setIssuesDropdown(originalIssuesDropdown);
+                            }}
                           >
-                            Miscellaneous Issue
-                          </span>
-                        }
-                        multiline={true}
-                        rows={3}
-                        InputProps={{
-                          style: {
-                            borderRadius: "15px",
-                          },
-                        }}
-                        style={{
-                          flex: "1",
-                          marginRight: "10px",
-                          marginBottom: "15px",
-                        }}
-                        value={miscellaneousInput}
-                        onChange={(e) => {
-                          setMiscellaneousInput(e.target.value);
-                          console.log("Miscellaneous Issue:", e.target.value);
-                        }}
-                        error={additionalMiscellaneousError}
-                      />
-
-                      <Textfield
-                        id="user-misc-remarks"
-                        label={
-                          <span
-                            style={{ fontSize: "14px", fontWeight: "bold" }}
-                          >
-                            Remarks
-                          </span>
-                        }
-                        multiline
-                        rows={3}
-                        InputProps={{
-                          style: {
-                            borderRadius: "15px",
-                          },
-                        }}
-                        style={{
-                          flex: "1",
-                          marginRight: "10px",
-                          marginBottom: "15px",
-                        }}
-                        value={miscellaneousRemarks}
-                        onChange={(e) => {
-                          setmiscellaneousRemarks(e.target.value);
-                          console.log("Remarks:", e.target.value);
-                        }}
-                      />
-
-                      <div style={{ marginBottom: "40px" }}>
-                        <Dropdown
-                          style={{ width: "200px", marginRight: "10px" }}
-                          id={"modal-severity-dropdown"}
-                          list={severityList}
-                          label={
-                            <span
-                              style={{ fontSize: "14px", fontWeight: "bold" }}
-                            >
-                              Severity
-                            </span>
-                          }
-                          value={miscellaneousSeverity}
-                          onChange={(e) => {
-                            setmiscellaneousSeverity(e.target.value);
-                            console.log(e.target.value);
-                          }}
-                          error={additionalMiscellaneousSeverityError}
-                        />
-                        <Button
-                          size="small"
-                          id="miscellaneous-add"
-                          variant="contained"
-                          color="primary"
-                          sx={{
-                            height: "50px",
-                            width: "80px",
-                            borderRadius: "10px",
-                          }}
-                          onClick={handleAdditionalMiscellaneous}
-                        >
-                          Add
-                          {/* <AddCircleOutlineOutlinedIcon fontSize="small"/> */}
-                        </Button>
-                      </div>
-                    </div>
-                  </Paper>
-                </Container>
-              </center>
-
-              {/* {test} */}
-              <br />
-              <br />
-            </TabContext>
-          )}
-          <div>
-            <Modal
-              keepMounted
-              open={openDialog}
-              onClose={handleClose}
-              disableScrollLock
-            >
-              <TableContainer sx={modalstyle}>
-                {/* <Grid item xs={12} md={6} lg={4}> */}
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Selected Area : {areaName}
-                </Typography>
-                <br />
-                <div style={{ display: "flex" }}>
-                  <FormControl style={{ minWidth: 200, maxWidth: 200 }}>
-                    <InputLabel>{"Issue Name"}</InputLabel>
-                    <Select
-                      MenuProps={MenuProps}
-                      //style= {style}
-                      //id={id}
-                      // style={{
-                      //   whiteSpace: "nowrap",
-                      //   overflow: "scroll",
-                      //   textOverflow: "ellipsis",
-                      //   maxWidth: "100%",color:'red'}}
-                      value={userIssue}
-                      label="Issue Name"
-                      onChange={handleModalDropdown}
-                      error={issuedropdownError}
-                      //className={value}
-                      //error={showerror}
-                      onClose={() => {
-                        setIssuesDropdown(originalIssuesDropdown);
-                      }}
-                    >
-                      {/* <input
+                            {/* <input
               type="text"
               placeholder="Search..."
               onClick={(e) => e.stopPropagation()}
@@ -2185,174 +2212,178 @@ useEffect(() => {
               }}
              
             /> */}
-                      {/* This  has to be made from scratch because it has Search component */}
-                      <Textfield
-                        id={"user-issues-dropdown"}
-                        onChange={(e) => handleDropdownSearch(e)}
-                        // onChange={(e) =>{e.stopPropagation();
-                        //   e.preventDefault();}}
-                        // onClick= {(event)=>{event.stopPropagation()
-                        //   event.preventDefault();
-                        // }}
-                        onKeyDown={(e) => {
-                          e.stopPropagation();
-                        }}
-                        onKeyUp={(e) => {
-                          e.stopPropagation();
-                        }}
-                        // onSelect={(e)=>{
-                        //   e.stopPropagation()
-                        //   e.preventDefault()
-                        //   }}
+                            {/* This  has to be made from scratch because it has Search component */}
+                            <Textfield
+                              id={"user-issues-dropdown"}
+                              onChange={(e) => handleDropdownSearch(e)}
+                              // onChange={(e) =>{e.stopPropagation();
+                              //   e.preventDefault();}}
+                              // onClick= {(event)=>{event.stopPropagation()
+                              //   event.preventDefault();
+                              // }}
+                              onKeyDown={(e) => {
+                                e.stopPropagation();
+                              }}
+                              onKeyUp={(e) => {
+                                e.stopPropagation();
+                              }}
+                              // onSelect={(e)=>{
+                              //   e.stopPropagation()
+                              //   e.preventDefault()
+                              //   }}
 
-                        // onFocus={(e)=>{
-                        //   e.stopPropagation()
-                        //   e.preventDefault()
-                        //   }}
-                        variant={"outlined"}
-                        size={"small"}
-                        value={searchDropdownValue}
-                        //placeholder='Search'
-                        label={
-                          <div
-                            style={{ display: "flex", alignItems: "center" }}
-                          >
-                            <SearchOutlinedIcon
-                              style={{ marginRight: "5px" }}
+                              // onFocus={(e)=>{
+                              //   e.stopPropagation()
+                              //   e.preventDefault()
+                              //   }}
+                              variant={"outlined"}
+                              size={"small"}
+                              value={searchDropdownValue}
+                              //placeholder='Search'
+                              label={
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                  }}
+                                >
+                                  <SearchOutlinedIcon
+                                    style={{ marginRight: "5px" }}
+                                  />
+                                  <span style={{ fontSize: "12px" }}>
+                                    Search...
+                                  </span>
+                                </div>
+                              }
+                              //value={search}
+                              style={{
+                                marginLeft: "12px",
+                                // Set the background color to white
+                              }}
                             />
-                            <span style={{ fontSize: "12px" }}>Search...</span>
-                          </div>
-                        }
-                        //value={search}
-                        style={{
-                          marginLeft: "12px",
-                          // Set the background color to white
-                        }}
-                      />
 
-                      <br />
-                      {issuesDropdown.map((item, index) => (
-                        <MenuItem
-                          key={item}
-                          value={item}
-                          style={{ whiteSpace: "normal" }}
+                            <br />
+                            {issuesDropdown.map((item, index) => (
+                              <MenuItem
+                                key={item}
+                                value={item}
+                                style={{ whiteSpace: "normal" }}
+                              >
+                                <div
+                                  style={{
+                                    width: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {item}
+                                </div>
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        &nbsp;&nbsp;
+                        <Dropdown
+                          style={{ width: "200px" }}
+                          id={"modal-severity-dropdown"}
+                          list={severityList}
+                          label={"Severity"}
+                          value={userSeverity}
+                          onChange={handleUserSeverityChange}
+                          error={severityError}
+                        ></Dropdown>
+                        &nbsp;&nbsp;
+                        <Textfield
+                          id="user-remarks"
+                          label={
+                            <span
+                              style={{ fontSize: "14px", fontWeight: "bold" }}
+                            >
+                              Remarks
+                            </span>
+                          }
+                          // multiline
+                          // rows={3}
+                          // style={{ flex: 1, marginRight: '10px',marginLeft: '10px', marginBottom:'10px' }}
+                          value={remarksInput}
+                          style={{ width: "200px" }}
+                          onChange={(e) => {
+                            setRemarksInput(e.target.value);
+                          }}
+                        />
+                        &nbsp;&nbsp;
+                        <IconButton
+                          onClick={handleAddUserIssues}
+                          //onClick={handleAddClick}
+                          sx={{ borderRadius: "20px" }}
                         >
-                          <div
-                            style={{
-                              width: "200px",
-                              wordWrap: "break-word",
-                            }}
-                          >
-                            {item}
-                          </div>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                  &nbsp;&nbsp;
-                  <Dropdown
-                    style={{ width: "200px" }}
-                    id={"modal-severity-dropdown"}
-                    list={severityList}
-                    label={"Severity"}
-                    value={userSeverity}
-                    onChange={handleUserSeverityChange}
-                    error={severityError}
-                  ></Dropdown>
-                  &nbsp;&nbsp;
-                  <Textfield
-                    id="user-remarks"
-                    label={
-                      <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-                        Remarks
-                      </span>
-                    }
-                    // multiline
-                    // rows={3}
-                    // style={{ flex: 1, marginRight: '10px',marginLeft: '10px', marginBottom:'10px' }}
-                    value={remarksInput}
-                    style={{ width: "200px" }}
-                    onChange={(e) => {
-                      setRemarksInput(e.target.value);
-                    }}
-                  />
-                  &nbsp;&nbsp;
-                  <IconButton
-                    onClick={handleAddUserIssues}
-                    //onClick={handleAddClick}
-                    sx={{ borderRadius: "20px" }}
-                  >
-                    <AddCircleIcon fontSize="large" color="primary" />
-                  </IconButton>
-                </div>
-                <br />
+                          <AddCircleIcon fontSize="large" color="primary" />
+                        </IconButton>
+                      </div>
+                      <br />
 
-                <div>
-                  {/* <Container 
+                      <div>
+                        {/* <Container 
       sx={{maxHeight:300,maxWidth:300}}
       > */}
 
-                  <Divider />
-                  {tableIssuesForCurrentDiv.length !== 0 && (
-                    <div
-                      style={{
-                        maxHeight: "400px",
-                        overflowY: "auto",
-                        boxShadow: "0px 4px 8px black",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      <CustomTable
-                        rows={tableIssuesForCurrentDiv}
-                        columns={columns}
-                        setRows={setTableIssuesForCurrentDiv}
-                        deleteFromDatabase={handleDeleteTableClick}
-                        editActive={false}
-                        tablename={"Added Issues"}
-                        redirectIconActive={false}
-                        isDeleteDialog={false}
-                      ></CustomTable>
-                    </div>
-                  )}
+                        <Divider />
+                        {tableIssuesForCurrentDiv.length !== 0 && (
+                          <div
+                            style={{
+                              maxHeight: "400px",
+                              overflowY: "auto",
+                              boxShadow: "0px 4px 8px black",
+                              borderRadius: "10px",
+                            }}
+                          >
+                            <CustomTable
+                              rows={tableIssuesForCurrentDiv}
+                              columns={columns}
+                              setRows={setTableIssuesForCurrentDiv}
+                              deleteFromDatabase={handleDeleteTableClick}
+                              editActive={false}
+                              tablename={"Added Issues"}
+                              redirectIconActive={false}
+                              isDeleteDialog={false}
+                            ></CustomTable>
+                          </div>
+                        )}
 
-                  {/* )} */}
+                        {/* )} */}
 
-                  <br />
+                        <br />
+                      </div>
+
+                      <SnackbarComponent
+                        openPopup={modalAlertOpen}
+                        setOpenPopup={setModalAlertOpen}
+                        dialogMessage={snackbarText}
+                        snackbarSeverity={snackbarSeverity}
+                      ></SnackbarComponent>
+                      <br></br>
+                    </TableContainer>
+                  </Modal>
                 </div>
 
                 <SnackbarComponent
-                  openPopup={modalAlertOpen}
-                  setOpenPopup={setModalAlertOpen}
+                  openPopup={mainAlert}
+                  setOpenPopup={setMainAlert}
                   dialogMessage={snackbarText}
                   snackbarSeverity={snackbarSeverity}
                 ></SnackbarComponent>
-                <br></br>
-              </TableContainer>
-            </Modal>
+
+                {/* Ticket Dialog  */}
+                <TicketDialog
+                  ticketDialogOpen={ticketDialogOpen}
+                  // handleTicketDialogClose={handleTicketDialogClose}
+                  setTicketDialogOpen={setTicketDialogOpen}
+                  ticketNumber={ticketNumber}
+                ></TicketDialog>
+              </Box>
+            </AnimatedPage>
           </div>
-
-          <SnackbarComponent
-            openPopup={mainAlert}
-            setOpenPopup={setMainAlert}
-            dialogMessage={snackbarText}
-            snackbarSeverity={snackbarSeverity}
-          ></SnackbarComponent>
-
-          {/* Ticket Dialog  */}
-          <TicketDialog
-          ticketDialogOpen={ticketDialogOpen}
-          // handleTicketDialogClose={handleTicketDialogClose}
-          setTicketDialogOpen={setTicketDialogOpen}
-          ticketNumber={ticketNumber}
-          >
-          </TicketDialog>
-          
         </Box>
-       
-      </AnimatedPage>
-    </div>
-    </Box>
-        </Main>
+      </Main>
     </Box>
   );
 }

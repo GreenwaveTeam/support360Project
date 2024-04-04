@@ -1,16 +1,9 @@
 import React from "react";
 import { PanelMenu } from "primereact/panelmenu";
-import { Button } from "primereact/button";
+import { Link } from "react-router-dom";
 
-const Home = () => <h1>Home Page</h1>;
-const Project = () => <h1>Project Page</h1>;
-const Other = () => <h1>Other Page</h1>;
 
 const CustomPanelBar = () => {
-  const redirectTo = (path) => {
-    window.location.href = path;
-  };
-
   const items = [
     {
       label: "Admin",
@@ -23,12 +16,12 @@ const CustomPanelBar = () => {
             {
               label: "Application",
               icon: "pi pi-fw pi-desktop",
-              url: "/admin/applicationConfigure",
+              path: "/admin/applicationConfigure",
             },
             {
               label: "Infrastructure",
               icon: "pi pi-fw pi-globe",
-              url: "/admin/InfrastructureConfigure",
+              path: "/admin/InfrastructureConfigure",
             },
             {
               label: "Device",
@@ -37,12 +30,12 @@ const CustomPanelBar = () => {
                 {
                   label: "Device Category",
                   icon: "pi pi-fw pi-tags",
-                  url: "/admin/device/CategoryConfigure",
+                  path: "/admin/device/CategoryConfigure",
                 },
                 {
                   label: "Device Tree",
                   icon: "pi pi-fw pi-sitemap",
-                  url: "/admin/deviceConfigure",
+                  path: "/admin/deviceConfigure",
                 },
               ],
             },
@@ -51,17 +44,17 @@ const CustomPanelBar = () => {
         {
           label: "Home",
           icon: "pi pi-fw pi-home",
-          url: "/admin/home",
+          path: "/admin/home",
         },
         {
           label: "Create Admin",
           icon: "pi pi-fw pi-user-plus",
-          url: "/admin/registration",
+          path: "/admin/registration",
         },
         {
           label: "Create User",
           icon: "pi pi-fw pi-user-plus",
-          url: "/user/registration",
+          path: "/user/registration",
         },
       ],
     },
@@ -72,7 +65,7 @@ const CustomPanelBar = () => {
         {
           label: "Home",
           icon: "pi pi-fw pi-home",
-          url: "/user/home",
+          path: "/user/home",
         },
 
         {
@@ -82,17 +75,17 @@ const CustomPanelBar = () => {
             {
               label: "Application",
               icon: "pi pi-fw pi-desktop",
-              url: "/user/reportapplication",
+              path: "/user/reportapplication",
             },
             {
               label: "Device",
               icon: "pi pi-fw pi-mobile",
-              url: "/user/reportdevice",
+              path: "/user/reportdevice",
             },
             {
               label: "Infrastructure",
               icon: "pi pi-fw pi-globe",
-              url: "/user/reportinfrastructure",
+              path: "/user/reportinfrastructure",
             },
           ],
         },
@@ -100,12 +93,27 @@ const CustomPanelBar = () => {
     },
   ];
 
+  const renderMenuItems = (items) => {
+    return items.map((item) => {
+      if (item.items) {
+        return {
+          ...item,
+          items: renderMenuItems(item.items),
+        };
+      } else {
+        return {
+          ...item,
+          label: <Link to={item.path}>{item.label}</Link>,
+        };
+      }
+    });
+  };
+
   return (
     <div>
       <div className="sidebar">
-        <PanelMenu model={items} />
+        <PanelMenu model={renderMenuItems(items)} />
       </div>
-      <div className="layout-content">{/* Content of each page */}</div>
     </div>
   );
 };

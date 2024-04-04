@@ -32,12 +32,28 @@ import { ColorModeContext, useMode } from "./theme";
 import { UserProvider } from "./modules/contexts/UserContext";
 import RolePageConfiguration from "./modules/roleconfiguration/module.rolePageConfiguration";
 import RoleConfiguration from "./modules/roleconfiguration/module.roleConfiguration";
+import CustomSideBar from "./CustomSideBar";
+import Test1 from "./Test1";
+import Test2 from "./Test2";
 
 function App() {
   const urllist = [
     { pageName: "Test", pagelink: "/Test" },
     { pageName: "IssueCategory", pagelink: "/IssueCategory" },
   ];
+  function AuthenticatedRoutes() {
+    return (
+      <div>
+        <CustomSideBar>
+          <Routes>
+            <Route path="/test1" element={<Test1 />} />
+            <Route path="/test2" element={<Test2 />} />
+            {/* <Route path="/*" element={ <NotFound/>} /> */}
+          </Routes>
+        </CustomSideBar>
+      </div>
+    );
+  }
 
   // const [darkMode, setDarkMode] = React.useState(false);
   // const theme = React.useMemo(
@@ -86,6 +102,7 @@ function App() {
                 <Route
                   path="/user/registration"
                   element={<UserRegistration />}
+                  // this  should be /admin/userRegistration
                 />
                 <Route path="/user/home" element={<UserHome />} />
                 <Route
@@ -131,7 +148,7 @@ function App() {
                   element={<AddInfrastructureIssue />}
                 />
                 {/* test */}
-                <Route path="/sample" element={<Samplemodule />} />
+                
                 <Route path="/*" element={<NotFound />}></Route>
 
                 <Route path="/user/ReportDevice" element={<UserDeviceTree />} />
@@ -148,9 +165,21 @@ function App() {
                   path="/admin/Role/Page"
                   element={<RolePageConfiguration />}
                 />
+
+                <Route
+                  path="/authenticated/*"
+                  element={<AuthenticatedRoutes />}
+                >
+                  {/* <Route path="/AdminLogin" element={<AdminLogin />} /> */}
+                </Route>
               </Routes>
             </div>
           </Router>
+          {/* <Router>
+            <Routes>
+            <Route path="/sample" element={<Samplemodule />} />
+            </Routes>
+          </Router> */}
         </UserProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>

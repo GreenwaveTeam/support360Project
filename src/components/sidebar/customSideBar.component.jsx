@@ -1,7 +1,29 @@
 import React from "react";
 import { PanelMenu } from "primereact/panelmenu";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
+const defaultStyles = {
+  color: '#000'
+};
+
+const CustomMenuItem = ({ label, path }) => {
+  const navigate = useNavigate();
+
+  if (path) {
+    return (
+      <div
+        onClick={() => {
+          navigate(path);
+        }}
+        style={defaultStyles}  
+      >
+        {label}
+      </div>
+    );
+  } else {
+    return <span>{label}</span>;
+  }
+};
 
 const CustomPanelBar = () => {
   const items = [
@@ -67,7 +89,6 @@ const CustomPanelBar = () => {
           icon: "pi pi-fw pi-home",
           path: "/user/home",
         },
-
         {
           label: "Report",
           icon: "pi pi-fw pi-chart-bar",
@@ -94,19 +115,11 @@ const CustomPanelBar = () => {
   ];
 
   const renderMenuItems = (items) => {
-    return items.map((item) => {
-      if (item.items) {
-        return {
-          ...item,
-          items: renderMenuItems(item.items),
-        };
-      } else {
-        return {
-          ...item,
-          label: <Link to={item.path}>{item.label}</Link>,
-        };
-      }
-    });
+    return items.map((item) => ({
+      ...item,
+      label: <CustomMenuItem label={item.label} path={item.path} />,
+      items: item.items ? renderMenuItems(item.items) : undefined,
+    }));
   };
 
   return (

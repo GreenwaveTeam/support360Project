@@ -55,7 +55,7 @@ export default function RoleConfiguration() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+        console.log(`user/home Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
         const response = await axios.get(`http://localhost:8081/role`, {
           headers: {

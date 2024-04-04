@@ -40,7 +40,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     if (isAuthenticated()) {
-      navigate("/AdminHome");
+      navigate("/admin/home");
     }
   }, []);
 
@@ -89,7 +89,7 @@ export default function AdminLogin() {
         // attempts++;
       }
       if (token !== null) {
-        navigate("/AdminHome");
+        navigate("/admin/home");
         console.log("Logged in");
       } else {
         handleClick();

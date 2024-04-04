@@ -515,7 +515,7 @@ const currentPageLocation=useLocation().pathname;
         open={drawerOpen}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: "Home", pagelink: "/UserHome" },
+          { pageName: "Home", pagelink: "/user/home" },
           {
             pageName: "Configure Infrastructure",
             pagelink: "/admin/InfrastructureConfigure",

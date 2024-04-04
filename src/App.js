@@ -78,18 +78,18 @@ function App() {
                 <Route path="/" element={<UserLogin />} />
                 {/* <Route path="/xyz" element={<AddInfrastructureIssue />} /> */}
                 <Route path="/device" element={<Device />} />
-                <Route path="/AdminHome" element={<AdminHome />} />
+                <Route path="/admin/home" element={<AdminHome />} />
                 {/* <Route
             path="/UserRegistration/:userID"
             element={<UserRegistration />}
           /> */}
                 <Route
-                  path="/UserRegistration"
+                  path="/user/registration"
                   element={<UserRegistration />}
                 />
-                <Route path="/UserHome" element={<UserHome />} />
+                <Route path="/user/home" element={<UserHome />} />
                 <Route
-                  path="/AdminRegistration"
+                  path="/admin/registration"
                   element={<AdminRegistration />}
                 />
                 <Route path="/login" element={<UserLogin />} />
@@ -114,7 +114,7 @@ function App() {
                   path="/admin/ApplicationConfigure/Module"
                   element={<ModuleUpload />}
                 />
-                <Route path="/AdminPage" element={<AdminPage />} />
+                <Route path="/admin/configurePage" element={<AdminPage />} />
 
                 {/* Application Report */}
                 <Route

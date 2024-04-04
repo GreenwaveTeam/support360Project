@@ -2,61 +2,78 @@
   "pagelist": [
     {
       "page": "Infrastructure",
-      "modules":[{
-          "pagelink":"/admin/InfrastructureConfigure",
-          "components":["add-new-infrastructure-category","existing-infrastructure-table"]
-      },
-      {
-          "pagelink":"/admin/infrastructure/addIssues",
-          "components":["add-issues-selected-category","edit-issues-table"]
-      }
-
- 
-  ]
+      "modules": [
+        {
+          "pagelink": "/admin/InfrastructureConfigure",
+          "components": [
+            "add-new-infrastructure-category",
+            "existing-infrastructure-table"
+          ]
+        },
+        {
+          "pagelink": "/admin/infrastructure/addIssues",
+          "components": ["add-issues-selected-category", "edit-issues-table"]
+        }
+      ]
     },
-   
+
     {
       "page": "Device",
       "modules": [
         {
-          "pagelink":"/admin/Device/CategoryConfigure",
-          "components":["add-new-category","device-category-table"]
-      },
-      {
-          "pagelink":"/admin/Device/CategoryConfigure/Issue",
-          "components":["add-new-issue","device-issue-table"]
-      },
-      {
-        "pagelink":"/admin/DeviceConfigure",
-        "components":["delete-selected-node","add-new-node"]
-      }
-   
+          "pagelink": "/admin/Device/CategoryConfigure",
+          "components": ["add-new-category", "device-category-table"]
+        },
+        {
+          "pagelink": "/admin/Device/CategoryConfigure/Issue",
+          "components": ["add-new-issue", "device-issue-table"]
+        },
+        {
+          "pagelink": "/admin/DeviceConfigure",
+          "components": ["delete-selected-node", "add-new-node"]
+        }
       ]
-     
     },
+
     {
       "page": "Application",
       "modules": [
         {
-          "pagelink":"/admin/ApplicationConfigure",
-          "components":["add-new-application","existing-application-table"]
-      },
-      {
-          "pagelink":"/admin/ApplicationConfigure/Modules",
-          "components":["add-application-module","add-module-existing-issues"]
-      },
-      {
-        "pagelink":"/admin/ApplicationConfigure/Module",
-        "components":["add-module-existing-issues"]
-    },{
-       
-      "pagelink":"/user/ReportApplication",
-      "components":["app-dropdown-selection"]
-    }
-
-     
+          "pagelink": "/admin/ApplicationConfigure",
+          "components": ["add-new-application", "existing-application-table"]
+        },
+        {
+          "pagelink": "/admin/ApplicationConfigure/Modules",
+          "components": ["add-application-module", "add-module-existing-issues"]
+        },
+        {
+          "pagelink": "/admin/ApplicationConfigure/Module",
+          "components": ["add-module-existing-issues"]
+        },
+        {
+          "pagelink": "/user/ReportApplication",
+          "components": ["app-dropdown-selection"]
+        }
       ]
-     
+    },
+
+    {
+      "page": "Home",
+      "modules": [
+        {
+          "pagelink": "/admin/home",
+          "components": [
+            "support_Till_Date",
+            "Ticket_Informations",
+            "open_Tickets",
+            "Last_Ticket_Raised"
+          ]
+        },
+        {
+          "pagelink": "/user/home",
+          "components": ["add-application-module", "add-module-existing-issues"]
+        }
+      ]
     }
   ]
 }

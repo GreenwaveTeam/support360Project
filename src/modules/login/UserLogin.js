@@ -37,7 +37,7 @@ export default function UserLogin() {
   useEffect(() => {
     if (isAuthenticated()) {
       fetchUser();
-      // navigate("/userhome");
+      // navigate("//user/home");
     }
   }, []);
 
@@ -95,7 +95,7 @@ export default function UserLogin() {
       }
       if (token !== null) {
         fetchUser();
-        // navigate("/userhome");
+        // navigate("//user/home");
         console.log("Logged in");
       } else {
         handleClick();
@@ -111,7 +111,7 @@ export default function UserLogin() {
   };
 
   const fetchUser = async () => {
-    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+    console.log(`/user/home Bearer ${localStorage.getItem("token")}`);
     try {
       const response = await fetch("http://localhost:8081/users/user", {
         method: "GET",
@@ -133,7 +133,7 @@ export default function UserLogin() {
       // const roleArray = role.split(",");
       // console.log("roles: ", roleArray);
       // if (homepage === "ROLE_USER") {
-      //   navigate("/UserHome");
+      //   navigate("//user/home");
       // }
       // else {
       //   // fetchAdmin();
@@ -163,7 +163,7 @@ export default function UserLogin() {
   };
 
   // const fetchAdmin = async () => {
-  //   console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+  //   console.log(`/user/home Bearer ${localStorage.getItem("token")}`);
   //   try {
   //     const response = await fetch("http://localhost:8081/admins/admin", {
   //       method: "GET",

@@ -18,7 +18,6 @@ import Dropdown from "../../../components/dropdown/dropdown.component";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { Box, Container } from '@mui/material';
 import { useNavigate,useLocation } from 'react-router-dom';
-import Swal from 'sweetalert2'
 
 import axios from 'axios';
 import NotFound from '../../../components/notfound/notfound.component';

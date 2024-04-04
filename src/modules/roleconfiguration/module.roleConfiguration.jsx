@@ -17,6 +17,12 @@ import Dropdown from "../../components/dropdown/dropdown.component";
 import Table from "../../components/table/table.component";
 import { Container } from "@mui/material";
 import axios from "axios";
+/*Navigation Pane*/
+import Sidebar from '../../components/navigation/sidebar/sidebar';
+import Topbar from '../../components/navigation/topbar/topbar';
+import Main from '../../components/navigation/mainbody/mainbody';
+import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
+
 
 export default function RoleConfiguration() {
   const [role, setRole] = useState("");
@@ -25,6 +31,8 @@ export default function RoleConfiguration() {
   const [openPopup, setOpenPopup] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
+  const [open, setOpen] = useState(false);
+  
 
   const navigate = useNavigate();
 
@@ -36,6 +44,14 @@ export default function RoleConfiguration() {
       canRepeatSameValue: false,
     },
   ];
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -105,7 +121,44 @@ export default function RoleConfiguration() {
     });
   };
   return (
-    <Box>
+    
+      <Box sx={{ display: 'flex' }}>
+      <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[
+          {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Role', pagelink: '/admin/role' }
+        ]} />
+      <Sidebar
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[
+          {
+            pagename: "Device Issue Category",
+            pagelink: "/admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
+      />
+      <Main open={open}>
+        <DrawerHeader />
+        <Box 
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+    
       <Container sx={{ marginTop: "20px" }}>
         <Box
           sx={{
@@ -146,6 +199,8 @@ export default function RoleConfiguration() {
           // /*style={}*/
         />
       </Container>
+    </Box>
+    </Main>
     </Box>
   );
 }

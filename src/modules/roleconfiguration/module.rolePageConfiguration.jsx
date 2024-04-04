@@ -7,6 +7,15 @@ import { useLocation } from 'react-router-dom';
 import Snackbar from "../../components/snackbar/customsnackbar.component";
 import axios from 'axios';
 import packagedata from '../../pagedata.json'
+
+/*Navigation Pane*/
+import Sidebar from '../../components/navigation/sidebar/sidebar';
+import Topbar from '../../components/navigation/topbar/topbar';
+import Main from '../../components/navigation/mainbody/mainbody';
+import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
+
+
+
 export default function RolePageConfiguration() {
 //  ;const jsonData = {
 //     "pagelist": [
@@ -66,6 +75,14 @@ export default function RolePageConfiguration() {
   
   const location=useLocation()
   const role=location.state.role;
+  const [open, setOpen] = useState(false);
+  
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
   // const handleCheck = (value) => {
   //   setSelectedComponents(prev => [...prev, value]);
   // };
@@ -249,7 +266,44 @@ fetchData();}
   };
 
   return (
-    <Box>
+    <Box sx={{ display: 'flex' }}>
+      <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[
+          {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Role', pagelink: '/admin/role' }
+          ,{ pageName: 'Page', pagelink: '/admin/role/page' }
+        ]} />
+      <Sidebar
+        open={open}
+        handleDrawerClose={handleDrawerClose}
+        adminList={[
+          {
+            pagename: "Device Issue Category",
+            pagelink: "/admin/Device/CategoryConfigure",
+          },
+          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
+          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
+          {
+            pagename: "Infrastructure ",
+            pagelink: "/admin/InfrastructureConfigure",
+          },
+        ]}
+        userList={[
+          {
+            pagename: "Report Application",
+            pagelink: "/user/ReportApplication",
+          },
+          {
+            pagename: "Report Infrastructure",
+            pagelink: "/user/ReportInfrastructure",
+          },
+          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
+        ]}
+      />
+      <Main open={open}>
+        <DrawerHeader />
+        <Box 
+        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+        >
+    
       
       <Box sx={{display:'flex' ,flexDirection:'column', alignItems:'center'}}>
       {/* <TextField
@@ -294,6 +348,8 @@ fetchData();}
       <Table rows={rows} setRows={setRows} columns={columns} editActive={false} deleteFromDatabase={handleDelete}/>
       <Snackbar snackbarSeverity={snackbarSeverity} openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage}/>
    
+    </Box>
+    </Main>
     </Box>
   );
 }

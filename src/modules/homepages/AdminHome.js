@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
+  Avatar,
   Box,
   Button,
   Dialog,
@@ -9,6 +10,7 @@ import {
   DialogTitle,
   FormControlLabel,
   Grid,
+  IconButton,
   Switch,
   Table,
   TableBody,
@@ -23,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import Textfield from "../../components/textfield/textfield.component";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
+import CloseIcon from "@mui/icons-material/Close";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import Main from "../../components/navigation/mainbody/mainbody";
 import TopbarPage from "../../components/navigation/topbar/topbar";
@@ -30,6 +33,10 @@ import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useUserContext } from "../contexts/UserContext";
+import { ColorModeContext, tokens } from "../../theme";
+import { useTheme } from "@mui/material";
+import { useContext } from "react";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 
 export default function AdminHome() {
   const [list, setList] = useState([]);
@@ -52,6 +59,12 @@ export default function AdminHome() {
     setSwitchChecked(event.target.checked);
     setSwitchLabel(event.target.checked ? "Toggle User" : "Toggle Admin");
   };
+
+  function convertToInitials(name) {
+    const parts = name.split(" ");
+    const initials = parts[0].charAt(0).toUpperCase();
+    return initials;
+  }
 
   const { userData, setUserData } = useUserContext();
   console.log("userData ==>> ", userData);
@@ -230,6 +243,17 @@ export default function AdminHome() {
     setDeleteAdminId(adminID);
   };
 
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
+
+  const tableStyle = {
+    color: "blue",
+    border: "1px solid",
+    borderColor: colors.grey[800],
+    borderRadius: "1rem",
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <TopbarPage
@@ -264,6 +288,7 @@ export default function AdminHome() {
           { pagename: "Report Device", pagelink: "/user/ReportDevice" },
         ]}
       />
+
       <Main open={open}>
         <DrawerHeader />
         <Box
@@ -279,14 +304,15 @@ export default function AdminHome() {
             alignItems={"center"}
             justifyContent={"space-evenly"}
             margin={"10px"}
-            border={"2px solid gray"}
-            borderRadius={"20px"}
+            border={"1px solid #74747469"}
+            borderRadius={"1rem"}
             paddingBottom={"10px"}
           >
             <FormControlLabel
               control={
                 <Switch
-                  color="primary"
+                  defaultChecked
+                  color="secondary"
                   checked={switchChecked}
                   onChange={handleSwitchChange}
                 />
@@ -297,6 +323,7 @@ export default function AdminHome() {
             {!switchChecked ? (
               <Button
                 variant="contained"
+                startIcon={<PersonRoundedIcon />}
                 sx={{ mt: 3, mb: 2 }}
                 onClick={() => navigate("/admin/userregistration")}
               >
@@ -305,6 +332,7 @@ export default function AdminHome() {
             ) : (
               <Button
                 variant="contained"
+                startIcon={<PersonRoundedIcon />}
                 sx={{ mt: 3, mb: 2 }}
                 onClick={() => navigate("/admin/adminregistration")}
               >
@@ -320,9 +348,9 @@ export default function AdminHome() {
                 display="flex"
                 margin="1rem"
               >
-                <Typography component="h1" variant="h5">
+                {/* <Typography component="h1" variant="h5">
                   Existing Users
-                </Typography>
+                </Typography> */}
               </Box>
               <Grid
                 item
@@ -332,7 +360,7 @@ export default function AdminHome() {
                 justifyContent={"center"}
                 alignItems={"center"}
               >
-                <TableContainer>
+                <TableContainer sx={tableStyle}>
                   <Table>
                     <TableHead>
                       <TableRow>
@@ -342,56 +370,90 @@ export default function AdminHome() {
                             textAlign: "center",
                             fontSize: "15px",
                             fontWeight: "bold",
-                            backgroundColor: "#B5C0D0",
+                            backgroundColor: colors.primary[400],
                           }}
                         >
-                          <Textfield
-                            onChange={(e) => handleSearchChange(e)}
-                            variant={"outlined"}
-                            size="small"
-                            label={
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <SearchOutlinedIcon
-                                  style={{ marginRight: "5px" }}
-                                />
-                                Search...
-                              </div>
-                            }
-                            value={search}
-                            sx={{
-                              marginLeft: "5px",
-                              width: "200px",
-                              // Set the background color to white
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              padding: "0rem 1rem",
                             }}
-                            //   InputProps={{
-                            //     startAdornment: (
-                            //         <InputAdornment position="start">
-                            //             <SearchOutlinedIcon />
-                            //         </InputAdornment>
-                            //     ),
-                            // }}
-                          />
-                          <Tooltip title="Clear">
+                          >
+                            <Typography
+                              component="h1"
+                              variant="h6"
+                              sx={{ fontWeight: "600" }}
+                            >
+                              Existing Users
+                            </Typography>
+                            <div>
+                              <Textfield
+                                onChange={(e) => handleSearchChange(e)}
+                                variant={"outlined"}
+                                size="small"
+                                label={
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <SearchOutlinedIcon
+                                      style={{ marginRight: "5px" }}
+                                    />
+                                    Search...
+                                  </div>
+                                }
+                                value={search}
+                                sx={{
+                                  marginLeft: "5px",
+                                  width: "200px",
+                                  // Set the background color to white
+                                }}
+                                //   InputProps={{
+                                //     startAdornment: (
+                                //         <InputAdornment position="start">
+                                //             <SearchOutlinedIcon />
+                                //         </InputAdornment>
+                                //     ),
+                                // }}
+                              />
+                              {/* <Tooltip title="Clear">
                             <Button
+                              variant="contained"
+                              color="primary"
                               onClick={() => {
                                 setSearch("");
                                 setFilteredRows(list);
                               }}
                               style={{ color: "black" }}
+                              startIcon={<DeleteIcon />}
                             >
-                              <DisabledByDefaultRoundedIcon />
+                              Clear
                             </Button>
-                          </Tooltip>
+                          </Tooltip> */}
+                              <Tooltip title="Clear">
+                                <IconButton
+                                  variant="contained"
+                                  aria-label="delete"
+                                  size="medium"
+                                  onClick={() => {
+                                    setSearch("");
+                                    setFilteredRows(list);
+                                  }}
+                                >
+                                  <CloseIcon fontSize="inherit" />
+                                </IconButton>
+                              </Tooltip>
+                            </div>
+                          </div>
                         </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableHead>
-                      <TableRow sx={{ backgroundColor: "#B5C0D0" }}>
+                      <TableRow sx={{ backgroundColor: colors.primary[400] }}>
                         <TableCell
                           sx={{
                             fontWeight: "bold",
@@ -451,7 +513,25 @@ export default function AdminHome() {
                     <TableBody>
                       {filteredRows.map((item, index) => (
                         <TableRow key={index}>
-                          <TableCell align="center">{item.name}</TableCell>
+                          <TableCell
+                            align="center"
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              flexDirection: "row-reverse",
+                              justifyContent: "center",
+                              columnGap: "1.2rem",
+                            }}
+                          >
+                            {item.name}
+                            <Avatar
+                              sx={{
+                                bgcolor: colors.blueAccent[500],
+                              }}
+                            >
+                              {convertToInitials(item.name)}
+                            </Avatar>
+                          </TableCell>
                           <TableCell align="center">{item.email}</TableCell>
                           <TableCell align="center">{item.plantName}</TableCell>
                           <TableCell
@@ -484,9 +564,9 @@ export default function AdminHome() {
                             style={{ textDecoration: "none", color: "inherit" }}
                           > */}
                             <EditIcon
-                              color="primary"
                               style={{
                                 cursor: "pointer",
+                                color: "#42a5f5",
                               }}
                               onClick={() => {
                                 console.log("item : ", item);
@@ -555,9 +635,9 @@ export default function AdminHome() {
                 display="flex"
                 margin="1rem"
               >
-                <Typography component="h1" variant="h5">
-                  Existing Admins
-                </Typography>
+                {/* <Typography component="h1" variant="h5">
+                  User Information
+                </Typography> */}
               </Box>
               <Grid
                 item
@@ -567,7 +647,7 @@ export default function AdminHome() {
                 justifyContent={"center"}
                 alignItems={"center"}
               >
-                <TableContainer>
+                <TableContainer sx={tableStyle}>
                   <Table>
                     <TableHead>
                       <TableRow>
@@ -577,48 +657,69 @@ export default function AdminHome() {
                             textAlign: "center",
                             fontSize: "15px",
                             fontWeight: "bold",
-                            backgroundColor: "#B5C0D0",
+                            backgroundColor: colors.primary[400],
                           }}
                         >
-                          <Textfield
-                            onChange={(e) => handleAdminSearchChange(e)}
-                            variant={"outlined"}
-                            size="small"
-                            label={
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <SearchOutlinedIcon
-                                  style={{ marginRight: "5px" }}
-                                />
-                                Search...
-                              </div>
-                            }
-                            value={adminSearch}
-                            sx={{
-                              marginLeft: "5px",
-                              width: "200px",
+                          {" "}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              padding: "0rem 1rem",
                             }}
-                          />
-                          <Tooltip title="Clear">
-                            <Button
-                              onClick={() => {
-                                setAdminSearch("");
-                                setFilteredAdminRows(adminList);
-                              }}
-                              style={{ color: "black" }}
+                          >
+                            <Typography
+                              component="h1"
+                              variant="h6"
+                              sx={{ fontWeight: "600" }}
                             >
-                              <DisabledByDefaultRoundedIcon />
-                            </Button>
-                          </Tooltip>
+                              Existing Admins
+                            </Typography>
+                            <div>
+                              <Textfield
+                                onChange={(e) => handleAdminSearchChange(e)}
+                                variant={"outlined"}
+                                size="small"
+                                label={
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <SearchOutlinedIcon
+                                      style={{ marginRight: "5px" }}
+                                    />
+                                    Search...
+                                  </div>
+                                }
+                                value={adminSearch}
+                                sx={{
+                                  marginLeft: "5px",
+                                  width: "200px",
+                                }}
+                              />
+                              <Tooltip title="Clear">
+                                <IconButton
+                                  variant="contained"
+                                  aria-label="delete"
+                                  size="medium"
+                                  onClick={() => {
+                                    setAdminSearch("");
+                                    setFilteredAdminRows(adminList);
+                                  }}
+                                >
+                                  <CloseIcon fontSize="inherit" />
+                                </IconButton>
+                              </Tooltip>
+                            </div>
+                          </div>
                         </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableHead>
-                      <TableRow sx={{ backgroundColor: "#B5C0D0" }}>
+                      <TableRow sx={{ backgroundColor: colors.primary[400] }}>
                         <TableCell
                           sx={{
                             fontWeight: "bold",
@@ -669,7 +770,25 @@ export default function AdminHome() {
                     <TableBody>
                       {filteredAdminRows.map((item, index) => (
                         <TableRow key={index}>
-                          <TableCell align="center">{item.name}</TableCell>
+                          <TableCell
+                            align="center"
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              flexDirection: "row-reverse",
+                              justifyContent: "center",
+                              columnGap: "1.2rem",
+                            }}
+                          >
+                            {item.name}
+                            <Avatar
+                              sx={{
+                                bgcolor: colors.blueAccent[500],
+                              }}
+                            >
+                              {convertToInitials(item.name)}
+                            </Avatar>
+                          </TableCell>
                           <TableCell align="center">{item.email}</TableCell>
                           <TableCell align="center">{item.userID}</TableCell>
                           {/* <TableCell
@@ -692,7 +811,7 @@ export default function AdminHome() {
                           <TableCell align="center">
                             <EditIcon
                               color="primary"
-                              style={{ cursor: "pointer" }}
+                              style={{ cursor: "pointer", color: "#42a5f5" }}
                               onClick={() => {
                                 console.log("item : ", item);
                                 navigate("/admin/adminregistration", {

@@ -16,7 +16,7 @@ import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.
 
 
 
-export default function RolePageConfiguration() {
+export default function RolePageConfiguration({sendUrllist}) {
 //       const jsonData = 
 //      [{
 //              "pagelink":"/admin/Infrastructure",
@@ -45,6 +45,11 @@ export default function RolePageConfiguration() {
 //  // const jsonData=packagedata;
 
   const[jsonData,setJsonData]=useState([])
+  const urllist=[
+    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Role', pagelink: '/admin/role' }]
+  
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -69,6 +74,7 @@ export default function RolePageConfiguration() {
       }
     };
     fetchData();
+    sendUrllist(urllist)
   }, []);
   useEffect(()=>{
     console.log("JSondata==>"+JSON.stringify(jsonData))

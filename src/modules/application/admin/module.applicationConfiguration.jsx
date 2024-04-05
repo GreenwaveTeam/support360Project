@@ -49,7 +49,7 @@ export default function ModuleConfiguration({sendUrllist}) {
     
     
   const urllist = [
-    {pageName:'Admin Home',pagelink:'/AdminPage'},
+    {pageName:'Admin Home',pagelink:'/admin/home'},
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" }
   ];
   

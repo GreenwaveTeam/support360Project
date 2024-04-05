@@ -26,7 +26,7 @@ const DeviceIssue = ({sendUrllist}) => {
   const [issueList, setIssueList] = useState([]);
   const [filteredRows,setFilteredRows]=useState([])
   const urllist = [
-    {pageName:'Admin Home',pagelink:'/AdminPage'},
+    {pageName:'Admin Home',pagelink:'/admin/home'},
     { pageName: "Device Issue Category", pagelink: "/admin/Device/CategoryConfigure" },
     { pageName: "Device Issue", pagelink: "/admin/Device/CategoryConfigure/Issue" }
   ];

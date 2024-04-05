@@ -24,7 +24,7 @@ import Main from '../../components/navigation/mainbody/mainbody';
 import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
 
 
-export default function RoleConfiguration() {
+export default function RoleConfiguration({sendUrllist}) {
   const [role, setRole] = useState("");
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
@@ -32,6 +32,8 @@ export default function RoleConfiguration() {
   const [dialogMessage, setDialogMessage] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
   const [open, setOpen] = useState(false);
+  const urllist=[
+    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Role', pagelink: '/admin/role' }]
   
 
   const navigate = useNavigate();
@@ -51,7 +53,8 @@ export default function RoleConfiguration() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -83,6 +86,7 @@ export default function RoleConfiguration() {
       }
     };
     fetchData();
+    sendUrllist(urllist)
   }, []);
   const handleRedirect = () => {
     //if()
@@ -122,39 +126,6 @@ export default function RoleConfiguration() {
   };
   return (
     
-      <Box sx={{ display: 'flex' }}>
-      <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[
-          {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Role', pagelink: '/admin/role' }
-        ]} />
-      <Sidebar
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-        <DrawerHeader />
         <Box 
         // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
@@ -199,8 +170,6 @@ export default function RoleConfiguration() {
           // /*style={}*/
         />
       </Container>
-    </Box>
-    </Main>
     </Box>
   );
 }

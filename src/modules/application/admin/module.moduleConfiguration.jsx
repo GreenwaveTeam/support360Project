@@ -61,7 +61,7 @@
 		const [deleteArea,setDeleteArea]=useState(null)
 		const [filterValue, setFilterValue] = useState('');
 		const urllist=[
-			{pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' },
+			{pageName:'Admin Home',pagelink:'/admin/home'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' },
 			]
 	
 		const columns=[

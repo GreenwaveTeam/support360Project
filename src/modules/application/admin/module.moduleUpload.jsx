@@ -66,7 +66,7 @@ const [divIsVisibleList,setDivIsVisibleList]=useState([]);
 const currentPageLocation=useLocation().pathname;
 
 const urllist=[
-  {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' }]
+  {pageName:'Admin Home',pagelink:'/admin/home'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' }]
 
 
 useEffect(()=>{

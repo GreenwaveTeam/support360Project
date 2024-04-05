@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomSideBar from "./CustomSideBar";
 import Test1 from "./Test1";
 import Test2 from "./Test2";
@@ -8,7 +8,7 @@ import Main from './components/navigation/mainbody/mainbody';
 import Sidebar from './components/navigation/sidebar/sidebar';
 import DrawerHeader from './components/navigation/drawerheader/drawerheader.component';
 import { Box } from "@mui/system";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Samplemodule from "./modules/device/module.samplemodule";
 import NotFound from "./components/notfound/notfound.component";
 
@@ -19,13 +19,15 @@ import ModuleConfiguration from "./modules/application/admin/module.moduleConfig
 import ModuleUpload from "./modules/application/admin/module.moduleUpload";
 
 
-
 function AdminRoutes() {
     const [urllist, setUrllist] = useState([]);
     const [open, setOpen] = useState(false);
+    const navigate=useNavigate();
     const handleDrawerOpen = () => {
 		setOpen(true);
 	};
+ 
+  const [IsNotFound,setIsNotFound]=useState(false)
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -34,9 +36,34 @@ function AdminRoutes() {
     // Update parent state with data received from child
     setUrllist(data);
   };
+  const location=useLocation().pathname
+  // useEffect(()=>{
+  //   console.log("Location====>",location)
+  //   if(IsNotFound)
+  //   {
+  //     navigate("/*")
+  //   }
+  // },[IsNotFound])
+  const NotfoundComponent = ({ setIsNotFound }) => {
+    useEffect(() => {
+      console.log("Entering Not Found Component ! ");
+      setIsNotFound(true);
+    }, []); // empty dependency array ensures this runs only once after initial render
+  
+    // Render whatever content you want for the NotFound component
     return (
-      <Box sx={{ display: 'flex' }}>
-        <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={urllist} />
+      <div>
+        <NotFound/>
+      </div>
+    );
+  };
+  
+
+
+    return (
+      
+      <Box  sx={{ display: 'flex' }}>
+       {!IsNotFound && <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={urllist} />}
         <Sidebar
         open={open}
         handleDrawerClose={handleDrawerClose}
@@ -69,12 +96,16 @@ function AdminRoutes() {
                   path="/ApplicationConfigure/Module"
                   element={<ModuleUpload sendUrllist={receiveUrllist}/>}
                 />
-                
+                <Route
+                  path="/*"
+                  element={<NotfoundComponent  setIsNotFound={setIsNotFound}/>}
+                />
             {/*  */}
           </Routes>
           </Box>
           </Main>
       </Box>
+     
     );
   }
 export default AdminRoutes;

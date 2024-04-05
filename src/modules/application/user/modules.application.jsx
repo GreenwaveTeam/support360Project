@@ -1530,50 +1530,7 @@ export default function ApplicationUser() {
 
   /*************************************************** Component return ************************************** */
   return (
-    <Box sx={{ display: "flex" }}>
-      <TopbarPage
-        open={drawerOpen}
-        handleDrawerOpen={handleDrawerOpen}
-        urllist={[
-          { pageName: "Home", pagelink: "/user/home" },
-          {
-            pageName: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-        ]}
-      />
-      <SidebarPage
-        open={drawerOpen}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={drawerOpen}>
-        <DrawerHeader />
-        <Box
-        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        >
+
           <div>
             <AnimatedPage>
               {/* <CustomDropDown>
@@ -2382,8 +2339,5 @@ export default function ApplicationUser() {
               </Box>
             </AnimatedPage>
           </div>
-        </Box>
-      </Main>
-    </Box>
   );
 }

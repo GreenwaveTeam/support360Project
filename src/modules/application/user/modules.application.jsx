@@ -1624,7 +1624,7 @@ export default function ApplicationUser() {
                       <div
                         align="center"
                         style={{
-                          backgroundColor: "red",
+                          backgroundColor: "#B5C0D0",
                           padding: "5px",
                           flex: 1,
                           overflow: "auto",

@@ -17,39 +17,65 @@ import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.
 
 
 export default function RolePageConfiguration() {
-//  ;const jsonData = {
-//     "pagelist": [
-//       {
-//         "page": "Infrastructure",
-//         "modules":[{
-//             "pagelink":"/admin/Infrastructure",
-//             "components":["add-new-infrastructure-category","existing-infrastructure-table"]
-//         },
-//         {
-//             "pagelink":"/admin/infrastructure/addIssues",
-//             "components":["add-issues-selected-category","edit-issues-selected-category"]
-//         }
-    
-//     ]
-//       },
+//       const jsonData = 
+//      [{
+//              "pagelink":"/admin/Infrastructure",
+//              "components":["add-new-infrastructure-category","existing-infrastructure-table"]
+//          },
+//          {
+//              "pagelink":"/admin/infrastructure/addIssues",
+//              "components":["add-issues-selected-category","edit-issues-selected-category"]
+//          }
+//       ]
+// //     ]
+// //       },
       
-//       {
-//         "page": "Device",
-//         "modules": [
-//           {
-//             "pagelink":"/admin/Device/CategoryConfigure",
-//             "components":["add-new-device-category","existing-device-table"]
-//         },
+// //       {
+// //         "page": "Device",
+// //         "modules": [
+// //           {
+// //             "pagelink":"/admin/Device/CategoryConfigure",
+// //             "components":["add-new-device-category","existing-device-table"]
+// //         },
           
-//         ]
-//       }
-//     ]
-//   };
-  const jsonData=packagedata;
+// //         ]
+// //       }
+// //     ]
+// //   };
+//  // const jsonData=packagedata;
+
+  const[jsonData,setJsonData]=useState([])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log(`user/home Bearer ${localStorage.getItem("token")}`);
+        // Make the API call to fetch data
+        const response = await axios.get(`http://localhost:8081/role/pages`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        // Extract data from the response
+        const data = await response.data;
+        setJsonData(data);
+        
+      } catch (e) {
+        //console.error('Error:', error);
+        setOpenPopup(true);
+        setDialogMessage("Database Error");
+        setsnackbarSeverity("error");
+      }
+    };
+    fetchData();
+  }, []);
+  useEffect(()=>{
+    console.log("JSondata==>"+JSON.stringify(jsonData))
+  },[jsonData])
   const convertedData = [];
   
-  jsonData.pagelist.forEach(page => {
-    page.modules.forEach(module => {
+  jsonData.forEach(module => {
       if (module.pagelink) {
         convertedData.push({
           pagename: module.pagelink,
@@ -57,7 +83,6 @@ export default function RolePageConfiguration() {
         });
       } 
     });
-  });
   
   console.log(convertedData);
   const pageDetails = convertedData;

@@ -223,7 +223,7 @@ export default function ModuleConfiguration({sendUrllist}) {
       <Box >
       
       <Box >
-        <Container>
+        
         {divIsVisibleList&&divIsVisibleList.includes("add-new-application")&& 
       <form onSubmit={handleSubmit} >
               <TextField
@@ -278,7 +278,7 @@ export default function ModuleConfiguration({sendUrllist}) {
                 
             </DataTable> 
             </Box>*/}
-            </Container>
+            
             &nbsp;
             {divIsVisibleList&&divIsVisibleList.includes("existing-application-table")&& 
             <Table rows={data} setRows={setData} 

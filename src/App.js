@@ -100,13 +100,13 @@ function App() {
             element={<UserRegistration />}
           /> */}
                 <Route
-                  path="/user/registration"
+                  path="admin/userregistration"
                   element={<UserRegistration />}
                   // this  should be /admin/userRegistration
                 />
                 <Route path="/user/home" element={<UserHome />} />
                 <Route
-                  path="/admin/registration"
+                  path="admin/adminregistration"
                   element={<AdminRegistration />}
                 />
                 <Route path="/login" element={<UserLogin />} />
@@ -148,7 +148,7 @@ function App() {
                   element={<AddInfrastructureIssue />}
                 />
                 {/* test */}
-                
+
                 <Route path="/*" element={<NotFound />}></Route>
 
                 <Route path="/user/ReportDevice" element={<UserDeviceTree />} />

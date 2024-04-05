@@ -6,7 +6,7 @@
   height: 40vmin;
   pointer-events: none;
 }
-.MuiBreadcrumbs-root{color: #FF4500  !important;font-style: normal !important;}
+/* .MuiBreadcrumbs-root{color: #FF4500  !important;font-style: normal !important;} */
 .MuiAvatar-root{width: 32px !important;height:32px !important;font-size: 0.9rem !important;}
 .MuiTab-root.Mui-selected {
   color: #ffffff !important;

@@ -100,7 +100,6 @@ export default function UserLogin() {
       }
       if (token !== null) {
         fetchUser();
-        // navigate("/userhome");
         console.log("Logged in");
       } else {
         handleClick();
@@ -237,6 +236,7 @@ export default function UserLogin() {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Textfield
+                    autoFocus
                     autoComplete="userID"
                     name="userID"
                     required
@@ -251,6 +251,7 @@ export default function UserLogin() {
                   <FormControl fullWidth>
                     <InputLabel htmlFor="password">Password</InputLabel>
                     <OutlinedInput
+                      autoFocus
                       autoComplete="password"
                       name="password"
                       required
@@ -289,7 +290,7 @@ export default function UserLogin() {
                 fullWidth
                 variant="contained"
                 onClick={handleLogin}
-                autoFocus
+                // autoFocus
               >
                 Login
               </Button>

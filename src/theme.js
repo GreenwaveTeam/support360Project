@@ -24,7 +24,7 @@ export const tokens = (mode) => ({
           100: "#d0d1d5",
           200: "#a1a4ab",
           300: "#727681",
-          400: "#1F2A40",
+          400: "#212B36",
           500: "#161c24",
           600: "#101624",
           700: "#0c101b",
@@ -205,15 +205,36 @@ export const ColorModeContext = createContext({
   toggleColorMode: () => {},
 });
 
+// export const useMode = () => {
+//   const [mode, setMode] = useState("light");
+
+//   const colorMode = useMemo(
+//     () => ({
+//       toggleColorMode: () =>
+//         setMode((prev) => (prev === "light" ? "dark" : "light")),
+//     }),
+//     []
+//   );
+
+//   // localStorage.setItem("theme","light")
+//   // localStorage.getItem("theme")
+
+//   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+//   return [theme, colorMode];
+// };
 export const useMode = () => {
-  const [mode, setMode] = useState("light");
+  const storedTheme = localStorage.getItem("theme");
+  const [mode, setMode] = useState(storedTheme || "light");
 
   const colorMode = useMemo(
     () => ({
-      toggleColorMode: () =>
-        setMode((prev) => (prev === "light" ? "dark" : "light")),
+      toggleColorMode: () => {
+        const newMode = mode === "light" ? "dark" : "light";
+        setMode(newMode);
+        localStorage.setItem("theme", newMode);
+      },
     }),
-    []
+    [mode]
   );
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);

@@ -19,6 +19,8 @@ import {
   FormControl,
   InputAdornment,
   Tooltip,
+  Snackbar,
+  Slide,
 } from "@mui/material";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
@@ -63,6 +65,10 @@ export default function AdminRegistration() {
     e.preventDefault();
   };
 
+  const [snackbarText, setSnackbarText] = useState("");
+  const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
+  const [snackbarSeverity, setsnackbarSeverity] = useState("");
+
   const { state } = useLocation();
   // const admin = state.admin || null;
 
@@ -73,12 +79,16 @@ export default function AdminRegistration() {
     } else {
       setIsStatePresent(true);
       setUpdateFormData({
-        adminID: state.admin.adminID,
+        adminID: state.admin.userID,
         name: state.admin.name,
         email: state.admin.email,
         phoneNumber: state.admin.phoneNumber,
         role: state.admin.role,
+        homepage: state.admin.homePage,
       });
+      console.log("state.admin.role : ", state.admin.role);
+      console.log("state.admin.homepage : ", state.admin.homepage);
+      console.log("updateFormData.homepage : ", updateFormData.homepage);
     }
   };
 
@@ -144,9 +154,23 @@ export default function AdminRegistration() {
     const passwordsMatch = pass === e;
     if (!passwordsMatch) {
       setShowPasswordError(true);
+      handleClick();
+      setSnackbarText("Password does not match !");
+      setsnackbarSeverity("error");
     } else {
       setShowPasswordError(false);
     }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setPasswordErrorOpen(false);
+  };
+
+  const handleClick = () => {
+    setPasswordErrorOpen(true);
   };
 
   const handleUpdate = async (event) => {
@@ -206,219 +230,220 @@ export default function AdminRegistration() {
   };
 
   return (
-    <Container component="main" maxWidth="md">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <HowToRegTwoToneIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Admin Registration Page
-        </Typography>
+    <>
+      <Container component="main" maxWidth="md">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <HowToRegTwoToneIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Admin Registration Page
+          </Typography>
 
-        {isStatePresent ? (
-          // update form starts here...
+          {isStatePresent ? (
+            // update form starts here...
 
-          <>
-            <form>
-              <Box noValidate sx={{ mt: 3 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Textfield
-                      name="name"
-                      required
-                      fullWidth
-                      id="name"
-                      label="Name"
-                      autoFocus
-                      value={updateFormData.name}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="phoneNumber"
-                      label="Phone Number"
-                      id="phoneNumber"
-                      autoComplete="phoneNumber"
-                      value={updateFormData.phoneNumber}
-                      onChange={updateHandlePhoneNumberChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield
-                      required
-                      fullWidth
-                      id="email"
-                      type="email"
-                      label="Email Address"
-                      name="email"
-                      autoComplete="email"
-                      value={updateFormData.email}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield
-                      autoComplete="adminID"
-                      name="adminID"
-                      required
-                      fullWidth
-                      id="adminID"
-                      label="Admin ID"
-                      value={updateFormData.adminID}
-                      onChange={updateHandleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Dropdown
-                      fullWidth
-                      id="role"
-                      value={updateFormData.role}
-                      label="Role"
-                      onChange={updateHandleRoleChange}
-                      list={["admin", "superadmin", "developer"]}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Dropdown
-                      fullWidth
-                      id="homepage"
-                      value={updateFormData.homepage}
-                      label="Homepage"
-                      onChange={updateHandleHomepageChange}
-                      list={["", "admin/home", "user/home"]}
-                    />
-                  </Grid>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                  onClick={handleUpdate}
-                >
-                  Update Admin
-                </Button>
-              </Box>
-            </form>
-          </>
-        ) : (
-          // registration form starts here...
-
-          <>
-            <form>
-              <Box noValidate sx={{ mt: 3 }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Textfield
-                      name="name"
-                      required
-                      fullWidth
-                      id="name"
-                      label="Name"
-                      autoFocus
-                      value={formData.name}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield
-                      autoComplete="adminID"
-                      name="adminID"
-                      required
-                      fullWidth
-                      id="adminID"
-                      label="Admin ID"
-                      value={formData.adminID}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield
-                      required
-                      fullWidth
-                      id="email"
-                      type="email"
-                      label="Email Address"
-                      name="email"
-                      autoComplete="email"
-                      value={formData.email}
-                      onChange={handleFormdataInputChange}
-                    />
-                  </Grid>
-                  {!adminExist && (
+            <>
+              <form>
+                <Box noValidate sx={{ mt: 3 }}>
+                  <Grid container spacing={2}>
                     <Grid item xs={6}>
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
-                        <OutlinedInput
-                          label="Password"
-                          autoComplete="password"
-                          name="password"
-                          required
-                          fullWidth
-                          id="password"
-                          value={pass}
-                          onChange={hashedPasswordChange}
-                          type={showPassword ? "text" : "password"}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                              >
-                                {showPassword ? (
-                                  <VisibilityOff />
-                                ) : (
-                                  <Visibility />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                      </FormControl>
+                      <Textfield
+                        name="name"
+                        required
+                        fullWidth
+                        id="name"
+                        label="Name"
+                        autoFocus
+                        value={updateFormData.name}
+                        onChange={updateHandleFormdataInputChange}
+                      />
                     </Grid>
-                  )}
-                  {!adminExist && (
                     <Grid item xs={6}>
                       <Textfield
                         required
                         fullWidth
-                        name="confirmPassword"
-                        label="Confirm Password"
-                        type="password"
-                        id="confirmPassword"
-                        value={cnfpass}
-                        onBlur={(e) => confirmPassword(e.target.value)}
-                        onChange={(e) => {
-                          const confirmPass = e.target.value;
-                          setCnfpass(confirmPass);
-                        }}
+                        name="phoneNumber"
+                        label="Phone Number"
+                        id="phoneNumber"
+                        autoComplete="phoneNumber"
+                        value={updateFormData.phoneNumber}
+                        onChange={updateHandlePhoneNumberChange}
                       />
-                      {showPasswordError && (
-                        <Stack
-                          sx={{ display: "flex", justifyContent: "right" }}
-                          spacing={2}
-                        >
-                          <Alert variant="filled" severity="error">
-                            Password Does Not Match
-                          </Alert>
-                        </Stack>
-                      )}
                     </Grid>
-                  )}
-                  {/* {showPasswordError && (
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        id="email"
+                        type="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        value={updateFormData.email}
+                        onChange={updateHandleFormdataInputChange}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        autoComplete="adminID"
+                        name="adminID"
+                        required
+                        fullWidth
+                        id="adminID"
+                        label="Admin ID"
+                        value={updateFormData.adminID}
+                        onChange={updateHandleFormdataInputChange}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Dropdown
+                        fullWidth
+                        id="role"
+                        value={updateFormData.role}
+                        label="Role"
+                        onChange={updateHandleRoleChange}
+                        list={["admin", "superadmin", "developer"]}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Dropdown
+                        fullWidth
+                        id="homepage"
+                        value={updateFormData.homepage}
+                        label="Homepage"
+                        onChange={updateHandleHomepageChange}
+                        list={["admin/home", "user/home"]}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    onClick={handleUpdate}
+                  >
+                    Update Admin
+                  </Button>
+                </Box>
+              </form>
+            </>
+          ) : (
+            // registration form starts here...
+
+            <>
+              <form>
+                <Box noValidate sx={{ mt: 3 }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={6}>
+                      <Textfield
+                        name="name"
+                        required
+                        fullWidth
+                        id="name"
+                        label="Name"
+                        autoFocus
+                        value={formData.name}
+                        onChange={handleFormdataInputChange}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        autoComplete="adminID"
+                        name="adminID"
+                        required
+                        fullWidth
+                        id="adminID"
+                        label="Admin ID"
+                        value={formData.adminID}
+                        onChange={handleFormdataInputChange}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        id="email"
+                        type="email"
+                        label="Email Address"
+                        name="email"
+                        autoComplete="email"
+                        value={formData.email}
+                        onChange={handleFormdataInputChange}
+                      />
+                    </Grid>
+                    {!adminExist && (
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="password">Password</InputLabel>
+                          <OutlinedInput
+                            label="Password"
+                            autoComplete="password"
+                            name="password"
+                            required
+                            fullWidth
+                            id="password"
+                            value={pass}
+                            onChange={hashedPasswordChange}
+                            type={showPassword ? "text" : "password"}
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={handleClickShowPassword}
+                                  onMouseDown={handleMouseDownPassword}
+                                  edge="end"
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            }
+                          />
+                        </FormControl>
+                      </Grid>
+                    )}
+                    {!adminExist && (
+                      <Grid item xs={6}>
+                        <Textfield
+                          required
+                          fullWidth
+                          name="confirmPassword"
+                          label="Confirm Password"
+                          type="password"
+                          id="confirmPassword"
+                          value={cnfpass}
+                          onBlur={(e) => confirmPassword(e.target.value)}
+                          onChange={(e) => {
+                            const confirmPass = e.target.value;
+                            setCnfpass(confirmPass);
+                          }}
+                        />
+                        {/* {showPasswordError && (
+                          <Stack
+                            sx={{ display: "flex", justifyContent: "right" }}
+                            spacing={2}
+                          >
+                            <Alert variant="filled" severity="error">
+                              Password Does Not Match
+                            </Alert>
+                          </Stack>
+                        )} */}
+                      </Grid>
+                    )}
+                    {/* {showPasswordError && (
                 <Box
                   sx={{
                     position: "fixed",
@@ -432,53 +457,70 @@ export default function AdminRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                  <Grid item xs={6}>
-                    <Textfield
-                      required
-                      fullWidth
-                      name="phoneNumber"
-                      label="Phone Number"
-                      id="phoneNumber"
-                      autoComplete="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handlePhoneNumberChange}
-                    />
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="phoneNumber"
+                        label="Phone Number"
+                        id="phoneNumber"
+                        autoComplete="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handlePhoneNumberChange}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Dropdown
+                        fullWidth
+                        id="role"
+                        value={formData.role}
+                        label="Role"
+                        onChange={handleRoleChange}
+                        list={["admin", "superadmin", "developer"]}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Dropdown
+                        fullWidth
+                        id="homepage"
+                        value={formData.homepage}
+                        label="Homepage"
+                        onChange={handleHomepageChange}
+                        list={["admin/home", "user/home"]}
+                      />
+                    </Grid>
                   </Grid>
-                  <Grid item xs={6}>
-                    <Dropdown
-                      fullWidth
-                      id="role"
-                      value={formData.role}
-                      label="Role"
-                      onChange={handleRoleChange}
-                      list={["admin", "superadmin", "developer"]}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Dropdown
-                      fullWidth
-                      id="homepage"
-                      value={formData.homepage}
-                      label="Homepage"
-                      onChange={handleHomepageChange}
-                      list={["admin/home", "user/home"]}
-                    />
-                  </Grid>
-                </Grid>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                  onClick={handleSubmit}
-                >
-                  Register Admin
-                </Button>
-              </Box>
-            </form>
-          </>
-        )}
-      </Box>
-    </Container>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                    onClick={handleSubmit}
+                  >
+                    Register Admin
+                  </Button>
+                </Box>
+              </form>
+            </>
+          )}
+        </Box>
+      </Container>
+      <Snackbar
+        open={passwordErrorOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        TransitionComponent={Slide}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleClose}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarText}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }

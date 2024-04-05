@@ -96,15 +96,17 @@ export default function UserRegistration() {
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
 
+  const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
-    setOpen(false);
+    setPasswordErrorOpen(false);
   };
 
   const handleClick = () => {
-    setOpen(true);
+    setPasswordErrorOpen(true);
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -152,8 +154,9 @@ export default function UserRegistration() {
         accountOwnerCustomer: state.user.accountOwnerCustomer,
         accountOwnerGW: state.user.accountOwnerGW,
         role: state.user.role,
-        homepage: state.user.homepage,
+        homepage: state.user.homePage,
       });
+      console.log("state.user.homePage : ", state.user.homePage);
     }
   };
 
@@ -237,6 +240,9 @@ export default function UserRegistration() {
     const passwordsMatch = pass === e;
     if (!passwordsMatch) {
       setShowPasswordError(true);
+      handleClick();
+      setSnackbarText("Password does not match !");
+      setsnackbarSeverity("error");
     } else {
       setShowPasswordError(false);
     }
@@ -937,7 +943,7 @@ export default function UserRegistration() {
                                 setCnfpass(confirmPass);
                               }}
                             />
-                            {showPasswordError && (
+                            {/* {showPasswordError && (
                               <Stack
                                 sx={{
                                   display: "flex",
@@ -952,7 +958,7 @@ export default function UserRegistration() {
                               // handleClick();
                               // setSnackbarText("User ID and password are required.");
                               // setsnackbarSeverity("error");
-                            )}
+                            )} */}
                           </Grid>
                         )}
                         {/* {showPasswordError && (
@@ -1253,7 +1259,7 @@ export default function UserRegistration() {
             </Box>
           </Container>
           <Snackbar
-            open={open}
+            open={passwordErrorOpen}
             autoHideDuration={3000}
             onClose={handleClose}
             TransitionComponent={Slide}

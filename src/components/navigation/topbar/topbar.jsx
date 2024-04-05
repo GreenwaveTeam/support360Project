@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { styled } from "@mui/material/styles";
 import BreadCrumbs from "../../breadcrumbs/breadcrumbs.component";
-import { Avatar, Button, Tooltip } from "@mui/material";
+import { Avatar, Button, Paper, Tooltip } from "@mui/material";
 import { logout } from "../../../modules/helper/AuthService";
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -85,6 +85,18 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const style={
+    color: "blue",
+    background:colors.redAccent[600], 
+  }
+  const BreadCrumbsStyle = styled(Paper)(({ theme }) => ({
+    // textAlign: "center",
+    color:  colors.redAccent[600], 
+    
+    fontStyle: 'normal',
+    fontSize: '2rem',
+
+  }));
 
   return (
     <AppBar
@@ -103,10 +115,13 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
         >
           <MenuIcon />
         </IconButton>
+        
         <Typography variant="h6" noWrap component="div">
-          <BreadCrumbs urllist={urllist} style={{ color: 'green !imporatnt' }}/>
+        
+          <BreadCrumbs urllist={urllist} />
           
         </Typography>
+
         <div style={{marginLeft:"auto"}}>
           <div style={{display:"flex",columnGap:"1rem",alignItems:"center"}}>
         <Tooltip

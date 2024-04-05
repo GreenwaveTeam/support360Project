@@ -166,13 +166,17 @@ export default function AdminHome() {
 
   const fetchAdminData = async () => {
     try {
-      const response = await fetch("http://localhost:8081/admins/", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "http://localhost:8081/users/",
+        // const response = await fetch("http://localhost:8081/admins/",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.status === 403) {
         localStorage.clear();
         navigate("/login");
@@ -294,7 +298,7 @@ export default function AdminHome() {
               <Button
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={() => navigate("admin/userregistration")}
+                onClick={() => navigate("/admin/userregistration")}
               >
                 Register New User
               </Button>
@@ -302,7 +306,7 @@ export default function AdminHome() {
               <Button
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={() => navigate("admin/adminregistration")}
+                onClick={() => navigate("/admin/adminregistration")}
               >
                 Register New Admin
               </Button>
@@ -486,7 +490,7 @@ export default function AdminHome() {
                               }}
                               onClick={() => {
                                 console.log("item : ", item);
-                                navigate("admin/userregistration", {
+                                navigate("/admin/userregistration", {
                                   state: { user: item },
                                 });
                               }}
@@ -667,7 +671,7 @@ export default function AdminHome() {
                         <TableRow key={index}>
                           <TableCell align="center">{item.name}</TableCell>
                           <TableCell align="center">{item.email}</TableCell>
-                          <TableCell align="center">{item.adminID}</TableCell>
+                          <TableCell align="center">{item.userID}</TableCell>
                           {/* <TableCell
                             style={{
                               cursor: "pointer",
@@ -691,7 +695,7 @@ export default function AdminHome() {
                               style={{ cursor: "pointer" }}
                               onClick={() => {
                                 console.log("item : ", item);
-                                navigate("admin/adminregistration", {
+                                navigate("/admin/adminregistration", {
                                   state: { admin: item },
                                 });
                               }}

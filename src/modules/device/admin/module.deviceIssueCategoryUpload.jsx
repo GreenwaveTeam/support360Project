@@ -40,7 +40,7 @@ const DeviceCategory = ({sendUrllist}) => {
   const [divIsVisibleList,setDivIsVisibleList]=useState([]);
   const currentPageLocation=useLocation().pathname;
   const urllist=[
-    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Device Issue Category', pagelink: '/admin/Device/CategoryConfigure' }
+    {pageName:'Admin Home',pagelink:'/admin/home'},{ pageName: 'Device Issue Category', pagelink: '/admin/Device/CategoryConfigure' }
   ]
 
   const columns=[

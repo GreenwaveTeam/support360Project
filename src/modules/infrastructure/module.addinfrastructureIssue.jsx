@@ -21,7 +21,7 @@ import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 
 
-export default function AddInfrastructureIssue() {
+export default function AddInfrastructureIssue({sendUrllist}) {
   //********************* Data ********************
 
   // const [rows,setRows]=useState(
@@ -81,6 +81,8 @@ export default function AddInfrastructureIssue() {
 
   // const navigate = useNavigate();
 const currentPageLocation=useLocation().pathname;
+
+
   
 
   // ***************************************************  API  **************************************************
@@ -647,7 +649,17 @@ const currentPageLocation=useLocation().pathname;
     },
   ];
  
-
+  const  urllist=[
+    { pageName: "Home", pagelink: "/admin/home" },
+    {
+      pageName: "Configure Infrastructure",
+      pagelink: "/admin/InfrastructureConfigure",
+    },
+    {
+      pageName: "Add Issues",
+      pagelink: "/admin/infrastructure/addIssues",
+    },
+  ]
 
    /**********************************************useEffect Hook***********************************************/
    useEffect(() => {
@@ -657,6 +669,8 @@ const currentPageLocation=useLocation().pathname;
     console.log("search value is ", search);
     fetchDBdata(plantId, inf);
     fetchDivs();
+   
+    sendUrllist(urllist)
    
 
     const handleOnBeforeUnload = (event) => {
@@ -695,54 +709,7 @@ const currentPageLocation=useLocation().pathname;
 
   //************** Returned Component  **************
   return (
-    <Box sx={{ display: "flex" }}>
-      <TopbarPage
-        open={drawerOpen}
-        handleDrawerOpen={handleDrawerOpen}
-        urllist={[
-          { pageName: "Home", pagelink: "/AdminPage" },
-          {
-            pageName: "Configure Infrastructure",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-          {
-            pageName: "Add Issues",
-            pagelink: "/admin/infrastructure/addIssues",
-          },
-        ]}
-      />
-      <SidebarPage
-        open={drawerOpen}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={drawerOpen}>
-        <DrawerHeader />
-        <Box
-        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        >
+   
           <AnimatedPage>
             <div>
               <form>
@@ -919,8 +886,6 @@ const currentPageLocation=useLocation().pathname;
               ></SnackbarComponent>
             </div>
           </AnimatedPage>
-        </Box>
-      </Main>
-    </Box>
+        
   );
 }

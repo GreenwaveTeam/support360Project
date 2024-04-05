@@ -15,7 +15,7 @@ import SnackbarComponent from "../../components/snackbar/customsnackbar.componen
 import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 
-export default function ConfigureInfrastructure() {
+export default function ConfigureInfrastructure({sendUrllist}) {
  // const [search, setSearch] = useState("");
   const [newCateogry, setNewCategory] = useState("");
   // const [editRowIndex, setEditRowIndex] = useState(null);
@@ -27,6 +27,13 @@ export default function ConfigureInfrastructure() {
   const [open, setOpen] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
   const location=useLocation();
+ const  urllist=[
+    { pageName: "Home", pagelink: "/admin/home" },
+    {
+      pageName: "Configure Infrastructure",
+      pagelink: "/admin/InfrastructureConfigure",
+    },
+  ];
  
   //const [onEditError, setOnEditError] = useState(false);
   //const [progressVisible, setProgressVisible] = useState(false);
@@ -506,54 +513,12 @@ const currentPageLocation=useLocation().pathname;
   useEffect(() => {
     fetchInfraFromDb();
     fetchDivs();
+    sendUrllist(urllist)
   }, []);
 
   /******************************* Component Return ********************************* */
   return (
-    <Box sx={{ display: "flex" }}>
-      <TopbarPage
-        open={drawerOpen}
-        handleDrawerOpen={handleDrawerOpen}
-        urllist={[
-          { pageName: "Home", pagelink: "/user/home" },
-          {
-            pageName: "Configure Infrastructure",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-      />
-      <SidebarPage
-        open={drawerOpen}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={drawerOpen}>
-        <DrawerHeader />
-        <Box
-        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        >
+   
           <AnimatedPage>
             <div>
               <center>
@@ -616,8 +581,6 @@ const currentPageLocation=useLocation().pathname;
               ></SnackbarComponent>
             </div>
           </AnimatedPage>
-        </Box>
-      </Main>
-    </Box>
+                
   );
 }

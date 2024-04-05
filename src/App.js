@@ -29,6 +29,7 @@ import RolePageConfiguration from "./modules/roleconfiguration/module.rolePageCo
 import RoleConfiguration from "./modules/roleconfiguration/module.roleConfiguration";
 import AdminRoutes from "./AdminRoutes";
 import DeviceCategory from "./modules/device/admin/module.deviceIssueCategoryUpload";
+import UserRoutes from "./UserRoutes";
 
 
 function App() {
@@ -74,63 +75,68 @@ function App() {
                 <Route path="/" element={<UserLogin />} />
                 {/* <Route path="/xyz" element={<AddInfrastructureIssue />} /> */}
                 <Route path="/device" element={<Device />} />
-                <Route path="/admin/home" element={<AdminHome />} />
+                {/* <Route path="/admin/home" element={<AdminHome />} /> */}
                 {/* <Route
             path="/UserRegistration/:userID"
             element={<UserRegistration />}
           /> */}
-                <Route
+                {/* <Route
                   path="admin/userregistration"
                   element={<UserRegistration />}
                   // this  should be /admin/userRegistration
-                />
-                <Route path="/user/home" element={<UserHome />} />
-                <Route
+                /> */}
+                {/* <Route path="/user/home" element={<UserHome />} /> */}
+                {/* <Route
                   path="admin/adminregistration"
                   element={<AdminRegistration />}
-                />
+                /> */}
                 <Route path="/login" element={<UserLogin />} />
                 {/* <Route path="/AdminLogin" element={<AdminLogin />} /> */}
-                <Route path="/admin/configurePage" element={<AdminPage />} />
+                {/* <Route path="/admin/configurePage" element={<AdminPage />} /> */}
 
                 {/* Application Report */}
-                <Route
+                {/* <Route
                   path="/user/ReportApplication"
                   element={<ApplicationUser />}
-                />
+                /> */}
                 {/* Admin Infrastructure */}
-                <Route
+                {/* <Route
                   path="/admin/InfrastructureConfigure"
                   element={<ConfigureInfrastructure />}
                 />
                 <Route
                   path="/admin/infrastructure/addIssues"
                   element={<AddInfrastructureIssue />}
-                />
+                /> */}
                 {/* test */}
 
                 
-                <Route path="/user/ReportDevice" element={<UserDeviceTree />} />
+                {/* <Route path="/user/ReportDevice" element={<UserDeviceTree />} />
                 <Route
                   path="/user/ReportInfrastructure"
                   element={<InfrastructureUser />}
-                />
-                <Route
+                /> */}
+                {/* <Route
                   path="/admin/DeviceConfigure"
                   element={<RichObjectTreeView />}
-                />
-                <Route path="/admin/Role" element={<RoleConfiguration />} />
+                /> */}
+                {/* <Route path="/admin/Role" element={<RoleConfiguration />} />
                 <Route
                   path="/admin/Role/Page"
                   element={<RolePageConfiguration />}
-                />
+                /> */}
                 <Route path="/*" element={ <NotFound/>} />
                 <Route
                   path="/admin/*"
                   element={<AdminRoutes />}
                 >
+                   
                   {/* <Route path="/AdminLogin" element={<AdminLogin />} /> */}
                 </Route>
+                <Route
+                  path="/user/*"
+                  element={<UserRoutes />}
+                ></Route>
               </Routes>
             </div>
           </Router>

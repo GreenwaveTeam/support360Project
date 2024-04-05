@@ -1535,7 +1535,7 @@ export default function ApplicationUser() {
         open={drawerOpen}
         handleDrawerOpen={handleDrawerOpen}
         urllist={[
-          { pageName: "Home", pagelink: "/UserHome" },
+          { pageName: "Home", pagelink: "/user/home" },
           {
             pageName: "Report Application",
             pagelink: "/user/ReportApplication",

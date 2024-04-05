@@ -17,6 +17,15 @@ import DeviceIssueUpload from "./modules/device/admin/module.deviceIssueUpload";
 import ApplicationConfiguration from "./modules/application/admin/module.applicationConfiguration";
 import ModuleConfiguration from "./modules/application/admin/module.moduleConfiguration";
 import ModuleUpload from "./modules/application/admin/module.moduleUpload";
+import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
+import ConfigureInfrastructure from "./modules/infrastructure/module.configureInfrastructure";
+import UserRegistration from "./modules/registration/UserRegistration";
+import AdminRegistration from "./modules/registration/modules.registration.adminRegistration.component";
+import AdminHome from "./modules/homepages/AdminHome";
+import RichObjectTreeView from "./modules/device/admin/RichObjectTreeView";
+import RoleConfiguration from "./modules/roleconfiguration/module.roleConfiguration";
+import RolePageConfiguration from "./modules/roleconfiguration/module.rolePageConfiguration";
+import AdminPage from "./modules/configurationpages/AdminPage";
 
 
 function AdminRoutes() {
@@ -96,6 +105,37 @@ function AdminRoutes() {
                   path="/ApplicationConfigure/Module"
                   element={<ModuleUpload sendUrllist={receiveUrllist}/>}
                 />
+                 <Route
+                  path="/InfrastructureConfigure"
+                  element={<ConfigureInfrastructure  sendUrllist={receiveUrllist} />}
+                />
+                <Route
+                  path="/infrastructure/addIssues"
+                  element={<AddInfrastructureIssue  sendUrllist={receiveUrllist} />}
+                />
+                <Route
+                  path="/userregistration"
+                  element={<UserRegistration  sendUrllist={receiveUrllist}/>}
+                  // this  should be /admin/userRegistration
+                />
+                 <Route
+                  path="/adminregistration"
+                  element={<AdminRegistration  sendUrllist={receiveUrllist}/>}
+                />
+                 <Route path="/home" element={<AdminHome  sendUrllist={receiveUrllist}/>} />
+
+                 <Route
+                  path="/DeviceConfigure"
+                  element={<RichObjectTreeView  sendUrllist={receiveUrllist}/>}
+                />
+
+<Route path="/Role" element={<RoleConfiguration  sendUrllist={receiveUrllist} />} />
+                <Route
+                  path="/Role/Page"
+                  element={<RolePageConfiguration  sendUrllist={receiveUrllist}/>}
+                />
+                  <Route path="/configurePage" element={<AdminPage  sendUrllist={receiveUrllist} />} />
+
                 <Route
                   path="/*"
                   element={<NotfoundComponent  setIsNotFound={setIsNotFound}/>}

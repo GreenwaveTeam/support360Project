@@ -81,7 +81,12 @@ function UserHome() {
     }
   };
 
-  const list = ["support_Till_Date", "Ticket_Informations", "open_Tickets"];
+  const list = [
+    "support_Till_Date",
+    "Ticket_Informations",
+    "open_Tickets",
+    "Last_Ticket_Raised",
+  ];
 
   const fetchUser = async () => {
     try {

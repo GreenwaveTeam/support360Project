@@ -45,3 +45,6 @@
     transform: rotate(360deg);
   }
 }
+
+/*Table Style*/
+.MuiTableCell-root{padding: 14px !important;}

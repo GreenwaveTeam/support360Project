@@ -32,6 +32,9 @@ import Datepicker from '../datepicker/datepicker.component';
 import Snackbar from '../snackbar/customsnackbar.component'
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CustomDialog from '../dialog/dialog.component';
+import { useContext } from "react";
+import { ColorModeContext, tokens } from "../../theme";
+import { useTheme } from "@mui/material";
   
 
 export default function CustomTable({isDeleteDialog,handleSaveClickOverridden ,deleteFromDatabase, savetoDatabse, rows, setRows, columns, handleRedirect, redirectColumn,editActive,tablename,style,redirectIconActive }) {
@@ -269,12 +272,22 @@ const handleSaveClick = async (selectedRow) => {
     pagechange(0);
     setEditRowIndex(null)
   }
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
+
+  const tableStyle = {
+    color: "blue",
+    border: "1px solid",
+    borderColor: colors.grey[800],
+    borderRadius: "1rem",
+  };
 
   return (
     <>
       <Paper sx={{ width: "100%", overfMinor: "hidden",borderRadius:'40px' }}>
         <TableContainer
-          component={Paper}
+          component={Paper} sx={tableStyle}
           //sx={{ borderRadius: 5, maxHeight: 440,maxWidth:1200 }}
           style={style}
         >
@@ -283,17 +296,21 @@ const handleSaveClick = async (selectedRow) => {
               <TableRow>
                 <TableCell
                   align="center"
-                  sx={{ backgroundColor: "#B5C0D0" }}
+                  sx={{ textAlign: "center",
+                            fontSize: "15px",
+                            fontWeight: "bold",
+                            backgroundColor: colors.primary[400], }}
                   colSpan={columns.length+2}
                 >
                   <div
                     style={{
-                      justifyContent: "center",
-                      alignItems: "center",
                       display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                              padding: "0rem 1rem",
                     }}
                   >
-                    <div><b> {tablename} </b>&nbsp;</div>
+                    <div style={{fontSize:"14px"}}><b> {tablename} </b>&nbsp;</div>
                     <TextField
                       label={
                         <div style={{ display: "flex", alignItems: "center" }}>
@@ -331,7 +348,7 @@ const handleSaveClick = async (selectedRow) => {
               <TableRow>
                 {columns.map((column, index) => (
                   <TableCell
-                    sx={{ backgroundColor: "#B5C0D0" ,fontWeight: "bold",fontSize:'14px'}}
+                    sx={{ backgroundColor: colors.primary[400],fontWeight: "bold",fontSize:'14px'}}
                     key={index} //The column headers will be unique right ...
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
@@ -339,10 +356,10 @@ const handleSaveClick = async (selectedRow) => {
                     {column.label}
                   </TableCell>
                 ))}
-                <TableCell align='center' sx={{ backgroundColor: "#B5C0D0" ,fontWeight: "bold",fontSize:'14px'}}>
+                <TableCell align='center' sx={{ backgroundColor: colors.primary[400] ,fontWeight: "bold",fontSize:'14px'}}>
                 {editActive&&(  <div>Edit</div>)}
                 </TableCell>
-                <TableCell align='center' sx={{ backgroundColor: "#B5C0D0" ,fontWeight: "bold",fontSize:'14px'}}>
+                <TableCell align='center' sx={{ backgroundColor: colors.primary[400] ,fontWeight: "bold",fontSize:'14px'}}>
                   Delete
                 </TableCell>
               </TableRow>
@@ -507,13 +524,16 @@ const handleSaveClick = async (selectedRow) => {
                           );
                         })}
                         <TableCell sx={{ width: "10%" }} align="right">
-                          <div style={{ display: "flex" }}>
+                          <div style={{ display: "flex" ,justifyContent: "center"}}>
                             {editRowIndex !== index && editActive && (
                                 <Tooltip TransitionComponent={Fade}  title="Edit">
                               <Button
                                 onClick={() => handleEditClick(index, row)}
                               >
-                                <EditIcon align="right" color="primary" />
+                                <EditIcon  style={{
+                                cursor: "pointer",
+                                color: "#42a5f5",
+                              }} align="right" color="primary" />
                               </Button>
                               </Tooltip>
                             )}
@@ -539,7 +559,7 @@ const handleSaveClick = async (selectedRow) => {
                           
                         </TableCell>
                         <TableCell sx={{ width: "10%" }} align="right">
-                        <div style={{ display: "flex" }}>
+                        <div style={{ display: "flex" ,justifyContent: "center"}}>
                                 <Tooltip TransitionComponent={Fade}  title="Delete">
                               <Button onClick={(e) =>{e.preventDefault();handleDeleteClick(row)}}>
                                 <DeleteIcon

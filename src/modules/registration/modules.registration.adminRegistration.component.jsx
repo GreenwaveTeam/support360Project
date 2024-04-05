@@ -38,6 +38,7 @@ export default function AdminRegistration() {
     password: "",
     phoneNumber: "",
     role: "",
+    homepage: "",
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -46,6 +47,7 @@ export default function AdminRegistration() {
     email: "",
     phoneNumber: "",
     role: "",
+    homepage: "",
   });
 
   const [cnfpass, setCnfpass] = useState("");
@@ -104,6 +106,16 @@ export default function AdminRegistration() {
     if (!isNaN(value) && value.length <= 10) {
       setFormData({ ...formData, phoneNumber: value });
     }
+  };
+
+  const handleHomepageChange = (event) => {
+    const { value } = event.target;
+    setFormData({ ...formData, homepage: value });
+  };
+
+  const updateHandleHomepageChange = (event) => {
+    const { value } = event.target;
+    setUpdateFormData({ ...updateFormData, homepage: value });
   };
 
   const updateHandleFormdataInputChange = (event) => {
@@ -218,7 +230,7 @@ export default function AdminRegistration() {
             <form>
               <Box noValidate sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Textfield
                       name="name"
                       required
@@ -230,7 +242,7 @@ export default function AdminRegistration() {
                       onChange={updateHandleFormdataInputChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Textfield
                       required
                       fullWidth
@@ -242,7 +254,7 @@ export default function AdminRegistration() {
                       onChange={updateHandlePhoneNumberChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Textfield
                       required
                       fullWidth
@@ -255,7 +267,7 @@ export default function AdminRegistration() {
                       onChange={updateHandleFormdataInputChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Textfield
                       autoComplete="adminID"
                       name="adminID"
@@ -267,14 +279,24 @@ export default function AdminRegistration() {
                       onChange={updateHandleFormdataInputChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Dropdown
                       fullWidth
                       id="role"
                       value={updateFormData.role}
                       label="Role"
                       onChange={updateHandleRoleChange}
-                      list={["ROLE_ADMIN", "ROLE_DEVELOPER", "ROLE_TESTER"]}
+                      list={["admin", "superadmin", "developer"]}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Dropdown
+                      fullWidth
+                      id="homepage"
+                      value={updateFormData.homepage}
+                      label="Homepage"
+                      onChange={updateHandleHomepageChange}
+                      list={["", "admin/home", "user/home"]}
                     />
                   </Grid>
                 </Grid>
@@ -297,7 +319,7 @@ export default function AdminRegistration() {
             <form>
               <Box noValidate sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Textfield
                       name="name"
                       required
@@ -309,7 +331,7 @@ export default function AdminRegistration() {
                       onChange={handleFormdataInputChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Textfield
                       autoComplete="adminID"
                       name="adminID"
@@ -321,7 +343,7 @@ export default function AdminRegistration() {
                       onChange={handleFormdataInputChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Textfield
                       required
                       fullWidth
@@ -335,7 +357,7 @@ export default function AdminRegistration() {
                     />
                   </Grid>
                   {!adminExist && (
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor="password">Password</InputLabel>
                         <OutlinedInput
@@ -369,7 +391,7 @@ export default function AdminRegistration() {
                     </Grid>
                   )}
                   {!adminExist && (
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
                       <Textfield
                         required
                         fullWidth
@@ -410,7 +432,7 @@ export default function AdminRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Textfield
                       required
                       fullWidth
@@ -422,14 +444,24 @@ export default function AdminRegistration() {
                       onChange={handlePhoneNumberChange}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={6}>
                     <Dropdown
                       fullWidth
                       id="role"
                       value={formData.role}
                       label="Role"
                       onChange={handleRoleChange}
-                      list={["ROLE_DEVELOPER", "ROLE_ADMIN", "ROLE_TESTER"]}
+                      list={["admin", "superadmin", "developer"]}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Dropdown
+                      fullWidth
+                      id="homepage"
+                      value={formData.homepage}
+                      label="Homepage"
+                      onChange={handleHomepageChange}
+                      list={["admin/home", "user/home"]}
                     />
                   </Grid>
                 </Grid>

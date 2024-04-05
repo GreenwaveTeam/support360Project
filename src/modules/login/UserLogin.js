@@ -37,7 +37,7 @@ export default function UserLogin() {
   useEffect(() => {
     if (isAuthenticated()) {
       fetchUser();
-      // navigate("//user/home");
+      // navigate("/userhome");
     }
   }, []);
 
@@ -51,6 +51,11 @@ export default function UserLogin() {
     }
     setOpen(false);
   };
+
+  // function extractPageNames(data) {
+  //   const pageNames = data.pagedetails.map((page) => page.pagename);
+  //   return pageNames;
+  // }
 
   function extractPageNames(data) {
     const pageNamesSet = new Set();
@@ -95,7 +100,7 @@ export default function UserLogin() {
       }
       if (token !== null) {
         fetchUser();
-        // navigate("//user/home");
+        // navigate("/userhome");
         console.log("Logged in");
       } else {
         handleClick();
@@ -111,7 +116,7 @@ export default function UserLogin() {
   };
 
   const fetchUser = async () => {
-    console.log(`/user/home Bearer ${localStorage.getItem("token")}`);
+    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
     try {
       const response = await fetch("http://localhost:8081/users/user", {
         method: "GET",
@@ -133,7 +138,7 @@ export default function UserLogin() {
       // const roleArray = role.split(",");
       // console.log("roles: ", roleArray);
       // if (homepage === "ROLE_USER") {
-      //   navigate("//user/home");
+      //   navigate("/UserHome");
       // }
       // else {
       //   // fetchAdmin();
@@ -163,7 +168,7 @@ export default function UserLogin() {
   };
 
   // const fetchAdmin = async () => {
-  //   console.log(`/user/home Bearer ${localStorage.getItem("token")}`);
+  //   console.log(`userhome Bearer ${localStorage.getItem("token")}`);
   //   try {
   //     const response = await fetch("http://localhost:8081/admins/admin", {
   //       method: "GET",

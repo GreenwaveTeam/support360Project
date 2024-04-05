@@ -24,7 +24,6 @@ import {
   Snackbar,
   Slide,
 } from "@mui/material";
-import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
 import Datepicker from "../../components/datepicker/datepicker.component";
@@ -476,7 +475,12 @@ export default function UserRegistration() {
                             value={updateFormData.designation}
                             label="Designation"
                             onChange={updateHandleDesignationChange}
-                            list={["Operator", "Supervisor", "Lab Tester"]}
+                            list={[
+                              "Operator",
+                              "Supervisor",
+                              "Lab Tester",
+                              "Engineer",
+                            ]}
                             fullWidth
                           />
                         </Grid>
@@ -773,7 +777,7 @@ export default function UserRegistration() {
                             value={updateFormData.homepage}
                             label="Homepage"
                             onChange={updateHandleHomepageChange}
-                            list={["AdminHome", "UserHome"]}
+                            list={["admin/home", "user/home"]}
                             // onChange={(event) => {
                             //   const { value } = event.target;
                             //   for (let i of roleList) {
@@ -1177,7 +1181,7 @@ export default function UserRegistration() {
                             value={formData.homepage}
                             label="Homepage"
                             onChange={handleHomepageChange}
-                            list={["AdminHome", "UserHome"]}
+                            list={["admin/home", "user/home"]}
                           />
                         </Grid>
                       </Grid>

@@ -181,7 +181,7 @@ export default function AdminHome() {
       const data = await response.json();
       console.log("response : ", data);
 
-      const filteredData = data.filter((item) => item.plantID !== "NA");
+      const filteredData = data.filter((item) => item.plantID === "NA");
 
       setAdminList(filteredData);
       setFilteredAdminRows(filteredData);
@@ -294,7 +294,7 @@ export default function AdminHome() {
               <Button
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={() => navigate("/user/registration")}
+                onClick={() => navigate("admin/userregistration")}
               >
                 Register New User
               </Button>
@@ -302,7 +302,7 @@ export default function AdminHome() {
               <Button
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={() => navigate("/admin/registration")}
+                onClick={() => navigate("admin/adminregistration")}
               >
                 Register New Admin
               </Button>
@@ -486,7 +486,7 @@ export default function AdminHome() {
                               }}
                               onClick={() => {
                                 console.log("item : ", item);
-                                navigate("/user/registration", {
+                                navigate("admin/userregistration", {
                                   state: { user: item },
                                 });
                               }}
@@ -691,7 +691,7 @@ export default function AdminHome() {
                               style={{ cursor: "pointer" }}
                               onClick={() => {
                                 console.log("item : ", item);
-                                navigate("/admin/registration", {
+                                navigate("admin/adminregistration", {
                                   state: { admin: item },
                                 });
                               }}

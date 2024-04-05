@@ -28,7 +28,7 @@ import CustomTable from "../../../components/table/table.component";
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 import { useUserContext } from "../../contexts/UserContext";
 
-export default function InfrastructureUser() {
+export default function InfrastructureUser({ sendUrllist }) {
   const [open, setOpen] = useState(false);
   const [infrastructures, setInfrastructures] = useState([]);
   const [selectedInfrastructure, setSelectedInfrastructure] = useState("");
@@ -112,6 +112,7 @@ export default function InfrastructureUser() {
       })
       .catch((error) => console.error("Error fetching data:", error));
     setTicketNumber(generateRandomNumber);
+    sendUrllist(urllist);
   }, []); // Empty dependency array to run effect only once on component mount
 
   useEffect(() => {
@@ -266,303 +267,262 @@ export default function InfrastructureUser() {
       )
     );
   };
+  const urllist = [
+    { pageName: "Home", pagelink: "/user/home" },
+    {
+      pageName: "Infrastructure Report",
+      pagelink: "/user/ReportInfrastructure",
+    },
+  ];
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <TopbarPage
-        open={open}
-        handleDrawerOpen={handleDrawerOpen}
-        urllist={[
-          { pageName: "Home", pagelink: "/AdminPage" },
-          {
-            pageName: "Infrastructure Report",
-            pagelink: "/user/ReportInfrastructure",
-          },
-        ]}
-      />
-      <SidebarPage
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-        <DrawerHeader />
-        <Box
-        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        >
-          <div>
-            <div>
-              <center>
+    <div>
+      <div>
+        <center>
+          <FormControl
+            variant="outlined"
+            sx={{
+              width: "200px",
+              verticalAlign: 0,
+              marginTop: "20px",
+            }}
+          >
+            <InputLabel id="infrastructureDropdownLabel">
+              Select Infrastructure
+            </InputLabel>
+            <Select
+              labelId="infrastructureDropdownLabel"
+              id="infrastructureDropdown"
+              value={selectedInfrastructure}
+              onChange={handleInfrastructureChange}
+              label="Select Infrastructure"
+            >
+              {infrastructures.map((infra, index) => (
+                <MenuItem key={index} value={infra}>
+                  {infra}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </center>
+        <div>
+          <Dialog
+            header={`Report Issue for : ${selectedInfrastructure}`}
+            visible={visible}
+            style={{ width: "50vw", height: "60vh" }}
+            onHide={onHideDialog}
+          >
+            {selectedInfrastructure && (
+              <TableContainer
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "20px",
+                }}
+              >
                 <FormControl
                   variant="outlined"
-                  sx={{
-                    width: "200px",
-                    verticalAlign: 0,
-                    marginTop: "20px",
-                  }}
+                  sx={{ width: "200px", verticalAlign: 0 }}
                 >
-                  <InputLabel id="infrastructureDropdownLabel">
-                    Select Infrastructure
-                  </InputLabel>
+                  <InputLabel id="issuesDropdownLabel">Select Issue</InputLabel>
                   <Select
-                    labelId="infrastructureDropdownLabel"
-                    id="infrastructureDropdown"
-                    value={selectedInfrastructure}
-                    onChange={handleInfrastructureChange}
-                    label="Select Infrastructure"
+                    labelId="issuesDropdownLabel"
+                    id="issuesDropdown"
+                    value={selectedIssue}
+                    onChange={(e) => setSelectedIssue(e.target.value)}
+                    //   onChange={(e) => {
+                    //     setSelectedIssue(e.target.value);
+                    label="Select Issue"
                   >
-                    {infrastructures.map((infra, index) => (
-                      <MenuItem key={index} value={infra}>
-                        {infra}
+                    {selectedIssues.map((issue, index) => (
+                      <MenuItem key={index} value={issue}>
+                        {issue}
                       </MenuItem>
                     ))}
+                    <MenuItem value="Other">Other</MenuItem>
                   </Select>
                 </FormControl>
-              </center>
-              <div>
-                <Dialog
-                  header={`Report Issue for : ${selectedInfrastructure}`}
-                  visible={visible}
-                  style={{ width: "50vw", height: "60vh" }}
-                  onHide={onHideDialog}
+
+                <FormControl
+                  variant="outlined"
+                  sx={{ width: "200px", verticalAlign: 0 }}
                 >
-                  {selectedInfrastructure && (
-                    <TableContainer
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: "20px",
-                      }}
-                    >
-                      <FormControl
-                        variant="outlined"
-                        sx={{ width: "200px", verticalAlign: 0 }}
-                      >
-                        <InputLabel id="issuesDropdownLabel">
-                          Select Issue
-                        </InputLabel>
-                        <Select
-                          labelId="issuesDropdownLabel"
-                          id="issuesDropdown"
-                          value={selectedIssue}
-                          onChange={(e) => setSelectedIssue(e.target.value)}
-                          //   onChange={(e) => {
-                          //     setSelectedIssue(e.target.value);
-                          label="Select Issue"
-                        >
-                          {selectedIssues.map((issue, index) => (
-                            <MenuItem key={index} value={issue}>
-                              {issue}
-                            </MenuItem>
-                          ))}
-                          <MenuItem value="Other">Other</MenuItem>
-                        </Select>
-                      </FormControl>
-
-                      <FormControl
-                        variant="outlined"
-                        sx={{ width: "200px", verticalAlign: 0 }}
-                      >
-                        <InputLabel>Select Priority</InputLabel>
-                        <Select
-                          value={selectedPriority}
-                          onChange={handleSelectPriority}
-                          label="Select Priority"
-                        >
-                          <MenuItem value="Major">Major</MenuItem>
-                          <MenuItem value="Minor">Minor</MenuItem>
-                          <MenuItem value="Critical">Critical</MenuItem>
-                        </Select>
-                      </FormControl>
-                      <FormControl
-                        variant="outlined"
-                        sx={{ width: "200px", verticalAlign: 0 }}
-                      >
-                        <TextField
-                          label="Remarks"
-                          variant="outlined"
-                          value={remarks}
-                          onChange={handleRemarksChange}
-                          style={{ margin: "10px 0" }}
-                        />
-                      </FormControl>
-                      <IconButton
-                        color="primary"
-                        aria-label="add"
-                        onClick={() => handleAddItem()}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </TableContainer>
-                  )}
-
-                  {showAlert && (
-                    <Alert severity="error" onClose={() => setShowAlert(false)}>
-                      {alertMessage}
-                    </Alert>
-                  )}
-
-                  {tableData.length > 0 && (
-                    // <TableContainer>
-                    //   <Table>
-                    //     <TableHead>
-                    //       <TableRow>
-                    //         <TableCell>Issues</TableCell>
-                    //         <TableCell>Priority</TableCell>
-                    //         <TableCell>Remarks</TableCell>
-                    //         <TableCell>Actions</TableCell>
-                    //       </TableRow>
-                    //     </TableHead>
-                    //     <TableBody>
-                    //       {tableData.map((item, index) => (
-                    //         <TableRow key={index}>
-                    //           <TableCell>{item.issue}</TableCell>
-                    //           <TableCell>{item.priority}</TableCell>
-                    //           <TableCell>{item.remarks}</TableCell>
-                    //           <TableCell>
-                    //             <IconButton
-                    //               color="secondary"
-                    //               aria-label="delete"
-                    //               onClick={() => handleDeleteItem(item.issue)}
-                    //             >
-                    //               <DeleteIcon />
-                    //             </IconButton>
-                    //           </TableCell>
-                    //         </TableRow>
-                    //       ))}
-                    //     </TableBody>
-                    //   </Table>
-                    // </TableContainer>
-                    <CustomTable
-                      rows={tableData}
-                      columns={columns}
-                      setRows={setTableData}
-                      deleteFromDatabase={handleDeleteItem}
-                      editActive={false}
-                      tablename={"Added Issues"}
-                      redirectIconActive={false}
-                      isDeleteDialog={false}
-                    ></CustomTable>
-                  )}
-                </Dialog>
-              </div>
-            </div>
-            {infraIssueDetails.length > 0 && (
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <TextField
-                          label="infrastructure Name"
-                          variant="standard"
-                          size="small"
-                          onChange={(e) =>
-                            handleFilterChange(e.target.value, "deviceName")
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          label="Issue"
-                          variant="standard"
-                          size="small"
-                          onChange={(e) =>
-                            handleFilterChange(e.target.value, "issue")
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          label="Priority"
-                          variant="standard"
-                          size="small"
-                          onChange={(e) =>
-                            handleFilterChange(e.target.value, "priority")
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          label="Remarks"
-                          variant="standard"
-                          size="small"
-                          onChange={(e) =>
-                            handleFilterChange(e.target.value, "remarks")
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>Action</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {(filteredDeviceIssueDetails.length > 0
-                      ? filteredDeviceIssueDetails
-                      : infraIssueDetails
-                    ).map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{row.infrastructureName}</TableCell>
-                        <TableCell>{row.issue}</TableCell>
-                        <TableCell>{row.priority}</TableCell>
-                        <TableCell>{row.remarks}</TableCell>
-                        <TableCell>
-                          <IconButton
-                            onClick={() =>
-                              handleDeleteItemFromReviewTable(
-                                row.infrastructureName,
-                                row.issue
-                              )
-                            }
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-                <center>
-                  <Button
-                    className="button"
-                    variant="contained"
-                    color="secondary" // Use secondary color for delete button
-                    onClick={() => handleSubmitPost(infraTicketJSON)}
+                  <InputLabel>Select Priority</InputLabel>
+                  <Select
+                    value={selectedPriority}
+                    onChange={handleSelectPriority}
+                    label="Select Priority"
                   >
-                    Submit
-                  </Button>
-                </center>
+                    <MenuItem value="Major">Major</MenuItem>
+                    <MenuItem value="Minor">Minor</MenuItem>
+                    <MenuItem value="Critical">Critical</MenuItem>
+                  </Select>
+                </FormControl>
+                <FormControl
+                  variant="outlined"
+                  sx={{ width: "200px", verticalAlign: 0 }}
+                >
+                  <TextField
+                    label="Remarks"
+                    variant="outlined"
+                    value={remarks}
+                    onChange={handleRemarksChange}
+                    style={{ margin: "10px 0" }}
+                  />
+                </FormControl>
+                <IconButton
+                  color="primary"
+                  aria-label="add"
+                  onClick={() => handleAddItem()}
+                >
+                  <AddIcon />
+                </IconButton>
               </TableContainer>
             )}
-            <TicketDialog
-              ticketDialogOpen={ticketOpen}
-              setTicketDialogOpen={setTicketOpen}
-              ticketNumber={ticketNumber}
-            ></TicketDialog>
-          </div>
-        </Box>
-      </Main>
-    </Box>
+
+            {showAlert && (
+              <Alert severity="error" onClose={() => setShowAlert(false)}>
+                {alertMessage}
+              </Alert>
+            )}
+
+            {tableData.length > 0 && (
+              // <TableContainer>
+              //   <Table>
+              //     <TableHead>
+              //       <TableRow>
+              //         <TableCell>Issues</TableCell>
+              //         <TableCell>Priority</TableCell>
+              //         <TableCell>Remarks</TableCell>
+              //         <TableCell>Actions</TableCell>
+              //       </TableRow>
+              //     </TableHead>
+              //     <TableBody>
+              //       {tableData.map((item, index) => (
+              //         <TableRow key={index}>
+              //           <TableCell>{item.issue}</TableCell>
+              //           <TableCell>{item.priority}</TableCell>
+              //           <TableCell>{item.remarks}</TableCell>
+              //           <TableCell>
+              //             <IconButton
+              //               color="secondary"
+              //               aria-label="delete"
+              //               onClick={() => handleDeleteItem(item.issue)}
+              //             >
+              //               <DeleteIcon />
+              //             </IconButton>
+              //           </TableCell>
+              //         </TableRow>
+              //       ))}
+              //     </TableBody>
+              //   </Table>
+              // </TableContainer>
+              <CustomTable
+                rows={tableData}
+                columns={columns}
+                setRows={setTableData}
+                deleteFromDatabase={handleDeleteItem}
+                editActive={false}
+                tablename={"Added Issues"}
+                redirectIconActive={false}
+                isDeleteDialog={false}
+              ></CustomTable>
+            )}
+          </Dialog>
+        </div>
+      </div>
+      {infraIssueDetails.length > 0 && (
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>
+                  <TextField
+                    label="infrastructure Name"
+                    variant="standard"
+                    size="small"
+                    onChange={(e) =>
+                      handleFilterChange(e.target.value, "deviceName")
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    label="Issue"
+                    variant="standard"
+                    size="small"
+                    onChange={(e) =>
+                      handleFilterChange(e.target.value, "issue")
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    label="Priority"
+                    variant="standard"
+                    size="small"
+                    onChange={(e) =>
+                      handleFilterChange(e.target.value, "priority")
+                    }
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    label="Remarks"
+                    variant="standard"
+                    size="small"
+                    onChange={(e) =>
+                      handleFilterChange(e.target.value, "remarks")
+                    }
+                  />
+                </TableCell>
+                <TableCell>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {(filteredDeviceIssueDetails.length > 0
+                ? filteredDeviceIssueDetails
+                : infraIssueDetails
+              ).map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell>{row.infrastructureName}</TableCell>
+                  <TableCell>{row.issue}</TableCell>
+                  <TableCell>{row.priority}</TableCell>
+                  <TableCell>{row.remarks}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() =>
+                        handleDeleteItemFromReviewTable(
+                          row.infrastructureName,
+                          row.issue
+                        )
+                      }
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <center>
+            <Button
+              className="button"
+              variant="contained"
+              color="secondary" // Use secondary color for delete button
+              onClick={() => handleSubmitPost(infraTicketJSON)}
+            >
+              Submit
+            </Button>
+          </center>
+        </TableContainer>
+      )}
+      <TicketDialog
+        ticketDialogOpen={ticketOpen}
+        setTicketDialogOpen={setTicketOpen}
+        ticketNumber={ticketNumber}
+      ></TicketDialog>
+    </div>
   );
 }

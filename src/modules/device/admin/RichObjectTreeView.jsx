@@ -24,7 +24,7 @@ import CustomButton from "../../../components/button/button.component";
 import { useLocation, useNavigate } from "react-router-dom";
 import { display } from "@mui/system";
 
-export default function RichObjectTreeView() {
+export default function RichObjectTreeView({ sendUrllist }) {
   const [selectedNode, setSelectedNode] = useState(null);
   const [childNodeName, setChildNodeName] = useState("");
   const [rootNodeName, setRootNodeName] = useState("");
@@ -111,6 +111,7 @@ export default function RichObjectTreeView() {
     };
 
     fetchData();
+    sendUrllist(urllist);
   }, []);
 
   React.useEffect(() => {
@@ -685,800 +686,733 @@ export default function RichObjectTreeView() {
       node.children.forEach((child) => findAndDeleteNode(child, targetNodeId));
     }
   };
-
+  const urllist = [
+    { pageName: "Home", pagelink: "/admin/home" },
+    {
+      pageName: "Configure Device",
+      pagelink: "/admin/DeviceConfigure",
+    },
+  ];
   return (
-    <Box sx={{ display: "flex" }}>
-      <TopbarPage
-        open={open}
-        handleDrawerOpen={handleDrawerOpen}
-        urllist={[
-          { pageName: "Home", pagelink: "/AdminPage" },
-          {
-            pageName: "Configure Device",
-            pagelink: "/admin/DeviceConfigure",
-          },
-        ]}
-      />
-      <SidebarPage
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-        <DrawerHeader />
-        <Box
-        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        >
-          <div className="split-screen" onClick={handleClickOutsideNode}>
-            <div className="left-panel">
-              <div id="create-device-tree">
-                {data === null && (
-                  <>
+    <div className="split-screen" onClick={handleClickOutsideNode}>
+      <div className="left-panel">
+        <div id="create-device-tree">
+          {data === null && (
+            <>
+              <Textfield
+                className="textInput"
+                label="Enter Parent Node Name"
+                variant="outlined"
+                fullWidth
+                value={rootNodeName}
+                onChange={(e) => setRootNodeName(e.target.value)}
+              />
+              <CustomButton
+                className="button"
+                variant="contained"
+                color="primary"
+                onClick={handleRootNodeCreate}
+                buttontext={"Create Parent Device"}
+              ></CustomButton>
+            </>
+          )}
+          {data !== null && (
+            <div className="treeViewContainer">
+              <p>Device Tree:</p>
+              <CustomTreeView
+                data={data}
+                renderTree={renderTree}
+                handleNodeClick={handleNodeClick}
+                handleContextMenu={handleContextMenu}
+              />
+              <br />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className={`right-panel ${data === null ? "hidden" : ""}`}>
+        {data !== null && selectedNode && (
+          <>
+            <Box style={{ display: "flex" }}>
+              <p className="selectedNodeInfo">
+                {selectedNode
+                  ? `Selected Node: ${selectedNode.name}
+                              `
+                  : "Select a node          "}
+              </p>
+              &nbsp;&nbsp;&nbsp;
+              {divIsVisibleList &&
+                divIsVisibleList.includes("delete-selected-node") && (
+                  <div id="delete-selected-node" style={{ display: "flex" }}>
+                    <CustomButton
+                      className="button"
+                      variant="contained"
+                      size={"small"}
+                      color="secondary" // Use secondary color for delete button
+                      //onClick={handleDeleteNode}
+                      onClick={handleDialogOpen}
+                      buttontext={"Delete Node"}
+                    ></CustomButton>
+                  </div>
+                )}
+              &nbsp;&nbsp;
+              {divIsVisibleList &&
+                divIsVisibleList.includes("add-new-node") && (
+                  <div id="add-new-node" style={{ display: "flex" }}>
+                    <CustomButton
+                      className="button"
+                      size={"small"}
+                      variant="contained"
+                      color="secondary" // Use secondary color for delete button
+                      //onClick={handleDeleteNode}
+                      onClick={() => setVisible(true)}
+                      buttontext={"Add Item"}
+                    ></CustomButton>
+                  </div>
+                )}
+            </Box>
+
+            <div>
+              <Dialog
+                header={`Create Child Node for : ${selectedNode.name}`}
+                visible={visible}
+                style={{
+                  width: "50vw",
+                }}
+                onHide={() => setVisible(false)}
+              >
+                <br />
+                <center>
+                  <Card
+                    sx={{
+                      minWidth: 10,
+                      maxWidth: 500,
+                      padding: "20px",
+                      backgroundColor: "#f4f4f4",
+                      borderRadius: "10px",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 10)",
+                    }}
+                  >
                     <Textfield
+                      required
                       className="textInput"
-                      label="Enter Parent Node Name"
+                      label="Enter Child Node"
                       variant="outlined"
                       fullWidth
-                      value={rootNodeName}
-                      onChange={(e) => setRootNodeName(e.target.value)}
+                      value={childNodeName}
+                      onChange={(e) => setChildNodeName(e.target.value)}
                     />
+                    <br />
+                    <br />
+
+                    <Textfield
+                      required
+                      className="textInput"
+                      label="Enter Make"
+                      variant="outlined"
+                      fullWidth
+                      value={make}
+                      onChange={(e) => setMake(e.target.value)}
+                    />
+                    <br />
+                    <br />
+                    <Textfield
+                      required
+                      className="textInput"
+                      label="Enter Model"
+                      variant="outlined"
+                      fullWidth
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                    />
+                    <br />
+                    <br />
+                    <Textfield
+                      required
+                      className="textInput"
+                      label="Enter Capacity"
+                      variant="outlined"
+                      fullWidth
+                      type="number"
+                      value={capacity}
+                      onChange={(e) => setCapacity(e.target.value)}
+                    />
+                    <br />
+                    <br />
+                    <Textfield
+                      required
+                      className="textInput"
+                      label="Enter Description"
+                      variant="outlined"
+                      fullWidth
+                      multiline
+                      maxRows={4}
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                    <br />
+                    <br />
+                    <CustomDatePicker
+                      label="Warranty End Date"
+                      value={warrantyEndDate}
+                      onChange={(newDate) => setwarrantyEndDate(newDate)}
+                    />
+                    <br />
+                    <br />
+                    <CustomDatePicker
+                      label="Support End Date"
+                      value={supportEndDate}
+                      onChange={(newDate) => setSupportEndDate(newDate)}
+                    />
+                    <br />
+                    <br />
+                    <Select
+                      value={selectedCategory}
+                      onChange={handleCategoryChange}
+                      displayEmpty
+                      inputProps={{
+                        "aria-label": "Select Issue Category",
+                      }}
+                    >
+                      <MenuItem value="" disabled>
+                        Select Issue Category
+                      </MenuItem>
+                      {categories.map((category) => (
+                        <MenuItem
+                          key={category.issuecategoryname}
+                          value={category.issuecategoryname}
+                        >
+                          {category.issuecategoryname}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <br />
+                    <br />
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                    </div>
+                    <br />
+                    <br />
+                    {selectedImage && (
+                      <div className="image-preview">
+                        Preview:
+                        <br />
+                        <br />
+                        <img
+                          src={selectedImage}
+                          height="100px"
+                          width="200px"
+                          alt="Preview"
+                        />
+                      </div>
+                    )}
+                    <br />
+                    <br />
                     <CustomButton
                       className="button"
                       variant="contained"
                       color="primary"
-                      onClick={handleRootNodeCreate}
-                      buttontext={"Create Parent Device"}
+                      onClick={handleChildNodeAdd}
+                      buttontext={"Add Node"}
                     ></CustomButton>
-                  </>
-                )}
-                {data !== null && (
-                  <div className="treeViewContainer">
-                    <p>Device Tree:</p>
-                    <CustomTreeView
-                      data={data}
-                      renderTree={renderTree}
-                      handleNodeClick={handleNodeClick}
-                      handleContextMenu={handleContextMenu}
-                    />
-                    <br />
-                  </div>
-                )}
-              </div>
+                  </Card>
+                  <br />
+                  <br />
+                  <br />
+                </center>
+              </Dialog>
             </div>
 
-            <div className={`right-panel ${data === null ? "hidden" : ""}`}>
-              {data !== null && selectedNode && (
-                <>
-                  <Box style={{ display: "flex" }}>
-                    <p className="selectedNodeInfo">
-                      {selectedNode
-                        ? `Selected Node: ${selectedNode.name}
-                              `
-                        : "Select a node          "}
-                    </p>
-                    &nbsp;&nbsp;&nbsp;
-                    {divIsVisibleList &&
-                      divIsVisibleList.includes("delete-selected-node") && (
-                        <div
-                          id="delete-selected-node"
-                          style={{ display: "flex" }}
-                        >
-                          <CustomButton
-                            className="button"
-                            variant="contained"
-                            size={"small"}
-                            color="secondary" // Use secondary color for delete button
-                            //onClick={handleDeleteNode}
-                            onClick={handleDialogOpen}
-                            buttontext={"Delete Node"}
-                          ></CustomButton>
-                        </div>
-                      )}
-                    &nbsp;&nbsp;
-                    {divIsVisibleList &&
-                      divIsVisibleList.includes("add-new-node") && (
-                        <div id="add-new-node" style={{ display: "flex" }}>
-                          <CustomButton
-                            className="button"
-                            size={"small"}
-                            variant="contained"
-                            color="secondary" // Use secondary color for delete button
-                            //onClick={handleDeleteNode}
-                            onClick={() => setVisible(true)}
-                            buttontext={"Add Item"}
-                          ></CustomButton>
-                        </div>
-                      )}
-                  </Box>
-
-                  <div>
-                    <Dialog
-                      header={`Create Child Node for : ${selectedNode.name}`}
-                      visible={visible}
-                      style={{
-                        width: "50vw",
+            <br></br>
+            {clickedNode &&
+              selectedNode.id !== "root" &&
+              clickedNode.id !== "root" && (
+                <div className="dlg">
+                  <div className="clicked-node">
+                    <Card
+                      sx={{
+                        minWidth: 550,
+                        padding: "20px",
+                        backgroundColor: "#f4f4f4",
+                        borderRadius: "10px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                       }}
-                      onHide={() => setVisible(false)}
                     >
-                      <br />
-                      <center>
-                        <Card
-                          sx={{
-                            minWidth: 10,
-                            maxWidth: 500,
-                            padding: "20px",
-                            backgroundColor: "#f4f4f4",
-                            borderRadius: "10px",
-                            boxShadow: "0 4px 8px rgba(0, 0, 0, 10)",
+                      <div className="Card-Components">
+                        <h3
+                          style={{
+                            marginBottom: "15px",
+                            color: "#333",
                           }}
                         >
-                          <Textfield
-                            required
-                            className="textInput"
-                            label="Enter Child Node"
-                            variant="outlined"
-                            fullWidth
-                            value={childNodeName}
-                            onChange={(e) => setChildNodeName(e.target.value)}
-                          />
-                          <br />
-                          <br />
-
-                          <Textfield
-                            required
-                            className="textInput"
-                            label="Enter Make"
-                            variant="outlined"
-                            fullWidth
-                            value={make}
-                            onChange={(e) => setMake(e.target.value)}
-                          />
-                          <br />
-                          <br />
-                          <Textfield
-                            required
-                            className="textInput"
-                            label="Enter Model"
-                            variant="outlined"
-                            fullWidth
-                            value={model}
-                            onChange={(e) => setModel(e.target.value)}
-                          />
-                          <br />
-                          <br />
-                          <Textfield
-                            required
-                            className="textInput"
-                            label="Enter Capacity"
-                            variant="outlined"
-                            fullWidth
-                            type="number"
-                            value={capacity}
-                            onChange={(e) => setCapacity(e.target.value)}
-                          />
-                          <br />
-                          <br />
-                          <Textfield
-                            required
-                            className="textInput"
-                            label="Enter Description"
-                            variant="outlined"
-                            fullWidth
-                            multiline
-                            maxRows={4}
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                          />
-                          <br />
-                          <br />
-                          <CustomDatePicker
-                            label="Warranty End Date"
-                            value={warrantyEndDate}
-                            onChange={(newDate) => setwarrantyEndDate(newDate)}
-                          />
-                          <br />
-                          <br />
-                          <CustomDatePicker
-                            label="Support End Date"
-                            value={supportEndDate}
-                            onChange={(newDate) => setSupportEndDate(newDate)}
-                          />
-                          <br />
-                          <br />
-                          <Select
-                            value={selectedCategory}
-                            onChange={handleCategoryChange}
-                            displayEmpty
-                            inputProps={{
-                              "aria-label": "Select Issue Category",
+                          Node Details:
+                        </h3>
+                        <div style={{ marginBottom: "10px" }}>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
+                              textAlign: "left",
                             }}
                           >
-                            <MenuItem value="" disabled>
-                              Select Issue Category
-                            </MenuItem>
-                            {categories.map((category) => (
-                              <MenuItem
-                                key={category.issuecategoryname}
-                                value={category.issuecategoryname}
-                              >
-                                {category.issuecategoryname}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          <br />
-                          <br />
-                          <div>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageChange}
-                            />
-                          </div>
-                          <br />
-                          <br />
-                          {selectedImage && (
-                            <div className="image-preview">
-                              Preview:
-                              <br />
-                              <br />
-                              <img
-                                src={selectedImage}
-                                height="100px"
-                                width="200px"
-                                alt="Preview"
+                            Name:
+                          </p>
+                        </div>
+
+                        <div>
+                          {isEditing ? (
+                            <>
+                              <Textfield
+                                label="Edit Node Name"
+                                variant="outlined"
+                                value={editedName}
+                                onChange={(e) => setEditedName(e.target.value)}
                               />
-                            </div>
+                              <CustomButton
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleSaveName("Name")}
+                                buttontext={"Save"}
+                              ></CustomButton>
+                              <CustomButton
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleCancelNameEdit("Name")}
+                                buttontext={"Cancel"}
+                              ></CustomButton>
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="value-comp"
+                                onClick={() => handleEdit("Name")}
+                              >
+                                {selectedNode.name}
+                              </div>
+                            </>
                           )}
-                          <br />
-                          <br />
-                          <CustomButton
-                            className="button"
-                            variant="contained"
-                            color="primary"
-                            onClick={handleChildNodeAdd}
-                            buttontext={"Add Node"}
-                          ></CustomButton>
-                        </Card>
-                        <br />
-                        <br />
-                        <br />
-                      </center>
-                    </Dialog>
-                  </div>
+                        </div>
 
-                  <br></br>
-                  {clickedNode &&
-                    selectedNode.id !== "root" &&
-                    clickedNode.id !== "root" && (
-                      <div className="dlg">
-                        <div className="clicked-node">
-                          <Card
-                            sx={{
-                              minWidth: 550,
-                              padding: "20px",
-                              backgroundColor: "#f4f4f4",
-                              borderRadius: "10px",
-                              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                        <div style={{ marginBottom: "10px" }}>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
                             }}
                           >
-                            <div className="Card-Components">
-                              <h3
-                                style={{
-                                  marginBottom: "15px",
-                                  color: "#333",
+                            Make:
+                          </p>
+                        </div>
+
+                        <div>
+                          {isEditingMake ? (
+                            <>
+                              <Textfield
+                                label="Edit Node Name"
+                                variant="outlined"
+                                value={editedMake}
+                                onChange={(e) => setEditedMake(e.target.value)}
+                              />
+                              <CustomButton
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleSaveName("Make")}
+                                buttontext={"Save"}
+                              ></CustomButton>
+                              <CustomButton
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleCancelNameEdit("Make")}
+                                buttontext={"Cancel"}
+                              ></CustomButton>
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="value-comp"
+                                onClick={() => handleEdit("Make")}
+                              >
+                                {selectedNode.make}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ marginBottom: "10px" }}>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
+                            }}
+                          >
+                            Model:
+                          </p>
+                        </div>
+                        <div>
+                          {isEditingModel ? (
+                            <>
+                              <Textfield
+                                label="Edit Node Name"
+                                variant="outlined"
+                                value={editedModel}
+                                onChange={(e) => setEditedModel(e.target.value)}
+                              />
+                              <CustomButton
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleSaveName("Model")}
+                                buttontext={"Save"}
+                              ></CustomButton>
+                              <CustomButton
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleCancelNameEdit("Model")}
+                                buttontext={"Cancel"}
+                              ></CustomButton>
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="value-comp"
+                                onClick={() => handleEdit("Model")}
+                              >
+                                {selectedNode.model}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <div style={{ marginBottom: "10px" }}>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
+                            }}
+                          >
+                            Capacity:
+                          </p>
+                        </div>
+                        <div>
+                          {isEditingCapacity ? (
+                            <>
+                              <Textfield
+                                label="Edit Node Name"
+                                variant="outlined"
+                                type="number"
+                                value={editedCapacity}
+                                onChange={(e) =>
+                                  setEditedCapacity(e.target.value)
+                                }
+                              />
+                              <CustomButton
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleSaveName("Capacity")}
+                                buttontext={"Save"}
+                              ></CustomButton>
+                              <CustomButton
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleCancelNameEdit("Capacity")}
+                                buttontext={"Cancel"}
+                              ></CustomButton>
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="value-comp"
+                                onClick={() => handleEdit("Capacity")}
+                              >
+                                {selectedNode.capacity}
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        <div style={{ marginBottom: "10px" }}>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
+                            }}
+                          >
+                            Description:
+                          </p>
+                        </div>
+
+                        <div>
+                          {isEditingDescription ? (
+                            <>
+                              <Textfield
+                                label="Edit Node Name"
+                                variant="outlined"
+                                value={editedDescription}
+                                onChange={(e) =>
+                                  setEditedDescription(e.target.value)
+                                }
+                              />
+                              <CustomButton
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleSaveName("Description")}
+                                buttontext={"Save"}
+                              ></CustomButton>
+                              <CustomButton
+                                variant="contained"
+                                color="secondary"
+                                onClick={() =>
+                                  handleCancelNameEdit("Description")
+                                }
+                                buttontext={"Cancel"}
+                              ></CustomButton>
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="value-comp"
+                                onClick={() => handleEdit("Description")}
+                              >
+                                {selectedNode.description}
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        <div style={{ marginBottom: "10px" }}>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
+                            }}
+                          >
+                            Support End Date:
+                          </p>
+                        </div>
+
+                        <div>
+                          {isEditingSupportDate ? (
+                            <>
+                              <CustomDatePicker
+                                label="Support End Date"
+                                value={editedSupportDate}
+                                onChange={(newDate) =>
+                                  setEditedSupportDate(newDate)
+                                }
+                              />
+                              <CustomButton
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleSaveName("SupportDate")}
+                                buttontext={"Save"}
+                              ></CustomButton>
+                              <CustomButton
+                                variant="contained"
+                                color="secondary"
+                                onClick={() =>
+                                  handleCancelNameEdit("SupportDate")
+                                }
+                                buttontext={"Cancel"}
+                              ></CustomButton>
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="value-comp"
+                                onClick={() => handleEdit("SupportDate")}
+                              >
+                                {selectedNode.warranty_support_end_date}
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        <div style={{ marginBottom: "10px" }}>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
+                            }}
+                          >
+                            Warranty End Date:
+                          </p>
+                        </div>
+
+                        <div>
+                          {isEditingWarrantyDate ? (
+                            <>
+                              <CustomDatePicker
+                                label="Warranty End Date"
+                                value={editedWarrantyDate}
+                                onChange={(newDate) =>
+                                  setEditedWarrantyDate(newDate)
+                                }
+                              />
+                              <CustomButton
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleSaveName("WarrantyDate")}
+                                buttontext={"Save"}
+                              ></CustomButton>
+                              <CustomButton
+                                variant="contained"
+                                color="secondary"
+                                onClick={() =>
+                                  handleCancelNameEdit("WarrantyDate")
+                                }
+                                buttontext={"Cancel"}
+                              ></CustomButton>
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="value-comp"
+                                onClick={() => handleEdit("WarrantyDate")}
+                              >
+                                {selectedNode.warranty_end_date}
+                              </div>
+                            </>
+                          )}
+                        </div>
+
+                        <div style={{ marginBottom: "10px" }}>
+                          <p
+                            style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
+                            }}
+                          >
+                            Issue Category Name:
+                          </p>
+                        </div>
+                        <div>
+                          {isEditingCatagory ? (
+                            <>
+                              <Select
+                                value={editedCategory}
+                                onChange={handleEditCategoryChange}
+                                displayEmpty
+                                inputProps={{
+                                  "aria-label": "Select Issue Category",
                                 }}
                               >
-                                Node Details:
-                              </h3>
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                    textAlign: "left",
-                                  }}
-                                >
-                                  Name:
-                                </p>
+                                <MenuItem value="" disabled>
+                                  Select Issue Category
+                                </MenuItem>
+                                {categories.map((category) => (
+                                  <MenuItem
+                                    key={category.issuecategoryname}
+                                    value={category.issuecategoryname}
+                                  >
+                                    {category.issuecategoryname}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              <CustomButton
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleSaveName("Catagory")}
+                                buttontext={"Save"}
+                              ></CustomButton>
+                              <CustomButton
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleCancelNameEdit("Catagory")}
+                                buttontext={"Cancel"}
+                              ></CustomButton>
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="value-comp"
+                                onClick={() => handleEdit("Catagory")}
+                              >
+                                {selectedNode.issue_category_name}
                               </div>
+                            </>
+                          )}
+                        </div>
 
-                              <div>
-                                {isEditing ? (
-                                  <>
-                                    <Textfield
-                                      label="Edit Node Name"
-                                      variant="outlined"
-                                      value={editedName}
-                                      onChange={(e) =>
-                                        setEditedName(e.target.value)
-                                      }
-                                    />
-                                    <CustomButton
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => handleSaveName("Name")}
-                                      buttontext={"Save"}
-                                    ></CustomButton>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleCancelNameEdit("Name")
-                                      }
-                                      buttontext={"Cancel"}
-                                    ></CustomButton>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("Name")}
-                                    >
-                                      {selectedNode.name}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
+                        {selectedNode.image_file && (
+                          <div style={{ marginBottom: "10px" }}>
+                            <div>
+                              <p
+                                style={{
+                                  fontWeight: "bold",
+                                  marginBottom: "5px",
+                                }}
+                              >
+                                Image:
+                              </p>
+                            </div>
 
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Make:
-                                </p>
-                              </div>
-
-                              <div>
-                                {isEditingMake ? (
-                                  <>
-                                    <Textfield
-                                      label="Edit Node Name"
-                                      variant="outlined"
-                                      value={editedMake}
-                                      onChange={(e) =>
-                                        setEditedMake(e.target.value)
-                                      }
-                                    />
-                                    <CustomButton
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => handleSaveName("Make")}
-                                      buttontext={"Save"}
-                                    ></CustomButton>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleCancelNameEdit("Make")
-                                      }
-                                      buttontext={"Cancel"}
-                                    ></CustomButton>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("Make")}
-                                    >
-                                      {selectedNode.make}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Model:
-                                </p>
-                              </div>
-                              <div>
-                                {isEditingModel ? (
-                                  <>
-                                    <Textfield
-                                      label="Edit Node Name"
-                                      variant="outlined"
-                                      value={editedModel}
-                                      onChange={(e) =>
-                                        setEditedModel(e.target.value)
-                                      }
-                                    />
-                                    <CustomButton
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => handleSaveName("Model")}
-                                      buttontext={"Save"}
-                                    ></CustomButton>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleCancelNameEdit("Model")
-                                      }
-                                      buttontext={"Cancel"}
-                                    ></CustomButton>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("Model")}
-                                    >
-                                      {selectedNode.model}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Capacity:
-                                </p>
-                              </div>
-                              <div>
-                                {isEditingCapacity ? (
-                                  <>
-                                    <Textfield
-                                      label="Edit Node Name"
-                                      variant="outlined"
-                                      type="number"
-                                      value={editedCapacity}
-                                      onChange={(e) =>
-                                        setEditedCapacity(e.target.value)
-                                      }
-                                    />
-                                    <CustomButton
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => handleSaveName("Capacity")}
-                                      buttontext={"Save"}
-                                    ></CustomButton>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleCancelNameEdit("Capacity")
-                                      }
-                                      buttontext={"Cancel"}
-                                    ></CustomButton>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("Capacity")}
-                                    >
-                                      {selectedNode.capacity}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Description:
-                                </p>
-                              </div>
-
-                              <div>
-                                {isEditingDescription ? (
-                                  <>
-                                    <Textfield
-                                      label="Edit Node Name"
-                                      variant="outlined"
-                                      value={editedDescription}
-                                      onChange={(e) =>
-                                        setEditedDescription(e.target.value)
-                                      }
-                                    />
-                                    <CustomButton
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() =>
-                                        handleSaveName("Description")
-                                      }
-                                      buttontext={"Save"}
-                                    ></CustomButton>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleCancelNameEdit("Description")
-                                      }
-                                      buttontext={"Cancel"}
-                                    ></CustomButton>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("Description")}
-                                    >
-                                      {selectedNode.description}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Support End Date:
-                                </p>
-                              </div>
-
-                              <div>
-                                {isEditingSupportDate ? (
-                                  <>
-                                    <CustomDatePicker
-                                      label="Support End Date"
-                                      value={editedSupportDate}
-                                      onChange={(newDate) =>
-                                        setEditedSupportDate(newDate)
-                                      }
-                                    />
-                                    <CustomButton
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() =>
-                                        handleSaveName("SupportDate")
-                                      }
-                                      buttontext={"Save"}
-                                    ></CustomButton>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleCancelNameEdit("SupportDate")
-                                      }
-                                      buttontext={"Cancel"}
-                                    ></CustomButton>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("SupportDate")}
-                                    >
-                                      {selectedNode.warranty_support_end_date}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Warranty End Date:
-                                </p>
-                              </div>
-
-                              <div>
-                                {isEditingWarrantyDate ? (
-                                  <>
-                                    <CustomDatePicker
-                                      label="Warranty End Date"
-                                      value={editedWarrantyDate}
-                                      onChange={(newDate) =>
-                                        setEditedWarrantyDate(newDate)
-                                      }
-                                    />
-                                    <CustomButton
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() =>
-                                        handleSaveName("WarrantyDate")
-                                      }
-                                      buttontext={"Save"}
-                                    ></CustomButton>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleCancelNameEdit("WarrantyDate")
-                                      }
-                                      buttontext={"Cancel"}
-                                    ></CustomButton>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("WarrantyDate")}
-                                    >
-                                      {selectedNode.warranty_end_date}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Issue Category Name:
-                                </p>
-                              </div>
-                              <div>
-                                {isEditingCatagory ? (
-                                  <>
-                                    <Select
-                                      value={editedCategory}
-                                      onChange={handleEditCategoryChange}
-                                      displayEmpty
-                                      inputProps={{
-                                        "aria-label": "Select Issue Category",
-                                      }}
-                                    >
-                                      <MenuItem value="" disabled>
-                                        Select Issue Category
-                                      </MenuItem>
-                                      {categories.map((category) => (
-                                        <MenuItem
-                                          key={category.issuecategoryname}
-                                          value={category.issuecategoryname}
-                                        >
-                                          {category.issuecategoryname}
-                                        </MenuItem>
-                                      ))}
-                                    </Select>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={() => handleSaveName("Catagory")}
-                                      buttontext={"Save"}
-                                    ></CustomButton>
-                                    <CustomButton
-                                      variant="contained"
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleCancelNameEdit("Catagory")
-                                      }
-                                      buttontext={"Cancel"}
-                                    ></CustomButton>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("Catagory")}
-                                    >
-                                      {selectedNode.issue_category_name}
-                                    </div>
-                                  </>
-                                )}
-                              </div>
-
-                              {selectedNode.image_file && (
-                                <div style={{ marginBottom: "10px" }}>
-                                  <div>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                      }}
-                                    >
-                                      Image:
-                                    </p>
-                                  </div>
-
-                                  <div>
-                                    {isEditingImageFile ? (
-                                      <>
-                                        <input
-                                          type="file"
-                                          accept="image/*"
-                                          onChange={handleEditImageChange}
-                                        />
-                                        <CustomButton
-                                          variant="contained"
-                                          color="primary"
-                                          onClick={() =>
-                                            handleSaveName("ImageFile")
-                                          }
-                                          buttontext={"Save"}
-                                        ></CustomButton>
-                                        <CustomButton
-                                          variant="contained"
-                                          color="secondary"
-                                          onClick={() =>
-                                            handleCancelNameEdit("ImageFile")
-                                          }
-                                          buttontext={"Cancel"}
-                                        ></CustomButton>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <div
-                                          className="value-comp"
-                                          onClick={() =>
-                                            handleEdit("ImageFile")
-                                          }
-                                        >
-                                          <div>
-                                            <img
-                                              width="120"
-                                              height="100"
-                                              src={
+                            <div>
+                              {isEditingImageFile ? (
+                                <>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleEditImageChange}
+                                  />
+                                  <CustomButton
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => handleSaveName("ImageFile")}
+                                    buttontext={"Save"}
+                                  ></CustomButton>
+                                  <CustomButton
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={() =>
+                                      handleCancelNameEdit("ImageFile")
+                                    }
+                                    buttontext={"Cancel"}
+                                  ></CustomButton>
+                                </>
+                              ) : (
+                                <>
+                                  <div
+                                    className="value-comp"
+                                    onClick={() => handleEdit("ImageFile")}
+                                  >
+                                    <div>
+                                      <img
+                                        width="120"
+                                        height="100"
+                                        src={
+                                          selectedNode.image_file
+                                            ? `data:image/jpeg;base64,${selectedNode.image_file}`
+                                            : "path/to/placeholder/image.jpg"
+                                        }
+                                        alt="NoImage"
+                                        style={{ borderRadius: "5px" }}
+                                        onError={(e) => {
+                                          e.target.onerror = null; // Prevent infinite loop
+                                          if (selectedNode.image_file) {
+                                            const base64String =
+                                              arrayBufferToBase64(
                                                 selectedNode.image_file
-                                                  ? `data:image/jpeg;base64,${selectedNode.image_file}`
-                                                  : "path/to/placeholder/image.jpg"
-                                              }
-                                              alt="NoImage"
-                                              style={{ borderRadius: "5px" }}
-                                              onError={(e) => {
-                                                e.target.onerror = null; // Prevent infinite loop
-                                                if (selectedNode.image_file) {
-                                                  const base64String =
-                                                    arrayBufferToBase64(
-                                                      selectedNode.image_file
-                                                    );
-                                                  e.target.src = `data:image/jpeg;base64,${base64String}`;
-                                                }
-                                              }}
-                                            />
-                                          </div>
-                                        </div>
-                                      </>
-                                    )}
+                                              );
+                                            e.target.src = `data:image/jpeg;base64,${base64String}`;
+                                          }
+                                        }}
+                                      />
+                                    </div>
                                   </div>
-                                </div>
+                                </>
                               )}
                             </div>
-                          </Card>
-                        </div>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </Card>
+                  </div>
+                </div>
+              )}
 
-                  {/* <Button
+            {/* <Button
                             className="button"
                             variant="contained"
                             color="primary"
@@ -1486,8 +1420,8 @@ export default function RichObjectTreeView() {
                           >
                             Print JSON
                           </Button> */}
-                  <br></br>
-                  {/* <Button
+            <br></br>
+            {/* <Button
                             className="button"
                             variant="contained"
                             color="primary"
@@ -1495,40 +1429,37 @@ export default function RichObjectTreeView() {
                           >
                             Save
                           </Button> */}
-                  <br />
+            <br />
 
-                  {showAddItemButton && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: buttonPosition.y,
-                        left: buttonPosition.x,
-                        zIndex: 9999,
-                      }}
-                    >
-                      {/* <CustomButton
+            {showAddItemButton && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: buttonPosition.y,
+                  left: buttonPosition.x,
+                  zIndex: 9999,
+                }}
+              >
+                {/* <CustomButton
                         className="button"
                         variant="contained"
                         color="secondary"
                         onClick={() => setVisible(true)}
                         buttontext={"Add Item"}
                       ></CustomButton> */}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
-            <CustomDialog
-              open={delOpen}
-              setOpen={setDelOpen}
-              proceedButtonText={"YES"}
-              proceedButtonClick={handleDeleteNode}
-              cancelButtonText={"NO"}
-            ></CustomDialog>
-          </div>
-        </Box>
-      </Main>
-    </Box>
+      <CustomDialog
+        open={delOpen}
+        setOpen={setDelOpen}
+        proceedButtonText={"YES"}
+        proceedButtonClick={handleDeleteNode}
+        cancelButtonText={"NO"}
+      ></CustomDialog>
+    </div>
   );
 }

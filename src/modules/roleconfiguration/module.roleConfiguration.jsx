@@ -33,7 +33,7 @@ export default function RoleConfiguration({sendUrllist}) {
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
   const [open, setOpen] = useState(false);
   const urllist=[
-    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Role', pagelink: '/admin/role' }]
+    {pageName:'Admin Home',pagelink:'/admin/home'},{ pageName: 'Role', pagelink: '/admin/role' }]
   
 
   const navigate = useNavigate();

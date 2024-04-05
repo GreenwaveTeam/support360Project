@@ -46,7 +46,7 @@ export default function RolePageConfiguration({sendUrllist}) {
 
   const[jsonData,setJsonData]=useState([])
   const urllist=[
-    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Role', pagelink: '/admin/role' }]
+    {pageName:'Admin Home',pagelink:'/admin/home'},{ pageName: 'Role', pagelink: '/admin/role' }]
   
 
 
@@ -297,40 +297,7 @@ fetchData();}
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={[
-          {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Role', pagelink: '/admin/role' }
-          ,{ pageName: 'Page', pagelink: '/admin/role/page' }
-        ]} />
-      <Sidebar
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-        <DrawerHeader />
+    
         <Box 
         // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
@@ -380,7 +347,6 @@ fetchData();}
       <Snackbar snackbarSeverity={snackbarSeverity} openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage}/>
    
     </Box>
-    </Main>
-    </Box>
+    
   );
 }

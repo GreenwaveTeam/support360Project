@@ -9,11 +9,6 @@ import Dialog from '@mui/material/Dialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
-/*Navigation Pane*/
-import Sidebar from '../../../components/navigation/sidebar/sidebar';
-import Topbar from '../../../components/navigation/topbar/topbar';
-import Main from '../../../components/navigation/mainbody/mainbody';
-import DrawerHeader from '../../../components/navigation/drawerheader/drawerheader.component';
 
 
 /*Custom Components*/
@@ -26,7 +21,7 @@ import NotFound from '../../../components/notfound/notfound.component';
 
 import styles from './module.module.css'
 
-const Application = () => {
+const Application = ({sendUrllist}) => {
   const [open, setOpen] = useState(false);
   const [selection, setSelection] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -63,17 +58,20 @@ const Application = () => {
   const modulelist=location.state.modulelist
   //console.log("Module list====>"+JSON.stringify(modulelist))
   const [module_Name,setModule_Name]=useState(application_name+"_Module_")
-  const urllist = [
-    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' },
-  { pageName: 'Module Upload', pagelink: '/admin/ApplicationConfigure/Module' }]
-const [categorySubmitted,setCategorySubmitted]=useState(false)
+  const [categorySubmitted,setCategorySubmitted]=useState(false)
 const [snackbarSeverity,setsnackbarSeverity]=useState(null)
 const [deleteDialog,setDeleteDialog]=useState(false)
 const[deleteArea,setDeleteArea]=useState(null)
 const [divIsVisibleList,setDivIsVisibleList]=useState([]);
 const currentPageLocation=useLocation().pathname;
+
+const urllist=[
+  {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Application', pagelink: '/admin/ApplicationConfigure' }]
+
+
 useEffect(()=>{
   fetchDivs();
+  sendUrllist(urllist)
 },[])
 const fetchDivs = async () => {
   try {
@@ -649,37 +647,8 @@ if(localStorage.getItem("token")===null)
     <div>    
       		{divIsVisibleList.length!==0 && divIsVisibleList.includes("add-module-existing-issues")&&
 		 
-    <Box sx={{ display: 'flex' }}>
-      <Topbar open={open} handleDrawerOpen={() => setOpen(true)} urllist={urllist} />
-      <Sidebar
-        open={open}
-        handleDrawerClose={() => setOpen(false)}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-        <DrawerHeader />
+    <Box>
+      
         
         {!imageUrl && (
             
@@ -913,7 +882,7 @@ if(localStorage.getItem("token")===null)
         <CustomDialog open={deleteDialog}setOpen={setDeleteDialog}proceedButtonText={"Delete"}
 				proceedButtonClick={handleDeleteAreaConfirm}cancelButtonText="Cancel"/>
 				
-      </Main>
+      
     </Box>
   }
   

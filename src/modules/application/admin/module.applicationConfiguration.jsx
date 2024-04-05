@@ -19,7 +19,7 @@ import axios from 'axios';
 import Swal from'sweetalert2'
 import NotFound from '../../../components/notfound/notfound.component';
 
-export default function ModuleConfiguration() {
+export default function ModuleConfiguration({sendUrllist}) {
   const plantid='P009'
     const [open, setOpen] = useState(false);
     const [application_name,setApplication_name]=useState('')
@@ -116,6 +116,7 @@ export default function ModuleConfiguration() {
 
     fetchData();
     fetchDivs();
+    sendUrllist(urllist)
   }, []);
 
     const [editRow,setEditRow]=useState(false)
@@ -219,37 +220,8 @@ export default function ModuleConfiguration() {
     return (
       <div>    
       {divIsVisibleList.length!==0 && 
-      <Box sx={{ display: 'flex' }}>
-      <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={urllist} />
-      <Sidebar
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-      <DrawerHeader />
+      <Box >
+      
       <Box >
         <Container>
         {divIsVisibleList&&divIsVisibleList.includes("add-new-application")&& 
@@ -315,7 +287,7 @@ export default function ModuleConfiguration() {
           }
             </Box>
             <DialogBox snackbarSeverity={snackbarSeverity}openPopup={dialogPopup} setOpenPopup={setDialogPopup} dialogMessage={dialogMessage}/>
-    </Main>
+    
     </Box>
   }
     

@@ -1,8 +1,21 @@
-import React from 'react'
+import { Typography } from '@mui/material';
+import React, { useEffect } from 'react'
 
-function Test1() {
+const urllist = [
+  {pageName:'Admin 1 Home',pagelink:'/AdminPage'},
+  { pageName: "Sample", pagelink: "/authenticated/sample" },
+  { pageName: "Device 1Issue", pagelink: "/admin/Device/CategoryConfigure/Issue" }
+];
+
+function Test1({sendUrllist}) {
+  useEffect(() => {
+    const data = 'Data sent from child';
+    // Invoke callback function passed from parent
+    sendUrllist(urllist);
+  }, []);
+  
   return (
-    <div>Test1</div>
+    <Typography>Test1</Typography>
   )
 }
 

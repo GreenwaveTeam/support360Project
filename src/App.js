@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Device from "./modules/device/module.device";
@@ -9,11 +9,6 @@ import UserLogin from "./modules/login/UserLogin";
 import AdminRegistration from "./modules/registration/modules.registration.adminRegistration.component";
 import UserHome from "./modules/homepages/UserHome";
 import ApplicationUser from "./modules/application/user/modules.application";
-import DeviceIssueCategoryUpload from "./modules/device/admin/module.deviceIssueCategoryUpload";
-import DeviceIssueUpload from "./modules/device/admin/module.deviceIssueUpload";
-import ApplicationConfiguration from "./modules/application/admin/module.applicationConfiguration";
-import ModuleConfiguration from "./modules/application/admin/module.moduleConfiguration";
-import ModuleUpload from "./modules/application/admin/module.moduleUpload";
 import ConfigureInfrastructure from "./modules/infrastructure/module.configureInfrastructure";
 import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
 import Samplemodule from "./modules/device/module.samplemodule";
@@ -32,29 +27,14 @@ import { ColorModeContext, useMode } from "./theme";
 import { UserProvider } from "./modules/contexts/UserContext";
 import RolePageConfiguration from "./modules/roleconfiguration/module.rolePageConfiguration";
 import RoleConfiguration from "./modules/roleconfiguration/module.roleConfiguration";
-import CustomSideBar from "./CustomSideBar";
-import Test1 from "./Test1";
-import Test2 from "./Test2";
+import AdminRoutes from "./AdminRoutes";
+import DeviceCategory from "./modules/device/admin/module.deviceIssueCategoryUpload";
+
 
 function App() {
-  const urllist = [
-    { pageName: "Test", pagelink: "/Test" },
-    { pageName: "IssueCategory", pagelink: "/IssueCategory" },
-  ];
-  function AuthenticatedRoutes() {
-    return (
-      <div>
-        <CustomSideBar>
-          <Routes>
-            <Route path="/test1" element={<Test1 />} />
-            <Route path="/test2" element={<Test2 />} />
-            {/* <Route path="/*" element={ <NotFound/>} /> */}
-          </Routes>
-        </CustomSideBar>
-      </div>
-    );
-  }
 
+  
+  
   // const [darkMode, setDarkMode] = React.useState(false);
   // const theme = React.useMemo(
   //   () =>
@@ -111,26 +91,6 @@ function App() {
                 />
                 <Route path="/login" element={<UserLogin />} />
                 {/* <Route path="/AdminLogin" element={<AdminLogin />} /> */}
-                <Route
-                  path="/admin/Device/CategoryConfigure"
-                  element={<DeviceIssueCategoryUpload />}
-                />
-                <Route
-                  path="/admin/Device/CategoryConfigure/Issue"
-                  element={<DeviceIssueUpload />}
-                />
-                <Route
-                  path="/admin/ApplicationConfigure"
-                  element={<ApplicationConfiguration />}
-                />
-                <Route
-                  path="/admin/ApplicationConfigure/Modules"
-                  element={<ModuleConfiguration />}
-                />
-                <Route
-                  path="/admin/ApplicationConfigure/Module"
-                  element={<ModuleUpload />}
-                />
                 <Route path="/admin/configurePage" element={<AdminPage />} />
 
                 {/* Application Report */}
@@ -149,8 +109,7 @@ function App() {
                 />
                 {/* test */}
 
-                <Route path="/*" element={<NotFound />}></Route>
-
+                
                 <Route path="/user/ReportDevice" element={<UserDeviceTree />} />
                 <Route
                   path="/user/ReportInfrastructure"
@@ -165,10 +124,10 @@ function App() {
                   path="/admin/Role/Page"
                   element={<RolePageConfiguration />}
                 />
-
+                <Route path="/*" element={ <NotFound/>} />
                 <Route
-                  path="/authenticated/*"
-                  element={<AuthenticatedRoutes />}
+                  path="/admin/*"
+                  element={<AdminRoutes />}
                 >
                   {/* <Route path="/AdminLogin" element={<AdminLogin />} /> */}
                 </Route>

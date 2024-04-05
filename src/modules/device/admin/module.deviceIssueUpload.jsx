@@ -2,12 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Box, MenuItem, Button, Container } from '@mui/material';
-import Swal from 'sweetalert2'
-/*Navigation Pane*/
-import Sidebar from '../../../components/navigation/sidebar/sidebar';
-import Topbar from '../../../components/navigation/topbar/topbar';
-import Main from '../../../components/navigation/mainbody/mainbody';
-import DrawerHeader from '../../../components/navigation/drawerheader/drawerheader.component';
 
 
 /*Custom Components*/
@@ -21,7 +15,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import NotFound from '../../../components/notfound/notfound.component';
 
 
-const DeviceIssue = () => {
+const DeviceIssue = ({sendUrllist}) => {
   const [open, setOpen] = useState(false);
   const plantid='P009'
   //const history=useHis
@@ -141,6 +135,7 @@ const DeviceIssue = () => {
       }
     }
     fetchData(); fetchDivs();
+    sendUrllist(urllist)
   }, []);
     const addIssueCategory = async () => {
       console.log("Add Issue")
@@ -277,37 +272,8 @@ const DeviceIssue = () => {
     <div>    
       {divIsVisibleList.length!==0 && 
     
-    <Box sx={{ display: 'flex' }}>
-      <Topbar open={open} handleDrawerOpen={handleDrawerOpen} urllist={urllist} />
-      <Sidebar
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-        <DrawerHeader />
+    <Box >
+      
         <Box 
         // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
         >
@@ -359,7 +325,7 @@ const DeviceIssue = () => {
           editActive={true} snackbarSeverity={snackbarSeverity} isDeleteDialog={true} tablename={"Existing Device Issues"} /*style={}*/ /> 
         </Box>
         <DialogBox openPopup={openPopup}  snackbarSeverity={snackbarSeverity} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage} />
-      </Main>
+      
     </Box>
     
     } 

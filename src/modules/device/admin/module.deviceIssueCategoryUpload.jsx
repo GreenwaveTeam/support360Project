@@ -23,7 +23,7 @@ import axios from 'axios';
 import NotFound from '../../../components/notfound/notfound.component';
 
 
-const DeviceCategory = () => {
+const DeviceCategory = ({sendUrllist}) => {
   const plantid='P009'
   
   const [open, setOpen] = useState(false);
@@ -39,7 +39,9 @@ const DeviceCategory = () => {
   
   const [divIsVisibleList,setDivIsVisibleList]=useState([]);
   const currentPageLocation=useLocation().pathname;
-
+  const urllist=[
+    {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Device Issue Category', pagelink: '/admin/Device/CategoryConfigure' }
+  ]
 
   const columns=[
     {
@@ -124,11 +126,10 @@ const DeviceCategory = () => {
 
     fetchData();
     fetchDivs();
+    sendUrllist(urllist)
   }, []);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  
 
   const handleEditClick = (rowData) => {
     console.log("Edit Click: " + rowData.categoryname);
@@ -264,44 +265,9 @@ const DeviceCategory = () => {
     
     <div>    
       {divIsVisibleList.length!==0 && 
-    <Box sx={{ display: 'flex' }}>
-      <Topbar
-        open={open}
-        handleDrawerOpen={handleDrawerOpen}
-        urllist={[
-          {pageName:'Admin Home',pagelink:'/AdminPage'},{ pageName: 'Device Issue Category', pagelink: '/admin/Device/CategoryConfigure' }
-        ]}
-      />
-      <Sidebar
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-        <DrawerHeader />
-
+    <Box >
+      
+      
         <div
           
         >
@@ -341,8 +307,7 @@ const DeviceCategory = () => {
             </Container>
           
           {/* </Box> */}
-        </div>
-      </Main>
+        </div>s
       <DialogBox snackbarSeverity={snackbarSeverity} openPopup={openPopup} setOpenPopup={setOpenPopup} dialogMessage={dialogMessage}/>
     </Box>
     } 

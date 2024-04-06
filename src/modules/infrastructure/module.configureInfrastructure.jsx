@@ -14,6 +14,7 @@ import TopbarPage from "../../components/navigation/topbar/topbar";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
+import { useUserContext } from "../contexts/UserContext";
 
 export default function ConfigureInfrastructure({sendUrllist}) {
  // const [search, setSearch] = useState("");
@@ -50,7 +51,18 @@ export default function ConfigureInfrastructure({sendUrllist}) {
   const [divIsVisibleList,setDivIsVisibleList]=useState([]);
 
   const navigate = useNavigate();
-const currentPageLocation=useLocation().pathname;
+  const currentPageLocation=useLocation().pathname;
+  const { userData, setUserData } = useUserContext();
+
+
+  /******************************* useEffect()********************************/
+
+  useEffect(() => {
+    fetchInfraFromDb();
+    fetchDivs();
+    sendUrllist(urllist)
+  }, []);
+
  
   
 
@@ -109,9 +121,18 @@ const currentPageLocation=useLocation().pathname;
       return;
     }
     //plantID here is harcoded
-    const data = { infrastructure: newCateogry, plantID: "P009" };
+    if(userData.plantID)
+    {
+    const data = { infrastructure: newCateogry, plantID: userData.plantID };
     console.log("Data sent is => ", data);
     navigate("/admin/infrastructure/addIssues", { state: data });
+    }
+    else
+    {
+      setsnackbarSeverity("error")
+      setSnackbarText("PlantID not found !")
+      setOpen(true);
+    }
   };
 
   
@@ -182,8 +203,13 @@ const currentPageLocation=useLocation().pathname;
     console.log("updateInfraNameDB() called");
     console.log("Previous Infrastructure : ", prev_infra);
     console.log("New Infrastucture : ", new_infraname);
+    let plantID = "";
     try {
-      const plantID = "P009";
+      if (userData.plantID) {
+        plantID = userData.plantID;
+      } else {
+        throw new Error("PlantID not found ! ");
+      }
       const response = await fetch(
         `http://localhost:8081/infrastructure/admin`,
         {
@@ -218,8 +244,13 @@ const currentPageLocation=useLocation().pathname;
   };
 
   const deletefromDB = async (infra_name) => {
+    let plantID = "";
     try {
-      const plantID = "P009";
+      if (userData.plantID) {
+        plantID = userData.plantID;
+      } else {
+        throw new Error("PlantID not found ! ");
+      }
       const response = await fetch(
         `http://localhost:8081/infrastructure/admin`,
         {
@@ -243,7 +274,7 @@ const currentPageLocation=useLocation().pathname;
           (item) => item.categoryname !== infra_name
         );
         setInfraList(filterArray);
-       // setSearch("");
+        // setSearch("");
         setsnackbarSeverity("success");
         setSnackbarText("Data deleted successfully ! ");
         setOpen(true);
@@ -257,14 +288,24 @@ const currentPageLocation=useLocation().pathname;
 
   const fetchInfraFromDb = async () => {
     // setProgressVisible(true);
+    console.log('fetchInfraFromDb() called')
     console.log("Current Pager Location : ",currentPageLocation)
-     const plantID = "P009";
-     console.log(
-       "Fetched Token from LS=>  ",
-       `Bearer ${localStorage.getItem("token")}`
-     );
-     console.log("fetchInfraFromDb() called");
+    console.log("PlantID for InfrafromDb  : ")
+   console.log("Context value :  ",userData.plantID)
+    //  const plantID = "P009";
+    //  console.log(
+    //    "Fetched Token from LS=>  ",
+    //    `Bearer ${localStorage.getItem("token")}`
+    //  );
+    let plantID="";
      try {
+      if(userData.plantID){
+          plantID=userData.plantID;
+      }
+      else
+      {
+        throw new Error("PlantID not found ! ")
+      }
        const response = await fetch(
          `http://localhost:8081/infrastructure/admin/${plantID}`,
          {
@@ -478,10 +519,17 @@ const currentPageLocation=useLocation().pathname;
     console.log("Redirected Catefory : ", categoryname);
     //         const paramIssue = infrastructure.trim();
     // console.log("Category is => ", paramIssue);
-    //plant ID is hardcoded
-    const data = { infrastructure: categoryname, plantID: "P009" };
+    if(userData.plantID)
+    {
+    const data = { infrastructure: categoryname, plantID: userData.plantID };
     console.log("Data sent is => ", data);
     navigate("/admin/infrastructure/addIssues", { state: data });
+    }
+    else{
+      setsnackbarSeverity("error")
+      setSnackbarText("PlantID not found ! ")
+      setOpen(true)
+    }
     //history.push({pathname:"/"})
     // console.log("Category==========>"+category.categoryname);
     // navigate(`/Device/Category/Issue`, {
@@ -508,14 +556,7 @@ const currentPageLocation=useLocation().pathname;
   };
 
 
-  /******************************* useEffect()********************************/
-
-  useEffect(() => {
-    fetchInfraFromDb();
-    fetchDivs();
-    sendUrllist(urllist)
-  }, []);
-
+  
   /******************************* Component Return ********************************* */
   return (
    

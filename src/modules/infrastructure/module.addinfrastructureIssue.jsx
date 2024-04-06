@@ -82,6 +82,52 @@ export default function AddInfrastructureIssue({sendUrllist}) {
   // const navigate = useNavigate();
 const currentPageLocation=useLocation().pathname;
 
+ /**********************************************useEffect Hook***********************************************/
+ useEffect(() => {
+  console.log("useEffect() called");
+  console.log("plantId", plantId);
+  console.log("Infrastructure : ", inf);
+  console.log("search value is ", search);
+  fetchDBdata(plantId, inf);
+  fetchDivs();
+ 
+  sendUrllist(urllist)
+ 
+
+  const handleOnBeforeUnload = (event) => {
+    // event.preventDefault();
+
+    console.log("issueName :", addIssue);
+
+    console.log(
+      "state true or false",
+      filteredRows.toString === rows.toString
+    );
+
+    console.log("Filtered Rows :" + JSON.stringify(filteredRows));
+    console.log("Original Rows :", JSON.stringify(originalRows));
+
+    if (
+      JSON.stringify(filteredRows) === JSON.stringify(originalRows) &&
+      addIssue.length === 0
+    ) {
+      console.log("return from beforeUnload");
+      return;
+    }
+    event.preventDefault();
+  };
+
+  window.addEventListener("beforeunload", handleOnBeforeUnload);
+  //console.log(process.env.REACT_APP_NOT_SECRET_CODE);
+
+  // remember  this is a cleanup function which will be executed before the next execution of the effect or when the component is unmounted.
+  //they are treated as options of useEffect
+  return () => {
+    window.removeEventListener("beforeunload", handleOnBeforeUnload);
+  };
+}, []); //useEffect ends here
+
+
 
   
 
@@ -661,51 +707,7 @@ const currentPageLocation=useLocation().pathname;
     },
   ]
 
-   /**********************************************useEffect Hook***********************************************/
-   useEffect(() => {
-    console.log("useEffect() called");
-    console.log("plantId", plantId);
-    console.log("Infrastructure : ", inf);
-    console.log("search value is ", search);
-    fetchDBdata(plantId, inf);
-    fetchDivs();
-   
-    sendUrllist(urllist)
-   
-
-    const handleOnBeforeUnload = (event) => {
-      // event.preventDefault();
-
-      console.log("issueName :", addIssue);
-
-      console.log(
-        "state true or false",
-        filteredRows.toString === rows.toString
-      );
-
-      console.log("Filtered Rows :" + JSON.stringify(filteredRows));
-      console.log("Original Rows :", JSON.stringify(originalRows));
-
-      if (
-        JSON.stringify(filteredRows) === JSON.stringify(originalRows) &&
-        addIssue.length === 0
-      ) {
-        console.log("return from beforeUnload");
-        return;
-      }
-      event.preventDefault();
-    };
-
-    window.addEventListener("beforeunload", handleOnBeforeUnload);
-    //console.log(process.env.REACT_APP_NOT_SECRET_CODE);
-
-    // remember  this is a cleanup function which will be executed before the next execution of the effect or when the component is unmounted.
-    //they are treated as options of useEffect
-    return () => {
-      window.removeEventListener("beforeunload", handleOnBeforeUnload);
-    };
-  }, []); //useEffect ends here
-
+  
 
   //************** Returned Component  **************
   return (

@@ -129,7 +129,7 @@ function AdminRoutes() {
                   element={<RichObjectTreeView  sendUrllist={receiveUrllist}/>}
                 />
 
-<Route path="/Role" element={<RoleConfiguration  sendUrllist={receiveUrllist} />} />
+                <Route path="/Role" element={<RoleConfiguration  sendUrllist={receiveUrllist} />} />
                 <Route
                   path="/Role/Page"
                   element={<RolePageConfiguration  sendUrllist={receiveUrllist}/>}

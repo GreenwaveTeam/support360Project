@@ -21,7 +21,7 @@ const CustomMenuItem = ({ label, path }) => {
       </div>
     );
   } else {
-    return <span>{label}</span>;
+    return <div>{label}</div >;
   }
 };
 

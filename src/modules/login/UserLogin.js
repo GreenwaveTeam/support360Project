@@ -22,6 +22,7 @@ import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import { useNavigate } from "react-router";
 import { isAuthenticated, login } from "../helper/AuthService";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import "./UserLogin.css"
 
 export default function UserLogin() {
   const [userID, setUserID] = useState("");
@@ -228,6 +229,7 @@ export default function UserLogin() {
           <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
             <HowToRegTwoToneIcon />
           </Avatar>
+         
           <Typography component="h1" variant="h5">
             Login Page
           </Typography>
@@ -290,6 +292,7 @@ export default function UserLogin() {
                 fullWidth
                 variant="contained"
                 onClick={handleLogin}
+                className="icon"
                 // autoFocus
               >
                 Login

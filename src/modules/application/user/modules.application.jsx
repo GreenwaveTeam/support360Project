@@ -1762,7 +1762,7 @@ export default function ApplicationUser() {
               >
                 {tabsmoduleNames.length !== 0 && (
                   <CustomButton
-                    size={"medium"}
+                    size={"large"}
                     id={"final-submit"}
                     variant={"contained"}
                     color={"success"}

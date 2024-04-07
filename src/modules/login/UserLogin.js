@@ -292,7 +292,7 @@ export default function UserLogin() {
                 fullWidth
                 variant="contained"
                 onClick={handleLogin}
-                className="icon"
+                className="shining-effect"
                 // autoFocus
               >
                 Login

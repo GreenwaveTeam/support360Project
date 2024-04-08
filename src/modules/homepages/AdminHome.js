@@ -656,7 +656,7 @@ export default function AdminHome({ sendUrllist }) {
         </>
       )}
 
-      {!switchChecked && divIsVisibleList.includes("existing-admins") && (
+      {switchChecked && divIsVisibleList.includes("existing-admins") && (
         <>
           <Box
             alignItems="center"

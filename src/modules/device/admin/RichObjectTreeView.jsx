@@ -23,6 +23,7 @@ import Textfield from "../../../components/textfield/textfield.component";
 import CustomButton from "../../../components/button/button.component";
 import { useLocation, useNavigate } from "react-router-dom";
 import { display } from "@mui/system";
+import { useUserContext } from "../../contexts/UserContext";
 
 export default function RichObjectTreeView({ sendUrllist }) {
   const [selectedNode, setSelectedNode] = useState(null);
@@ -69,6 +70,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
   const [open, setOpen] = useState(false);
   const [delOpen, setDelOpen] = useState(false);
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+  const { userData, setUserData } = useUserContext();
 
   const navigate = useNavigate();
   const currentPageLocation = useLocation().pathname;
@@ -88,7 +90,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8081/device/admin/getTree/P009",
+          `http://localhost:8081/device/admin/getTree/${userData.plantID}`,
           {
             method: "GET",
             headers: {
@@ -118,7 +120,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8081/device/admin/P009/categories",
+          `http://localhost:8081/device/admin/${userData.plantID}/categories`,
           {
             method: "GET",
             headers: {
@@ -163,7 +165,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+        `http://localhost:8081/role/roledetails?role=${userData.role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -586,7 +588,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     console.log("data for post ", dataLocal);
     try {
       const response = await fetch(
-        "http://localhost:8081/device/admin/saveTree/" + plantId,
+        `http://localhost:8081/device/admin/saveTree/${userData.plantID}`,
         {
           method: "POST",
           headers: {
@@ -613,7 +615,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     console.log("handle Delete call");
     try {
       const response = await fetch(
-        "http://localhost:8081/device/admin/delete/" + plantId,
+        `http://localhost:8081/device/admin/delete/${userData.plantID}`,
         {
           method: "DELETE",
           headers: {

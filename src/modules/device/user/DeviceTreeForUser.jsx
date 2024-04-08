@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./styles.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import Button from "@mui/material/Button";
@@ -40,6 +40,8 @@ import SidebarPage from "../../../components/navigation/sidebar/sidebar";
 import Main from "../../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../../components/navigation/drawerheader/drawerheader.component";
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
+import { useUserContext } from "../../contexts/UserContext";
+import { useLocation } from "react-router-dom";
 
 export default function UserDeviceTree({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -59,12 +61,13 @@ export default function UserDeviceTree({ sendUrllist }) {
   const [alertMessage, setAlertMessage] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [deviceIssueDetails, setDeviceIssueDetails] = useState([]);
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const [filteredDeviceIssueDetails, setFilteredDeviceIssueDetails] = useState(
     []
   );
   const [otherIssue, setOtherIssue] = useState("");
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
-
+  const { userData, setUserData } = useUserContext();
   const [visibleConfirm, setVisibleConfirm] = useState(false);
   const [ticketOpen, setTicketOpen] = useState(false);
   const toast = useRef(null);
@@ -75,7 +78,7 @@ export default function UserDeviceTree({ sendUrllist }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
+  const currentPageLocation = useLocation().pathname;
   const deviceTicketJSON = {
     plantId: "plant101",
     ticketNo: ticketNumber,
@@ -110,11 +113,51 @@ export default function UserDeviceTree({ sendUrllist }) {
   //     );
   //   }, [deviceIssueDetails]);
 
+  useEffect(() => {
+    fetchDivs();
+  }, []);
+
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=${userData.role}&pagename=${currentPageLocation}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ", data);
+        console.log("Current Divs : ", data.components);
+        setDivIsVisibleList(data.components);
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
+
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8081/device/admin/getTree/P009",
+          `http://localhost:8081/device/admin/getTree/${userData.plantID}`,
           {
             method: "GET",
             headers: {
@@ -305,7 +348,7 @@ export default function UserDeviceTree({ sendUrllist }) {
       try {
         const response = await fetch(
           // `http://localhost:9999/admin/P009/${category}`
-          `http://localhost:8081/device/admin/P009/${category}`,
+          `http://localhost:8081/device/admin/${userData.plantID}/${category}`,
           {
             method: "GET",
             headers: {
@@ -361,114 +404,116 @@ export default function UserDeviceTree({ sendUrllist }) {
   ];
   return (
     <div>
-      {deviceIssueDetails.length > 0 && (
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>
-                  <TextField
-                    label="Device Name"
-                    variant="standard"
-                    size="small"
-                    onChange={(e) =>
-                      handleFilterChange(e.target.value, "deviceName")
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Issue"
-                    variant="standard"
-                    size="small"
-                    onChange={(e) =>
-                      handleFilterChange(e.target.value, "issue")
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Priority"
-                    variant="standard"
-                    size="small"
-                    onChange={(e) =>
-                      handleFilterChange(e.target.value, "priority")
-                    }
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    label="Remarks"
-                    variant="standard"
-                    size="small"
-                    onChange={(e) =>
-                      handleFilterChange(e.target.value, "remarks")
-                    }
-                  />
-                </TableCell>
-                <TableCell>Action</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(filteredDeviceIssueDetails.length > 0
-                ? filteredDeviceIssueDetails
-                : deviceIssueDetails
-              ).map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.deviceName}</TableCell>
-                  <TableCell>{row.issue}</TableCell>
-                  <TableCell>{row.priority}</TableCell>
-                  <TableCell>{row.remarks}</TableCell>
-                  <TableCell>
-                    <IconButton
-                      onClick={() =>
-                        handleDeleteItemFromReviewTable(
-                          row.deviceName,
-                          row.issue
-                        )
-                      }
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <center>
-            <Button
-              className="button"
-              variant="contained"
-              color="secondary" // Use secondary color for delete button
-              onClick={() => handleSubmitPost(deviceTicketJSON)}
-            >
-              Submit
-            </Button>
-          </center>
-        </TableContainer>
-      )}
-      <div className="split-screen" onClick={handleClickOutsideNode}>
-        <div className="left-panel">
-          {data !== null && (
-            <div className="treeViewContainer">
-              <p>Device Tree:</p>
-              <TreeView
-                className="treeView"
-                aria-label="rich object"
-                defaultCollapseIcon={<ExpandMoreIcon />}
-                defaultExpanded={["root"]}
-                defaultExpandIcon={<ChevronRightIcon />}
-              >
-                {renderTree(data)}
-              </TreeView>
-              <br />
-            </div>
+      {divIsVisibleList && divIsVisibleList.includes("device-report") && (
+        <div id="device-report">
+          {deviceIssueDetails.length > 0 && (
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <TextField
+                        label="Device Name"
+                        variant="standard"
+                        size="small"
+                        onChange={(e) =>
+                          handleFilterChange(e.target.value, "deviceName")
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        label="Issue"
+                        variant="standard"
+                        size="small"
+                        onChange={(e) =>
+                          handleFilterChange(e.target.value, "issue")
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        label="Priority"
+                        variant="standard"
+                        size="small"
+                        onChange={(e) =>
+                          handleFilterChange(e.target.value, "priority")
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        label="Remarks"
+                        variant="standard"
+                        size="small"
+                        onChange={(e) =>
+                          handleFilterChange(e.target.value, "remarks")
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>Action</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(filteredDeviceIssueDetails.length > 0
+                    ? filteredDeviceIssueDetails
+                    : deviceIssueDetails
+                  ).map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{row.deviceName}</TableCell>
+                      <TableCell>{row.issue}</TableCell>
+                      <TableCell>{row.priority}</TableCell>
+                      <TableCell>{row.remarks}</TableCell>
+                      <TableCell>
+                        <IconButton
+                          onClick={() =>
+                            handleDeleteItemFromReviewTable(
+                              row.deviceName,
+                              row.issue
+                            )
+                          }
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <center>
+                <Button
+                  className="button"
+                  variant="contained"
+                  color="secondary" // Use secondary color for delete button
+                  onClick={() => handleSubmitPost(deviceTicketJSON)}
+                >
+                  Submit
+                </Button>
+              </center>
+            </TableContainer>
           )}
-        </div>
-        <div className={`right-panel ${data === null ? "hidden" : ""}`}>
-          {data !== null && selectedNode && (
-            <>
-              {/* <Box>
+          <div className="split-screen" onClick={handleClickOutsideNode}>
+            <div className="left-panel">
+              {data !== null && (
+                <div className="treeViewContainer">
+                  <p>Device Tree:</p>
+                  <TreeView
+                    className="treeView"
+                    aria-label="rich object"
+                    defaultCollapseIcon={<ExpandMoreIcon />}
+                    defaultExpanded={["root"]}
+                    defaultExpandIcon={<ChevronRightIcon />}
+                  >
+                    {renderTree(data)}
+                  </TreeView>
+                  <br />
+                </div>
+              )}
+            </div>
+            <div className={`right-panel ${data === null ? "hidden" : ""}`}>
+              {data !== null && selectedNode && (
+                <>
+                  {/* <Box>
                 <p className="selectedNodeInfo">
                   {selectedNode
                     ? `Selected Node: ${selectedNode.name}`
@@ -476,174 +521,180 @@ export default function UserDeviceTree({ sendUrllist }) {
                 </p>
               </Box> */}
 
-              <div>
-                <Dialog
-                  header={`Report Issue for : ${selectedNode.name}`}
-                  visible={visible}
-                  style={{ width: "50vw", height: "60vh" }}
-                  onHide={onHideDialog}
-                >
-                  <TableContainer
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    {categoryIssues && categoryIssues.issueList ? (
-                      <FormControl variant="outlined" sx={{ width: "200px" }}>
-                        <InputLabel>Select Issue</InputLabel>
-                        <Select
-                          value={selectedIssue}
-                          onChange={(e) => {
-                            setSelectedIssue(e.target.value);
-                            if (e.target.value !== "Other") {
-                              setOtherIssue("");
-                            }
-                          }}
-                          label="Select Issue"
-                        >
-                          {categoryIssues.issueList.map((issue, index) => (
-                            <MenuItem key={index} value={issue.issuename}>
-                              {issue.issuename}
-                            </MenuItem>
-                          ))}
-                          <MenuItem value="Other">Other</MenuItem>
-                        </Select>
-                      </FormControl>
-                    ) : (
-                      <div>No issues found</div>
-                    )}
-
-                    {selectedIssue === "Other" && (
-                      <TextField
-                        sx={{ width: "200px" }}
-                        label="miscellaneous issue"
-                        value={otherIssue}
-                        onChange={(e) => setOtherIssue(e.target.value)}
-                        variant="outlined"
-                        margin="dense"
-                        fullWidth
-                      />
-                    )}
-                    <FormControl variant="outlined" sx={{ width: "200px" }}>
-                      <InputLabel>Select Priority</InputLabel>
-                      <Select
-                        value={selectedPriority}
-                        onChange={handleSelectPriority}
-                        label="Select Priority"
-                      >
-                        <MenuItem value="Major">Major</MenuItem>
-                        <MenuItem value="Minor">Minor</MenuItem>
-                        <MenuItem value="Critical">Critical</MenuItem>
-                      </Select>
-                    </FormControl>
-
-                    <FormControl variant="outlined" sx={{ width: "200px" }}>
-                      <TextField
-                        label="Remarks"
-                        variant="outlined"
-                        value={remarks}
-                        onChange={handleRemarksChange}
-                        style={{ margin: "10px 0" }}
-                      />
-                    </FormControl>
-                    {/* Plus icon button */}
-                    <IconButton
-                      color="primary"
-                      aria-label="add"
-                      onClick={() => handleAddItem()}
+                  <div>
+                    <Dialog
+                      header={`Report Issue for : ${selectedNode.name}`}
+                      visible={visible}
+                      style={{ width: "50vw", height: "60vh" }}
+                      onHide={onHideDialog}
                     >
-                      <AddIcon />
-                    </IconButton>
-                  </TableContainer>
-
-                  {showAlert && (
-                    <Alert severity="error" onClose={() => setShowAlert(false)}>
-                      {alertMessage}
-                    </Alert>
-                  )}
-
-                  {tableData.length > 0 && (
-                    // <TableContainer>
-                    //   <Table>
-                    //     <TableHead>
-                    //       <TableRow>
-                    //         <TableCell>Issue</TableCell>
-                    //         <TableCell>Priority</TableCell>
-                    //         <TableCell>Remarks</TableCell>
-                    //         <TableCell>Action</TableCell>
-                    //       </TableRow>
-                    //     </TableHead>
-                    //     <TableBody>
-                    //       {tableData.map((row, index) => (
-                    //         <TableRow key={index}>
-                    //           <TableCell>{row.issue}</TableCell>
-                    //           <TableCell>{row.priority}</TableCell>
-                    //           <TableCell>{row.remarks}</TableCell>
-                    //           <TableCell>
-                    //             <IconButton
-                    //               onClick={() => handleDeleteItem(row.issue)}
-                    //             >
-                    //               <DeleteIcon />
-                    //             </IconButton>
-                    //           </TableCell>
-                    //         </TableRow>
-                    //       ))}
-                    //     </TableBody>
-                    //   </Table>
-                    // </TableContainer>
-                    <CustomTable
-                      rows={tableData}
-                      columns={columns}
-                      setRows={setTableData}
-                      deleteFromDatabase={handleDeleteItem}
-                      editActive={false}
-                      tablename={"Added Issues"}
-                      redirectIconActive={false}
-                      isDeleteDialog={false}
-                    ></CustomTable>
-                  )}
-                </Dialog>
-              </div>
-
-              <br></br>
-              {clickedNode &&
-                selectedNode.id !== "root" &&
-                clickedNode.id !== "root" && (
-                  <div className="dlg">
-                    <div className="clicked-node">
-                      <Card
+                      <TableContainer
                         sx={{
-                          minWidth: 550,
-                          padding: "20px",
-                          backgroundColor: "#f4f4f4",
-                          borderRadius: "10px",
-                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
                       >
-                        <div className="Card-Components">
-                          <h3
-                            style={{
-                              marginBottom: "15px",
-                              color: "#333",
+                        {categoryIssues && categoryIssues.issueList ? (
+                          <FormControl
+                            variant="outlined"
+                            sx={{ width: "200px" }}
+                          >
+                            <InputLabel>Select Issue</InputLabel>
+                            <Select
+                              value={selectedIssue}
+                              onChange={(e) => {
+                                setSelectedIssue(e.target.value);
+                                if (e.target.value !== "Other") {
+                                  setOtherIssue("");
+                                }
+                              }}
+                              label="Select Issue"
+                            >
+                              {categoryIssues.issueList.map((issue, index) => (
+                                <MenuItem key={index} value={issue.issuename}>
+                                  {issue.issuename}
+                                </MenuItem>
+                              ))}
+                              <MenuItem value="Other">Other</MenuItem>
+                            </Select>
+                          </FormControl>
+                        ) : (
+                          <div>No issues found</div>
+                        )}
+
+                        {selectedIssue === "Other" && (
+                          <TextField
+                            sx={{ width: "200px" }}
+                            label="miscellaneous issue"
+                            value={otherIssue}
+                            onChange={(e) => setOtherIssue(e.target.value)}
+                            variant="outlined"
+                            margin="dense"
+                            fullWidth
+                          />
+                        )}
+                        <FormControl variant="outlined" sx={{ width: "200px" }}>
+                          <InputLabel>Select Priority</InputLabel>
+                          <Select
+                            value={selectedPriority}
+                            onChange={handleSelectPriority}
+                            label="Select Priority"
+                          >
+                            <MenuItem value="Major">Major</MenuItem>
+                            <MenuItem value="Minor">Minor</MenuItem>
+                            <MenuItem value="Critical">Critical</MenuItem>
+                          </Select>
+                        </FormControl>
+
+                        <FormControl variant="outlined" sx={{ width: "200px" }}>
+                          <TextField
+                            label="Remarks"
+                            variant="outlined"
+                            value={remarks}
+                            onChange={handleRemarksChange}
+                            style={{ margin: "10px 0" }}
+                          />
+                        </FormControl>
+                        {/* Plus icon button */}
+                        <IconButton
+                          color="primary"
+                          aria-label="add"
+                          onClick={() => handleAddItem()}
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </TableContainer>
+
+                      {showAlert && (
+                        <Alert
+                          severity="error"
+                          onClose={() => setShowAlert(false)}
+                        >
+                          {alertMessage}
+                        </Alert>
+                      )}
+
+                      {tableData.length > 0 && (
+                        // <TableContainer>
+                        //   <Table>
+                        //     <TableHead>
+                        //       <TableRow>
+                        //         <TableCell>Issue</TableCell>
+                        //         <TableCell>Priority</TableCell>
+                        //         <TableCell>Remarks</TableCell>
+                        //         <TableCell>Action</TableCell>
+                        //       </TableRow>
+                        //     </TableHead>
+                        //     <TableBody>
+                        //       {tableData.map((row, index) => (
+                        //         <TableRow key={index}>
+                        //           <TableCell>{row.issue}</TableCell>
+                        //           <TableCell>{row.priority}</TableCell>
+                        //           <TableCell>{row.remarks}</TableCell>
+                        //           <TableCell>
+                        //             <IconButton
+                        //               onClick={() => handleDeleteItem(row.issue)}
+                        //             >
+                        //               <DeleteIcon />
+                        //             </IconButton>
+                        //           </TableCell>
+                        //         </TableRow>
+                        //       ))}
+                        //     </TableBody>
+                        //   </Table>
+                        // </TableContainer>
+                        <CustomTable
+                          rows={tableData}
+                          columns={columns}
+                          setRows={setTableData}
+                          deleteFromDatabase={handleDeleteItem}
+                          editActive={false}
+                          tablename={"Added Issues"}
+                          redirectIconActive={false}
+                          isDeleteDialog={false}
+                        ></CustomTable>
+                      )}
+                    </Dialog>
+                  </div>
+
+                  <br></br>
+                  {clickedNode &&
+                    selectedNode.id !== "root" &&
+                    clickedNode.id !== "root" && (
+                      <div className="dlg">
+                        <div className="clicked-node">
+                          <Card
+                            sx={{
+                              minWidth: 550,
+                              padding: "20px",
+                              backgroundColor: "#f4f4f4",
+                              borderRadius: "10px",
+                              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                             }}
                           >
-                            <center>
-                              <Button
-                                className="button"
-                                variant="contained"
-                                color="secondary" // Use secondary color for delete button
-                                onClick={() =>
-                                  handleOpenDialog(
-                                    selectedNode.issue_category_name
-                                  )
-                                }
+                            <div className="Card-Components">
+                              <h3
+                                style={{
+                                  marginBottom: "15px",
+                                  color: "#333",
+                                }}
                               >
-                                Report Issue
-                              </Button>
-                            </center>
-                            {/* <Toast ref={toast} />
+                                <center>
+                                  <Button
+                                    className="button"
+                                    variant="contained"
+                                    color="secondary" // Use secondary color for delete button
+                                    onClick={() =>
+                                      handleOpenDialog(
+                                        selectedNode.issue_category_name
+                                      )
+                                    }
+                                  >
+                                    Report Issue
+                                  </Button>
+                                </center>
+                                {/* <Toast ref={toast} />
                             <Dialog
                               group="declarative"
                               visible={visibleConfirm}
@@ -669,207 +720,209 @@ export default function UserDeviceTree({ sendUrllist }) {
                                 />
                               </center>
                             </div> */}
-                            Node Details:
-                          </h3>
-                          <div style={{ marginBottom: "10px" }}>
-                            <p
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "5px",
-                                textAlign: "left",
-                              }}
-                            >
-                              Name:
-                            </p>
-                          </div>
+                                Node Details:
+                              </h3>
+                              <div style={{ marginBottom: "10px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "5px",
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  Name:
+                                </p>
+                              </div>
 
-                          <div>
-                            <div className="value-comp">
-                              {selectedNode.name}
-                            </div>
-                          </div>
-
-                          <div style={{ marginBottom: "10px" }}>
-                            <p
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Make:
-                            </p>
-                          </div>
-                          <div>
-                            <div className="value-comp">
-                              {selectedNode.make}
-                            </div>
-                          </div>
-
-                          <div style={{ marginBottom: "10px" }}>
-                            <p
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Model:
-                            </p>
-                          </div>
-                          <div>
-                            <div className="value-comp">
-                              {selectedNode.model}
-                            </div>
-                          </div>
-
-                          <div style={{ marginBottom: "10px" }}>
-                            <p
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Capacity:
-                            </p>
-                          </div>
-                          <div>
-                            <div className="value-comp">
-                              {selectedNode.capacity}
-                            </div>
-                          </div>
-
-                          <div style={{ marginBottom: "10px" }}>
-                            <p
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Description:
-                            </p>
-                          </div>
-                          <div>
-                            <div className="value-comp">
-                              {selectedNode.description}
-                            </div>
-                          </div>
-
-                          <div style={{ marginBottom: "10px" }}>
-                            <p
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Warranty End Date:
-                            </p>
-                          </div>
-                          <div>
-                            <div className="value-comp">
-                              {selectedNode.warranty_support_end_date}
-                            </div>
-                          </div>
-
-                          <div style={{ marginBottom: "10px" }}>
-                            <p
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Support End Date:
-                            </p>
-                          </div>
-                          <div>
-                            <div className="value-comp">
-                              {selectedNode.warranty_end_date}
-                            </div>
-                          </div>
-
-                          <div style={{ marginBottom: "10px" }}>
-                            <p
-                              style={{
-                                fontWeight: "bold",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Issue Category Name:
-                            </p>
-                          </div>
-                          <div>
-                            <div className="value-comp">
-                              {selectedNode.issue_category_name}
-                            </div>
-                          </div>
-
-                          {selectedNode.image_file && (
-                            <div style={{ marginBottom: "10px" }}>
                               <div>
+                                <div className="value-comp">
+                                  {selectedNode.name}
+                                </div>
+                              </div>
+
+                              <div style={{ marginBottom: "10px" }}>
                                 <p
                                   style={{
                                     fontWeight: "bold",
                                     marginBottom: "5px",
                                   }}
                                 >
-                                  Image:
+                                  Make:
                                 </p>
                               </div>
-
                               <div>
-                                <div>
-                                  <img
-                                    width="120"
-                                    height="100"
-                                    src={`data:image/jpeg;base64,${selectedNode.image_file}`}
-                                    alt="NoImage"
-                                    style={{ borderRadius: "5px" }}
-                                    onError={(e) => {
-                                      e.target.onerror = null; // Prevent infinite loop
-                                      e.target.src = `data:image/jpeg;base64,${btoa(
-                                        String.fromCharCode.apply(
-                                          null,
-                                          selectedNode.image_file
-                                        )
-                                      )}`;
-                                    }}
-                                  />
+                                <div className="value-comp">
+                                  {selectedNode.make}
                                 </div>
                               </div>
-                            </div>
-                          )}
-                        </div>
-                      </Card>
-                    </div>
-                  </div>
-                )}
 
-              {showAddItemButton && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: buttonPosition.y,
-                    left: buttonPosition.x,
-                    zIndex: 9999,
-                  }}
-                >
-                  <Button
-                    className="button"
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => setVisible(true)}
-                  >
-                    Add Item
-                  </Button>
-                </div>
+                              <div style={{ marginBottom: "10px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Model:
+                                </p>
+                              </div>
+                              <div>
+                                <div className="value-comp">
+                                  {selectedNode.model}
+                                </div>
+                              </div>
+
+                              <div style={{ marginBottom: "10px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Capacity:
+                                </p>
+                              </div>
+                              <div>
+                                <div className="value-comp">
+                                  {selectedNode.capacity}
+                                </div>
+                              </div>
+
+                              <div style={{ marginBottom: "10px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Description:
+                                </p>
+                              </div>
+                              <div>
+                                <div className="value-comp">
+                                  {selectedNode.description}
+                                </div>
+                              </div>
+
+                              <div style={{ marginBottom: "10px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Warranty End Date:
+                                </p>
+                              </div>
+                              <div>
+                                <div className="value-comp">
+                                  {selectedNode.warranty_support_end_date}
+                                </div>
+                              </div>
+
+                              <div style={{ marginBottom: "10px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Support End Date:
+                                </p>
+                              </div>
+                              <div>
+                                <div className="value-comp">
+                                  {selectedNode.warranty_end_date}
+                                </div>
+                              </div>
+
+                              <div style={{ marginBottom: "10px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Issue Category Name:
+                                </p>
+                              </div>
+                              <div>
+                                <div className="value-comp">
+                                  {selectedNode.issue_category_name}
+                                </div>
+                              </div>
+
+                              {selectedNode.image_file && (
+                                <div style={{ marginBottom: "10px" }}>
+                                  <div>
+                                    <p
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginBottom: "5px",
+                                      }}
+                                    >
+                                      Image:
+                                    </p>
+                                  </div>
+
+                                  <div>
+                                    <div>
+                                      <img
+                                        width="120"
+                                        height="100"
+                                        src={`data:image/jpeg;base64,${selectedNode.image_file}`}
+                                        alt="NoImage"
+                                        style={{ borderRadius: "5px" }}
+                                        onError={(e) => {
+                                          e.target.onerror = null; // Prevent infinite loop
+                                          e.target.src = `data:image/jpeg;base64,${btoa(
+                                            String.fromCharCode.apply(
+                                              null,
+                                              selectedNode.image_file
+                                            )
+                                          )}`;
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </Card>
+                        </div>
+                      </div>
+                    )}
+
+                  {showAddItemButton && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: buttonPosition.y,
+                        left: buttonPosition.x,
+                        zIndex: 9999,
+                      }}
+                    >
+                      <Button
+                        className="button"
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => setVisible(true)}
+                      >
+                        Add Item
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
-            </>
-          )}
+            </div>
+          </div>
+          <TicketDialog
+            ticketDialogOpen={ticketOpen}
+            setTicketDialogOpen={setTicketOpen}
+            ticketNumber={ticketNumber}
+          ></TicketDialog>
         </div>
-      </div>
-      <TicketDialog
-        ticketDialogOpen={ticketOpen}
-        setTicketDialogOpen={setTicketOpen}
-        ticketNumber={ticketNumber}
-      ></TicketDialog>
+      )}
     </div>
   );
 }

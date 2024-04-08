@@ -21,7 +21,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Textfield from "../../components/textfield/textfield.component";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
@@ -60,6 +60,8 @@ export default function AdminHome({ sendUrllist }) {
     setSwitchLabel(event.target.checked ? "Toggle User" : "Toggle Admin");
   };
 
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+
   function convertToInitials(name) {
     const parts = name.split(" ");
     const initials = parts[0].charAt(0).toUpperCase();
@@ -77,11 +79,56 @@ export default function AdminHome({ sendUrllist }) {
     setOpen(false);
   };
 
+  const location = useLocation();
+  const currentPageLocation = useLocation;
+
   useEffect(() => {
     fetchUserData();
     fetchAdminData();
     sendUrllist(urllist);
+    fetchDivs();
   }, []);
+
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+      console.log("Currently passed Data : ", location.state);
+      console.log("Current UserData in fetchDivs() : ", userData);
+
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ", data);
+        console.log("Current Divs : ", data.components);
+        setDivIsVisibleList(data.components);
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      if (fetchDivs.length === 0) {
+        navigate("/*");
+      }
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
 
   const fetchUserData = async () => {
     console.log(`adminhome Bearer ${localStorage.getItem("token")}`);
@@ -257,6 +304,15 @@ export default function AdminHome({ sendUrllist }) {
 
   const urllist = [{ pageName: "Admin Home Page", pagelink: "/admin/home" }];
 
+  const lists = [
+    "toggle",
+    "existing-admins",
+    "existing-users",
+    "page-assign",
+    "register-new-admin",
+    "register-new-user",
+  ];
+
   return (
     <Box sx={{ display: "flex" }}>
       <Typography component="h1" variant="h5">
@@ -273,19 +329,22 @@ export default function AdminHome({ sendUrllist }) {
         borderRadius={"1rem"}
         paddingBottom={"10px"}
       >
-        <FormControlLabel
-          control={
-            <Switch
-              defaultChecked
-              color="secondary"
-              checked={switchChecked}
-              onChange={handleSwitchChange}
-            />
-          }
-          label={switchLabel}
-          labelPlacement="bottom"
-        />
-        {!switchChecked ? (
+        {divIsVisibleList.includes("toggle") && (
+          <FormControlLabel
+            control={
+              <Switch
+                defaultChecked
+                color="secondary"
+                checked={switchChecked}
+                onChange={handleSwitchChange}
+              />
+            }
+            label={switchLabel}
+            labelPlacement="bottom"
+          />
+        )}
+
+        {!switchChecked && divIsVisibleList.includes("register-new-user") && (
           <Button
             variant="contained"
             startIcon={<PersonRoundedIcon />}
@@ -294,7 +353,9 @@ export default function AdminHome({ sendUrllist }) {
           >
             Register New User
           </Button>
-        ) : (
+        )}
+
+        {switchChecked && divIsVisibleList.includes("register-new-admin") && (
           <Button
             variant="contained"
             startIcon={<PersonRoundedIcon />}
@@ -305,7 +366,8 @@ export default function AdminHome({ sendUrllist }) {
           </Button>
         )}
       </Grid>
-      {!switchChecked ? (
+
+      {!switchChecked && divIsVisibleList.includes("existing-users") && (
         <>
           <Box
             alignItems="center"
@@ -592,7 +654,9 @@ export default function AdminHome({ sendUrllist }) {
             </TableContainer>
           </Grid>
         </>
-      ) : (
+      )}
+
+      {!switchChecked && divIsVisibleList.includes("existing-admins") && (
         <>
           <Box
             alignItems="center"

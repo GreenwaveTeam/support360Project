@@ -3,7 +3,7 @@ import { Box, Button, Container, Typography } from "@mui/material";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useEffect } from "react";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import Main from "../../components/navigation/mainbody/mainbody";
 import TopbarPage from "../../components/navigation/topbar/topbar";
@@ -37,6 +37,8 @@ function UserHome({ sendUrllist }) {
   const [token, setToken] = useState("");
   const navigate = useNavigate();
 
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+
   const { userData, setUserData } = useUserContext();
   console.log("userData ==>> ", userData);
 
@@ -49,12 +51,57 @@ function UserHome({ sendUrllist }) {
     setOpen(false);
   };
 
+  const location = useLocation();
+  const currentPageLocation = useLocation;
+
   useEffect(() => {
     // setToken(`${localStorage.getItem("token")}`);
     fetchUser();
     fetchTicketDetails();
     sendUrllist(urllist);
+    fetchDivs();
   }, []);
+
+  const fetchDivs = async () => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+      console.log("Currently passed Data : ", location.state);
+      console.log("Current UserData in fetchDivs() : ", userData);
+
+      const response = await fetch(
+        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ", data);
+        console.log("Current Divs : ", data.components);
+        setDivIsVisibleList(data.components);
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      if (fetchDivs.length === 0) {
+        navigate("/*");
+      }
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
 
   const fetchComponents = async () => {
     try {
@@ -83,10 +130,10 @@ function UserHome({ sendUrllist }) {
   };
 
   const list = [
-    "support_Till_Date",
-    "Ticket_Informations",
-    "open_Tickets",
-    "Last_Ticket_Raised",
+    "support-till-date",
+    "ticket-information",
+    "open-tickets",
+    "last-ticket-raised",
   ];
 
   const fetchUser = async () => {
@@ -195,7 +242,7 @@ function UserHome({ sendUrllist }) {
       <Container style={{ display: "flex", height: "100vh", width: "100vw" }}>
         <>
           <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-            {list.includes("support_Till_Date") && (
+            {divIsVisibleList.includes("support-till-date") && (
               <div
                 style={{
                   borderRadius: "20px",
@@ -221,7 +268,7 @@ function UserHome({ sendUrllist }) {
                 />
               </div>
             )}
-            {list.includes("open_Tickets") && (
+            {divIsVisibleList.includes("open-ticket") && (
               <div
                 style={{
                   borderRadius: "20px",
@@ -280,7 +327,7 @@ function UserHome({ sendUrllist }) {
             )}
           </div>
           <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-            {list.includes("Ticket_Informations") && (
+            {divIsVisibleList.includes("ticket-information") && (
               <div
                 style={{
                   borderRadius: "20px",
@@ -308,7 +355,7 @@ function UserHome({ sendUrllist }) {
                 </Typography>
               </div>
             )}
-            {list.includes("Last_Ticket_Raised") && (
+            {divIsVisibleList.includes("last-ticket-raised") && (
               <div
                 style={{
                   borderRadius: "20px",

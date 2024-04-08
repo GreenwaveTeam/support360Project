@@ -10,7 +10,7 @@ import TopbarPage from "../../components/navigation/topbar/topbar";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import { useUserContext } from "../contexts/UserContext";
 
-function UserHome() {
+function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
     userID: "",
     name: "",
@@ -53,6 +53,7 @@ function UserHome() {
     // setToken(`${localStorage.getItem("token")}`);
     fetchUser();
     fetchTicketDetails();
+    sendUrllist(urllist);
   }, []);
 
   const fetchComponents = async () => {
@@ -187,194 +188,155 @@ function UserHome() {
   //   }
   // }
 
+  const urllist = [{ pageName: "User Home Page", pagelink: "/user/home" }];
+
   return (
     <Box sx={{ display: "flex" }}>
-      <TopbarPage
-        open={open}
-        handleDrawerOpen={handleDrawerOpen}
-        urllist={[{ pageName: "User Home Page", pagelink: "/userhome" }]}
-      />
-      <SidebarPage
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      />
-      <Main open={open}>
-        <DrawerHeader />
-        <Box
-        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        >
-          <Container
-            style={{ display: "flex", height: "100vh", width: "100vw" }}
-          >
-            <>
-              <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-                {list.includes("support_Till_Date") && (
-                  <div
-                    style={{
-                      borderRadius: "20px",
-                      border: "2px solid black",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                      marginLeft: "20px",
-                      marginRight: "20px",
-                      width: "100%",
-                      height: "30%",
-                      display: "flex",
-                      justifyContent: "space-evenly",
-                      alignItems: "center",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <Typography>Support Till Date</Typography>
-                    <Datepicker
-                      value={formData.supportEndDate}
-                      format="DD-MM-YYYY"
-                      // slotProps={{ textField: { fullWidth: true } }}
-                      readOnly
-                    />
-                  </div>
-                )}
-                {list.includes("open_Tickets") && (
-                  <div
-                    style={{
-                      borderRadius: "20px",
-                      border: "2px solid black",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                      marginLeft: "20px",
-                      marginRight: "20px",
-                      width: "100%",
-                      height: "70%",
-                      display: "flex",
-                      justifyContent: "space-evenly",
-                      alignItems: "stretch",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <Typography>OPEN TICKETS</Typography>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <Button
-                        variant="contained"
-                        style={{ margin: "10px" }}
-                        onClick={(e) => {
-                          navigate("/user/ReportDevice", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                      >
-                        Device
-                      </Button>
-                      <Button
-                        variant="contained"
-                        style={{ margin: "10px" }}
-                        onClick={(e) => {
-                          navigate("/user/ReportApplication", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                      >
-                        Application
-                      </Button>
-                      <Button
-                        variant="contained"
-                        style={{ margin: "10px" }}
-                        onClick={(e) => {
-                          navigate("/user/ReportInfrastructure", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                      >
-                        Infrastructure
-                      </Button>
-                    </div>
-                  </div>
-                )}
+      <Container style={{ display: "flex", height: "100vh", width: "100vw" }}>
+        <>
+          <div style={{ width: "50%", height: "100%", padding: "50px" }}>
+            {list.includes("support_Till_Date") && (
+              <div
+                style={{
+                  borderRadius: "20px",
+                  border: "2px solid black",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  width: "100%",
+                  height: "30%",
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography>Support Till Date</Typography>
+                <Datepicker
+                  value={formData.supportEndDate}
+                  format="DD-MM-YYYY"
+                  // slotProps={{ textField: { fullWidth: true } }}
+                  readOnly
+                />
               </div>
-              <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-                {list.includes("Ticket_Informations") && (
-                  <div
-                    style={{
-                      borderRadius: "20px",
-                      border: "2px solid black",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                      marginLeft: "20px",
-                      marginRight: "20px",
-                      width: "100%",
-                      height: "70%",
-                      display: "flex",
-                      justifyContent: "space-evenly",
-                      alignItems: "center",
-                      flexDirection: "column",
+            )}
+            {list.includes("open_Tickets") && (
+              <div
+                style={{
+                  borderRadius: "20px",
+                  border: "2px solid black",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  width: "100%",
+                  height: "70%",
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  alignItems: "stretch",
+                  flexDirection: "column",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <Typography>OPEN TICKETS</Typography>
+                </div>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <Button
+                    variant="contained"
+                    style={{ margin: "10px" }}
+                    onClick={(e) => {
+                      navigate("/user/ReportDevice", {
+                        state: { plantID: formData.plantID },
+                      });
                     }}
                   >
-                    <Typography variant="h5">
-                      Total Issue Raised : {ticketData.total_ticket_raised}
-                    </Typography>
-                    <Typography variant="h5">
-                      Pending Tickets : {ticketData.pending_tickets}
-                    </Typography>
-                    <Typography variant="h5">
-                      Resolved Tickets : {ticketData.resolved_tickets}
-                    </Typography>
-                  </div>
-                )}
-                {list.includes("Last_Ticket_Raised") && (
-                  <div
-                    style={{
-                      borderRadius: "20px",
-                      border: "2px solid black",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                      marginLeft: "20px",
-                      marginRight: "20px",
-                      width: "100%",
-                      height: "30%",
-                      display: "flex",
-                      justifyContent: "space-evenly",
-                      alignItems: "center",
-                      flexDirection: "column",
+                    Device
+                  </Button>
+                  <Button
+                    variant="contained"
+                    style={{ margin: "10px" }}
+                    onClick={(e) => {
+                      navigate("/user/ReportApplication", {
+                        state: { plantID: formData.plantID },
+                      });
                     }}
                   >
-                    <Typography>Last Ticket Raised</Typography>
-                    <Datepicker
-                      value={ticketData.last_ticket_raised}
-                      format="DD-MM-YYYY"
-                      // slotProps={{ textField: { fullWidth: true } }}
-                      readOnly
-                    />
-                  </div>
-                )}
+                    Application
+                  </Button>
+                  <Button
+                    variant="contained"
+                    style={{ margin: "10px" }}
+                    onClick={(e) => {
+                      navigate("/user/ReportInfrastructure", {
+                        state: { plantID: formData.plantID },
+                      });
+                    }}
+                  >
+                    Infrastructure
+                  </Button>
+                </div>
               </div>
-            </>
-          </Container>
-        </Box>
-      </Main>
+            )}
+          </div>
+          <div style={{ width: "50%", height: "100%", padding: "50px" }}>
+            {list.includes("Ticket_Informations") && (
+              <div
+                style={{
+                  borderRadius: "20px",
+                  border: "2px solid black",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  width: "100%",
+                  height: "70%",
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography variant="h5">
+                  Total Issue Raised : {ticketData.total_ticket_raised}
+                </Typography>
+                <Typography variant="h5">
+                  Pending Tickets : {ticketData.pending_tickets}
+                </Typography>
+                <Typography variant="h5">
+                  Resolved Tickets : {ticketData.resolved_tickets}
+                </Typography>
+              </div>
+            )}
+            {list.includes("Last_Ticket_Raised") && (
+              <div
+                style={{
+                  borderRadius: "20px",
+                  border: "2px solid black",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  width: "100%",
+                  height: "30%",
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography>Last Ticket Raised</Typography>
+                <Datepicker
+                  value={ticketData.last_ticket_raised}
+                  format="DD-MM-YYYY"
+                  // slotProps={{ textField: { fullWidth: true } }}
+                  readOnly
+                />
+              </div>
+            )}
+          </div>
+        </>
+      </Container>
     </Box>
   );
 }

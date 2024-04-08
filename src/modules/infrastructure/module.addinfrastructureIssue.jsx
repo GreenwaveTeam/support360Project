@@ -739,7 +739,7 @@ const { userData, setUserData } = useUserContext();
                       gutterBottom
                       fontWeight={900}
                     >
-                      Current Infrastructure Category Name ➥ &nbsp;
+                      Current Infrastructure Category Name :  &nbsp;
                       <span style={{ color: "red" }}>{inf}</span>
                     </Typography>
                   </Box>

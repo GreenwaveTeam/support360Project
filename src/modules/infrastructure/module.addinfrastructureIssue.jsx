@@ -19,6 +19,8 @@ import TopbarPage from "../../components/navigation/topbar/topbar";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
+import { useLayoutEffect } from "react";
+import { useUserContext } from "../contexts/UserContext";
 
 
 export default function AddInfrastructureIssue({sendUrllist}) {
@@ -81,9 +83,10 @@ export default function AddInfrastructureIssue({sendUrllist}) {
 
   // const navigate = useNavigate();
 const currentPageLocation=useLocation().pathname;
+const { userData, setUserData } = useUserContext();
 
  /**********************************************useEffect Hook***********************************************/
- useEffect(() => {
+ useLayoutEffect(() => {
   console.log("useEffect() called");
   console.log("plantId", plantId);
   console.log("Infrastructure : ", inf);
@@ -138,9 +141,18 @@ const currentPageLocation=useLocation().pathname;
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
+      console.log("Current userData : ", userData);
+      let role="";
+      if(userData.role){
+          role=userData.role;
+      }
+      else
+      {
+        throw new Error("UserRole not found ! ")
+      }
   
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {

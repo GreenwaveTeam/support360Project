@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { Container } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 
 import Swal from "sweetalert2";
 
@@ -57,7 +57,7 @@ export default function ConfigureInfrastructure({sendUrllist}) {
 
   /******************************* useEffect()********************************/
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     fetchInfraFromDb();
     fetchDivs();
     sendUrllist(urllist)
@@ -159,9 +159,17 @@ export default function ConfigureInfrastructure({sendUrllist}) {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
       console.log("Currently passed Data : ",location.state)
-  
+      console.log("Current UserData in fetchDivs() : ",userData)
+      let role="";
+       if(userData.role){
+           role=userData.role;
+       }
+       else
+       {
+         throw new Error("UserRole not found ! ")
+       }
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Button from '@mui/material/Button';
 import { Box, Container, Divider, MenuItem, Typography } from '@mui/material';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +8,8 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import Dialog from '@mui/material/Dialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import { useUserContext } from '../../contexts/UserContext';
+
 
 
 
@@ -35,7 +37,10 @@ const Application = ({sendUrllist}) => {
   const [issues,setissues]=useState([])
   const [dialogMessage,setDialogMessage]=useState(null)
   const [categories,setCategories]=useState([])
-  const plantid='P009'
+  const {userData,setUserData}=useUserContext()
+  
+  const plantid=userData.plantID
+  const role=userData.role
   const columns=[
     {
       "id": "issuename",
@@ -79,7 +84,7 @@ const fetchDivs = async () => {
     console.log("Current Page Location: ", currentPageLocation);
 
     const response = await fetch(
-      `http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/ApplicationConfigure/Module`,
+      `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure/Module`,
       {
         method: "GET",
         headers: {

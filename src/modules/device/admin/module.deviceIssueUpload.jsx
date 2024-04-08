@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Box, MenuItem, Button, Container } from '@mui/material';
@@ -13,22 +13,26 @@ import Dropdown from "../../../components/dropdown/dropdown.component";
 
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import NotFound from '../../../components/notfound/notfound.component';
+import { useUserContext } from '../../contexts/UserContext';
 
 
 const DeviceIssue = ({sendUrllist}) => {
   const [open, setOpen] = useState(false);
-  const plantid='P009'
+  const {userData,setUserData}=useUserContext()
+  
+  const plantid=userData.plantID
+  const role=userData.role
   //const history=useHis
   const location = useLocation();
+  // if(location.state.categoryname===null)
+  // navigate('/notfound');
   const categoryname  = location.state.categoryname;
-  console.log("Category:  ", categoryname);
-  //const issues = location.state.issuelist;
+  
   const [issueList, setIssueList] = useState([]);
   const [filteredRows,setFilteredRows]=useState([])
   const urllist = [
     {pageName:'Admin Home',pagelink:'/admin/home'},
-    { pageName: "Device Issue Category", pagelink: "/admin/Device/CategoryConfigure" },
-    { pageName: "Device Issue", pagelink: "/admin/Device/CategoryConfigure/Issue" }
+    { pageName: "Device Issue Category", pagelink: "/admin/Device/CategoryConfigure" }
   ];
   
   const [divIsVisibleList,setDivIsVisibleList]=useState([]);
@@ -74,7 +78,7 @@ const DeviceIssue = ({sendUrllist}) => {
       console.log("Current Page Location: ", currentPageLocation);
   
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/Device/CategoryConfigure/Issue`,
+        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/Device/CategoryConfigure/Issue`,
         {
           method: "GET",
           headers: {
@@ -95,6 +99,7 @@ const DeviceIssue = ({sendUrllist}) => {
         setDivIsVisibleList(data.components)
         if(data.components.length===0)
         navigate("/notfound");
+        
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
@@ -134,8 +139,15 @@ const DeviceIssue = ({sendUrllist}) => {
         console.error('Error fetching data:', error);
       }
     }
+    
     fetchData(); fetchDivs();
     sendUrllist(urllist)
+    if(plantid===null)
+    navigate('/notfound')
+   
+    
+    //const issues = location.state.issuelist;
+    
   }, []);
     const addIssueCategory = async () => {
       console.log("Add Issue")

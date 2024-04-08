@@ -1,6 +1,6 @@
 // import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 /*Navigation Pane*/
 import Sidebar from '../../../components/navigation/sidebar/sidebar';
@@ -21,11 +21,15 @@ import { useNavigate,useLocation } from 'react-router-dom';
 
 import axios from 'axios';
 import NotFound from '../../../components/notfound/notfound.component';
+import { useUserContext } from '../../contexts/UserContext';
 
 
 const DeviceCategory = ({sendUrllist}) => {
-  const plantid='P009'
+  const {userData,setUserData}=useUserContext()
   
+  const plantid=userData.plantID
+  const role=userData.role
+  console.log(userData)
   const [open, setOpen] = useState(false);
   const [categorylist, setCategorylist] = useState([]);
   const [categoryName, setCategoryName] = useState('');
@@ -58,7 +62,7 @@ const DeviceCategory = ({sendUrllist}) => {
       console.log("Current Page Location: ", currentPageLocation);
   
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/Device/CategoryConfigure`,
+        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/Device/CategoryConfigure`,
         {
           method: "GET",
           headers: {

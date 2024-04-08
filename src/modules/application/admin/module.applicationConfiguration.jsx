@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Box, Button, Container, Divider, Typography } from '@mui/material'
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
@@ -18,9 +18,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from'sweetalert2'
 import NotFound from '../../../components/notfound/notfound.component';
+import { useUserContext } from '../../contexts/UserContext';
+
 
 export default function ModuleConfiguration({sendUrllist}) {
-  const plantid='P009'
+  const {userData,setUserData}=useUserContext()
+  
+  const plantid=userData.plantID
+  const role=userData.role
     const [open, setOpen] = useState(false);
     const [application_name,setApplication_name]=useState('')
     const [dialogPopup, setDialogPopup] = useState(false);
@@ -63,7 +68,7 @@ export default function ModuleConfiguration({sendUrllist}) {
       console.log("Current Page Location: ", currentPageLocation);
   
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/ApplicationConfigure`,
+        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`,
         {
           method: "GET",
           headers: {

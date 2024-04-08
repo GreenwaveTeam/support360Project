@@ -126,6 +126,7 @@ function App() {
                   element={<RolePageConfiguration />}
                 /> */}
                 <Route path="/*" element={ <NotFound/>} />
+                <Route path="/notfound" element={ <NotFound/>} />
                 <Route
                   path="/admin/*"
                   element={<AdminRoutes />}

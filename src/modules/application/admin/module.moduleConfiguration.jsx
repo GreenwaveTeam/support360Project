@@ -9,7 +9,8 @@
 	import CloseIcon from '@mui/icons-material/Cancel';
 	import DeleteIcon from '@mui/icons-material/Delete';
 	import {  useLocation, useNavigate } from 'react-router-dom';
-	
+	import { useUserContext } from '../../contexts/UserContext';
+
 	import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 	
 	/*Navigation Pane*/
@@ -29,9 +30,13 @@
 	
 	import styles from './module.module.css'
 	import Textfield from '../../../components/textfield/textfield.component';
+import { useContext } from 'react';
 	
 	export default function ModuleConfigure ({sendUrllist})  {
-		const plantid='P009'
+		const {userData,setUserData}=useUserContext()
+  
+  const plantid=userData.plantID
+  const role=userData.role
 		const [open, setOpen] = useState(false);
 		const [value, setValue] = useState('1');
 		const [showPopup, setShowPopup] = useState(false);
@@ -90,7 +95,7 @@
 		  console.log("Current Page Location: ", currentPageLocation);
 	  
 		  const response = await fetch(
-			`http://localhost:8081/role/roledetails?role=superadmin&pagename=/admin/ApplicationConfigure/Modules`,
+			`http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure/Modules`,
 			{
 			  method: "GET",
 			  headers: {

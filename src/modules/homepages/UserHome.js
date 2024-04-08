@@ -52,7 +52,7 @@ function UserHome({ sendUrllist }) {
   };
 
   const location = useLocation();
-  const currentPageLocation = useLocation;
+  const currentPageLocation = useLocation().pathname;
 
   useEffect(() => {
     // setToken(`${localStorage.getItem("token")}`);

@@ -80,7 +80,7 @@ export default function AdminHome({ sendUrllist }) {
   };
 
   const location = useLocation();
-  const currentPageLocation = useLocation;
+  const currentPageLocation = useLocation().pathname;
 
   useEffect(() => {
     fetchUserData();

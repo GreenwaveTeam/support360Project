@@ -15,6 +15,7 @@ export const login = async (username, password) => {
       const res = await response.json();
       console.log("token : ", res);
       localStorage.setItem("token", res.token);
+      localStorage.setItem("expire", res.expire);
       return true;
     } else {
       const errorResponse = await response.json();

@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, Button, Container, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Typography,
+  Slide,
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useEffect } from "react";
 import dayjs from "dayjs";
@@ -42,6 +50,20 @@ function UserHome({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
   console.log("userData ==>> ", userData);
 
+  const [timeRemaining, setTimeRemaining] = useState("");
+  const [tokenExpiry, setTokenExpiry] = useState("");
+
+  const [showTimeRemaining, setShowTimeRemaining] = useState(false);
+  const [snackbarText, setSnackbarText] = useState("");
+  const [snackbarSeverity, setsnackbarSeverity] = useState("");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setShowTimeRemaining(false);
+  };
+
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -60,7 +82,57 @@ function UserHome({ sendUrllist }) {
     fetchTicketDetails();
     sendUrllist(urllist);
     fetchDivs();
+    // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      calculateTimeRemaining();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const tokenExpiryString = localStorage.getItem("expire");
+    if (tokenExpiryString) {
+      const expiryDate = new Date(tokenExpiryString);
+      if (!isNaN(expiryDate.getTime())) {
+        setTokenExpiry(expiryDate);
+      } else {
+        console.error("Invalid token expiry date:", tokenExpiryString);
+      }
+    } else {
+      console.error("Token expiry date not found in localStorage.");
+    }
+    const interval = setInterval(() => {
+      setShowTimeRemaining(true);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    calculateTimeRemaining();
+  }, [userData]);
+
+  const calculateTimeRemaining = () => {
+    const now = new Date();
+    const expiry = new Date(tokenExpiry);
+    console.log("expiry : ", expiry);
+    const difference = expiry.getTime() - now.getTime();
+    console.log("difference : ", difference);
+    if (difference > 0) {
+      const hours = Math.floor(difference / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+      setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+    } else {
+      setTimeRemaining("Token expired");
+    }
+  };
+
+  const showAlert = () => {
+    alert(`Time remaining until token expiry: ${timeRemaining}`);
+  };
 
   const fetchDivs = async () => {
     try {
@@ -137,6 +209,7 @@ function UserHome({ sendUrllist }) {
   ];
 
   const fetchUser = async () => {
+    console.log("expire : ", localStorage.getItem("expire"));
     try {
       const response = await fetch("http://localhost:8081/users/user", {
         method: "GET",
@@ -384,6 +457,22 @@ function UserHome({ sendUrllist }) {
           </div>
         </>
       </Container>
+      <Snackbar
+        open={showTimeRemaining}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        TransitionComponent={Slide}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleClose}
+          severity="info"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Time remaining until token expiry: {timeRemaining}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

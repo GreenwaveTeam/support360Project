@@ -592,7 +592,7 @@ export default function ConfigureInfrastructure({sendUrllist}) {
                     color={"success"}
                     style={classes.btn}
                     onClick={() => handleAddIssues()}
-                    buttontext={" Add Issues ➥"}
+                    buttontext={" Add Issues "}
                   ></CustomButton>
                   </div>}
                   <br />

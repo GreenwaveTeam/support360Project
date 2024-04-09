@@ -2083,6 +2083,7 @@ export default function ApplicationUser() {
                           setmiscellaneousRemarks(e.target.value);
                           console.log("Remarks:", e.target.value);
                         }}
+                       
                       />
 
                       <div style={{ marginBottom: "40px" }}>
@@ -2276,6 +2277,8 @@ export default function ApplicationUser() {
                     onChange={(e) => {
                       setRemarksInput(e.target.value);
                     }}
+                    multiline={true}
+                    rows={2}
                   />
                   &nbsp;&nbsp;
                   <IconButton

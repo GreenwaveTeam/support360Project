@@ -22,6 +22,7 @@ import Sidebar from '../../components/navigation/sidebar/sidebar';
 import Topbar from '../../components/navigation/topbar/topbar';
 import Main from '../../components/navigation/mainbody/mainbody';
 import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 
 export default function RoleConfiguration({sendUrllist}) {
@@ -150,6 +151,8 @@ export default function RoleConfiguration({sendUrllist}) {
             color="primary"
             variant="contained"
             style={{ width: "200px" }}
+            startIcon={<AddCircleIcon />}
+            sx={{backgroundImage :"linear-gradient(to right, #6a11cb 0%, #2575fc 100%);"}}
             type="submit"
             onClick={handleRedirect}
           >
@@ -165,6 +168,7 @@ export default function RoleConfiguration({sendUrllist}) {
           deleteFromDatabase={handleDelete}
           redirectColumn={"role"}
           redirectIconActive={true}
+          tablename={"Role Configuration"}
           // savetoDatabse={editCategory}   isDeleteDialog={true}
           // editActive={true} tablename={"Existing Device Issue Category"}
           // /*style={}*/

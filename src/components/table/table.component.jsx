@@ -280,7 +280,7 @@ const handleSaveClick = async (selectedRow) => {
     color: "blue",
     border: "1px solid",
     borderColor: colors.grey[800],
-    borderRadius: "1rem",
+    borderRadius: "0.7rem",
   };
 
   return (
@@ -307,11 +307,11 @@ const handleSaveClick = async (selectedRow) => {
                       display: "flex",
                               alignItems: "center",
                               justifyContent: "space-between",
-                              padding: "0rem 1rem",
+                              
                     }}
                   >
                     <div style={{fontSize:"14px"}}><b> {tablename} </b>&nbsp;</div>
-                    <TextField
+                    <TextField 
                       label={
                         <div style={{ display: "flex", alignItems: "center" }}>
                           <SearchOutlinedIcon style={{ marginRight: "5px" }} />
@@ -323,7 +323,7 @@ const handleSaveClick = async (selectedRow) => {
                       onChange={handleFilterChange}
                       InputProps={{
                         endAdornment: clearVisible && (
-                          <InputAdornment position="end">
+                          <InputAdornment sx={{padding : "30px"}} position="end">
                             <Tooltip title="Clear">
                               <IconButton
                                 aria-label="clear search"
@@ -577,6 +577,7 @@ const handleSaveClick = async (selectedRow) => {
                   })}
             </TableBody>
           </Table>
+          <div>
           <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     rowsPerPage={rowperpage}
@@ -586,6 +587,7 @@ const handleSaveClick = async (selectedRow) => {
                     onPageChange={handlechangepage}
                     onRowsPerPageChange={handleRowsPerPage}
                 ></TablePagination>
+                </div>
         </TableContainer>
        
       </Paper>

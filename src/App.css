@@ -7,11 +7,11 @@
   pointer-events: none;
 }
 /* .MuiBreadcrumbs-root{color: #FF4500  !important;font-style: normal !important;} */
-.MuiAvatar-root{width: 32px !important;height:32px !important;font-size: 0.9rem !important;}
-.MuiTab-root.Mui-selected {
+.MuiAvatar-root{width: 32px !important;height:32px !important;font-size: 0.96rem !important;}
+/* .MuiTab-root.Mui-selected {
   color: #ffffff !important;
   background: #1919af !important;
-}
+} */
 /* .LogoutIcon{
   font-family: 900 !important;
 } */
@@ -48,3 +48,23 @@
 
 /*Table Style*/
 .MuiTableCell-root{padding: 14px !important;}
+
+/* custom scrollbar */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}

@@ -1904,7 +1904,7 @@ export default function ApplicationUser() {
               </center>
               <br />
               <div style={{ display: "flex" }}>
-                <CheckCircleIcon fontSize="small" sx={{ color: "#66FF00" }} />
+                <CheckCircleIcon fontSize="small" sx={{ color: "#16FF00" }} />
                 <span> - * Indicates Issues have been added </span>
               </div>
               <motion.div
@@ -1968,8 +1968,10 @@ export default function ApplicationUser() {
                             top: `${area.top * 100}%`,
                             width: `${area.width * 100}%`,
                             height: `${area.height * 100}%`,
-                            border: '2px solid #2196f3', // Blue color
-                            backgroundColor: 'rgba(33, 150, 243, 0.5)', // Semi-transparent blue
+                            border: '2px solid #2196f3',
+                            backgroundColor :
+                                "rgba(128, 128, 128, 0.5)", 
+                              
                             // display: 'flex',
                             // justifyContent: 'center',
                             // alignItems: 'center',

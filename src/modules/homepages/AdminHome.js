@@ -361,7 +361,7 @@ export default function AdminHome({ sendUrllist }) {
                   "linear-gradient(to top, #0ba360 0%, #3cba92 100%);",
               }}
               onClick={() => {
-                navigate("/Role");
+                navigate("/admin/Role");
               }}
             >
               Page Assign

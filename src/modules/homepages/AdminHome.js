@@ -360,6 +360,9 @@ export default function AdminHome({ sendUrllist }) {
                 backgroundImage:
                   "linear-gradient(to top, #0ba360 0%, #3cba92 100%);",
               }}
+              onClick={() => {
+                navigate("/admin/Role");
+              }}
             >
               Page Assign
             </Button>

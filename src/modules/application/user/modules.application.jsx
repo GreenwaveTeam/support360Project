@@ -1565,6 +1565,40 @@ export default function ApplicationUser() {
   //     setTicketDialogOpen(false);
   //   };
 
+  const overviewTableColumns = [
+    {
+      id: "module_name",
+      label: " Module Name ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "selected_coordinates_acronym",
+      label: "Area",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "issue_name",
+      label: " Issue Name ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "severity",
+      label: " Severity ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "remarks",
+      label: " Remarks ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+  
+  ]
+
   /*************************************************** Component return ************************************** */
   return (
     <div>
@@ -1630,7 +1664,7 @@ export default function ApplicationUser() {
                       flex: 1,
                     }}
                   >
-                    Issues Overview{" "}
+                    Issues Overview
                   </span>
                   <span
                     style={{
@@ -1659,7 +1693,7 @@ export default function ApplicationUser() {
                   &nbsp;
                 </div>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
-                  <Table sx={{ borderRadius: "100px" }}>
+                  {/* <Table sx={{ borderRadius: "100px" }}>
                     <TableBody>
                       <TableRow colSpan={7}>
                         <TableCell
@@ -1746,7 +1780,18 @@ export default function ApplicationUser() {
                           </TableRow>
                         ))}
                     </TableBody>
-                  </Table>
+                  </Table> */}
+                   <CustomTable
+                    rows={overviewTableData}
+                    columns={overviewTableColumns}
+                    setRows={setOverviewTableData}
+                    deleteFromDatabase={handleOverviewDeleteClick}
+                   
+        
+                    style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
+                   
+                    isDeleteDialog={false}
+                  ></CustomTable>
                 </Collapse>
               </div>
             )}
@@ -1923,8 +1968,8 @@ export default function ApplicationUser() {
                             top: `${area.top * 100}%`,
                             width: `${area.width * 100}%`,
                             height: `${area.height * 100}%`,
-                            // border: '2px solid #2196f3', // Blue color
-                            // backgroundColor: 'rgba(33, 150, 243, 0.5)', // Semi-transparent blue
+                            border: '2px solid #2196f3', // Blue color
+                            backgroundColor: 'rgba(33, 150, 243, 0.5)', // Semi-transparent blue
                             // display: 'flex',
                             // justifyContent: 'center',
                             // alignItems: 'center',
@@ -1935,17 +1980,17 @@ export default function ApplicationUser() {
                             //transition: 'all 0.3s ease',
                             cursor: "pointer",
                           }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor =
-                              "rgba(128, 128, 128, 0.5)";
-                            // e.target.style.filter = "blur(5px)";
-                            e.target.style.transition =
-                              "background-color 0.3s, filter 0.3s";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = "rgba(0,0,0,0)";
-                            e.target.style.filter = "blur(0px)";
-                          }}
+                          // onMouseEnter={(e) => {
+                          //   e.target.style.backgroundColor =
+                          //     "rgba(128, 128, 128, 0.5)";
+                          //   // e.target.style.filter = "blur(5px)";
+                          //   e.target.style.transition =
+                          //     "background-color 0.3s, filter 0.3s";
+                          // }}
+                          // onMouseLeave={(e) => {
+                          //   e.target.style.backgroundColor = "rgba(0,0,0,0)";
+                          //   e.target.style.filter = "blur(0px)";
+                          // }}
                         >
                           {area.edited && (
                             <CheckCircleIcon

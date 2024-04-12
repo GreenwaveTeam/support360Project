@@ -64,11 +64,7 @@ import Slide from "@mui/material/Slide";
 import CloseIcon from "@mui/icons-material/Close";
 
 //The main export starts here....
-<<<<<<< HEAD
 export default function ApplicationUser({ sendUrllist }) {
-=======
-export default function ApplicationUser({sendUrllist}) {
->>>>>>> 19420982106f903f12cba54618eafe9cf4ddaaf2
   const [value, setValue] = useState("");
   const [appDropdown, setAppDropdown] = useState([]);
   const [dropdownValue, setDropdownValue] = useState("");
@@ -149,11 +145,7 @@ export default function ApplicationUser({sendUrllist}) {
 
   /**************************************   UseEffect()   ******************************* */
   useEffect(() => {
-<<<<<<< HEAD
     sendUrllist(urllist);
-=======
-    sendUrllist(urllist)
->>>>>>> 19420982106f903f12cba54618eafe9cf4ddaaf2
     console.log("useEffect() called ");
     console.log("USER from context : ", userData);
     let plantID = "";
@@ -1635,25 +1627,14 @@ export default function ApplicationUser({sendUrllist}) {
       type: "textbox",
       canRepeatSameValue: true,
     },
-<<<<<<< HEAD
   ];
   const urllist = [
-=======
-  
-  ]
-
-  const  urllist=[
->>>>>>> 19420982106f903f12cba54618eafe9cf4ddaaf2
     { pageName: "Home", pagelink: "/user/home" },
     {
       pageName: "Report Application",
       pagelink: "/user/ReportApplication",
     },
   ];
-<<<<<<< HEAD
-=======
-
->>>>>>> 19420982106f903f12cba54618eafe9cf4ddaaf2
   /*************************************************** Component return ************************************** */
   return (
     <div>

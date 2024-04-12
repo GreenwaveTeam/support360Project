@@ -8,6 +8,8 @@ import { TreeView } from "@mui/x-tree-view/TreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
+import Divider from "@mui/material/Divider";
+import ReportIcon from "@mui/icons-material/Report";
 // import Sidebar from "../../components/navigation/sidebar/sidebar";
 // import Topbar from "../../components/navigation/topbar/topbar";
 // import Main from "../../components/navigation/mainbody/mainbody";
@@ -658,7 +660,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                     </Dialog>
                   </div>
 
-                  <br></br>
+                  <br />
                   {clickedNode &&
                     selectedNode.id !== "root" &&
                     clickedNode.id !== "root" && (
@@ -667,34 +669,39 @@ export default function UserDeviceTree({ sendUrllist }) {
                           <Card
                             sx={{
                               minWidth: 550,
-                              padding: "20px",
+
                               backgroundColor: "#f4f4f4",
                               borderRadius: "10px",
                               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                             }}
                           >
                             <div className="Card-Components">
-                              <h3
+                              <div
                                 style={{
-                                  marginBottom: "15px",
                                   color: "#333",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  padding: "0px 1rem",
                                 }}
                               >
-                                <center>
-                                  <Button
-                                    className="button"
-                                    variant="contained"
-                                    color="secondary" // Use secondary color for delete button
-                                    onClick={() =>
-                                      handleOpenDialog(
-                                        selectedNode.issue_category_name
-                                      )
-                                    }
-                                  >
-                                    Report Issue
-                                  </Button>
-                                </center>
-                                {/* <Toast ref={toast} />
+                                <h3>Node Details:</h3>
+                                <Button
+                                  className="button"
+                                  variant="contained"
+                                  startIcon={<ReportIcon />}
+                                  color="error" // Use secondary color for delete button
+                                  onClick={() =>
+                                    handleOpenDialog(
+                                      selectedNode.issue_category_name
+                                    )
+                                  }
+                                >
+                                  Report Issue
+                                </Button>
+                              </div>
+                              <Divider />
+                              {/* <Toast ref={toast} />
                             <Dialog
                               group="declarative"
                               visible={visibleConfirm}
@@ -720,173 +727,183 @@ export default function UserDeviceTree({ sendUrllist }) {
                                 />
                               </center>
                             </div> */}
-                                Node Details:
-                              </h3>
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                    textAlign: "left",
-                                  }}
-                                >
-                                  Name:
-                                </p>
-                              </div>
 
-                              <div>
-                                <div className="value-comp">
-                                  {selectedNode.name}
-                                </div>
-                              </div>
+                              <div style={{ padding: "0rem 1.5rem" }}>
+                                <div className="CardText">
+                                  <div style={{ marginBottom: "10px" }}>
+                                    <p
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginBottom: "5px",
+                                        textAlign: "left",
+                                      }}
+                                    >
+                                      Name:
+                                    </p>
+                                  </div>
 
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Make:
-                                </p>
-                              </div>
-                              <div>
-                                <div className="value-comp">
-                                  {selectedNode.make}
-                                </div>
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Model:
-                                </p>
-                              </div>
-                              <div>
-                                <div className="value-comp">
-                                  {selectedNode.model}
-                                </div>
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Capacity:
-                                </p>
-                              </div>
-                              <div>
-                                <div className="value-comp">
-                                  {selectedNode.capacity}
-                                </div>
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Description:
-                                </p>
-                              </div>
-                              <div>
-                                <div className="value-comp">
-                                  {selectedNode.description}
-                                </div>
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Warranty End Date:
-                                </p>
-                              </div>
-                              <div>
-                                <div className="value-comp">
-                                  {selectedNode.warranty_support_end_date}
-                                </div>
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Support End Date:
-                                </p>
-                              </div>
-                              <div>
-                                <div className="value-comp">
-                                  {selectedNode.warranty_end_date}
-                                </div>
-                              </div>
-
-                              <div style={{ marginBottom: "10px" }}>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Issue Category Name:
-                                </p>
-                              </div>
-                              <div>
-                                <div className="value-comp">
-                                  {selectedNode.issue_category_name}
-                                </div>
-                              </div>
-
-                              {selectedNode.image_file && (
-                                <div style={{ marginBottom: "10px" }}>
                                   <div>
+                                    <div className="value-comp">
+                                      {selectedNode.name}
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="CardText">
+                                  <div style={{ marginBottom: "10px" }}>
                                     <p
                                       style={{
                                         fontWeight: "bold",
                                         marginBottom: "5px",
                                       }}
                                     >
-                                      Image:
+                                      Make:
                                     </p>
                                   </div>
-
                                   <div>
-                                    <div>
-                                      <img
-                                        width="120"
-                                        height="100"
-                                        src={`data:image/jpeg;base64,${selectedNode.image_file}`}
-                                        alt="NoImage"
-                                        style={{ borderRadius: "5px" }}
-                                        onError={(e) => {
-                                          e.target.onerror = null; // Prevent infinite loop
-                                          e.target.src = `data:image/jpeg;base64,${btoa(
-                                            String.fromCharCode.apply(
-                                              null,
-                                              selectedNode.image_file
-                                            )
-                                          )}`;
-                                        }}
-                                      />
+                                    <div className="value-comp">
+                                      {selectedNode.make}
                                     </div>
                                   </div>
                                 </div>
-                              )}
+                                <div className="CardText">
+                                  <div style={{ marginBottom: "10px" }}>
+                                    <p
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginBottom: "5px",
+                                      }}
+                                    >
+                                      Model:
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <div className="value-comp">
+                                      {selectedNode.model}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="CardText">
+                                  <div style={{ marginBottom: "10px" }}>
+                                    <p
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginBottom: "5px",
+                                      }}
+                                    >
+                                      Capacity:
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <div className="value-comp">
+                                      {selectedNode.capacity}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="CardText">
+                                  <div style={{ marginBottom: "10px" }}>
+                                    <p
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginBottom: "5px",
+                                      }}
+                                    >
+                                      Description:
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <div className="value-comp">
+                                      {selectedNode.description}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="CardText">
+                                  <div style={{ marginBottom: "10px" }}>
+                                    <p
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginBottom: "5px",
+                                      }}
+                                    >
+                                      Warranty End Date:
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <div className="value-comp">
+                                      {selectedNode.warranty_support_end_date}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="CardText">
+                                  <div style={{ marginBottom: "10px" }}>
+                                    <p
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginBottom: "5px",
+                                      }}
+                                    >
+                                      Support End Date:
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <div className="value-comp">
+                                      {selectedNode.warranty_end_date}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="CardText">
+                                  <div style={{ marginBottom: "10px" }}>
+                                    <p
+                                      style={{
+                                        fontWeight: "bold",
+                                        marginBottom: "5px",
+                                      }}
+                                    >
+                                      Issue Category Name:
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <div className="value-comp">
+                                      {selectedNode.issue_category_name}
+                                    </div>
+                                  </div>
+                                </div>
+                                {selectedNode.image_file && (
+                                  <div style={{ marginBottom: "10px" }}>
+                                    <div>
+                                      <p
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginBottom: "5px",
+                                        }}
+                                      >
+                                        Image:
+                                      </p>
+                                    </div>
+
+                                    <div>
+                                      <div>
+                                        <img
+                                          width="150"
+                                          height="120"
+                                          src={`data:image/jpeg;base64,${selectedNode.image_file}`}
+                                          alt="NoImage"
+                                          style={{ borderRadius: "5px" }}
+                                          onError={(e) => {
+                                            e.target.onerror = null; // Prevent infinite loop
+                                            e.target.src = `data:image/jpeg;base64,${btoa(
+                                              String.fromCharCode.apply(
+                                                null,
+                                                selectedNode.image_file
+                                              )
+                                            )}`;
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </Card>
                         </div>

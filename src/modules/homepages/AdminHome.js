@@ -596,18 +596,20 @@ export default function AdminHome({ sendUrllist }) {
                                   display: "flex",
                                   alignItems: "center",
                                   flexDirection: "row-reverse",
-                                  justifyContent: "center",
+                                  justifyContent: "flex-end",
                                   columnGap: "1.2rem",
                                 }}
                               >
-                                {item.name}
-                                <Avatar
-                                  sx={{
-                                    bgcolor: colors.blueAccent[500],
-                                  }}
-                                >
-                                  {convertToInitials(item.name)}
-                                </Avatar>
+                                <div>{item.name}</div>
+                                <div>
+                                  <Avatar
+                                    sx={{
+                                      bgcolor: colors.blueAccent[500],
+                                    }}
+                                  >
+                                    {convertToInitials(item.name)}
+                                  </Avatar>
+                                </div>
                               </TableCell>
                               <TableCell align="center">{item.email}</TableCell>
                               <TableCell align="center">

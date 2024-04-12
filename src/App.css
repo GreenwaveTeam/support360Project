@@ -48,7 +48,9 @@
 
 /*Table Style*/
 .MuiTableCell-root{padding: 14px !important;}
-
+/*Dialog */
+.MuiDialogTitle-root{padding: 10px 14px !important;}
+.MuiDialogContent-root{padding: 15px 15px !important; }
 /* custom scrollbar */
 ::-webkit-scrollbar {
   width: 20px;

@@ -3,6 +3,9 @@ import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import * as React from "react";
 
+import { ColorModeContext, tokens } from "../../../theme";
+//import { useTheme } from "@mui/material";
+
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -1635,6 +1638,8 @@ export default function ApplicationUser({ sendUrllist }) {
       pagelink: "/user/ReportApplication",
     },
   ];
+  //const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   /*************************************************** Component return ************************************** */
   return (
     <div>
@@ -2173,21 +2178,23 @@ export default function ApplicationUser({ sendUrllist }) {
           {tabsmoduleNames.length !== 0 && (
             <TabContext value={value}>
               <Box
-                // style={{
-                //   border: 1,
-                //   borderColor: "divider",
-                //   borderRadius: "10px",
-                //   backgroundColor: "#EEEEEE",
-                //   display: "flex",
-                //   justifyContent: "center", // Center the content horizontally
-                //   alignItems: "center", // Center the content vertically
-                // }}
-                className="tab"
+                style={{
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: "10px",
+                  backgroundColor: colors.primary[400],
+                  display: "flex",
+                  justifyContent: "center", // Center the content horizontally
+                  alignItems: "center", // Center the content vertically
+                }}
+                // className="tab"
               >
                 <Tabs
                   onChange={handleTabsChange}
                   value={value}
                   variant="scrollable"
+                  textColor="secondary"
+                  indicatorColor="secondary"
                 >
                   {tabsmoduleNames.map((module, index) => (
                     <Tab

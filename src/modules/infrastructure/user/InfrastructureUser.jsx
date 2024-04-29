@@ -22,7 +22,7 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import { Dialog } from "primereact/dialog";
+import { Dialog } from '@mui/material';
 import AddIcon from "@mui/icons-material/Add";
 import CustomTable from "../../../components/table/table.component";
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";

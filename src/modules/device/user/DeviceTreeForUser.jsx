@@ -44,6 +44,10 @@ import DrawerHeader from "../../../components/navigation/drawerheader/drawerhead
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 import { useUserContext } from "../../contexts/UserContext";
 import { useLocation } from "react-router-dom";
+//Theme
+import { ColorModeContext, tokens } from "../../../theme";
+import { useTheme } from "@mui/material";
+import { useContext } from "react";
 
 export default function UserDeviceTree({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -404,6 +408,9 @@ export default function UserDeviceTree({ sendUrllist }) {
       pagelink: "/user/ReportDevice",
     },
   ];
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   return (
     <div>
       {divIsVisibleList && divIsVisibleList.includes("device-report") && (
@@ -660,7 +667,6 @@ export default function UserDeviceTree({ sendUrllist }) {
                     </Dialog>
                   </div>
 
-                  <br />
                   {clickedNode &&
                     selectedNode.id !== "root" &&
                     clickedNode.id !== "root" && (
@@ -670,7 +676,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                             sx={{
                               minWidth: 550,
 
-                              backgroundColor: "#f4f4f4",
+                              backgroundColor: colors.primary[400],
                               borderRadius: "10px",
                               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                             }}
@@ -678,14 +684,13 @@ export default function UserDeviceTree({ sendUrllist }) {
                             <div className="Card-Components">
                               <div
                                 style={{
-                                  color: "#333",
                                   display: "flex",
                                   justifyContent: "space-between",
                                   alignItems: "center",
                                   padding: "0px 1rem",
                                 }}
                               >
-                                <h3>Node Details:</h3>
+                                <h4>Node Details:</h4>
                                 <Button
                                   className="button"
                                   variant="contained"

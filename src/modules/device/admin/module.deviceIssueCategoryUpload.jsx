@@ -301,10 +301,14 @@ const DeviceCategory = ({ sendUrllist }) => {
                       variant="contained"
                       style={{ width: "200px" }}
                       type="submit"
+                      sx={{
+                        backgroundImage:
+                          "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                      }}
                     >
                       Add &nbsp;
                       <AddCircleOutlineOutlinedIcon
-                        fontSize="large"
+                        fontSize="medium"
                         sx={{ color: "white" }}
                       ></AddCircleOutlineOutlinedIcon>
                     </Button>

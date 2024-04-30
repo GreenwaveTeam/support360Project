@@ -1,7 +1,16 @@
 import { Button } from "@mui/material";
 import React from "react";
 
-export default function CustomButton({onClick, style, id,variant,size,buttontext,color}) {
+export default function CustomButton({
+  onClick,
+  style,
+  id,
+  variant,
+  size,
+  buttontext,
+  color,
+  endIcon,
+}) {
   return (
     <Button
       variant={variant}
@@ -10,6 +19,7 @@ export default function CustomButton({onClick, style, id,variant,size,buttontext
       style={style}
       id={id}
       color={color}
+      endIcon={endIcon}
     >
       {buttontext}
     </Button>

@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./styles.css";
 import dayjs from "dayjs";
 import Box from "@mui/material/Box";
-
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CardHeader from "@mui/material/CardHeader";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { TreeView } from "@mui/x-tree-view/TreeView";
@@ -10,8 +12,8 @@ import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import CustomDatePicker from "./dateComp";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { Card } from "@mui/material";
-import { Dialog } from "primereact/dialog";
+import { Card, Chip, Divider } from "@mui/material";
+import { Dialog } from "@mui/material";
 //import CustomTree from "../../../components/Tree/tree.component";
 import CustomTreeView from "../../../components/Tree/tree.component";
 import TopbarPage from "../../../components/navigation/topbar/topbar";
@@ -22,8 +24,9 @@ import CustomDialog from "../../../components/dialog/dialog.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import CustomButton from "../../../components/button/button.component";
 import { useLocation, useNavigate } from "react-router-dom";
-import { display } from "@mui/system";
+import { display, fontWeight } from "@mui/system";
 import { useUserContext } from "../../contexts/UserContext";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export default function RichObjectTreeView({ sendUrllist }) {
   const [selectedNode, setSelectedNode] = useState(null);
@@ -736,7 +739,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
       <div className={`right-panel ${data === null ? "hidden" : ""}`}>
         {data !== null && selectedNode && (
           <>
-            <Box style={{ display: "flex" }}>
+            {/* <Box style={{ display: "flex" }}>
               <p className="selectedNodeInfo">
                 {selectedNode
                   ? `Selected Node: ${selectedNode.name}
@@ -773,27 +776,29 @@ export default function RichObjectTreeView({ sendUrllist }) {
                     ></CustomButton>
                   </div>
                 )}
-            </Box>
+            </Box> */}
 
             <div>
               <Dialog
                 header={`Create Child Node for : ${selectedNode.name}`}
-                visible={visible}
-                style={{
-                  width: "50vw",
-                }}
-                onHide={() => setVisible(false)}
+                open={visible}
+                style={{}}
+                fullWidth
+                onClose={() => setVisible(false)}
               >
+                <DialogTitle
+                  id="alert-dialog-title"
+                  sx={{ fontSize: "1rem", fontWeight: "600" }}
+                >
+                  {`Create Child Node for : ${selectedNode.name}`}
+                </DialogTitle>
+                <Divider />
                 <br />
                 <center>
-                  <Card
+                  <Box
                     sx={{
                       minWidth: 10,
                       maxWidth: 500,
-                      padding: "20px",
-                      backgroundColor: "#f4f4f4",
-                      borderRadius: "10px",
-                      boxShadow: "0 4px 8px rgba(0, 0, 0, 10)",
                     }}
                   >
                     <Textfield
@@ -922,7 +927,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                       onClick={handleChildNodeAdd}
                       buttontext={"Add Node"}
                     ></CustomButton>
-                  </Card>
+                  </Box>
                   <br />
                   <br />
                   <br />
@@ -930,7 +935,6 @@ export default function RichObjectTreeView({ sendUrllist }) {
               </Dialog>
             </div>
 
-            <br></br>
             {clickedNode &&
               selectedNode.id !== "root" &&
               clickedNode.id !== "root" && (
@@ -939,110 +943,184 @@ export default function RichObjectTreeView({ sendUrllist }) {
                     <Card
                       sx={{
                         minWidth: 550,
-                        padding: "20px",
-                        backgroundColor: "#f4f4f4",
+
+                        //backgroundColor: "#f4f4f4",
                         borderRadius: "10px",
                         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                       }}
                     >
-                      <div className="Card-Components">
-                        <h3
+                      <Box
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "0.9rem",
+                        }}
+                      >
+                        <Chip
+                          size="large"
+                          sx={{ fontSize: "0.8rem", fontWeight: "600" }}
+                          label={
+                            selectedNode
+                              ? `Selected Node: ${selectedNode.name}
+                              `
+                              : "Select a node"
+                          }
+                        />
+
+                        <div style={{ display: "flex" }}>
+                          &nbsp;&nbsp;&nbsp;
+                          {divIsVisibleList &&
+                            divIsVisibleList.includes(
+                              "delete-selected-node"
+                            ) && (
+                              <div
+                                id="delete-selected-node"
+                                style={{ display: "flex" }}
+                              >
+                                <CustomButton
+                                  className="button"
+                                  variant="contained"
+                                  size={"small"}
+                                  color="error" // Use secondary color for delete button
+                                  //onClick={handleDeleteNode}
+                                  endIcon={<DeleteIcon />}
+                                  onClick={handleDialogOpen}
+                                  buttontext={"Delete Node"}
+                                ></CustomButton>
+                              </div>
+                            )}
+                          &nbsp;&nbsp;
+                          {divIsVisibleList &&
+                            divIsVisibleList.includes("add-new-node") && (
+                              <div
+                                id="add-new-node"
+                                style={{ display: "flex" }}
+                              >
+                                <CustomButton
+                                  className="button"
+                                  size={"small"}
+                                  variant="contained"
+                                  color="secondary" // Use secondary color for delete button
+                                  //onClick={handleDeleteNode}
+
+                                  onClick={() => setVisible(true)}
+                                  endIcon={<AddCircleIcon />}
+                                  buttontext={"Add Item"}
+                                ></CustomButton>
+                              </div>
+                            )}
+                        </div>
+                      </Box>
+                      <Divider />
+
+                      <div
+                        className="Card-Components"
+                        style={{ padding: "0.9rem" }}
+                      >
+                        {/* <h3
                           style={{
                             marginBottom: "15px",
                             color: "#333",
                           }}
                         >
                           Node Details:
-                        </h3>
-                        <div style={{ marginBottom: "10px" }}>
-                          <p
-                            style={{
-                              fontWeight: "bold",
-                              marginBottom: "5px",
-                              textAlign: "left",
-                            }}
-                          >
-                            Name:
-                          </p>
-                        </div>
+                        </h3> */}
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <div style={{ marginBottom: "10px" }}>
+                            <p
+                              style={{
+                                fontWeight: "bold",
+                                marginBottom: "5px",
+                                textAlign: "left",
+                              }}
+                            >
+                              Name:
+                            </p>
+                          </div>
 
-                        <div>
-                          {isEditing ? (
-                            <>
-                              <Textfield
-                                label="Edit Node Name"
-                                variant="outlined"
-                                value={editedName}
-                                onChange={(e) => setEditedName(e.target.value)}
-                              />
-                              <CustomButton
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleSaveName("Name")}
-                                buttontext={"Save"}
-                              ></CustomButton>
-                              <CustomButton
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => handleCancelNameEdit("Name")}
-                                buttontext={"Cancel"}
-                              ></CustomButton>
-                            </>
-                          ) : (
-                            <>
-                              <div
-                                className="value-comp"
-                                onClick={() => handleEdit("Name")}
-                              >
-                                {selectedNode.name}
-                              </div>
-                            </>
-                          )}
+                          <div>
+                            {isEditing ? (
+                              <>
+                                <Textfield
+                                  label="Edit Node Name"
+                                  variant="outlined"
+                                  value={editedName}
+                                  onChange={(e) =>
+                                    setEditedName(e.target.value)
+                                  }
+                                />
+                                <CustomButton
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleSaveName("Name")}
+                                  buttontext={"Save"}
+                                ></CustomButton>
+                                <CustomButton
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={() => handleCancelNameEdit("Name")}
+                                  buttontext={"Cancel"}
+                                ></CustomButton>
+                              </>
+                            ) : (
+                              <>
+                                <div
+                                  className="value-comp"
+                                  onClick={() => handleEdit("Name")}
+                                >
+                                  {selectedNode.name}
+                                </div>
+                              </>
+                            )}
+                          </div>
                         </div>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <div style={{ marginBottom: "10px" }}>
+                            <p
+                              style={{
+                                fontWeight: "bold",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              Make:
+                            </p>
+                          </div>
 
-                        <div style={{ marginBottom: "10px" }}>
-                          <p
-                            style={{
-                              fontWeight: "bold",
-                              marginBottom: "5px",
-                            }}
-                          >
-                            Make:
-                          </p>
-                        </div>
-
-                        <div>
-                          {isEditingMake ? (
-                            <>
-                              <Textfield
-                                label="Edit Node Name"
-                                variant="outlined"
-                                value={editedMake}
-                                onChange={(e) => setEditedMake(e.target.value)}
-                              />
-                              <CustomButton
-                                variant="contained"
-                                color="primary"
-                                onClick={() => handleSaveName("Make")}
-                                buttontext={"Save"}
-                              ></CustomButton>
-                              <CustomButton
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => handleCancelNameEdit("Make")}
-                                buttontext={"Cancel"}
-                              ></CustomButton>
-                            </>
-                          ) : (
-                            <>
-                              <div
-                                className="value-comp"
-                                onClick={() => handleEdit("Make")}
-                              >
-                                {selectedNode.make}
-                              </div>
-                            </>
-                          )}
+                          <div>
+                            {isEditingMake ? (
+                              <>
+                                <Textfield
+                                  label="Edit Node Name"
+                                  variant="outlined"
+                                  value={editedMake}
+                                  onChange={(e) =>
+                                    setEditedMake(e.target.value)
+                                  }
+                                />
+                                <CustomButton
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleSaveName("Make")}
+                                  buttontext={"Save"}
+                                ></CustomButton>
+                                <CustomButton
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={() => handleCancelNameEdit("Make")}
+                                  buttontext={"Cancel"}
+                                ></CustomButton>
+                              </>
+                            ) : (
+                              <>
+                                <div
+                                  className="value-comp"
+                                  onClick={() => handleEdit("Make")}
+                                >
+                                  {selectedNode.make}
+                                </div>
+                              </>
+                            )}
+                          </div>
                         </div>
                         <div style={{ marginBottom: "10px" }}>
                           <p

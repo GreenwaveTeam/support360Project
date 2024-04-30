@@ -951,11 +951,14 @@ export default function ModuleConfigure({ sendUrllist }) {
                                           //color="textSecondary"
                                           component="h2"
                                           gutterBottom
-                                          fontWeight={900}
+                                          fontWeight={800}
+                                          sx={{
+                                            paddingBottom: "0.8rem",
+                                            fontSize: "0.8rem",
+                                          }}
                                         >
                                           Name of the Selected Snippet
                                         </Typography>
-                                        <br />
                                         <TextField
                                           label={"Snippet Name"}
                                           id="issue"
@@ -968,84 +971,99 @@ export default function ModuleConfigure({ sendUrllist }) {
                                         <Button
                                           variant="contained"
                                           onClick={handleAddCategory}
+                                          style={{
+                                            backgroundImage:
+                                              "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                                          }}
                                         >
                                           Add Category
+                                          <AddCircleOutlineOutlinedIcon
+                                            fontSize="medium"
+                                            sx={{ paddingLeft: "0.2rem" }}
+                                          />
                                         </Button>
                                       </Box>
                                     )}
                                     {categorySubmitted && (
-                                      <>
-                                        <Typography
-                                          variant="h6"
-                                          //color="textSecondary"
-                                          component="h2"
-                                          gutterBottom
-                                          fontWeight={900}
-                                        >
-                                          Current Snippet Name ➥ &nbsp;
-                                          <span style={{ color: "red" }}>
-                                            {categoryname}
-                                          </span>
-                                        </Typography>
-                                        <br />
-                                        <Box
-                                          sx={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            alignItems: "center",
-                                          }}
-                                        >
-                                          <TextField
-                                            label={"Issue Name"}
-                                            id="issue"
-                                            style={{ width: "50%" }}
-                                            value={issueName}
-                                            onChange={(e) =>
-                                              setIssueName(e.target.value)
-                                            }
-                                          />
-                                          <br />
-                                          <Dropdown
-                                            label={"Severity"}
-                                            select
-                                            formstyle={{ width: "50%" }}
-                                            value={severity}
-                                            list={[
-                                              "Critical",
-                                              "Major",
-                                              "Minor",
-                                            ]}
-                                            onChange={(e) =>
-                                              setSeverity(e.target.value)
-                                            }
-                                          />
-                                          &nbsp;
-                                          <Button
-                                            variant="contained"
-                                            style={{ width: "50%" }}
-                                            type="submit"
+                                      <div style={{ width: "32rem" }}>
+                                        <>
+                                          <Typography
+                                            variant="h6"
+                                            //color="textSecondary"
+                                            component="h2"
+                                            gutterBottom
+                                            fontWeight={900}
                                           >
-                                            Add Issue&nbsp;
-                                            {/* <AddCircleOutlineOutlinedIcon
-															fontSize="large"
-															sx={{ color: 'white' }}
-														  /> */}
-                                          </Button>
-                                        </Box>
-                                        &nbsp;&nbsp;
-                                        <Table
-                                          rows={issues}
-                                          isDeleteDialog={true}
-                                          setRows={setIssues}
-                                          savetoDatabse={handleEditIssue}
-                                          deleteFromDatabase={handleDeleteIssue}
-                                          columns={columns}
-                                          editActive={true}
-                                          tablename={
-                                            "Existing Issues"
-                                          } /*style={}*/
-                                        />
-                                      </>
+                                            Current Snippet Name ➥ &nbsp;
+                                            <span style={{ color: "red" }}>
+                                              {categoryname}
+                                            </span>
+                                          </Typography>
+                                          <br />
+                                          <Box
+                                            sx={{
+                                              display: "flex",
+                                              flexDirection: "column",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <TextField
+                                              label={"Issue Name"}
+                                              id="issue"
+                                              style={{ width: "50%" }}
+                                              value={issueName}
+                                              onChange={(e) =>
+                                                setIssueName(e.target.value)
+                                              }
+                                            />
+                                            <br />
+                                            <Dropdown
+                                              label={"Severity"}
+                                              select
+                                              formstyle={{ width: "50%" }}
+                                              value={severity}
+                                              list={[
+                                                "Critical",
+                                                "Major",
+                                                "Minor",
+                                              ]}
+                                              onChange={(e) =>
+                                                setSeverity(e.target.value)
+                                              }
+                                            />
+                                            &nbsp;
+                                            <Button
+                                              variant="contained"
+                                              style={{
+                                                backgroundImage:
+                                                  "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                                              }}
+                                              type="submit"
+                                            >
+                                              Add Issue&nbsp;
+                                              <AddCircleOutlineOutlinedIcon
+                                                fontSize="medium"
+                                                sx={{ paddingLeft: "0.2rem" }}
+                                              />
+                                            </Button>
+                                          </Box>
+                                          &nbsp;&nbsp;
+                                          <Table
+                                            rows={issues}
+                                            isDeleteDialog={true}
+                                            setRows={setIssues}
+                                            savetoDatabse={handleEditIssue}
+                                            deleteFromDatabase={
+                                              handleDeleteIssue
+                                            }
+                                            columns={columns}
+                                            editActive={true}
+                                            tablename={
+                                              "Existing Issues"
+                                            } /*style={}*/
+                                          />
+                                        </>
+                                      </div>
                                     )}
                                   </form>
                                 </Box>

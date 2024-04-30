@@ -251,7 +251,7 @@ export default function UserLogin() {
               <Typography component="h1" variant="h5">
                 Login Page
               </Typography>
-              <form>
+              <form className="fromSection">
                 <Box noValidate sx={{ mt: 3 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={12}>

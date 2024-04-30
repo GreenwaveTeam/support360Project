@@ -16,8 +16,8 @@ import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 import { useUserContext } from "../contexts/UserContext";
 
-export default function ConfigureInfrastructure({sendUrllist}) {
- // const [search, setSearch] = useState("");
+export default function ConfigureInfrastructure({ sendUrllist }) {
+  // const [search, setSearch] = useState("");
   const [newCateogry, setNewCategory] = useState("");
   // const [editRowIndex, setEditRowIndex] = useState(null);
   // const [editValue, setEditValue] = useState("");
@@ -27,15 +27,15 @@ export default function ConfigureInfrastructure({sendUrllist}) {
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
   const [open, setOpen] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
-  const location=useLocation();
- const  urllist=[
+  const location = useLocation();
+  const urllist = [
     { pageName: "Home", pagelink: "/admin/home" },
     {
       pageName: "Configure Infrastructure",
       pagelink: "/admin/InfrastructureConfigure",
     },
   ];
- 
+
   //const [onEditError, setOnEditError] = useState(false);
   //const [progressVisible, setProgressVisible] = useState(false);
   //const [clearVisible, setClearVisible] = useState(false);
@@ -48,24 +48,19 @@ export default function ConfigureInfrastructure({sendUrllist}) {
     setDrawerOpen(false);
   };
 
-  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
 
   const navigate = useNavigate();
-  const currentPageLocation=useLocation().pathname;
+  const currentPageLocation = useLocation().pathname;
   const { userData, setUserData } = useUserContext();
-
 
   /******************************* useEffect()********************************/
 
   useLayoutEffect(() => {
     fetchInfraFromDb();
     fetchDivs();
-    sendUrllist(urllist)
+    sendUrllist(urllist);
   }, []);
-
- 
-  
-
 
   //Will include id later on to implement the same to identify the list item .....
   //Will include plantID too..
@@ -121,21 +116,16 @@ export default function ConfigureInfrastructure({sendUrllist}) {
       return;
     }
     //plantID here is harcoded
-    if(userData.plantID)
-    {
-    const data = { infrastructure: newCateogry, plantID: userData.plantID };
-    console.log("Data sent is => ", data);
-    navigate("/admin/infrastructure/addIssues", { state: data });
-    }
-    else
-    {
-      setsnackbarSeverity("error")
-      setSnackbarText("PlantID not found !")
+    if (userData.plantID) {
+      const data = { infrastructure: newCateogry, plantID: userData.plantID };
+      console.log("Data sent is => ", data);
+      navigate("/admin/infrastructure/addIssues", { state: data });
+    } else {
+      setsnackbarSeverity("error");
+      setSnackbarText("PlantID not found !");
       setOpen(true);
     }
   };
-
-  
 
   // const handleAlertClose = (event, reason) => {
   //   if (reason === "clickaway") {
@@ -153,21 +143,18 @@ export default function ConfigureInfrastructure({sendUrllist}) {
 
   /**************************************************   API    **************************************************** */
 
-
   const fetchDivs = async () => {
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
-      console.log("Currently passed Data : ",location.state)
-      console.log("Current UserData in fetchDivs() : ",userData)
-      let role="";
-       if(userData.role){
-           role=userData.role;
-       }
-       else
-       {
-         throw new Error("UserRole not found ! ")
-       }
+      console.log("Currently passed Data : ", location.state);
+      console.log("Current UserData in fetchDivs() : ", userData);
+      let role = "";
+      if (userData.role) {
+        role = userData.role;
+      } else {
+        throw new Error("UserRole not found ! ");
+      }
       const response = await fetch(
         `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
@@ -178,21 +165,20 @@ export default function ConfigureInfrastructure({sendUrllist}) {
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
       if (response.ok) {
-        console.log("Current Response : ",data)
-        console.log("Current Divs : ",data.components)
-        setDivIsVisibleList(data.components)
+        console.log("Current Response : ", data);
+        console.log("Current Divs : ", data.components);
+        setDivIsVisibleList(data.components);
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
-      if(fetchDivs.length===0)
-      {
-        navigate("/*")
+      if (fetchDivs.length === 0) {
+        navigate("/*");
       }
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
@@ -202,10 +188,6 @@ export default function ConfigureInfrastructure({sendUrllist}) {
       // setEditValue("");
     }
   };
-  
-
-
-
 
   const updateInfraNameDB = async (prev_infra, new_infraname) => {
     console.log("updateInfraNameDB() called");
@@ -296,66 +278,63 @@ export default function ConfigureInfrastructure({sendUrllist}) {
 
   const fetchInfraFromDb = async () => {
     // setProgressVisible(true);
-    console.log('fetchInfraFromDb() called')
-    console.log("Current Pager Location : ",currentPageLocation)
-    console.log("PlantID for InfrafromDb  : ")
-   console.log("Context value :  ",userData.plantID)
+    console.log("fetchInfraFromDb() called");
+    console.log("Current Pager Location : ", currentPageLocation);
+    console.log("PlantID for InfrafromDb  : ");
+    console.log("Context value :  ", userData.plantID);
     //  const plantID = "P009";
     //  console.log(
     //    "Fetched Token from LS=>  ",
     //    `Bearer ${localStorage.getItem("token")}`
     //  );
-    let plantID="";
-     try {
-      if(userData.plantID){
-          plantID=userData.plantID;
+    let plantID = "";
+    try {
+      if (userData.plantID) {
+        plantID = userData.plantID;
+      } else {
+        throw new Error("PlantID not found ! ");
       }
-      else
-      {
-        throw new Error("PlantID not found ! ")
+      const response = await fetch(
+        `http://localhost:8081/infrastructure/admin/${plantID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        console.log("Response => " + response.status);
+        throw new Error("HTTP error " + response.status);
       }
-       const response = await fetch(
-         `http://localhost:8081/infrastructure/admin/${plantID}`,
-         {
-           headers: {
-             Authorization: `Bearer ${localStorage.getItem("token")}`,
-             "Content-Type": "application/json",
-           },
-         }
-       );
-       if (!response.ok) {
-         console.log("Response => " + response.status);
-         throw new Error("HTTP error " + response.status);
-       }
-       const data = await response.json();
-       let infrastructure = [];
-       if (data.infraDetails) {
-         console.log("infraDetails from Db => ", data.infraDetails);
-         data.infraDetails.map((item) => {
-           console.log("inf name => ", item.infrastructure_name);
-           let tempItem = { categoryname: item.infrastructure_name };
-           infrastructure.push(tempItem);
-           console.log("infrastructure array => ", infrastructure);
-         });
-       }
-       setInfraList(infrastructure);
-       setoriginalInfraRows(infrastructure);
-       //setProgressVisible(false);
-       // setsnackbarSeverity("success")
-       // setSnackbarText("Data refereshed successfully !")
-       // setOpen(true)
-     } catch (error) {
-       //setProgressVisible(false);
-       setsnackbarSeverity("error");
-       setSnackbarText(error.toString());
-       setOpen(true);
-       console.log("Error fetching data from database !");
-       navigate("/notfound");
-     }
-   };
- 
- /******************************************************* API ends ************************************************* */
- 
+      const data = await response.json();
+      let infrastructure = [];
+      if (data.infraDetails) {
+        console.log("infraDetails from Db => ", data.infraDetails);
+        data.infraDetails.map((item) => {
+          console.log("inf name => ", item.infrastructure_name);
+          let tempItem = { categoryname: item.infrastructure_name };
+          infrastructure.push(tempItem);
+          console.log("infrastructure array => ", infrastructure);
+        });
+      }
+      setInfraList(infrastructure);
+      setoriginalInfraRows(infrastructure);
+      //setProgressVisible(false);
+      // setsnackbarSeverity("success")
+      // setSnackbarText("Data refereshed successfully !")
+      // setOpen(true)
+    } catch (error) {
+      //setProgressVisible(false);
+      setsnackbarSeverity("error");
+      setSnackbarText(error.toString());
+      setOpen(true);
+      console.log("Error fetching data from database !");
+      navigate("/notfound");
+    }
+  };
+
+  /******************************************************* API ends ************************************************* */
 
   const handleDeleteClick = async (row) => {
     console.log("handleDeleteClick() called");
@@ -527,16 +506,14 @@ export default function ConfigureInfrastructure({sendUrllist}) {
     console.log("Redirected Catefory : ", categoryname);
     //         const paramIssue = infrastructure.trim();
     // console.log("Category is => ", paramIssue);
-    if(userData.plantID)
-    {
-    const data = { infrastructure: categoryname, plantID: userData.plantID };
-    console.log("Data sent is => ", data);
-    navigate("/admin/infrastructure/addIssues", { state: data });
-    }
-    else{
-      setsnackbarSeverity("error")
-      setSnackbarText("PlantID not found ! ")
-      setOpen(true)
+    if (userData.plantID) {
+      const data = { infrastructure: categoryname, plantID: userData.plantID };
+      console.log("Data sent is => ", data);
+      navigate("/admin/infrastructure/addIssues", { state: data });
+    } else {
+      setsnackbarSeverity("error");
+      setSnackbarText("PlantID not found ! ");
+      setOpen(true);
     }
     //history.push({pathname:"/"})
     // console.log("Category==========>"+category.categoryname);
@@ -563,73 +540,79 @@ export default function ConfigureInfrastructure({sendUrllist}) {
     },
   };
 
-
-  
   /******************************* Component Return ********************************* */
   return (
-   
-          <AnimatedPage>
-            <div>
-              <center>
-             
-                <Container sx={classes.conatiner}>
-                {divIsVisibleList&&divIsVisibleList.includes("add-new-infrastructure-category")&&<div id="add-new-infrastructure-category">
-                  <Textfield
-                    label={"Infrastructure Category"}
-                    variant={"outlined"}
-                    required
-                    value={newCateogry}
-                    helpertext={"Enter a new Infrastructure category *"}
-                    onChange={(e) => handleCategoryChange(e)}
-                    size="large"
-                    error={categoryError}
-                  ></Textfield>
-                  <br />
-                  <br />
-                  <CustomButton
-                    variant={"contained"}
-                    size={"large"}
-                    color={"success"}
-                    style={classes.btn}
-                    onClick={() => handleAddIssues()}
-                    buttontext={" Add Issues "}
-                  ></CustomButton>
-                  </div>}
-                  <br />
-                  <br />
-                  {divIsVisibleList&& divIsVisibleList.includes("existing-infrastructure-table")&&divIsVisibleList.includes("add-new-infrastructure-category")&&<div id="or-div">
-                  <b>OR</b></div>}
-                  <br />
-                  <br />
-                  {divIsVisibleList&& divIsVisibleList.includes("existing-infrastructure-table")&&
-                  <div id="existing-infrastructure-table">
-                  <CustomTable
-                    rows={infraList}
-                    columns={columns}
-                    setRows={setInfraList}
-                    savetoDatabse={addIssueCategory}
-                    redirectColumn={"categoryname"}
-                    handleRedirect={handleRedirect}
-                    deleteFromDatabase={handleDeleteClick}
-                    editActive={true}
-                    tablename={"Edit Existing Category List "}
-                    style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
-                    redirectIconActive={true}
-                    isDeleteDialog={true}
-                  ></CustomTable>
-                  </div>}
-                </Container>
+    // <AnimatedPage>
+    <div>
+      <center>
+        <Container sx={classes.conatiner}>
+          {divIsVisibleList &&
+            divIsVisibleList.includes("add-new-infrastructure-category") && (
+              <div id="add-new-infrastructure-category">
+                <Textfield
+                  label={"Infrastructure Category"}
+                  variant={"outlined"}
+                  required
+                  value={newCateogry}
+                  helpertext={"Enter a new Infrastructure category *"}
+                  onChange={(e) => handleCategoryChange(e)}
+                  size="large"
+                  error={categoryError}
+                ></Textfield>
                 <br />
                 <br />
-              </center>
-              <SnackbarComponent
-                openPopup={open}
-                setOpenPopup={setOpen}
-                dialogMessage={snackbarText}
-                snackbarSeverity={snackbarSeverity}
-              ></SnackbarComponent>
-            </div>
-          </AnimatedPage>
-                
+                <CustomButton
+                  variant={"contained"}
+                  size={"large"}
+                  color={"success"}
+                  style={classes.btn}
+                  onClick={() => handleAddIssues()}
+                  buttontext={" Add Issues "}
+                  
+                ></CustomButton>
+              </div>
+            )}
+          <br />
+          <br />
+          {divIsVisibleList &&
+            divIsVisibleList.includes("existing-infrastructure-table") &&
+            divIsVisibleList.includes("add-new-infrastructure-category") && (
+              <div id="or-div">
+                <b>OR</b>
+              </div>
+            )}
+          <br />
+          <br />
+          {divIsVisibleList &&
+            divIsVisibleList.includes("existing-infrastructure-table") && (
+              <div id="existing-infrastructure-table">
+                <CustomTable
+                  rows={infraList}
+                  columns={columns}
+                  setRows={setInfraList}
+                  savetoDatabse={addIssueCategory}
+                  redirectColumn={"categoryname"}
+                  handleRedirect={handleRedirect}
+                  deleteFromDatabase={handleDeleteClick}
+                  editActive={true}
+                  tablename={"Edit Existing Category List "}
+                  style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
+                  redirectIconActive={true}
+                  isDeleteDialog={true}
+                ></CustomTable>
+              </div>
+            )}
+        </Container>
+        <br />
+        <br />
+      </center>
+      <SnackbarComponent
+        openPopup={open}
+        setOpenPopup={setOpen}
+        dialogMessage={snackbarText}
+        snackbarSeverity={snackbarSeverity}
+      ></SnackbarComponent>
+    </div>
+    //  </AnimatedPage>
   );
 }

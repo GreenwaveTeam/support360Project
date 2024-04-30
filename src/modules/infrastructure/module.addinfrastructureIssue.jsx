@@ -1,6 +1,5 @@
-
 import { Box, Typography } from "@mui/material";
-import { Container } from "@mui/system";
+import { Container, padding } from "@mui/system";
 //import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { useEffect, useState } from "react";
 // import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
@@ -22,8 +21,7 @@ import Textfield from "../../components/textfield/textfield.component";
 import { useLayoutEffect } from "react";
 import { useUserContext } from "../contexts/UserContext";
 
-
-export default function AddInfrastructureIssue({sendUrllist}) {
+export default function AddInfrastructureIssue({ sendUrllist }) {
   //********************* Data ********************
 
   // const [rows,setRows]=useState(
@@ -76,81 +74,72 @@ export default function AddInfrastructureIssue({sendUrllist}) {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
-
-  const [divIsVisibleList,setDivIsVisibleList]=useState([]);
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
 
   // const navigate = useNavigate();
-const currentPageLocation=useLocation().pathname;
-const { userData, setUserData } = useUserContext();
+  const currentPageLocation = useLocation().pathname;
+  const { userData, setUserData } = useUserContext();
 
- /**********************************************useEffect Hook***********************************************/
- useLayoutEffect(() => {
-  console.log("useEffect() called");
-  console.log("plantId", plantId);
-  console.log("Infrastructure : ", inf);
-  console.log("search value is ", search);
-  fetchDBdata(plantId, inf);
-  fetchDivs();
- 
-  sendUrllist(urllist)
- 
+  /**********************************************useEffect Hook***********************************************/
+  useLayoutEffect(() => {
+    console.log("useEffect() called");
+    console.log("plantId", plantId);
+    console.log("Infrastructure : ", inf);
+    console.log("search value is ", search);
+    fetchDBdata(plantId, inf);
+    fetchDivs();
 
-  const handleOnBeforeUnload = (event) => {
-    // event.preventDefault();
+    sendUrllist(urllist);
 
-    console.log("issueName :", addIssue);
+    const handleOnBeforeUnload = (event) => {
+      // event.preventDefault();
 
-    console.log(
-      "state true or false",
-      filteredRows.toString === rows.toString
-    );
+      console.log("issueName :", addIssue);
 
-    console.log("Filtered Rows :" + JSON.stringify(filteredRows));
-    console.log("Original Rows :", JSON.stringify(originalRows));
+      console.log(
+        "state true or false",
+        filteredRows.toString === rows.toString
+      );
 
-    if (
-      JSON.stringify(filteredRows) === JSON.stringify(originalRows) &&
-      addIssue.length === 0
-    ) {
-      console.log("return from beforeUnload");
-      return;
-    }
-    event.preventDefault();
-  };
+      console.log("Filtered Rows :" + JSON.stringify(filteredRows));
+      console.log("Original Rows :", JSON.stringify(originalRows));
 
-  window.addEventListener("beforeunload", handleOnBeforeUnload);
-  //console.log(process.env.REACT_APP_NOT_SECRET_CODE);
+      if (
+        JSON.stringify(filteredRows) === JSON.stringify(originalRows) &&
+        addIssue.length === 0
+      ) {
+        console.log("return from beforeUnload");
+        return;
+      }
+      event.preventDefault();
+    };
 
-  // remember  this is a cleanup function which will be executed before the next execution of the effect or when the component is unmounted.
-  //they are treated as options of useEffect
-  return () => {
-    window.removeEventListener("beforeunload", handleOnBeforeUnload);
-  };
-}, []); //useEffect ends here
+    window.addEventListener("beforeunload", handleOnBeforeUnload);
+    //console.log(process.env.REACT_APP_NOT_SECRET_CODE);
 
-
-
-  
+    // remember  this is a cleanup function which will be executed before the next execution of the effect or when the component is unmounted.
+    //they are treated as options of useEffect
+    return () => {
+      window.removeEventListener("beforeunload", handleOnBeforeUnload);
+    };
+  }, []); //useEffect ends here
 
   // ***************************************************  API  **************************************************
-
 
   const fetchDivs = async () => {
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
       console.log("Current userData : ", userData);
-      let role="";
-      if(userData.role){
-          role=userData.role;
+      let role = "";
+      if (userData.role) {
+        role = userData.role;
+      } else {
+        throw new Error("UserRole not found ! ");
       }
-      else
-      {
-        throw new Error("UserRole not found ! ")
-      }
-  
+
       const response = await fetch(
         `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
@@ -161,21 +150,20 @@ const { userData, setUserData } = useUserContext();
           },
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
       if (response.ok) {
-        console.log("Current Response : ",data)
-        console.log("Current Divs : ",data.components)
-        setDivIsVisibleList(data.components)
+        console.log("Current Response : ", data);
+        console.log("Current Divs : ", data.components);
+        setDivIsVisibleList(data.components);
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
-      if(fetchDivs.length===0)
-      {
-        navigate("/*")
+      if (fetchDivs.length === 0) {
+        navigate("/*");
       }
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
@@ -185,9 +173,9 @@ const { userData, setUserData } = useUserContext();
       // setEditValue("");
     }
   };
-  
+
   //Database functions  for CRUD operations
-   //Note the plantID is harcoded currently
+  //Note the plantID is harcoded currently
   const fetchDBdata = async (plantId, inf) => {
     console.log("fetchDBdata() called ");
     console.log("plantID => ", plantId);
@@ -227,7 +215,6 @@ const { userData, setUserData } = useUserContext();
 
     console.log("fetchDBdata() ends");
   };
-
 
   const deletedataDb = async (issue) => {
     console.log("Issue to be deleted => ", issue);
@@ -402,8 +389,6 @@ const { userData, setUserData } = useUserContext();
     }
   };
 
-  
-
   /**************************************************************************************************************** */
 
   const handleAddClick = () => {
@@ -443,8 +428,7 @@ const { userData, setUserData } = useUserContext();
       setOpen(true);
       return;
     }
-    if(addIssue.trim().toLowerCase()==='miscellaneous')
-    {
+    if (addIssue.trim().toLowerCase() === "miscellaneous") {
       setsnackbarSeverity("error");
       setSnackbarText("Miscellaneous keyword is not allowed! ");
       setAddissueError(true);
@@ -480,9 +464,7 @@ const { userData, setUserData } = useUserContext();
     deletedataDb(row.issue_name);
   };
 
-
   const handleSaveClick = async (selected_row, updated_row) => {
-    
     console.log("selected_row : ", selected_row);
     console.log("updated row : ", updated_row);
     const updatedRows = [...rows];
@@ -556,15 +538,11 @@ const { userData, setUserData } = useUserContext();
   //   }
   // };
 
-
-
- 
   // useEffect(() => {
   //   //This useEffect is keeping track of the search whenever it is visible  or not
   //   console.log("useEffect for search");
   //   setClearVisible(search === "" ? false : true);
   // }, [search]);
-
 
   // const handleSubmit = () => {
   //   console.log("handleSubmit()");
@@ -589,7 +567,6 @@ const { userData, setUserData } = useUserContext();
   // const handleClick = (id) => {
   //   console.log("ID=> " + id);
   // };
-
 
   //This filter method will be required later
   const handlefilter = (event) => {
@@ -620,8 +597,7 @@ const { userData, setUserData } = useUserContext();
       setOpen(true);
       return;
     }
-    if(currentAddedIssue.trim().toLowerCase()==='miscellaneous')
-    {
+    if (currentAddedIssue.trim().toLowerCase() === "miscellaneous") {
       setsnackbarSeverity("error");
       setSnackbarText("Miscellaneous keyword is not allowed! ");
       setAddissueError(true);
@@ -637,7 +613,6 @@ const { userData, setUserData } = useUserContext();
     const success = handleSaveClick(selectedCategory, updatedCategory);
     return success;
   };
-
 
   // For framer motion
   const icon = {
@@ -667,14 +642,8 @@ const { userData, setUserData } = useUserContext();
 
   // const onEditseveritydropdown = ["Critical", "Major", "Minor"];
 
-  const customSeverity = [
-    "None",
-    "Critical",
-    "Major",
-    "Minor",
-  ];
+  const customSeverity = ["None", "Critical", "Major", "Minor"];
 
- 
   //********************* Style classes ***************
   const classes = {
     conatiner: {
@@ -706,8 +675,8 @@ const { userData, setUserData } = useUserContext();
       values: ["Critical", "Major", "Minor"],
     },
   ];
- 
-  const  urllist=[
+
+  const urllist = [
     { pageName: "Home", pagelink: "/admin/home" },
     {
       pageName: "Configure Infrastructure",
@@ -717,35 +686,35 @@ const { userData, setUserData } = useUserContext();
       pageName: "Add Issues",
       pagelink: "/admin/infrastructure/addIssues",
     },
-  ]
-
-  
+  ];
 
   //************** Returned Component  **************
   return (
-   
-          <AnimatedPage>
-            <div>
-              <form>
-                <Container sx={classes.conatiner}>
-                  <Box
-                    boxShadow={2} // Adjust the shadow depth as needed
-                    p={2} // Optional: Add padding to the box
-                  >
-                    <Typography
-                      variant="h6"
-                      color="textSecondary"
-                      component="h2"
-                      gutterBottom
-                      fontWeight={900}
-                    >
-                      Current Infrastructure Category Name :  &nbsp;
-                      <span style={{ color: "red" }}>{inf}</span>
-                    </Typography>
-                  </Box>
-                  <br />
-                  {/* issue name */}
-                  {divIsVisibleList&&divIsVisibleList.includes("add-issues-selected-category")&&<div id="add-issues-selected-category"> 
+    //<AnimatedPage>
+    <div>
+      <form>
+        <Container sx={classes.conatiner}>
+          <Box
+            boxShadow={2} // Adjust the shadow depth as needed
+            p={2} // Optional: Add padding to the box
+            borderRadius={2}
+          >
+            <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+              gutterBottom
+              fontWeight={900}
+            >
+              Current Infrastructure Category Name : &nbsp;
+              <span style={{ color: "red" }}>{inf}</span>
+            </Typography>
+
+            <br />
+            {/* issue name */}
+            {divIsVisibleList &&
+              divIsVisibleList.includes("add-issues-selected-category") && (
+                <div id="add-issues-selected-category">
                   <Textfield
                     onChange={(e) => handleAddIssueText(e)}
                     // sx={classes.txt}
@@ -810,6 +779,11 @@ const { userData, setUserData } = useUserContext();
                     color={"primary"}
                     variant={"contained"}
                     onClick={handleAddClick}
+                    style={{
+                      backgroundImage:
+                        "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                      padding: "15px",
+                    }}
                     buttontext={
                       <div
                         style={{
@@ -821,7 +795,7 @@ const { userData, setUserData } = useUserContext();
                         {" "}
                         Add &nbsp;
                         <AddCircleOutlineOutlinedIcon
-                          fontSize="large"
+                          fontSize="medium"
                           sx={{ color: "white" }}
                         ></AddCircleOutlineOutlinedIcon>
                       </div>
@@ -833,37 +807,40 @@ const { userData, setUserData } = useUserContext();
                       sx={{ color: "white" }}
                     ></AddCircleOutlineOutlinedIcon>
                   </CustomButton>
-                  </div>}
-
-
-                  <br />
-                  <br />
-                  <motion.div
-                    variants={icon}
-                    initial="hidden"
-                    animate="visible"
-                    transition={{
-                      default: { duration: 2, ease: "easeInOut" },
-                      fill: { duration: 4, ease: [1, 0, 0.8, 1] },
-                    }}
-                  >
-                     {divIsVisibleList&&divIsVisibleList.includes("edit-issues-table")&&<div id="edit-issues-table" >
-                    <CustomTable
-                      rows={filteredRows}
-                      columns={columns}
-                      setRows={setFilteredRows}
-                      savetoDatabse={addIssueToCurrentCategory}
-                      deleteFromDatabase={handleDeleteClick}
-                      editActive={true}
-                      tablename={"Added Issues List"}
-                      redirectIconActive={false}
-                      isDeleteDialog={true}
-                    ></CustomTable>
-                    </div>}
-                  </motion.div>
-                  <br />
-                  <center>
-                    {/* <Button
+                </div>
+              )}
+          </Box>
+          <br />
+          <br />
+          {/* <motion.div
+            variants={icon}
+            initial="hidden"
+            animate="visible"
+            transition={{
+              default: { duration: 2, ease: "easeInOut" },
+              fill: { duration: 4, ease: [1, 0, 0.8, 1] },
+            }}
+          > */}
+          {divIsVisibleList &&
+            divIsVisibleList.includes("edit-issues-table") && (
+              <div id="edit-issues-table">
+                <CustomTable
+                  rows={filteredRows}
+                  columns={columns}
+                  setRows={setFilteredRows}
+                  savetoDatabse={addIssueToCurrentCategory}
+                  deleteFromDatabase={handleDeleteClick}
+                  editActive={true}
+                  tablename={"Added Issues List"}
+                  redirectIconActive={false}
+                  isDeleteDialog={true}
+                ></CustomTable>
+              </div>
+            )}
+          {/* </motion.div> */}
+          <br />
+          <center>
+            {/* <Button
                 variant="contained"
                 color="success"
                 onClick={handleSubmit}
@@ -871,13 +848,13 @@ const { userData, setUserData } = useUserContext();
               >
                 Submit ➥
               </Button> */}
-                    <br />
-                    <br />
-                  </center>
-                </Container>
-              </form>
+            <br />
+            <br />
+          </center>
+        </Container>
+      </form>
 
-              {/* <Snackbar
+      {/* <Snackbar
           open={open}
           autoHideDuration={2000}
           onClose={handleAlertClose}
@@ -892,14 +869,13 @@ const { userData, setUserData } = useUserContext();
             {snackbarText}
           </Alert>
         </Snackbar> */}
-              <SnackbarComponent
-                openPopup={open}
-                setOpenPopup={setOpen}
-                dialogMessage={snackbarText}
-                snackbarSeverity={snackbarSeverity}
-              ></SnackbarComponent>
-            </div>
-          </AnimatedPage>
-        
+      <SnackbarComponent
+        openPopup={open}
+        setOpenPopup={setOpen}
+        dialogMessage={snackbarText}
+        snackbarSeverity={snackbarSeverity}
+      ></SnackbarComponent>
+    </div>
+    // </AnimatedPage>
   );
 }

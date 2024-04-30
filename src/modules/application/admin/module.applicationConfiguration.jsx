@@ -242,12 +242,20 @@ export default function ModuleConfiguration({ sendUrllist }) {
                     variant="contained"
                     type="submit"
                     size="medium"
-                    sx={{ padding: "15px 18px" }}
+                    sx={{
+                      padding: "15px 18px",
+                      backgroundImage:
+                        "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                    }}
                   >
                     Add&nbsp;
                     <AddCircleOutlineOutlinedIcon
                       fontSize="medium"
-                      sx={{ color: "white" }}
+                      sx={
+                        {
+                          //color: "white",
+                        }
+                      }
                     ></AddCircleOutlineOutlinedIcon>
                   </Button>
                 </form>

@@ -10,6 +10,7 @@ import Main from "../../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../../components/navigation/drawerheader/drawerheader.component";
 
 import {
+  Badge,
   IconButton,
   Table,
   TableContainer,
@@ -19,18 +20,22 @@ import {
   TableBody,
   TextField,
   Alert,
+  Collapse,
   Button,
   Box,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Dialog } from "primereact/dialog";
 import AddIcon from "@mui/icons-material/Add";
 import CustomTable from "../../../components/table/table.component";
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 import { useUserContext } from "../../contexts/UserContext";
 import { useLocation } from "react-router-dom";
+import { ExpandMore } from "@mui/icons-material";
 
 export default function InfrastructureUser({ sendUrllist }) {
   const [open, setOpen] = useState(false);
+  const [dropdownValue, setDropdownValue] = useState("");
   const [infrastructures, setInfrastructures] = useState([]);
   const [selectedInfrastructure, setSelectedInfrastructure] = useState("");
   const [selectedIssues, setSelectedIssues] = useState([]);
@@ -45,6 +50,7 @@ export default function InfrastructureUser({ sendUrllist }) {
   const [filteredDeviceIssueDetails, setFilteredDeviceIssueDetails] = useState(
     []
   );
+  const [expanded, setExpanded] = useState(false);
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
   const [ticketOpen, setTicketOpen] = useState(false);
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
@@ -58,6 +64,33 @@ export default function InfrastructureUser({ sendUrllist }) {
     status: "open",
     infraIssueDetails: infraIssueDetails,
   };
+
+  const overviewTableColumns = [
+    {
+      id: "infrastructureName",
+      label: " infrastructure Name ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "issue",
+      label: " Issue Name ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "priority",
+      label: " Severity ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "remarks",
+      label: " Remarks ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+  ];
   const columns = [
     {
       id: "issue",
@@ -280,6 +313,10 @@ export default function InfrastructureUser({ sendUrllist }) {
       }
     }
   };
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
   const handleDeleteItem = (row) => {
     const issue = row.issue;
     const updatedData = tableData.filter((item) => item.issue !== issue);
@@ -291,6 +328,27 @@ export default function InfrastructureUser({ sendUrllist }) {
     );
     setFilteredDeviceIssueDetails(filteredData);
   };
+  const handleDeleteItemFromReviewTableTest = (row) => {
+    const infrastructureName = row.infrastructureName;
+    const issue = row.issue;
+    const updatedData = infraIssueDetails.filter(
+      (item) =>
+        !(
+          item.infrastructureName === infrastructureName && item.issue === issue
+        )
+    );
+    setInfraIssueDetails(updatedData);
+    setFilteredDeviceIssueDetails(
+      filteredDeviceIssueDetails.filter(
+        (item) =>
+          !(
+            item.infrastructureName === infrastructureName &&
+            item.issue === issue
+          )
+      )
+    );
+  };
+
   const handleDeleteItemFromReviewTable = (infrastructureName, issue) => {
     const updatedData = infraIssueDetails.filter(
       (item) =>
@@ -481,79 +539,77 @@ export default function InfrastructureUser({ sendUrllist }) {
             </div>
             {infraIssueDetails.length > 0 && (
               <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>
-                        <TextField
-                          label="infrastructure Name"
-                          variant="standard"
-                          size="small"
-                          onChange={(e) =>
-                            handleFilterChange(e.target.value, "deviceName")
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          label="Issue"
-                          variant="standard"
-                          size="small"
-                          onChange={(e) =>
-                            handleFilterChange(e.target.value, "issue")
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          label="Priority"
-                          variant="standard"
-                          size="small"
-                          onChange={(e) =>
-                            handleFilterChange(e.target.value, "priority")
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          label="Remarks"
-                          variant="standard"
-                          size="small"
-                          onChange={(e) =>
-                            handleFilterChange(e.target.value, "remarks")
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>Action</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {(filteredDeviceIssueDetails.length > 0
-                      ? filteredDeviceIssueDetails
-                      : infraIssueDetails
-                    ).map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell>{row.infrastructureName}</TableCell>
-                        <TableCell>{row.issue}</TableCell>
-                        <TableCell>{row.priority}</TableCell>
-                        <TableCell>{row.remarks}</TableCell>
-                        <TableCell>
-                          <IconButton
-                            onClick={() =>
-                              handleDeleteItemFromReviewTable(
-                                row.infrastructureName,
-                                row.issue
-                              )
-                            }
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
                 <center>
+                  <br></br>
+                  <div
+                    style={{
+                      maxHeight: "400px",
+                      maxWidth: "1200px",
+                      overflowY: "auto",
+                      boxShadow: "0px 4px 8px black",
+                      borderRadius: "10px",
+                      backgroundColor: "#B5C0D0",
+                    }}
+                  >
+                    <div
+                      align="center"
+                      style={{
+                        backgroundColor: "#B5C0D0",
+                        padding: "5px",
+                        flex: 1,
+                        overflow: "auto",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                          flex: 1,
+                        }}
+                      >
+                        Issues Overview
+                      </span>
+                      <span
+                        style={{
+                          color: "#610C9F",
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                        }}
+                      ></span>
+                      <ExpandMore
+                        expand={expanded}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                      >
+                        <ExpandMoreIcon />
+                        &nbsp;
+                      </ExpandMore>
+                      <Badge
+                        badgeContent={infraIssueDetails.length}
+                        color="primary"
+                      >
+                        {/* <NotificationsActiveIcon color="secondary" /> */}
+                      </Badge>
+                      &nbsp;
+                    </div>
+
+                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                      <CustomTable
+                        rows={infraIssueDetails}
+                        columns={overviewTableColumns}
+                        setRows={setInfraIssueDetails}
+                        deleteFromDatabase={handleDeleteItemFromReviewTableTest}
+                        style={{
+                          borderRadius: 10,
+                          maxHeight: 440,
+                          maxWidth: 1200,
+                        }}
+                        isDeleteDialog={false}
+                      ></CustomTable>
+                    </Collapse>
+                  </div>
+                  <br></br>
                   <Button
                     className="button"
                     variant="contained"

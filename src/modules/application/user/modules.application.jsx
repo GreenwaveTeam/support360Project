@@ -51,7 +51,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import "./modules.application.css";
 
 //The main export starts here....
-export default function ApplicationUser({sendUrllist}) {
+export default function ApplicationUser({ sendUrllist }) {
   const [value, setValue] = useState("");
   const [appDropdown, setAppDropdown] = useState([]);
   const [dropdownValue, setDropdownValue] = useState("");
@@ -132,7 +132,7 @@ export default function ApplicationUser({sendUrllist}) {
 
   /**************************************   UseEffect()   ******************************* */
   useEffect(() => {
-    sendUrllist(urllist)
+    sendUrllist(urllist);
     console.log("useEffect() called ");
     console.log("USER from context : ", userData);
     let plantID = "";
@@ -1597,10 +1597,9 @@ export default function ApplicationUser({sendUrllist}) {
       type: "textbox",
       canRepeatSameValue: true,
     },
-  
-  ]
+  ];
 
-  const  urllist=[
+  const urllist = [
     { pageName: "Home", pagelink: "/user/home" },
     {
       pageName: "Report Application",
@@ -1790,15 +1789,12 @@ export default function ApplicationUser({sendUrllist}) {
                         ))}
                     </TableBody>
                   </Table> */}
-                   <CustomTable
+                  <CustomTable
                     rows={overviewTableData}
                     columns={overviewTableColumns}
                     setRows={setOverviewTableData}
                     deleteFromDatabase={handleOverviewDeleteClick}
-                   
-        
                     style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
-                   
                     isDeleteDialog={false}
                   ></CustomTable>
                 </Collapse>
@@ -1977,10 +1973,9 @@ export default function ApplicationUser({sendUrllist}) {
                             top: `${area.top * 100}%`,
                             width: `${area.width * 100}%`,
                             height: `${area.height * 100}%`,
-                            border: '2px solid #2196f3',
-                            backgroundColor :
-                                "rgba(128, 128, 128, 0.5)", 
-                              
+                            border: "2px solid #2196f3",
+                            backgroundColor: "rgba(128, 128, 128, 0.5)",
+
                             // display: 'flex',
                             // justifyContent: 'center',
                             // alignItems: 'center',
@@ -2139,7 +2134,6 @@ export default function ApplicationUser({sendUrllist}) {
                           setmiscellaneousRemarks(e.target.value);
                           console.log("Remarks:", e.target.value);
                         }}
-                       
                       />
 
                       <div style={{ marginBottom: "40px" }}>

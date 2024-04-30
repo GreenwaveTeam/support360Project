@@ -736,7 +736,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
           )}
           {data !== null && (
             <div className="treeViewContainer">
-              <p>Device Tree:</p>
+              <Chip label="Device Tree:" />
               <CustomTreeView
                 data={data}
                 renderTree={renderTree}
@@ -1038,7 +1038,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                         >
                           Node Details:
                         </h3> */}
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
                           <div style={{ marginBottom: "10px" }}>
                             <p
                               style={{
@@ -1132,7 +1138,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             )}
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
                           <div style={{ marginBottom: "10px" }}>
                             <p
                               style={{
@@ -1180,7 +1192,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             )}
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
                           <div style={{ marginBottom: "10px" }}>
                             <p
                               style={{
@@ -1227,7 +1245,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             )}
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
                           <div style={{ marginBottom: "10px" }}>
                             <p
                               style={{
@@ -1277,7 +1301,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             )}
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
                           <div style={{ marginBottom: "10px" }}>
                             <p
                               style={{
@@ -1327,7 +1357,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             )}
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
                           <div style={{ marginBottom: "10px" }}>
                             <p
                               style={{
@@ -1376,7 +1412,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             )}
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
                           <div style={{ marginBottom: "10px" }}>
                             <p
                               style={{
@@ -1425,7 +1467,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             )}
                           </div>
                         </div>
-                        <div style={{ display: "flex", alignItems: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
                           <div style={{ marginBottom: "10px" }}>
                             <p
                               style={{

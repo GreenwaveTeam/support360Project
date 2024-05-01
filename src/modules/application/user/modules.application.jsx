@@ -1631,10 +1631,6 @@ export default function ApplicationUser({ sendUrllist }) {
       canRepeatSameValue: true,
     },
   ];
-<<<<<<< HEAD
-
-=======
->>>>>>> 539677fdfae9b5c623570be48f7f4532d22069a5
   const urllist = [
     { pageName: "Home", pagelink: "/user/home" },
     {
@@ -2115,33 +2111,6 @@ export default function ApplicationUser({ sendUrllist }) {
               //               </TableCell>
               //               <TableCell align="center">{item.remarks}</TableCell>
 
-<<<<<<< HEAD
-                            <TableCell align="center">
-                              <Button
-                                onClick={() => handleOverviewDeleteClick(item)}
-                              >
-                                <DeleteIcon
-                                  align="right"
-                                  sx={{ color: "#FE2E2E" }}
-                                />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table> */}
-                  <CustomTable
-                    rows={overviewTableData}
-                    columns={overviewTableColumns}
-                    setRows={setOverviewTableData}
-                    deleteFromDatabase={handleOverviewDeleteClick}
-                    style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
-                    isDeleteDialog={false}
-                  ></CustomTable>
-                </Collapse>
-              </div>
-            )}
-=======
               //               <TableCell align="center">
               //                 <Button
               //                   onClick={() => handleOverviewDeleteClick(item)}
@@ -2167,7 +2136,6 @@ export default function ApplicationUser({ sendUrllist }) {
               //   </Collapse>
               // </div>
             )} */}
->>>>>>> 539677fdfae9b5c623570be48f7f4532d22069a5
 
             <center>
               {/* <div

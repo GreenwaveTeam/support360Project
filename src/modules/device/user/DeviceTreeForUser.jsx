@@ -46,6 +46,9 @@ import DrawerHeader from "../../../components/navigation/drawerheader/drawerhead
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 import { useUserContext } from "../../contexts/UserContext";
 import { useLocation } from "react-router-dom";
+import { useTheme } from "@emotion/react";
+import { tokens } from "../../../theme";
+import { ExpandMore } from "@mui/icons-material";
 
 export default function UserDeviceTree({ sendUrllist }) {
   const [open, setOpen] = useState(false);

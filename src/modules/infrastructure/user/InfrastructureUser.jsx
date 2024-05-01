@@ -3,6 +3,8 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TopbarPage from "../../../components/navigation/topbar/topbar";
 import SidebarPage from "../../../components/navigation/sidebar/sidebar";

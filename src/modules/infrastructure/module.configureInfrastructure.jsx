@@ -542,77 +542,76 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
   /******************************* Component Return ********************************* */
   return (
-    // <AnimatedPage>
-    <div>
-      <center>
-        <Container sx={classes.conatiner}>
-          {divIsVisibleList &&
-            divIsVisibleList.includes("add-new-infrastructure-category") && (
-              <div id="add-new-infrastructure-category">
-                <Textfield
-                  label={"Infrastructure Category"}
-                  variant={"outlined"}
-                  required
-                  value={newCateogry}
-                  helpertext={"Enter a new Infrastructure category *"}
-                  onChange={(e) => handleCategoryChange(e)}
-                  size="large"
-                  error={categoryError}
-                ></Textfield>
-                <br />
-                <br />
-                <CustomButton
-                  variant={"contained"}
-                  size={"large"}
-                  color={"success"}
-                  style={classes.btn}
-                  onClick={() => handleAddIssues()}
-                  buttontext={" Add Issues "}
-                  
-                ></CustomButton>
-              </div>
-            )}
+    <AnimatedPage>
+      <div>
+        <center>
+          <Container sx={classes.conatiner}>
+            {divIsVisibleList &&
+              divIsVisibleList.includes("add-new-infrastructure-category") && (
+                <div id="add-new-infrastructure-category">
+                  <Textfield
+                    label={"Infrastructure Category"}
+                    variant={"outlined"}
+                    required
+                    value={newCateogry}
+                    helpertext={"Enter a new Infrastructure category *"}
+                    onChange={(e) => handleCategoryChange(e)}
+                    size="large"
+                    error={categoryError}
+                  ></Textfield>
+                  <br />
+                  <br />
+                  <CustomButton
+                    variant={"contained"}
+                    size={"large"}
+                    color={"success"}
+                    style={classes.btn}
+                    onClick={() => handleAddIssues()}
+                    buttontext={" Add Issues "}
+                  ></CustomButton>
+                </div>
+              )}
+            <br />
+            <br />
+            {divIsVisibleList &&
+              divIsVisibleList.includes("existing-infrastructure-table") &&
+              divIsVisibleList.includes("add-new-infrastructure-category") && (
+                <div id="or-div">
+                  <b>OR</b>
+                </div>
+              )}
+            <br />
+            <br />
+            {divIsVisibleList &&
+              divIsVisibleList.includes("existing-infrastructure-table") && (
+                <div id="existing-infrastructure-table">
+                  <CustomTable
+                    rows={infraList}
+                    columns={columns}
+                    setRows={setInfraList}
+                    savetoDatabse={addIssueCategory}
+                    redirectColumn={"categoryname"}
+                    handleRedirect={handleRedirect}
+                    deleteFromDatabase={handleDeleteClick}
+                    editActive={true}
+                    tablename={"Edit Existing Category List "}
+                    style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
+                    redirectIconActive={true}
+                    isDeleteDialog={true}
+                  ></CustomTable>
+                </div>
+              )}
+          </Container>
           <br />
           <br />
-          {divIsVisibleList &&
-            divIsVisibleList.includes("existing-infrastructure-table") &&
-            divIsVisibleList.includes("add-new-infrastructure-category") && (
-              <div id="or-div">
-                <b>OR</b>
-              </div>
-            )}
-          <br />
-          <br />
-          {divIsVisibleList &&
-            divIsVisibleList.includes("existing-infrastructure-table") && (
-              <div id="existing-infrastructure-table">
-                <CustomTable
-                  rows={infraList}
-                  columns={columns}
-                  setRows={setInfraList}
-                  savetoDatabse={addIssueCategory}
-                  redirectColumn={"categoryname"}
-                  handleRedirect={handleRedirect}
-                  deleteFromDatabase={handleDeleteClick}
-                  editActive={true}
-                  tablename={"Edit Existing Category List "}
-                  style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
-                  redirectIconActive={true}
-                  isDeleteDialog={true}
-                ></CustomTable>
-              </div>
-            )}
-        </Container>
-        <br />
-        <br />
-      </center>
-      <SnackbarComponent
-        openPopup={open}
-        setOpenPopup={setOpen}
-        dialogMessage={snackbarText}
-        snackbarSeverity={snackbarSeverity}
-      ></SnackbarComponent>
-    </div>
-    //  </AnimatedPage>
+        </center>
+        <SnackbarComponent
+          openPopup={open}
+          setOpenPopup={setOpen}
+          dialogMessage={snackbarText}
+          snackbarSeverity={snackbarSeverity}
+        ></SnackbarComponent>
+      </div>
+    </AnimatedPage>
   );
 }

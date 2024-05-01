@@ -3,6 +3,7 @@ import "./styles.css";
 import dayjs from "dayjs";
 import Box from "@mui/material/Box";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 //import DeleteIcon from "@mui/icons-material/Delete";
 import CardHeader from "@mui/material/CardHeader";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -1118,7 +1119,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                             }
                                             edge="end"
                                           >
-                                            <DeleteIcon color="error" />
+                                            <CancelOutlinedIcon color="error" />
                                           </IconButton>
                                         </InputAdornment>
                                       </>

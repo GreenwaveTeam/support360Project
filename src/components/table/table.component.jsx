@@ -302,15 +302,27 @@ export default function CustomTable({
   const colorMode = useContext(ColorModeContext);
 
   const tableStyle = {
-    color: "blue",
+    color: "#f2f0f0",
     border: "1px solid",
-    borderColor: colors.grey[800],
-    borderRadius: "0.7rem",
+    borderColor: "#f2f0f063", //colors.grey[800]
+    borderRadius: "0.5rem",
+    boxShadow: 0,
   };
+
+  const oddRowColor = colors.grey[900]; // Light gray color for odd rows
+  const evenRowColor = ""; // White color for even rows
 
   return (
     <>
-      <Paper sx={{ width: "100%", overfMinor: "hidden", borderRadius: "40px" }}>
+      <Paper
+        variant="outlined"
+        sx={{
+          width: "100%",
+          overfMinor: "hidden",
+
+          boxShadow: 0,
+        }}
+      >
         <TableContainer
           component={Paper}
           sx={tableStyle}
@@ -423,8 +435,17 @@ export default function CustomTable({
                   .slice(page * rowperpage, page * rowperpage + rowperpage)
                   .map((row, index) => {
                     console.log("Index====>" + index);
+                    const isEvenRow = index % 2 === 0;
                     return (
-                      <TableRow hover key={index}>
+                      <TableRow
+                        style={{
+                          backgroundColor: isEvenRow
+                            ? evenRowColor
+                            : oddRowColor,
+                        }}
+                        hover
+                        key={index}
+                      >
                         {columns.map((column, columnindex) => {
                           const value = row[column.id];
                           let updatedValue =

@@ -9,6 +9,7 @@ import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
 import Divider from "@mui/material/Divider";
+import SaveIcon from "@mui/icons-material/Save";
 import ReportIcon from "@mui/icons-material/Report";
 // import Sidebar from "../../components/navigation/sidebar/sidebar";
 // import Topbar from "../../components/navigation/topbar/topbar";
@@ -52,6 +53,8 @@ import { useLocation } from "react-router-dom";
 import { ColorModeContext, tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 import { useContext } from "react";
+import { ExpandMore } from "@mui/icons-material";
+import Dropdown from "../../../components/dropdown/dropdown.component";
 
 export default function UserDeviceTree({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -540,20 +543,13 @@ export default function UserDeviceTree({ sendUrllist }) {
                 </Table> */}
 
                 <br></br>
-                <div
-                  style={{
-                    maxHeight: "400px",
-                    maxWidth: "1200px",
-                    overflowY: "auto",
-                    boxShadow: "0px 4px 8px black",
-                    borderRadius: "10px",
-                    backgroundColor: "#B5C0D0",
-                  }}
+                <Card
+                  sx={{ boxShadow: 1, padding: "7px", margin: "0px 2px" }}
+                  style={{}}
                 >
                   <div
                     align="center"
                     style={{
-                      backgroundColor: "#B5C0D0",
                       padding: "5px",
                       flex: 1,
                       overflow: "auto",
@@ -586,7 +582,8 @@ export default function UserDeviceTree({ sendUrllist }) {
                     </ExpandMore>
                     <Badge
                       badgeContent={deviceIssueDetails.length}
-                      color="primary"
+                      color="info"
+                      sx={{ marginLeft: "8px" }}
                     >
                       {/* <NotificationsActiveIcon color="secondary" /> */}
                     </Badge>
@@ -598,25 +595,39 @@ export default function UserDeviceTree({ sendUrllist }) {
                       rows={deviceIssueDetails}
                       columns={overviewTableColumns}
                       setRows={setDeviceIssueDetails}
+                      tablename={"Summary"}
                       deleteFromDatabase={handleDeleteItemFromReviewTableTest}
                       style={{
-                        borderRadius: 10,
-                        maxHeight: 440,
-                        maxWidth: 1200,
+                        borderRadius: 2,
+                        // maxHeight: 440,
+                        // maxWidth: 1200,
                       }}
                       isDeleteDialog={false}
                     ></CustomTable>
+                    <br />
+                    <Button
+                      className="button"
+                      variant="contained"
+                      color="secondary" // Use secondary color for delete button
+                      onClick={() => handleSubmitPost(deviceTicketJSON)}
+                    >
+                      <SaveIcon
+                        fontSize="small"
+                        sx={{ marginRight: "0.3rem" }}
+                      />
+                      Submit
+                    </Button>
                   </Collapse>
-                </div>
+                </Card>
                 <br></br>
-                <Button
+                {/* <Button
                   className="button"
                   variant="contained"
                   color="secondary" // Use secondary color for delete button
                   onClick={() => handleSubmitPost(deviceTicketJSON)}
                 >
                   Submit
-                </Button>
+                </Button> */}
               </center>
             </TableContainer>
           )}
@@ -629,8 +640,10 @@ export default function UserDeviceTree({ sendUrllist }) {
               {data !== null && (
                 <div className="treeViewContainer">
                   <Chip
+                    color="info"
+                    variant="outlined"
                     size="large"
-                    sx={{ fontSize: "0.9rem" }}
+                    sx={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}
                     label="Device Tree :"
                   />
                   <TreeView

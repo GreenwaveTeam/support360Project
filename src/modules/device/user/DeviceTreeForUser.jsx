@@ -24,6 +24,8 @@ import {
   TableContainer,
   IconButton,
   TextField,
+  Collapse,
+  Badge,
   Table,
   TableHead,
   TableRow,
@@ -42,6 +44,7 @@ import DrawerHeader from "../../../components/navigation/drawerheader/drawerhead
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 import { useUserContext } from "../../contexts/UserContext";
 import { useLocation } from "react-router-dom";
+import { ExpandMore } from "@mui/icons-material";
 
 export default function UserDeviceTree({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -65,6 +68,7 @@ export default function UserDeviceTree({ sendUrllist }) {
   const [filteredDeviceIssueDetails, setFilteredDeviceIssueDetails] = useState(
     []
   );
+  const [expanded, setExpanded] = useState(false);
   const [otherIssue, setOtherIssue] = useState("");
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
   const { userData, setUserData } = useUserContext();
@@ -202,7 +206,32 @@ export default function UserDeviceTree({ sendUrllist }) {
         : null}
     </TreeItem>
   );
-
+  const overviewTableColumns = [
+    {
+      id: "deviceName",
+      label: " Device Name ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "issue",
+      label: " Issue Name ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "priority",
+      label: " Severity ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+    {
+      id: "remarks",
+      label: " Remarks ",
+      type: "textbox",
+      canRepeatSameValue: true,
+    },
+  ];
   const handleNodeClick = (node) => {
     console.log("left click ", node.name);
 
@@ -326,6 +355,9 @@ export default function UserDeviceTree({ sendUrllist }) {
       }
     }
   };
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
   const handleFilterChange = (value, field) => {
     const filteredData = deviceIssueDetails.filter((row) =>
       row[field].toLowerCase().includes(value.toLowerCase())
@@ -395,6 +427,21 @@ export default function UserDeviceTree({ sendUrllist }) {
       )
     );
   };
+
+  const handleDeleteItemFromReviewTableTest = (row) => {
+    const deviceName = row.deviceName;
+    const issue = row.issue;
+    const updatedData = deviceIssueDetails.filter(
+      (item) => !(item.deviceName === deviceName && item.issue === issue)
+    );
+    setDeviceIssueDetails(updatedData);
+    setFilteredDeviceIssueDetails(
+      filteredDeviceIssueDetails.filter(
+        (item) => !(item.deviceName === deviceName && item.issue === issue)
+      )
+    );
+  };
+
   const urllist = [
     { pageName: "Home", pagelink: "/user/home" },
     {
@@ -408,79 +455,150 @@ export default function UserDeviceTree({ sendUrllist }) {
         <div id="device-report">
           {deviceIssueDetails.length > 0 && (
             <TableContainer>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <TextField
-                        label="Device Name"
-                        variant="standard"
-                        size="small"
-                        onChange={(e) =>
-                          handleFilterChange(e.target.value, "deviceName")
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        label="Issue"
-                        variant="standard"
-                        size="small"
-                        onChange={(e) =>
-                          handleFilterChange(e.target.value, "issue")
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        label="Priority"
-                        variant="standard"
-                        size="small"
-                        onChange={(e) =>
-                          handleFilterChange(e.target.value, "priority")
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField
-                        label="Remarks"
-                        variant="standard"
-                        size="small"
-                        onChange={(e) =>
-                          handleFilterChange(e.target.value, "remarks")
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(filteredDeviceIssueDetails.length > 0
-                    ? filteredDeviceIssueDetails
-                    : deviceIssueDetails
-                  ).map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{row.deviceName}</TableCell>
-                      <TableCell>{row.issue}</TableCell>
-                      <TableCell>{row.priority}</TableCell>
-                      <TableCell>{row.remarks}</TableCell>
-                      <TableCell>
-                        <IconButton
-                          onClick={() =>
-                            handleDeleteItemFromReviewTable(
-                              row.deviceName,
-                              row.issue
-                            )
-                          }
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
               <center>
+                {/* <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <TextField
+                          label="Device Name"
+                          variant="standard"
+                          size="small"
+                          onChange={(e) =>
+                            handleFilterChange(e.target.value, "deviceName")
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          label="Issue"
+                          variant="standard"
+                          size="small"
+                          onChange={(e) =>
+                            handleFilterChange(e.target.value, "issue")
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          label="Priority"
+                          variant="standard"
+                          size="small"
+                          onChange={(e) =>
+                            handleFilterChange(e.target.value, "priority")
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <TextField
+                          label="Remarks"
+                          variant="standard"
+                          size="small"
+                          onChange={(e) =>
+                            handleFilterChange(e.target.value, "remarks")
+                          }
+                        />
+                      </TableCell>
+                      <TableCell>Action</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {(filteredDeviceIssueDetails.length > 0
+                      ? filteredDeviceIssueDetails
+                      : deviceIssueDetails
+                    ).map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{row.deviceName}</TableCell>
+                        <TableCell>{row.issue}</TableCell>
+                        <TableCell>{row.priority}</TableCell>
+                        <TableCell>{row.remarks}</TableCell>
+                        <TableCell>
+                          <IconButton
+                            onClick={() =>
+                              handleDeleteItemFromReviewTable(
+                                row.deviceName,
+                                row.issue
+                              )
+                            }
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table> */}
+
+                <br></br>
+                <div
+                  style={{
+                    maxHeight: "400px",
+                    maxWidth: "1200px",
+                    overflowY: "auto",
+                    boxShadow: "0px 4px 8px black",
+                    borderRadius: "10px",
+                    backgroundColor: "#B5C0D0",
+                  }}
+                >
+                  <div
+                    align="center"
+                    style={{
+                      backgroundColor: "#B5C0D0",
+                      padding: "5px",
+                      flex: 1,
+                      overflow: "auto",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        flex: 1,
+                      }}
+                    >
+                      Issues Overview
+                    </span>
+                    <span
+                      style={{
+                        color: "#610C9F",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    ></span>
+                    <ExpandMore
+                      expand={expanded}
+                      onClick={handleExpandClick}
+                      aria-expanded={expanded}
+                      aria-label="show more"
+                    >
+                      <ExpandMoreIcon />
+                      &nbsp;
+                    </ExpandMore>
+                    <Badge
+                      badgeContent={deviceIssueDetails.length}
+                      color="primary"
+                    >
+                      {/* <NotificationsActiveIcon color="secondary" /> */}
+                    </Badge>
+                    &nbsp;
+                  </div>
+
+                  <Collapse in={expanded} timeout="auto" unmountOnExit>
+                    <CustomTable
+                      rows={deviceIssueDetails}
+                      columns={overviewTableColumns}
+                      setRows={setDeviceIssueDetails}
+                      deleteFromDatabase={handleDeleteItemFromReviewTableTest}
+                      style={{
+                        borderRadius: 10,
+                        maxHeight: 440,
+                        maxWidth: 1200,
+                      }}
+                      isDeleteDialog={false}
+                    ></CustomTable>
+                  </Collapse>
+                </div>
+                <br></br>
                 <Button
                   className="button"
                   variant="contained"

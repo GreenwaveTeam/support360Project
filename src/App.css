@@ -6,7 +6,11 @@
   height: 40vmin;
   pointer-events: none;
 }
-/* .MuiBreadcrumbs-root{color: #FF4500  !important;font-style: normal !important;} */
+ .MuiBreadcrumbs-root{
+  color: white !important;
+  background: #447ac4;
+  padding: 2px 12px;
+  border-radius: 8px;} */
 .MuiAvatar-root{width: 32px !important;height:32px !important;font-size: 0.96rem !important;}
 /* .MuiTab-root.Mui-selected {
   color: #ffffff !important;
@@ -48,7 +52,9 @@
 
 /*Table Style*/
 .MuiTableCell-root{padding: 14px !important;}
-
+/*Dialog */
+.MuiDialogTitle-root{padding: 10px 14px !important;}
+.MuiDialogContent-root{padding: 15px 15px !important; }
 /* custom scrollbar */
 ::-webkit-scrollbar {
   width: 20px;

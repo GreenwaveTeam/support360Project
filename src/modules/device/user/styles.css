@@ -18,7 +18,7 @@
   }
   
   .button {
-    margin-top: 10px;
+    
     transition: margin 0.3s ease-in-out;
   }
   
@@ -87,3 +87,8 @@
     justify-content: flex-start; 
     align-items: center;
   }
+.CardText{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

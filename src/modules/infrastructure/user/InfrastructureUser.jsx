@@ -24,7 +24,6 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Dialog } from "primereact/dialog";
 import AddIcon from "@mui/icons-material/Add";
 import CustomTable from "../../../components/table/table.component";

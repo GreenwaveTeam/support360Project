@@ -1,6 +1,10 @@
 import TabContext from "@mui/lab/TabContext";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
+import * as React from "react";
+
+import { ColorModeContext, tokens } from "../../../theme";
+//import { useTheme } from "@mui/material";
 
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -49,6 +53,18 @@ import Textfield from "../../../components/textfield/textfield.component";
 import TicketDialog from "../../../components/ticketdialog/ticketdialog.component";
 import { useUserContext } from "../../contexts/UserContext";
 import "./modules.application.css";
+import Fab from "@mui/material/Fab";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import NavigationIcon from "@mui/icons-material/Navigation";
+import AddIcon from "@mui/icons-material/Add";
+//Dialog
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import CloseIcon from "@mui/icons-material/Close";
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -729,7 +745,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
     boxShadow: 24,
     p: 4,
-    borderRadius: 5,
+    borderRadius: 1,
     display: "grid",
   };
 
@@ -1208,6 +1224,7 @@ export default function ApplicationUser({ sendUrllist }) {
       setSnackbarSeverity("error");
       setSnackbarText("No Tickets were raised");
     }
+    setOpen(false);
   };
 
   const generateRandomNumber = () => {
@@ -1560,6 +1577,22 @@ export default function ApplicationUser({ sendUrllist }) {
     }),
   }));
 
+  //Dialog
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
+
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
+
   // const handleTicketDialogClose = (event,reason) => {
   //   if (reason && reason === "backdropClick")
   //         return;
@@ -1598,7 +1631,10 @@ export default function ApplicationUser({ sendUrllist }) {
       canRepeatSameValue: true,
     },
   ];
+<<<<<<< HEAD
 
+=======
+>>>>>>> 539677fdfae9b5c623570be48f7f4532d22069a5
   const urllist = [
     { pageName: "Home", pagelink: "/user/home" },
     {
@@ -1606,10 +1642,283 @@ export default function ApplicationUser({ sendUrllist }) {
       pagelink: "/user/ReportApplication",
     },
   ];
-
+  //const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   /*************************************************** Component return ************************************** */
   return (
     <div>
+      {tabsmoduleNames.length !== 0 && (
+        <Fab
+          size="large"
+          variant="extended"
+          color="secondary"
+          aria-label="add"
+          sx={{ position: "fixed", left: "90%", bottom: "5%" }}
+          onClick={handleClickOpen}
+        >
+          <AddIcon />
+
+          <p style={{ marginRight: "14px" }}>Review</p>
+          <Badge
+            badgeContent={overviewTableData.length}
+            color="primary"
+          ></Badge>
+        </Fab>
+      )}
+      <Dialog open={open} onBackdropClick={handleCloseDialog}>
+        <DialogTitle>
+          <div className="IssueDialog">
+            {tabsmoduleNames.length !== 0 && (
+              <div>
+                <div
+                  style={{
+                    overflowY: "auto",
+                  }}
+                >
+                  <div
+                    align="center"
+                    style={{
+                      flex: 1,
+                      overflow: "auto",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                        flex: 1,
+                      }}
+                    >
+                      Issues Overview
+                    </span>
+                    <span
+                      style={{
+                        color: "#610C9F",
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      [{dropdownValue}]{" "}
+                    </span>
+                  </div>
+                  {/* <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "blue",
+                      }}
+                    >
+                      {tabsmoduleNames.length !== 0 && (
+                        <CustomButton
+                          size={"large"}
+                          id={"final-submit"}
+                          variant={"contained"}
+                          color={"success"}
+                          onClick={handleFinalReportClick}
+                          style={classes.btn}
+                          buttontext={
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              Raise a Ticket
+                              <ArrowRightIcon fontSize="small" />
+                            </div>
+                          }
+                        ></CustomButton>
+                      )}
+                      &nbsp;
+                      {progressVisible && (
+                        <CircularProgress
+                          color="info"
+                          thickness={5}
+                          size={20}
+                        />
+                      )}
+                    </div> */}
+                </div>
+                {/* <Collapse in={expanded} timeout="auto" unmountOnExit> */}
+
+                {/* </Collapse> */}
+              </div>
+            )}
+          </div>
+        </DialogTitle>
+        <Divider textAlign="left"></Divider>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <div>
+              {tabsmoduleNames.length !== 0 && (
+                <div>
+                  <CustomTable
+                    rows={overviewTableData}
+                    columns={overviewTableColumns}
+                    setRows={setOverviewTableData}
+                    deleteFromDatabase={handleOverviewDeleteClick}
+                    style={{
+                      borderRadius: 10,
+                      maxHeight: 440,
+                      maxWidth: 1200,
+                    }}
+                    isDeleteDialog={false}
+                  ></CustomTable>
+                  <br />
+                  {/* </Collapse> */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {tabsmoduleNames.length !== 0 && (
+                      <CustomButton
+                        size={"large"}
+                        id={"final-submit"}
+                        variant={"contained"}
+                        color={"success"}
+                        onClick={handleFinalReportClick}
+                        style={classes.btn}
+                        buttontext={
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            Raise a Ticket
+                            <ArrowRightIcon fontSize="small" />
+                          </div>
+                        }
+                      ></CustomButton>
+                    )}
+                    &nbsp;
+                    {progressVisible && (
+                      <CircularProgress color="info" thickness={5} size={20} />
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "10px",
+              }}
+            >
+              <Textfield
+                id="user-misc-issue"
+                label={
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Miscellaneous Issue
+                  </span>
+                }
+                multiline={true}
+                rows={1}
+                InputProps={{
+                  style: {
+                    borderRadius: "8px",
+                  },
+                }}
+                style={{
+                  flex: "1",
+                  marginRight: "10px",
+                }}
+                value={miscellaneousInput}
+                onChange={(e) => {
+                  setMiscellaneousInput(e.target.value);
+                  console.log("Miscellaneous Issue:", e.target.value);
+                }}
+                error={additionalMiscellaneousError}
+              />
+
+              <Textfield
+                id="user-misc-remarks"
+                label={
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Remarks
+                  </span>
+                }
+                multiline
+                rows={1}
+                InputProps={{
+                  style: {
+                    borderRadius: "8px",
+                  },
+                }}
+                style={{
+                  flex: "1",
+                  marginRight: "10px",
+                }}
+                value={miscellaneousRemarks}
+                onChange={(e) => {
+                  setmiscellaneousRemarks(e.target.value);
+                  console.log("Remarks:", e.target.value);
+                }}
+              />
+
+              <div>
+                <Dropdown
+                  style={{ width: "200px", marginRight: "10px" }}
+                  id={"modal-severity-dropdown"}
+                  list={severityList}
+                  label={
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Severity
+                    </span>
+                  }
+                  value={miscellaneousSeverity}
+                  onChange={(e) => {
+                    setmiscellaneousSeverity(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                  error={additionalMiscellaneousSeverityError}
+                />
+                <Button
+                  size="small"
+                  id="miscellaneous-add"
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    height: "50px",
+                    width: "80px",
+                    borderRadius: "5px",
+                    backgroundImage:
+                      "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+                  }}
+                  startIcon={<AddCircleIcon />}
+                  onClick={handleAdditionalMiscellaneous}
+                >
+                  Add
+                  
+                </Button>
+              </div>
+            </div> */}
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
       <AnimatedPage>
         {/* <CustomDropDown>
     </CustomDropDown> */}
@@ -1642,139 +1951,171 @@ export default function ApplicationUser({ sendUrllist }) {
                 </div>
               )}
           </center>
-
           <br />
           <center>
-            {tabsmoduleNames.length !== 0 && (
-              <div
-                style={{
-                  maxHeight: "400px",
-                  maxWidth: "1200px",
-                  overflowY: "auto",
-                  boxShadow: "0px 4px 8px black",
-                  borderRadius: "10px",
-                  backgroundColor: "#B5C0D0",
-                }}
-              >
-                <div
-                  align="center"
-                  style={{
-                    backgroundColor: "#B5C0D0",
-                    padding: "5px",
-                    flex: 1,
-                    overflow: "auto",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                      flex: 1,
-                    }}
-                  >
-                    Issues Overview
-                  </span>
-                  <span
-                    style={{
-                      color: "#610C9F",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    [{dropdownValue}]{" "}
-                  </span>
-                  <ExpandMore
-                    expand={expanded}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                  >
-                    <ExpandMoreIcon />
-                    {/* &nbsp; */}
-                  </ExpandMore>
-                  <Badge
-                    badgeContent={overviewTableData.length}
-                    color="primary"
-                  >
-                    {/* <NotificationsActiveIcon color="secondary" /> */}
-                  </Badge>
-                  &nbsp;
-                </div>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                  {/* <Table sx={{ borderRadius: "100px" }}>
-                    <TableBody>
-                      <TableRow colSpan={7}>
-                        <TableCell
-                          align="left"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Module Name </b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Area </b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Issue Name </b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Severity</b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Remarks</b>
-                        </TableCell>
-                        <TableCell
-                          align="center"
-                          sx={{ backgroundColor: "#B5C0D0" }}
-                        >
-                          <b> Action</b>
-                        </TableCell>
-                      </TableRow>
-                      {overviewTableData.length === 0 && (
-                        <TableRow style={{ backgroundColor: "white" }}>
-                          <TableCell colSpan={6}>No Issues Added...</TableCell>
-                        </TableRow>
-                      )}
-                      {overviewTableData.length > 0 &&
-                        overviewTableData.map((item, index) => (
-                          <TableRow
-                            key={index}
-                            style={{ backgroundColor: "white" }}
-                          >
-                            <TableCell align="left">
-                              {item.module_name}
-                            </TableCell>
-                            <TableCell align="center">
-                              {item.selected_coordinates_acronym}
-                            </TableCell>
-                            <TableCell align="center">
-                              {item.issue_name}
-                            </TableCell>
+            {/* {tabsmoduleNames.length !== 0 && (
+              // <div>
+              //   <div
+              //     style={{
+              //       maxHeight: "400px",
+              //       overflowY: "auto",
+              //     }}
+              //   >
+              //     <div
+              //       align="center"
+              //       style={{
+              //         backgroundColor: "red",
+              //         padding: "5px",
+              //         flex: 1,
+              //         overflow: "auto",
+              //       }}
+              //     >
+              //       <span
+              //         style={{
+              //           fontSize: "14px",
+              //           fontWeight: "bold",
+              //           flex: 1,
+              //         }}
+              //       >
+              //         Issues Overview
+              //       </span>
+              //       <span
+              //         style={{
+              //           color: "#610C9F",
+              //           fontSize: "14px",
+              //           fontWeight: "bold",
+              //         }}
+              //       >
+              //         [{dropdownValue}]{" "}
+              //       </span>
+              //       <ExpandMore
+              //         expand={expanded}
+              //         onClick={handleExpandClick}
+              //         aria-expanded={expanded}
+              //         aria-label="show more"
+              //       >
+              //         <ExpandMoreIcon />
+                      
+              //       </ExpandMore>
+              //       <Badge
+              //         badgeContent={overviewTableData.length}
+              //         color="primary"
+              //       >
+                     
+              //       </Badge>
+              //     </div>
+              //     <div
+              //       style={{
+              //         display: "flex",
+              //         alignItems: "center",
+              //         justifyContent: "center",
+              //       }}
+              //     >
+              //       {tabsmoduleNames.length !== 0 && (
+              //         <CustomButton
+              //           size={"large"}
+              //           id={"final-submit"}
+              //           variant={"contained"}
+              //           color={"success"}
+              //           onClick={handleFinalReportClick}
+              //           style={classes.btn}
+              //           buttontext={
+              //             <div
+              //               style={{
+              //                 display: "flex",
+              //                 alignItems: "center",
+              //                 justifyContent: "center",
+              //               }}
+              //             >
+              //               Raise a Ticket
+              //               <ArrowRightIcon fontSize="small" />
+              //             </div>
+              //           }
+              //         ></CustomButton>
+              //       )}
+              //       &nbsp;
+              //       {progressVisible && (
+              //         <CircularProgress color="info" thickness={5} size={20} />
+              //       )}
+              //     </div>
+              //     &nbsp;
+              //   </div>
+              //   <Collapse in={expanded} timeout="auto" unmountOnExit>
+              //     <Table sx={{ borderRadius: "100px" }}>
+              //       <TableBody>
+              //         <TableRow colSpan={7}>
+              //           <TableCell
+              //             align="left"
+              //             sx={{ backgroundColor: "#B5C0D0" }}
+              //           >
+              //             <b> Module Name </b>
+              //           </TableCell>
+              //           <TableCell
+              //             align="center"
+              //             sx={{ backgroundColor: "#B5C0D0" }}
+              //           >
+              //             <b> Area </b>
+              //           </TableCell>
+              //           <TableCell
+              //             align="center"
+              //             sx={{ backgroundColor: "#B5C0D0" }}
+              //           >
+              //             <b> Issue Name </b>
+              //           </TableCell>
+              //           <TableCell
+              //             align="center"
+              //             sx={{ backgroundColor: "#B5C0D0" }}
+              //           >
+              //             <b> Severity</b>
+              //           </TableCell>
+              //           <TableCell
+              //             align="center"
+              //             sx={{ backgroundColor: "#B5C0D0" }}
+              //           >
+              //             <b> Remarks</b>
+              //           </TableCell>
+              //           <TableCell
+              //             align="center"
+              //             sx={{ backgroundColor: "#B5C0D0" }}
+              //           >
+              //             <b> Action</b>
+              //           </TableCell>
+              //         </TableRow>
+              //         {overviewTableData.length === 0 && (
+              //           <TableRow style={{ backgroundColor: "white" }}>
+              //             <TableCell colSpan={6}>No Issues Added...</TableCell>
+              //           </TableRow>
+              //         )}
+              //         {overviewTableData.length > 0 &&
+              //           overviewTableData.map((item, index) => (
+              //             <TableRow
+              //               key={index}
+              //               style={{ backgroundColor: "white" }}
+              //             >
+              //               <TableCell align="left">
+              //                 {item.module_name}
+              //               </TableCell>
+              //               <TableCell align="center">
+              //                 {item.selected_coordinates_acronym}
+              //               </TableCell>
+              //               <TableCell align="center">
+              //                 {item.issue_name}
+              //               </TableCell>
 
-                            <TableCell
-                              align="center"
-                              style={{
-                                color:
-                                  severityColors[item.severity.toLowerCase()] ||
-                                  severityColors.minor,
-                                fontWeight: "bold",
-                              }}
-                            >
-                              {item.severity}
-                            </TableCell>
-                            <TableCell align="center">{item.remarks}</TableCell>
+              //               <TableCell
+              //                 align="center"
+              //                 style={{
+              //                   color:
+              //                     severityColors[item.severity.toLowerCase()] ||
+              //                     severityColors.minor,
+              //                   fontWeight: "bold",
+              //                 }}
+              //               >
+              //                 {item.severity}
+              //               </TableCell>
+              //               <TableCell align="center">{item.remarks}</TableCell>
 
+<<<<<<< HEAD
                             <TableCell align="center">
                               <Button
                                 onClick={() => handleOverviewDeleteClick(item)}
@@ -1800,10 +2141,36 @@ export default function ApplicationUser({ sendUrllist }) {
                 </Collapse>
               </div>
             )}
+=======
+              //               <TableCell align="center">
+              //                 <Button
+              //                   onClick={() => handleOverviewDeleteClick(item)}
+              //                 >
+              //                   <DeleteIcon
+              //                     align="right"
+              //                     sx={{ color: "#FE2E2E" }}
+              //                   />
+              //                 </Button>
+              //               </TableCell>
+              //             </TableRow>
+              //           ))}
+              //       </TableBody>
+              //     </Table>
+              //     <CustomTable
+              //       rows={overviewTableData}
+              //       columns={overviewTableColumns}
+              //       setRows={setOverviewTableData}
+              //       deleteFromDatabase={handleOverviewDeleteClick}
+              //       style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
+              //       isDeleteDialog={false}
+              //     ></CustomTable>
+              //   </Collapse>
+              // </div>
+            )} */}
+>>>>>>> 539677fdfae9b5c623570be48f7f4532d22069a5
 
             <center>
-              <br />
-              <div
+              {/* <div
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -1836,28 +2203,30 @@ export default function ApplicationUser({ sendUrllist }) {
                 {progressVisible && (
                   <CircularProgress color="info" thickness={5} size={20} />
                 )}
-              </div>
+              </div> */}
             </center>
           </center>
-          <br />
+
           {tabsmoduleNames.length !== 0 && (
             <TabContext value={value}>
               <Box
-                // style={{
-                //   border: 1,
-                //   borderColor: "divider",
-                //   borderRadius: "10px",
-                //   backgroundColor: "#EEEEEE",
-                //   display: "flex",
-                //   justifyContent: "center", // Center the content horizontally
-                //   alignItems: "center", // Center the content vertically
-                // }}
-                className="tab"
+                style={{
+                  border: 1,
+                  borderColor: "divider",
+                  borderRadius: "10px",
+                  backgroundColor: colors.primary[400],
+                  display: "flex",
+                  justifyContent: "center", // Center the content horizontally
+                  alignItems: "center", // Center the content vertically
+                }}
+                // className="tab"
               >
                 <Tabs
                   onChange={handleTabsChange}
                   value={value}
                   variant="scrollable"
+                  textColor="secondary"
+                  indicatorColor="secondary"
                 >
                   {tabsmoduleNames.map((module, index) => (
                     <Tab
@@ -1907,7 +2276,7 @@ export default function ApplicationUser({ sendUrllist }) {
                   </style> */}
                 </div>
               </center>
-              <br />
+
               <div style={{ display: "flex" }}>
                 <CheckCircleIcon fontSize="small" sx={{ color: "#16FF00" }} />
                 <span> - * Indicates Issues have been added </span>
@@ -2021,15 +2390,16 @@ export default function ApplicationUser({ sendUrllist }) {
                 </div>
               </motion.div>
 
+              <br />
+
               <center>
                 <Container>
                   <Paper
                     elevation={4}
                     style={{
                       borderRadius: "10px",
-                      boxShadow: "0px 4px 8px black",
+                      boxShadow: 1,
                       maxHeight: "200px",
-                      maxWidth: "900px",
                     }}
                   >
                     <center>
@@ -2039,7 +2409,7 @@ export default function ApplicationUser({ sendUrllist }) {
                           alignItems: "center",
                           backgroundColor: "#B5C0D0",
                           padding: "10px",
-                          borderRadius: "10px",
+
                           justifyContent: "center",
                         }}
                       >
@@ -2089,7 +2459,7 @@ export default function ApplicationUser({ sendUrllist }) {
                         rows={3}
                         InputProps={{
                           style: {
-                            borderRadius: "15px",
+                            borderRadius: "7px",
                           },
                         }}
                         style={{
@@ -2171,7 +2541,6 @@ export default function ApplicationUser({ sendUrllist }) {
                           onClick={handleAdditionalMiscellaneous}
                         >
                           Add
-                          {/* <AddCircleOutlineOutlinedIcon fontSize="small"/> */}
                         </Button>
                       </div>
                     </div>
@@ -2184,20 +2553,40 @@ export default function ApplicationUser({ sendUrllist }) {
               <br />
             </TabContext>
           )}
-          <div>
-            <Modal
-              keepMounted
-              open={openDialog}
-              onClose={handleClose}
-              disableScrollLock
-            >
-              <TableContainer sx={modalstyle}>
-                {/* <Grid item xs={12} md={6} lg={4}> */}
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                  Selected Area : {areaName}
-                </Typography>
-                <br />
-                <div style={{ display: "flex" }}>
+
+          <Dialog
+            maxWidth="lg"
+            //fullScreen="true"
+            keepMounted
+            open={openDialog}
+            onClose={handleClose}
+          >
+            <DialogTitle sx={{ mt: 1 }}>
+              <Typography sx={{ fontSize: "14px", fontWeight: "bold" }}>
+                Selected Area [
+                <span
+                  style={{
+                    color: "#610C9F",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    marginTop: "1rem",
+                  }}
+                >
+                  {areaName} ] :
+                </span>
+              </Typography>
+            </DialogTitle>
+            <Divider textAlign="left"></Divider>
+
+            <DialogContent>
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                  }}
+                >
                   <FormControl style={{ minWidth: 200, maxWidth: 200 }}>
                     <InputLabel>{"Issue Name"}</InputLabel>
                     <Select
@@ -2220,20 +2609,20 @@ export default function ApplicationUser({ sendUrllist }) {
                       }}
                     >
                       {/* <input
-              type="text"
-              placeholder="Search..."
-              onClick={(e) => e.stopPropagation()}
-              // Add any other input field properties as needed
-              style={{
-                width: "90%", // Adjust width as desired
-                // Add border
-                // alignItems:'center',
-                // justifyContent:'center',
-                // padding: "10px",
-               
-              }}
+                          type="text"
+                          placeholder="Search..."
+                          onClick={(e) => e.stopPropagation()}
+                          // Add any other input field properties as needed
+                          style={{
+                            width: "90%", // Adjust width as desired
+                            // Add border
+                            // alignItems:'center',
+                            // justifyContent:'center',
+                            // padding: "10px",
+                          
+                          }}
              
-            /> */}
+                        /> */}
                       {/* This  has to be made from scratch because it has Search component */}
                       <Textfield
                         id={"user-issues-dropdown"}
@@ -2289,21 +2678,14 @@ export default function ApplicationUser({ sendUrllist }) {
                           value={item}
                           style={{ whiteSpace: "normal" }}
                         >
-                          <div
-                            style={{
-                              width: "200px",
-                              wordWrap: "break-word",
-                            }}
-                          >
-                            {item}
-                          </div>
+                          <div style={{}}>{item}</div>
                         </MenuItem>
                       ))}
                     </Select>
                   </FormControl>
                   &nbsp;&nbsp;
                   <Dropdown
-                    style={{ width: "200px" }}
+                    style={{ minWidth: 200, maxWidth: 200 }}
                     id={"modal-severity-dropdown"}
                     list={severityList}
                     label={"Severity"}
@@ -2328,16 +2710,25 @@ export default function ApplicationUser({ sendUrllist }) {
                       setRemarksInput(e.target.value);
                     }}
                     multiline={true}
-                    rows={2}
+                    rows={1}
                   />
                   &nbsp;&nbsp;
-                  <IconButton
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    sx={{
+                      height: "50px",
+                      padding: "0px 10px",
+                      borderRadius: "5px",
+                      backgroundImage:
+                        "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+                    }}
                     onClick={handleAddUserIssues}
-                    //onClick={handleAddClick}
-                    sx={{ borderRadius: "20px" }}
+                    //onClick={handleAddClick
+                    startIcon={<AddCircleIcon />}
                   >
-                    <AddCircleIcon fontSize="large" color="primary" />
-                  </IconButton>
+                    Add
+                  </Button>
                 </div>
                 <br />
 
@@ -2346,14 +2737,12 @@ export default function ApplicationUser({ sendUrllist }) {
       sx={{maxHeight:300,maxWidth:300}}
       > */}
 
-                  <Divider />
                   {tableIssuesForCurrentDiv.length !== 0 && (
                     <div
                       style={{
                         maxHeight: "400px",
                         overflowY: "auto",
-                        boxShadow: "0px 4px 8px black",
-                        borderRadius: "10px",
+                        borderRadius: "5px",
                       }}
                     >
                       <CustomTable
@@ -2370,8 +2759,6 @@ export default function ApplicationUser({ sendUrllist }) {
                   )}
 
                   {/* )} */}
-
-                  <br />
                 </div>
 
                 <SnackbarComponent
@@ -2381,9 +2768,9 @@ export default function ApplicationUser({ sendUrllist }) {
                   snackbarSeverity={snackbarSeverity}
                 ></SnackbarComponent>
                 <br></br>
-              </TableContainer>
-            </Modal>
-          </div>
+              </>
+            </DialogContent>
+          </Dialog>
 
           <SnackbarComponent
             openPopup={mainAlert}

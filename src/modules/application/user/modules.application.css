@@ -5,13 +5,13 @@
     justify-content: center   ;
     align-items: center ;
     border-radius: 10px ;
-    background-color: #eeee ;
+    /* background-color: #eeee ; */
 }
 
 .tab-names
 {
     font-weight: bold;
-    color: #000000;
+    /* color: #000000; */
     font-size: 12px;
 }
 

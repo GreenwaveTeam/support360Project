@@ -25,6 +25,7 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
+  Tooltip,
 } from "@mui/material";
 import { Dialog } from "@mui/material";
 //import CustomTree from "../../../components/Tree/tree.component";
@@ -1099,29 +1100,31 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     }
                                     endAdornment={
                                       <>
-                                        <InputAdornment position="end">
-                                          <IconButton
-                                            aria-label="ok"
-                                            onClick={() =>
-                                              handleSaveName("Name")
-                                            }
-                                            edge="end"
-                                          >
-                                            <SaveOutlinedIcon color="success" />
-                                          </IconButton>
-                                        </InputAdornment>
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("Name")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
 
-                                        <InputAdornment position="end">
-                                          <IconButton
-                                            aria-label="not ok"
-                                            onClick={() =>
-                                              handleCancelNameEdit("Name")
-                                            }
-                                            edge="end"
-                                          >
-                                            <CancelOutlinedIcon color="error" />
-                                          </IconButton>
-                                        </InputAdornment>
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit("Name")
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
                                       </>
                                     }
                                   />
@@ -1160,7 +1163,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                           <div>
                             {isEditingMake ? (
                               <>
-                                <Textfield
+                                {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   value={editedMake}
@@ -1179,7 +1182,55 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   color="secondary"
                                   onClick={() => handleCancelNameEdit("Make")}
                                   buttontext={"Cancel"}
-                                ></CustomButton>
+                                ></CustomButton> */}
+
+                                <FormControl fullWidth>
+                                  <InputLabel htmlFor="EditNodeName">
+                                    Edit Node Name
+                                  </InputLabel>
+                                  <OutlinedInput
+                                    autoFocus
+                                    autoComplete="Edit Node Name"
+                                    name="Edit Node Name"
+                                    required
+                                    fullWidth
+                                    id="EditNodeName"
+                                    label="Edit Node Name"
+                                    value={editedMake}
+                                    onChange={(e) =>
+                                      setEditedMake(e.target.value)
+                                    }
+                                    endAdornment={
+                                      <>
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("Make")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit("Make")
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+                                      </>
+                                    }
+                                  />
+                                </FormControl>
                               </>
                             ) : (
                               <>
@@ -1213,7 +1264,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                           <div>
                             {isEditingModel ? (
                               <>
-                                <Textfield
+                                {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   value={editedModel}
@@ -1232,7 +1283,55 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   color="secondary"
                                   onClick={() => handleCancelNameEdit("Model")}
                                   buttontext={"Cancel"}
-                                ></CustomButton>
+                                ></CustomButton> */}
+
+                                <FormControl fullWidth>
+                                  <InputLabel htmlFor="EditNodeName">
+                                    Edit Node Name
+                                  </InputLabel>
+                                  <OutlinedInput
+                                    autoFocus
+                                    autoComplete="Edit Node Name"
+                                    name="Edit Node Name"
+                                    required
+                                    fullWidth
+                                    id="EditNodeName"
+                                    label="Edit Node Name"
+                                    value={editedModel}
+                                    onChange={(e) =>
+                                      setEditedModel(e.target.value)
+                                    }
+                                    endAdornment={
+                                      <>
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("Model")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit("Model")
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+                                      </>
+                                    }
+                                  />
+                                </FormControl>
                               </>
                             ) : (
                               <>
@@ -1266,7 +1365,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                           <div>
                             {isEditingCapacity ? (
                               <>
-                                <Textfield
+                                {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   type="number"
@@ -1288,7 +1387,55 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     handleCancelNameEdit("Capacity")
                                   }
                                   buttontext={"Cancel"}
-                                ></CustomButton>
+                                ></CustomButton> */}
+
+                                <FormControl fullWidth>
+                                  <InputLabel htmlFor="EditNodeName">
+                                    Edit Node Name
+                                  </InputLabel>
+                                  <OutlinedInput
+                                    autoFocus
+                                    autoComplete="Edit Node Name"
+                                    name="Edit Node Name"
+                                    required
+                                    fullWidth
+                                    id="EditNodeName"
+                                    label="Edit Node Name"
+                                    value={editedCapacity}
+                                    onChange={(e) =>
+                                      setEditedCapacity(e.target.value)
+                                    }
+                                    endAdornment={
+                                      <>
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("Capacity")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit("Capacity")
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+                                      </>
+                                    }
+                                  />
+                                </FormControl>
                               </>
                             ) : (
                               <>
@@ -1323,7 +1470,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                           <div>
                             {isEditingDescription ? (
                               <>
-                                <Textfield
+                                {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   value={editedDescription}
@@ -1344,7 +1491,57 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     handleCancelNameEdit("Description")
                                   }
                                   buttontext={"Cancel"}
-                                ></CustomButton>
+                                ></CustomButton> */}
+
+                                <FormControl fullWidth>
+                                  <InputLabel htmlFor="EditNodeName">
+                                    Edit Node Name
+                                  </InputLabel>
+                                  <OutlinedInput
+                                    autoFocus
+                                    autoComplete="Edit Node Name"
+                                    name="Edit Node Name"
+                                    required
+                                    fullWidth
+                                    id="EditNodeName"
+                                    label="Edit Node Name"
+                                    value={editedDescription}
+                                    onChange={(e) =>
+                                      setEditedDescription(e.target.value)
+                                    }
+                                    endAdornment={
+                                      <>
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("Description")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit(
+                                                  "Description"
+                                                )
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+                                      </>
+                                    }
+                                  />
+                                </FormControl>
                               </>
                             ) : (
                               <>
@@ -1379,7 +1576,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                           <div>
                             {isEditingSupportDate ? (
                               <>
-                                <CustomDatePicker
+                                {/* <CustomDatePicker
                                   label="Support End Date"
                                   value={editedSupportDate}
                                   onChange={(newDate) =>
@@ -1399,7 +1596,57 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     handleCancelNameEdit("SupportDate")
                                   }
                                   buttontext={"Cancel"}
-                                ></CustomButton>
+                                ></CustomButton> */}
+
+                                <FormControl fullWidth>
+                                  <InputLabel htmlFor="SupportEndDate">
+                                    Support End Date
+                                  </InputLabel>
+                                  <OutlinedInput
+                                    autoFocus
+                                    autoComplete="Support End Date"
+                                    name="Support End Date"
+                                    required
+                                    fullWidth
+                                    id="SupportEndDate"
+                                    label="Support End Date"
+                                    value={editedSupportDate}
+                                    onChange={(newDate) =>
+                                      setEditedSupportDate(newDate)
+                                    }
+                                    endAdornment={
+                                      <>
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("SupportDate")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit(
+                                                  "SupportDate"
+                                                )
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+                                      </>
+                                    }
+                                  />
+                                </FormControl>
                               </>
                             ) : (
                               <>
@@ -1434,7 +1681,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                           <div>
                             {isEditingWarrantyDate ? (
                               <>
-                                <CustomDatePicker
+                                {/* <CustomDatePicker
                                   label="Warranty End Date"
                                   value={editedWarrantyDate}
                                   onChange={(newDate) =>
@@ -1454,7 +1701,57 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     handleCancelNameEdit("WarrantyDate")
                                   }
                                   buttontext={"Cancel"}
-                                ></CustomButton>
+                                ></CustomButton> */}
+
+                                <FormControl fullWidth>
+                                  <InputLabel htmlFor="WarrantyEndDate">
+                                    Warranty End Date
+                                  </InputLabel>
+                                  <OutlinedInput
+                                    autoFocus
+                                    autoComplete="Warranty End Date"
+                                    name="Warranty End Date"
+                                    required
+                                    fullWidth
+                                    id="WarrantyEndDate"
+                                    label="Warranty End Date"
+                                    value={editedWarrantyDate}
+                                    onChange={(newDate) =>
+                                      setEditedWarrantyDate(newDate)
+                                    }
+                                    endAdornment={
+                                      <>
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("WarrantyDate")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit(
+                                                  "WarrantyDate"
+                                                )
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+                                      </>
+                                    }
+                                  />
+                                </FormControl>
                               </>
                             ) : (
                               <>

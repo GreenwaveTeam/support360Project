@@ -17,6 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 
 import {
+  Button,
   Card,
   Chip,
   Divider,
@@ -1805,7 +1806,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     </MenuItem>
                                   ))}
                                 </Select>
-                                <CustomButton
+                                {/* <CustomButton
                                   variant="contained"
                                   color="primary"
                                   onClick={() => handleSaveName("Catagory")}
@@ -1818,7 +1819,26 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     handleCancelNameEdit("Catagory")
                                   }
                                   buttontext={"Cancel"}
-                                ></CustomButton>
+                                ></CustomButton> */}
+                                <Tooltip title="Save">
+                                  <IconButton
+                                    onClick={() => handleSaveName("Catagory")}
+                                    edge="end"
+                                  >
+                                    <SaveOutlinedIcon color="success" />
+                                  </IconButton>
+                                </Tooltip>
+
+                                <Tooltip title="Cancel">
+                                  <IconButton
+                                    onClick={() =>
+                                      handleCancelNameEdit("Catagory")
+                                    }
+                                    edge="end"
+                                  >
+                                    <CancelOutlinedIcon color="error" />
+                                  </IconButton>
+                                </Tooltip>
                               </>
                             ) : (
                               <>
@@ -1853,7 +1873,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     accept="image/*"
                                     onChange={handleEditImageChange}
                                   />
-                                  <CustomButton
+                                  {/* <CustomButton
                                     variant="contained"
                                     color="primary"
                                     onClick={() => handleSaveName("ImageFile")}
@@ -1866,7 +1886,27 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                       handleCancelNameEdit("ImageFile")
                                     }
                                     buttontext={"Cancel"}
-                                  ></CustomButton>
+                                  ></CustomButton> */}
+                                  <Tooltip title="Save">
+                                    <IconButton
+                                      onClick={() =>
+                                        handleSaveName("ImageFile")
+                                      }
+                                      edge="end"
+                                    >
+                                      <SaveOutlinedIcon color="success" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="Cancel">
+                                    <IconButton
+                                      onClick={() =>
+                                        handleCancelNameEdit("ImageFile")
+                                      }
+                                      edge="end"
+                                    >
+                                      <CancelOutlinedIcon color="error" />
+                                    </IconButton>
+                                  </Tooltip>
                                 </>
                               ) : (
                                 <>

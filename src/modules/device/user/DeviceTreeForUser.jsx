@@ -30,10 +30,12 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody, // Import TextField
+  TableBody,
+  DialogTitle,
+  Chip, // Import TextField
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { Dialog } from "primereact/dialog";
+import Dialog from "@mui/material/Dialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Alert } from "@mui/material";
 import CustomTable from "../../../components/table/table.component";
@@ -48,6 +50,7 @@ import { useLocation } from "react-router-dom";
 import { ColorModeContext, tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 import { useContext } from "react";
+import Dropdown from "../../../components/dropdown/dropdown.component";
 
 export default function UserDeviceTree({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -501,11 +504,19 @@ export default function UserDeviceTree({ sendUrllist }) {
               </center>
             </TableContainer>
           )}
-          <div className="split-screen" onClick={handleClickOutsideNode}>
+          <Card
+            borderRadius={2}
+            className="split-screen"
+            onClick={handleClickOutsideNode}
+          >
             <div className="left-panel">
               {data !== null && (
                 <div className="treeViewContainer">
-                  <p>Device Tree:</p>
+                  <Chip
+                    size="large"
+                    sx={{ fontSize: "0.9rem" }}
+                    label="Device Tree :"
+                  />
                   <TreeView
                     className="treeView"
                     aria-label="rich object"
@@ -532,58 +543,80 @@ export default function UserDeviceTree({ sendUrllist }) {
 
                   <div>
                     <Dialog
-                      header={`Report Issue for : ${selectedNode.name}`}
-                      visible={visible}
-                      style={{ width: "50vw", height: "60vh" }}
-                      onHide={onHideDialog}
+                      // header={`Report Issue for : ${selectedNode.name}`}
+                      fullWidth
+                      open={visible}
+                      PaperProps={{
+                        sx: {
+                          // padding: "15px", // Add padding in the four corners
+                          borderRadius: 2,
+                          overflowX: "hidden", // Hide horizontal overflow
+                        },
+                      }}
+                      onClose={onHideDialog}
                     >
-                      <TableContainer
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
+                      <DialogTitle
+                        id="alert-dialog-title"
+                        sx={{ padding: "15px", fontWeight: "600" }}
                       >
-                        {categoryIssues && categoryIssues.issueList ? (
-                          <FormControl
-                            variant="outlined"
-                            sx={{ width: "200px" }}
-                          >
-                            <InputLabel>Select Issue</InputLabel>
-                            <Select
-                              value={selectedIssue}
-                              onChange={(e) => {
-                                setSelectedIssue(e.target.value);
-                                if (e.target.value !== "Other") {
-                                  setOtherIssue("");
-                                }
-                              }}
-                              label="Select Issue"
-                            >
-                              {categoryIssues.issueList.map((issue, index) => (
-                                <MenuItem key={index} value={issue.issuename}>
-                                  {issue.issuename}
-                                </MenuItem>
-                              ))}
-                              <MenuItem value="Other">Other</MenuItem>
-                            </Select>
-                          </FormControl>
-                        ) : (
-                          <div>No issues found</div>
-                        )}
+                        {`Report Issue for : ${selectedNode.name}`}
+                      </DialogTitle>
+                      <Divider />
 
-                        {selectedIssue === "Other" && (
-                          <TextField
-                            sx={{ width: "200px" }}
-                            label="miscellaneous issue"
-                            value={otherIssue}
-                            onChange={(e) => setOtherIssue(e.target.value)}
-                            variant="outlined"
-                            margin="dense"
-                            fullWidth
-                          />
-                        )}
-                        <FormControl variant="outlined" sx={{ width: "200px" }}>
+                      <div style={{ padding: "5px 15px" }}>
+                        <TableContainer
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            columnGap: "1rem",
+                          }}
+                        >
+                          {categoryIssues && categoryIssues.issueList ? (
+                            <FormControl
+                              variant="outlined"
+                              sx={{ width: "200px" }}
+                            >
+                              <InputLabel>Select Issue</InputLabel>
+                              <Select
+                                value={selectedIssue}
+                                onChange={(e) => {
+                                  setSelectedIssue(e.target.value);
+                                  if (e.target.value !== "Other") {
+                                    setOtherIssue("");
+                                  }
+                                }}
+                                label="Select Issue"
+                              >
+                                {categoryIssues.issueList.map(
+                                  (issue, index) => (
+                                    <MenuItem
+                                      key={index}
+                                      value={issue.issuename}
+                                    >
+                                      {issue.issuename}
+                                    </MenuItem>
+                                  )
+                                )}
+                                <MenuItem value="Other">Other</MenuItem>
+                              </Select>
+                            </FormControl>
+                          ) : (
+                            <div>No issues found</div>
+                          )}
+
+                          {selectedIssue === "Other" && (
+                            <TextField
+                              sx={{ width: "200px" }}
+                              label="miscellaneous issue"
+                              value={otherIssue}
+                              onChange={(e) => setOtherIssue(e.target.value)}
+                              variant="outlined"
+                              margin="dense"
+                              fullWidth
+                            />
+                          )}
+                          {/* <FormControl variant="outlined" sx={{ width: "200px" }}>
                           <InputLabel>Select Priority</InputLabel>
                           <Select
                             value={selectedPriority}
@@ -594,76 +627,120 @@ export default function UserDeviceTree({ sendUrllist }) {
                             <MenuItem value="Minor">Minor</MenuItem>
                             <MenuItem value="Critical">Critical</MenuItem>
                           </Select>
-                        </FormControl>
-
-                        <FormControl variant="outlined" sx={{ width: "200px" }}>
-                          <TextField
-                            label="Remarks"
+                        </FormControl> */}
+                          <FormControl
                             variant="outlined"
-                            value={remarks}
-                            onChange={handleRemarksChange}
-                            style={{ margin: "10px 0" }}
-                          />
-                        </FormControl>
-                        {/* Plus icon button */}
-                        <IconButton
+                            sx={{ width: "200px" }}
+                          >
+                            <Dropdown
+                              label={"Severity"}
+                              //select
+                              //formstyle={{ width: "50%" }}
+                              value={selectedPriority}
+                              list={["Critical", "Major", "Minor"]}
+                              onChange={handleSelectPriority}
+                            />
+                          </FormControl>
+
+                          <FormControl
+                            variant="outlined"
+                            sx={{ width: "200px" }}
+                          >
+                            <TextField
+                              label="Remarks"
+                              variant="outlined"
+                              value={remarks}
+                              onChange={handleRemarksChange}
+                              style={{ margin: "10px 0" }}
+                            />
+                          </FormControl>
+                          {/* Plus icon button */}
+                          {/* <IconButton
                           color="primary"
                           aria-label="add"
                           onClick={() => handleAddItem()}
                         >
                           <AddIcon />
-                        </IconButton>
-                      </TableContainer>
+                        </IconButton> */}
+                        </TableContainer>
 
-                      {showAlert && (
-                        <Alert
-                          severity="error"
-                          onClose={() => setShowAlert(false)}
+                        {/* <IconButton
+                          color="primary"
+                          aria-label="add"
+                          onClick={() => handleAddItem()}
                         >
-                          {alertMessage}
-                        </Alert>
-                      )}
+                          <AddIcon />
+                        </IconButton> */}
 
-                      {tableData.length > 0 && (
-                        // <TableContainer>
-                        //   <Table>
-                        //     <TableHead>
-                        //       <TableRow>
-                        //         <TableCell>Issue</TableCell>
-                        //         <TableCell>Priority</TableCell>
-                        //         <TableCell>Remarks</TableCell>
-                        //         <TableCell>Action</TableCell>
-                        //       </TableRow>
-                        //     </TableHead>
-                        //     <TableBody>
-                        //       {tableData.map((row, index) => (
-                        //         <TableRow key={index}>
-                        //           <TableCell>{row.issue}</TableCell>
-                        //           <TableCell>{row.priority}</TableCell>
-                        //           <TableCell>{row.remarks}</TableCell>
-                        //           <TableCell>
-                        //             <IconButton
-                        //               onClick={() => handleDeleteItem(row.issue)}
-                        //             >
-                        //               <DeleteIcon />
-                        //             </IconButton>
-                        //           </TableCell>
-                        //         </TableRow>
-                        //       ))}
-                        //     </TableBody>
-                        //   </Table>
-                        // </TableContainer>
-                        <CustomTable
-                          rows={tableData}
-                          columns={columns}
-                          setRows={setTableData}
-                          deleteFromDatabase={handleDeleteItem}
-                          editActive={false}
-                          tablename={"Added Issues"}
-                          redirectIconActive={false}
-                          isDeleteDialog={false}
-                        ></CustomTable>
-                      )}
+                        <Button
+                          variant="contained"
+                          onClick={() => handleAddItem()}
+                          style={{
+                            backgroundImage:
+                              "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                            width: "30%",
+                            margin: "auto",
+                            display: "flex",
+                          }}
+                        >
+                          Add Category
+                          <AddIcon
+                            fontSize="medium"
+                            sx={{ paddingLeft: "0.2rem" }}
+                          />
+                        </Button>
+                        <br />
+                        {showAlert && (
+                          <Alert
+                            severity="error"
+                            onClose={() => setShowAlert(false)}
+                          >
+                            {alertMessage}
+                          </Alert>
+                        )}
+
+                        {tableData.length > 0 && (
+                          // <TableContainer>
+                          //   <Table>
+                          //     <TableHead>
+                          //       <TableRow>
+                          //         <TableCell>Issue</TableCell>
+                          //         <TableCell>Priority</TableCell>
+                          //         <TableCell>Remarks</TableCell>
+                          //         <TableCell>Action</TableCell>
+                          //       </TableRow>
+                          //     </TableHead>
+                          //     <TableBody>
+                          //       {tableData.map((row, index) => (
+                          //         <TableRow key={index}>
+                          //           <TableCell>{row.issue}</TableCell>
+                          //           <TableCell>{row.priority}</TableCell>
+                          //           <TableCell>{row.remarks}</TableCell>
+                          //           <TableCell>
+                          //             <IconButton
+                          //               onClick={() => handleDeleteItem(row.issue)}
+                          //             >
+                          //               <DeleteIcon />
+                          //             </IconButton>
+                          //           </TableCell>
+                          //         </TableRow>
+                          //       ))}
+                          //     </TableBody>
+                          //   </Table>
+                          // </TableContainer>
+                          <CustomTable
+                            rows={tableData}
+                            columns={columns}
+                            setRows={setTableData}
+                            deleteFromDatabase={handleDeleteItem}
+                            editActive={false}
+                            tablename={"Added Issues"}
+                            redirectIconActive={false}
+                            isDeleteDialog={false}
+                          ></CustomTable>
+                        )}
+                        <br />
+                      </div>
                     </Dialog>
                   </div>
 
@@ -937,7 +1014,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                 </>
               )}
             </div>
-          </div>
+          </Card>
           <TicketDialog
             ticketDialogOpen={ticketOpen}
             setTicketDialogOpen={setTicketOpen}

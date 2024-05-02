@@ -487,12 +487,17 @@ export default function UserRegistration({ sendUrllist }) {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
-        console.log("User registered successfully");
-        navigate("/admin/home");
-      } else if (response.status === 400) {
-        console.error("User Already Exist");
+        const text = await response.text();
+        handleClick();
+        setSnackbarText(text);
+        setsnackbarSeverity("success");
+        navigate(`/admin/home`);
       } else {
-        console.error("Failed to register user");
+        const text = await response.text();
+        handleClick();
+        setSnackbarText(text);
+        setsnackbarSeverity("error");
+        return;
       }
     } catch (error) {
       console.error("Error : ", error);

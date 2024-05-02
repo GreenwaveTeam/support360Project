@@ -25,6 +25,9 @@ import {
   Slide,
   Autocomplete,
   TextField,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
@@ -65,6 +68,27 @@ export default function UserRegistration({ sendUrllist }) {
     homepage: "",
   });
 
+  const [formErrors, setFormErrors] = useState({
+    userID: false,
+    name: false,
+    designation: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
+    phoneNumber: false,
+    plantID: false,
+    plantName: false,
+    address: false,
+    division: false,
+    customerName: false,
+    supportStartDate: false,
+    supportEndDate: false,
+    accountOwnerCustomer: false,
+    accountOwnerGW: false,
+    role: false,
+    homepage: false,
+  });
+
   const [updateFormData, setUpdateFormData] = useState({
     userID: "",
     name: "",
@@ -86,7 +110,6 @@ export default function UserRegistration({ sendUrllist }) {
 
   const [cnfpass, setCnfpass] = useState("");
   const [pass, setPass] = useState("");
-  const [showDateError, setShowDateError] = useState(false);
   const [plantList, setPlantList] = useState([]);
   const [userExist, setUserExist] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -359,6 +382,14 @@ export default function UserRegistration({ sendUrllist }) {
         return;
       }
     }
+    if (updateFormData.supportStartDate > updateFormData.supportEndDate) {
+      handleClick();
+      setSnackbarText(
+        "Support Start Date should not be Greater than Support End Date !"
+      );
+      setsnackbarSeverity("error");
+      return;
+    }
     try {
       console.log(
         "updateFormData.userID : ",
@@ -413,15 +444,16 @@ export default function UserRegistration({ sendUrllist }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // if (
-    //   Object.values(formData).some((value) => value === null || value === "")
-    // ) {
-    //   handleClick();
-    //   setSnackbarText("All fields must be filled");
-    //   setsnackbarSeverity("error");
-    //   console.log("All fields must be filled");
-    //   return;
-    // }
+    const newFormErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] === null || formData[key] === "") {
+        newFormErrors[key] = true;
+      } else {
+        newFormErrors[key] = false;
+      }
+    });
+    setFormErrors(newFormErrors);
+
     for (const key in formData) {
       if (formData[key] === null || formData[key] === "") {
         handleClick();
@@ -434,6 +466,14 @@ export default function UserRegistration({ sendUrllist }) {
     if (cnfpass !== pass) {
       handleClick();
       setSnackbarText("Password does not match !");
+      setsnackbarSeverity("error");
+      return;
+    }
+    if (formData.supportStartDate > formData.supportEndDate) {
+      handleClick();
+      setSnackbarText(
+        "Support Start Date should not be Greater than Support End Date !"
+      );
       setsnackbarSeverity("error");
       return;
     }
@@ -753,17 +793,6 @@ export default function UserRegistration({ sendUrllist }) {
                         slotProps={{ textField: { fullWidth: true } }}
                       />
                     </Grid>
-                    {showDateError && (
-                      <Stack
-                        sx={{ display: "flex", justifyContent: "right" }}
-                        spacing={2}
-                      >
-                        <Alert variant="filled" severity="error">
-                          SupportEndDate Should Not be less than
-                          SupportStartDate
-                        </Alert>
-                      </Stack>
-                    )}
                     <Grid item xs={6}>
                       <Textfield
                         required
@@ -870,9 +899,11 @@ export default function UserRegistration({ sendUrllist }) {
                         autoFocus
                         value={formData.name}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.name}
+                        helperText={formErrors.name && "Name must be filled"}
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    {/* <Grid item xs={6}>
                       <Dropdown
                         id="designation"
                         value={formData.designation}
@@ -880,7 +911,35 @@ export default function UserRegistration({ sendUrllist }) {
                         onChange={handleDesignationChange}
                         list={["Operator", "Supervisor", "Lab Tester"]}
                         fullWidth
+                        error={formErrors.designation}
+                        helperText={
+                          formErrors.designation &&
+                          "Designation must be filled"
+                        }
                       />
+                    </Grid> */}
+                    <Grid item xs={6}>
+                      <FormControl fullWidth error={formErrors.designation}>
+                        <InputLabel id="designation-label">
+                          Designation
+                        </InputLabel>
+                        <Select
+                          labelId="designation-label"
+                          label="Designation"
+                          id="designation"
+                          value={formData.designation}
+                          onChange={handleDesignationChange}
+                        >
+                          <MenuItem value="Operator">Operator</MenuItem>
+                          <MenuItem value="Supervisor">Supervisor</MenuItem>
+                          <MenuItem value="Lab Tester">Lab Tester</MenuItem>
+                        </Select>
+                        {formErrors.designation && (
+                          <FormHelperText>
+                            Designation must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                     <Grid item xs={6}>
                       <Textfield
@@ -893,6 +952,10 @@ export default function UserRegistration({ sendUrllist }) {
                         autoComplete="email"
                         value={formData.email}
                         onChange={handleEmailChange}
+                        error={formErrors.email}
+                        helperText={
+                          formErrors.email && "Email Address must be filled"
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -926,6 +989,11 @@ export default function UserRegistration({ sendUrllist }) {
                             </InputAdornment>
                           }
                         />
+                        {formErrors.userID && (
+                          <FormHelperText>
+                            User ID must be filled
+                          </FormHelperText>
+                        )}
                       </FormControl>
                     </Grid>
                     {!userExist && (
@@ -959,6 +1027,11 @@ export default function UserRegistration({ sendUrllist }) {
                               </InputAdornment>
                             }
                           />
+                          {formErrors.password && (
+                            <FormHelperText>
+                              Password must be filled
+                            </FormHelperText>
+                          )}
                         </FormControl>
                       </Grid>
                     )}
@@ -977,6 +1050,11 @@ export default function UserRegistration({ sendUrllist }) {
                             const confirmPass = e.target.value;
                             setCnfpass(confirmPass);
                           }}
+                          error={formErrors.confirmPassword}
+                          helperText={
+                            formErrors.confirmPassword &&
+                            "Confirm Password must be filled"
+                          }
                         />
                         {/* {showPasswordError && (
                               <Stack
@@ -1020,6 +1098,11 @@ export default function UserRegistration({ sendUrllist }) {
                         autoComplete="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handlePhoneNumberChange}
+                        error={formErrors.phoneNumber}
+                        helperText={
+                          formErrors.phoneNumber &&
+                          "Phone Number must be filled"
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -1052,7 +1135,15 @@ export default function UserRegistration({ sendUrllist }) {
                         getOptionLabel={(option) => option}
                         onChange={handleAutocompleteChange}
                         renderInput={(params) => (
-                          <TextField {...params} label="Plant Name" />
+                          <TextField
+                            {...params}
+                            label="Plant Name"
+                            error={formErrors.plantName}
+                            helperText={
+                              formErrors.plantName &&
+                              "Plant Name must be filled"
+                            }
+                          />
                         )}
                       />
                     </Grid>
@@ -1083,6 +1174,11 @@ export default function UserRegistration({ sendUrllist }) {
                             </InputAdornment>
                           }
                         />
+                        {formErrors.plantID && (
+                          <FormHelperText>
+                            Designation must be filled
+                          </FormHelperText>
+                        )}
                       </FormControl>
                     </Grid>
                     <Grid item xs={6}>
@@ -1095,6 +1191,10 @@ export default function UserRegistration({ sendUrllist }) {
                         autoComplete="address"
                         value={formData.address}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.address}
+                        helperText={
+                          formErrors.address && "Address must be filled"
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -1107,6 +1207,10 @@ export default function UserRegistration({ sendUrllist }) {
                         autoComplete="division"
                         value={formData.division}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.division}
+                        helperText={
+                          formErrors.division && "Division must be filled"
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -1119,6 +1223,11 @@ export default function UserRegistration({ sendUrllist }) {
                         autoComplete="customerName"
                         value={formData.customerName}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.customerName}
+                        helperText={
+                          formErrors.customerName &&
+                          "Customer Name must be filled"
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -1146,6 +1255,11 @@ export default function UserRegistration({ sendUrllist }) {
                         // convertDateFormat(i.supportStartDate),
                         // "DD-MM-YYYY"
                         // format="DD-MM-YYYY"
+                        error={!formData.supportStartDate}
+                        helperText={
+                          !formData.supportStartDate &&
+                          "Support Start Date must be filled"
+                        }
                         slotProps={{ textField: { fullWidth: true } }}
                       />
                     </Grid>
@@ -1154,32 +1268,21 @@ export default function UserRegistration({ sendUrllist }) {
                         label="Support End Date"
                         value={formData.supportEndDate}
                         onChange={(endDate) => {
-                          if (endDate < formData.supportEndDate) {
-                            setShowDateError(true);
-                          } else {
-                            setShowDateError(false);
-                            setFormData({
-                              ...formData,
-                              supportEndDate: endDate,
-                            });
-                          }
+                          setFormData({
+                            ...formData,
+                            supportEndDate: endDate,
+                          });
                         }}
+                        error={!formData.supportEndDate}
+                        helperText={
+                          !formData.supportEndDate &&
+                          "Support End Date must be filled"
+                        }
                         // defaultValue={dayjs("2022-04-17")}
                         // format="DD-MM-YYYY"
                         slotProps={{ textField: { fullWidth: true } }}
                       />
                     </Grid>
-                    {showDateError && (
-                      <Stack
-                        sx={{ display: "flex", justifyContent: "right" }}
-                        spacing={2}
-                      >
-                        <Alert variant="filled" severity="error">
-                          SupportEndDate Should Not be less than
-                          SupportStartDate
-                        </Alert>
-                      </Stack>
-                    )}
                     <Grid item xs={6}>
                       <Textfield
                         required
@@ -1190,6 +1293,11 @@ export default function UserRegistration({ sendUrllist }) {
                         autoComplete="accountOwnerCustomer"
                         value={formData.accountOwnerCustomer}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.accountOwnerCustomer}
+                        helperText={
+                          formErrors.accountOwnerCustomer &&
+                          "Account Owner Customer must be filled"
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -1202,9 +1310,14 @@ export default function UserRegistration({ sendUrllist }) {
                         autoComplete="accountOwnerGW"
                         value={formData.accountOwnerGW}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.accountOwnerGW}
+                        helperText={
+                          formErrors.accountOwnerGW &&
+                          "Account Owner GW must be filled"
+                        }
                       />
                     </Grid>
-                    <Grid item xs={6}>
+                    {/* <Grid item xs={6}>
                       <Dropdown
                         fullWidth
                         id="role"
@@ -1225,9 +1338,43 @@ export default function UserRegistration({ sendUrllist }) {
                           }
                         }}
                         list={roleList.map((p) => p)}
+                        error={formErrors.role}
+                        helperText={formErrors.role && "Role must be filled"}
                       />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={6}>
+                      <FormControl fullWidth error={formErrors.role}>
+                        <InputLabel id="role-label">Role</InputLabel>
+                        <Select
+                          labelId="role-label"
+                          label="Role"
+                          id="role"
+                          value={formData.role}
+                          onChange={(event) => {
+                            const { value } = event.target;
+                            for (let i of roleList) {
+                              if (i === value) {
+                                setFormData({
+                                  ...formData,
+                                  role: value,
+                                });
+                                return;
+                              }
+                            }
+                          }}
+                        >
+                          {roleList.map((role) => (
+                            <MenuItem key={role} value={role}>
+                              {role}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {formErrors.role && (
+                          <FormHelperText>Role must be filled</FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    {/* <Grid item xs={6}>
                       <Dropdown
                         fullWidth
                         id="homepage"
@@ -1236,6 +1383,26 @@ export default function UserRegistration({ sendUrllist }) {
                         onChange={handleHomepageChange}
                         list={["admin/home", "user/home"]}
                       />
+                    </Grid> */}
+                    <Grid item xs={6}>
+                      <FormControl fullWidth error={formErrors.homepage}>
+                        <InputLabel id="homepage-label">Homepage</InputLabel>
+                        <Select
+                          labelId="homepage-label"
+                          label="Homepage"
+                          id="homepage"
+                          value={formData.homepage}
+                          onChange={handleHomepageChange}
+                        >
+                          <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem>
+                        </Select>
+                        {formErrors.homepage && (
+                          <FormHelperText>
+                            Homepage must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                   </Grid>
                   <Button

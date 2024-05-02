@@ -164,9 +164,9 @@ export default function UserRegistration({ sendUrllist }) {
         accountOwnerCustomer: state.user.accountOwnerCustomer,
         accountOwnerGW: state.user.accountOwnerGW,
         role: state.user.role,
-        homepage: state.user.homePage,
+        homepage: state.user.homepage,
       });
-      console.log("state.user.homePage : ", state.user.homePage);
+      console.log("state.user.homepage : ", state.user.homepage);
     }
   };
 
@@ -373,8 +373,8 @@ export default function UserRegistration({ sendUrllist }) {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    for (const key in formData) {
-      if (formData[key] === null || formData[key] === "") {
+    for (const key in updateFormData) {
+      if (updateFormData[key] === null || updateFormData[key] === "") {
         handleClick();
         setSnackbarText(`${key} must be filled`);
         setsnackbarSeverity("error");

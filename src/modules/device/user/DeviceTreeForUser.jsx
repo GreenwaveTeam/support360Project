@@ -232,7 +232,7 @@ export default function UserDeviceTree({ sendUrllist }) {
     {
       id: "priority",
       label: " Severity ",
-      type: "textbox",
+      type: "chip",
       canRepeatSameValue: true,
     },
     {

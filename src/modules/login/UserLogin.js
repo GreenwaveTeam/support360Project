@@ -132,7 +132,7 @@ export default function UserLogin() {
       }
       const data = await response.json();
       console.log("fetchUser data : ", data);
-      const homepage = data.homePage;
+      const homepage = data.homepage;
       console.log("data.homepage : ", data.homePage);
       console.log("role : ", homepage);
       // const roleArray = role.split(",");

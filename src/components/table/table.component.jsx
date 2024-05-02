@@ -543,6 +543,37 @@ export default function CustomTable({
                                       />
                                     </div>
                                   )}
+                                  {/* {editRowIndex === index &&
+                                  column.type === "chip" && (
+                                    <div>
+                                      <Select
+                                        label={column.label}
+                                        value={updatedValue}
+                                        required
+                                        error={
+                                          errorValue === value && editError
+                                        }
+                                        onChange={(e) => {
+                                          handleInputChange(
+                                            e,
+                                            column.id,
+                                            column.type
+                                          );
+                                        }}
+                                      >
+                                        {column.values.map(
+                                          (dropdownvalue, valueindex) => (
+                                            <MenuItem
+                                              key={valueindex}
+                                              value={dropdownvalue}
+                                            >
+                                              {dropdownvalue}
+                                            </MenuItem>
+                                          )
+                                        )}
+                                      </Select>
+                                    </div>
+                                  )} */}
                                 {editRowIndex === index &&
                                   column.type === "dropdown" && (
                                     <div>

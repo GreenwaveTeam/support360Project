@@ -17,7 +17,8 @@ export default function Textfield({
   size,
   InputProps,
   rows,
-  multiline
+  multiline,
+  required,
 }) {
   return (
     <>
@@ -30,14 +31,15 @@ export default function Textfield({
         name={name}
         fullWidth={fullWidth}
         style={style}
-        onBlur={onBlur} 
+        onBlur={onBlur}
         variant={variant}
-        error={error} 
-        helperText= {helperText}
+        error={error}
+        helperText={helperText}
         size={size}
         InputProps={InputProps}
         rows={rows}
         multiline={multiline}
+        required={required}
       />
     </>
   );

@@ -58,7 +58,7 @@ export default function AdminRegistration() {
   const [adminExist, setAdminExist] = useState(false);
   const navigate = useNavigate();
   const [isStatePresent, setIsStatePresent] = useState(false);
-
+  const [roleList, setRoleList] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (e) => {
@@ -84,7 +84,7 @@ export default function AdminRegistration() {
         email: state.admin.email,
         phoneNumber: state.admin.phoneNumber,
         role: state.admin.role,
-        homepage: state.admin.homePage,
+        homepage: state.admin.homepage,
       });
       console.log("state.admin.role : ", state.admin.role);
       console.log("state.admin.homepage : ", state.admin.homepage);
@@ -95,10 +95,12 @@ export default function AdminRegistration() {
   useEffect(() => {
     // console.log("admin : ", state.admin);
     checkstate();
+    fetchRoles();
   }, []);
 
   const hashedPasswordChange = (e) => {
     setPass(e.target.value);
+    setFormData({ ...formData, password: e.target.value });
   };
 
   const handleFormdataInputChange = (event) => {
@@ -116,11 +118,6 @@ export default function AdminRegistration() {
     if (!isNaN(value) && value.length <= 10) {
       setFormData({ ...formData, phoneNumber: value });
     }
-  };
-
-  const handleHomepageChange = (event) => {
-    const { value } = event.target;
-    setFormData({ ...formData, homepage: value });
   };
 
   const updateHandleHomepageChange = (event) => {
@@ -175,6 +172,15 @@ export default function AdminRegistration() {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
+    for (const key in formData) {
+      if (formData[key] === null || formData[key] === "") {
+        handleClick();
+        setSnackbarText(`${key} must be filled`);
+        setsnackbarSeverity("error");
+        console.log(`${key} must be filled`);
+        return;
+      }
+    }
     try {
       console.log(
         "updateFormData.adminID : ",
@@ -205,9 +211,45 @@ export default function AdminRegistration() {
     }
   };
 
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch("http://localhost:8081/role", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 403) {
+        console.log("error featching roles");
+        return;
+      }
+      const data = await response.json();
+      console.log("Roles : ", data);
+      setRoleList(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    for (const key in formData) {
+      if (formData[key] === null || formData[key] === "") {
+        handleClick();
+        setSnackbarText(`${key} must be filled`);
+        setsnackbarSeverity("error");
+        console.log(`${key} must be filled`);
+        return;
+      }
+    }
+    if (cnfpass !== pass) {
+      handleClick();
+      setSnackbarText("Password does not match !");
+      setsnackbarSeverity("error");
+      return;
+    }
+    console.log("formData : : ", formData);
     try {
       const response = await fetch("http://localhost:8081/auth/admin/signup", {
         method: "POST",
@@ -305,13 +347,34 @@ export default function AdminRegistration() {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <Dropdown
+                      {/* <Dropdown
                         fullWidth
                         id="role"
                         value={updateFormData.role}
                         label="Role"
                         onChange={updateHandleRoleChange}
                         list={["admin", "superadmin", "developer"]}
+                      /> */}
+                      <Dropdown
+                        fullWidth
+                        id="role"
+                        value={updateFormData.role}
+                        label="Role"
+                        // onChange={updateHandleRoleChange}
+                        // list={roleList}
+                        onChange={(event) => {
+                          const { value } = event.target;
+                          for (let i of roleList) {
+                            if (i === value) {
+                              setUpdateFormData({
+                                ...updateFormData,
+                                role: value,
+                              });
+                              return;
+                            }
+                          }
+                        }}
+                        list={roleList.map((p) => p)}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -470,13 +533,34 @@ export default function AdminRegistration() {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <Dropdown
+                      {/* <Dropdown
                         fullWidth
                         id="role"
                         value={formData.role}
                         label="Role"
                         onChange={handleRoleChange}
                         list={["admin", "superadmin", "developer"]}
+                      /> */}
+                      <Dropdown
+                        fullWidth
+                        id="role"
+                        value={formData.role}
+                        label="Role"
+                        // onChange={handleRoleChange}
+                        // list={["ROLE_USER", "ROLE_SUPERVISOR"]}
+                        onChange={(event) => {
+                          const { value } = event.target;
+                          for (let i of roleList) {
+                            if (i === value) {
+                              setFormData({
+                                ...formData,
+                                role: value,
+                              });
+                              return;
+                            }
+                          }
+                        }}
+                        list={roleList.map((p) => p)}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -485,7 +569,10 @@ export default function AdminRegistration() {
                         id="homepage"
                         value={formData.homepage}
                         label="Homepage"
-                        onChange={handleHomepageChange}
+                        onChange={(event) => {
+                          const { value } = event.target;
+                          setFormData({ ...formData, homepage: value });
+                        }}
                         list={["admin/home", "user/home"]}
                       />
                     </Grid>

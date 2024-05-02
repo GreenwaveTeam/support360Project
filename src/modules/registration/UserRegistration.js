@@ -23,6 +23,8 @@ import {
   Checkbox,
   Snackbar,
   Slide,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
@@ -84,7 +86,6 @@ export default function UserRegistration({ sendUrllist }) {
 
   const [cnfpass, setCnfpass] = useState("");
   const [pass, setPass] = useState("");
-  const [showPasswordError, setShowPasswordError] = useState(false);
   const [showDateError, setShowDateError] = useState(false);
   const [plantList, setPlantList] = useState([]);
   const [userExist, setUserExist] = useState(false);
@@ -116,22 +117,7 @@ export default function UserRegistration({ sendUrllist }) {
     e.preventDefault();
   };
 
-  const [open, setOpen] = useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  const handleShowPasswordClick = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-  };
-
   const { state } = useLocation();
-  // const user = state.user || null;
 
   const checkstate = () => {
     // console.log(typeof state.user);
@@ -177,6 +163,7 @@ export default function UserRegistration({ sendUrllist }) {
 
   const hashedPasswordChange = (e) => {
     setPass(e.target.value);
+    setFormData({ ...formData, password: e.target.value });
   };
 
   const handleFormdataInputChange = (event) => {
@@ -243,12 +230,9 @@ export default function UserRegistration({ sendUrllist }) {
   const confirmPassword = async (e) => {
     const passwordsMatch = pass === e;
     if (!passwordsMatch) {
-      setShowPasswordError(true);
       handleClick();
       setSnackbarText("Password does not match !");
       setsnackbarSeverity("error");
-    } else {
-      setShowPasswordError(false);
     }
   };
 
@@ -345,8 +329,36 @@ export default function UserRegistration({ sendUrllist }) {
     fetchData();
   };
 
+  const handleAutocompleteChange = (event, newValue) => {
+    if (newValue) {
+      const selectedPlant = plantList.find(
+        (plant) => plant.plantName === newValue
+      );
+      setFormData({
+        ...formData,
+        plantID: selectedPlant ? selectedPlant.plantID : "",
+        plantName: newValue,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        plantID: "",
+        plantName: "",
+      });
+    }
+  };
+
   const handleUpdate = async (event) => {
     event.preventDefault();
+    for (const key in formData) {
+      if (formData[key] === null || formData[key] === "") {
+        handleClick();
+        setSnackbarText(`${key} must be filled`);
+        setsnackbarSeverity("error");
+        console.log(`${key} must be filled`);
+        return;
+      }
+    }
     try {
       console.log(
         "updateFormData.userID : ",
@@ -375,9 +387,57 @@ export default function UserRegistration({ sendUrllist }) {
     }
   };
 
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   console.log("formData : : ", formData);
+  //   try {
+  //     const response = await fetch("http://localhost:8081/auth/user/signup", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
+  //     if (response.ok) {
+  //       console.log("User registered successfully");
+  //       navigate("/admin/home");
+  //     } else if (response.status === 400) {
+  //       console.error("User Already Exist");
+  //     } else {
+  //       console.error("Failed to register user");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error : ", error);
+  //   }
+  // };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    // if (
+    //   Object.values(formData).some((value) => value === null || value === "")
+    // ) {
+    //   handleClick();
+    //   setSnackbarText("All fields must be filled");
+    //   setsnackbarSeverity("error");
+    //   console.log("All fields must be filled");
+    //   return;
+    // }
+    for (const key in formData) {
+      if (formData[key] === null || formData[key] === "") {
+        handleClick();
+        setSnackbarText(`${key} must be filled`);
+        setsnackbarSeverity("error");
+        console.log(`${key} must be filled`);
+        return;
+      }
+    }
+    if (cnfpass !== pass) {
+      handleClick();
+      setSnackbarText("Password does not match !");
+      setsnackbarSeverity("error");
+      return;
+    }
+    console.log("formData : : ", formData);
     try {
       const response = await fetch("http://localhost:8081/auth/user/signup", {
         method: "POST",
@@ -401,44 +461,6 @@ export default function UserRegistration({ sendUrllist }) {
 
   return (
     <Box sx={{ display: "flex" }}>
-      {/* <TopbarPage
-        open={open}
-        handleDrawerOpen={handleDrawerOpen}
-        urllist={[{ pageName: "Admin Home Page", pagelink: "/AdminHome" }]}
-      />
-      <SidebarPage
-        open={open}
-        handleDrawerClose={handleDrawerClose}
-        adminList={[
-          {
-            pagename: "Device Issue Category",
-            pagelink: "/admin/Device/CategoryConfigure",
-          },
-          { pagename: "Application", pagelink: "/admin/ApplicationConfigure" },
-          { pagename: "Device ", pagelink: "/admin/DeviceConfigure" },
-          {
-            pagename: "Infrastructure ",
-            pagelink: "/admin/InfrastructureConfigure",
-          },
-        ]}
-        userList={[
-          {
-            pagename: "Report Application",
-            pagelink: "/user/ReportApplication",
-          },
-          {
-            pagename: "Report Infrastructure",
-            pagelink: "/user/ReportInfrastructure",
-          },
-          { pagename: "Report Device", pagelink: "/user/ReportDevice" },
-        ]}
-      /> */}
-      {/* <Main open={open}> */}
-      {/* <DrawerHeader /> */}
-      {/* <Box
-          sx={{ background: "green" }}
-          // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        > */}
       <Container component="main" maxWidth="md">
         <CssBaseline />
         <Box
@@ -1001,7 +1023,7 @@ export default function UserRegistration({ sendUrllist }) {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <Dropdown
+                      {/* <Dropdown
                         fullWidth={true}
                         id="plantName"
                         value={formData.plantName}
@@ -1020,6 +1042,18 @@ export default function UserRegistration({ sendUrllist }) {
                           }
                         }}
                         list={plantList.map((p) => p.plantName)}
+                      /> */}
+                      <Autocomplete
+                        value={formData.plantName}
+                        disablePortal
+                        fullWidth
+                        id="plantName"
+                        options={plantList.map((p) => p.plantName)}
+                        getOptionLabel={(option) => option}
+                        onChange={handleAutocompleteChange}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Plant Name" />
+                        )}
                       />
                     </Grid>
                     <Grid item xs={6}>

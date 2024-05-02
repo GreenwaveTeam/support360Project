@@ -3,11 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Device from "./modules/device/module.device";
 import AdminPage from "./modules/configurationpages/AdminPage";
-import AdminHome from "./modules/homepages/AdminHome";
-import UserRegistration from "./modules/registration/UserRegistration";
-import UserLogin from "./modules/login/UserLogin";
-import AdminRegistration from "./modules/registration/modules.registration.adminRegistration.component";
-import UserHome from "./modules/homepages/UserHome";
+import AdminHome from "./modules/homepages/module.homepage.adminhome";
+import UserRegistration from "./modules/registration/module.registration.userregistration";
+import UserLogin from "./modules/login/module.login.userlogin";
+import AdminRegistration from "./modules/registration/module.registration.adminregistration";
+import UserHome from "./modules/homepages/module.homepage.userhome";
 import ApplicationUser from "./modules/application/user/modules.application";
 import ConfigureInfrastructure from "./modules/infrastructure/module.configureInfrastructure";
 import AddInfrastructureIssue from "./modules/infrastructure/module.addinfrastructureIssue";
@@ -31,11 +31,7 @@ import AdminRoutes from "./AdminRoutes";
 import DeviceCategory from "./modules/device/admin/module.deviceIssueCategoryUpload";
 import UserRoutes from "./UserRoutes";
 
-
 function App() {
-
-  
-  
   // const [darkMode, setDarkMode] = React.useState(false);
   // const theme = React.useMemo(
   //   () =>
@@ -110,7 +106,6 @@ function App() {
                 /> */}
                 {/* test */}
 
-                
                 {/* <Route path="/user/ReportDevice" element={<UserDeviceTree />} />
                 <Route
                   path="/user/ReportInfrastructure"
@@ -125,19 +120,12 @@ function App() {
                   path="/admin/Role/Page"
                   element={<RolePageConfiguration />}
                 /> */}
-                <Route path="/*" element={ <NotFound/>} />
-                <Route path="/notfound" element={ <NotFound/>} />
-                <Route
-                  path="/admin/*"
-                  element={<AdminRoutes />}
-                >
-                   
+                <Route path="/*" element={<NotFound />} />
+                <Route path="/notfound" element={<NotFound />} />
+                <Route path="/admin/*" element={<AdminRoutes />}>
                   {/* <Route path="/AdminLogin" element={<AdminLogin />} /> */}
                 </Route>
-                <Route
-                  path="/user/*"
-                  element={<UserRoutes />}
-                ></Route>
+                <Route path="/user/*" element={<UserRoutes />}></Route>
               </Routes>
             </div>
           </Router>

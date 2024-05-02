@@ -3,7 +3,10 @@ import {
   Avatar,
   Box,
   Button,
+  Card,
+  Chip,
   Container,
+  Divider,
   Grid,
   Typography,
 } from "@mui/material";
@@ -14,6 +17,8 @@ import Main from "../../components/navigation/mainbody/mainbody";
 import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import TopbarPage from "../../components/navigation/topbar/topbar";
 import { useUserContext } from "../contexts/UserContext";
+import { ColorModeContext, tokens } from "../../theme";
+import { useTheme } from "@mui/material";
 
 const AdminPage = ({ sendUrllist }) => {
   // const { userID } = useParams();
@@ -105,30 +110,56 @@ const AdminPage = ({ sendUrllist }) => {
 
   const urllist = [{ pageName: "Admin Home Page", pagelink: "/admin/home" }];
 
+  //For Theme
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   return (
-    <Box sx={{ display: "flex" }}>
-      {/* <Avatar>{convertToInitials(userData.name)}</Avatar>
+    <Container component="main" maxWidth="md">
+      <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
+        {/* <Avatar>{convertToInitials(userData.name)}</Avatar>
           <br></br> */}
-      <Typography component="h1" variant="h5">
-        Configure for :{"  "}
-        <Typography component="span" variant="h4" sx={{ fontWeight: "bold" }}>
-          {userData.userID}
-        </Typography>
-      </Typography>
-      <Container component="main" maxWidth="md">
+        <Box sx={{ padding: "0.7rem", background: colors.grey[900] }}>
+          <Typography
+            component="h1"
+            variant="h5"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              //rowGap: "1rem",
+              columnGap: "0.5rem",
+            }}
+          >
+            Configure for :{"  "}
+            <Chip
+              //component="span"
+              //variant="h4"
+              sx={{ fontWeight: "bold" }}
+              label={userData.userID}
+              size="medium"
+              color="info"
+            />
+          </Typography>
+        </Box>
+        <Divider />
+
         {/* <Typography component="h1" variant="h5">
         Create Configuration for {userName}
       </Typography> */}
         <Grid
           container
-          spacing={4}
+          //spacing={1}
           direction="column"
           justifyContent="center"
           alignItems="center"
-          marginTop={"200px"}
+          rowGap={"1rem"}
+          margin={"1rem 0rem"}
+          //marginTop={"2rem"}
+          //sx={{ background: colors.grey[900] }}
         >
           {divIsVisibleList.includes("application-button") && (
-            <Grid item width={"70vw"}>
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -144,7 +175,7 @@ const AdminPage = ({ sendUrllist }) => {
             </Grid>
           )}
           {divIsVisibleList.includes("device-button") && (
-            <Grid item width={"70vw"}>
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -160,7 +191,7 @@ const AdminPage = ({ sendUrllist }) => {
             </Grid>
           )}
           {divIsVisibleList.includes("infrastructure-button") && (
-            <Grid item width={"70vw"}>
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -174,8 +205,8 @@ const AdminPage = ({ sendUrllist }) => {
             </Grid>
           )}
         </Grid>
-      </Container>
-    </Box>
+      </Card>
+    </Container>
   );
 };
 

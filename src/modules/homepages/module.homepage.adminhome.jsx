@@ -608,7 +608,7 @@ export default function AdminHome({ sendUrllist }) {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {adminList.map((item, index) => (
+                            {filteredAdminRows.map((item, index) => (
                               <TableRow key={index}>
                                 <TableCell align="center" width={200}>
                                   <Box
@@ -959,7 +959,7 @@ export default function AdminHome({ sendUrllist }) {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {list.map((item, index) => (
+                            {filteredRows.map((item, index) => (
                               <TableRow key={index}>
                                 {/* <TableCell
                                 //  align="right"

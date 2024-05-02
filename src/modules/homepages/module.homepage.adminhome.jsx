@@ -172,70 +172,6 @@ export default function AdminHome({ sendUrllist }) {
     }
   };
 
-  // async function deleteUserByUserID(e) {
-  //   try {
-  //     const response = await fetch(`http://localhost:8081/admins/admin/${e}`, {
-  //       method: "DELETE",
-  //       headers: {
-  //         Accept: "application/json",
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log("data : ", data);
-  //     setList((prevList) => {
-  //       prevList.filter((item) => item.adminID !== e);
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  async function deleteUserByUserID(e) {
-    try {
-      const response = await fetch(`http://localhost:8081/users/user/${e}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.ok;
-      console.log("data : ", data);
-      setList((prevList) => prevList.filter((item) => item.userID !== e));
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  // const handleEdit = (admin) => {
-  //   history.push({
-  //     pathname: "/UserRegistration",
-  //     state: { admin },
-  //   });
-  // };
-
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-    console.log("Search => ", event.target.value);
-    const currentSearch = event.target.value;
-    console.log("Search => ", search);
-    if (currentSearch === "" || currentSearch.length === 0) {
-      setFilteredRows(list);
-    } else {
-      const updatedRows = [...list];
-      const filteredRows = updatedRows.filter((list) =>
-        list.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
-      );
-      console.log("Filtered Rows => ", filteredRows);
-      setFilteredRows(filteredRows);
-    }
-  };
-
-  const handleDelete = (userID) => {
-    setOpenDeleteDialog(true);
-    setDeleteUserId(userID);
-  };
-
   const fetchAdminData = async () => {
     try {
       const response = await fetch(
@@ -266,9 +202,27 @@ export default function AdminHome({ sendUrllist }) {
     }
   };
 
-  async function deleteAdminByAdminID(e) {
+  // async function deleteUserByUserID(e) {
+  //   try {
+  //     const response = await fetch(`http://localhost:8081/admins/admin/${e}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         Accept: "application/json",
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     console.log("data : ", data);
+  //     setList((prevList) => {
+  //       prevList.filter((item) => item.userID !== e);
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+  async function deleteUserByUserID(e) {
     try {
-      const response = await fetch(`http://localhost:8081/admins/admin/${e}`, {
+      const response = await fetch(`http://localhost:8081/users/user/${e}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -277,11 +231,53 @@ export default function AdminHome({ sendUrllist }) {
       });
       const data = await response.ok;
       console.log("data : ", data);
-      setAdminList((prevList) => prevList.filter((item) => item.adminID !== e));
+      setList((prevList) => prevList.filter((item) => item.userID !== e));
+      setAdminList((prevList) => prevList.filter((item) => item.userID !== e));
     } catch (error) {
       console.log(error);
     }
   }
+
+  // const handleEdit = (admin) => {
+  //   history.push({
+  //     pathname: "/UserRegistration",
+  //     state: { admin },
+  //   });
+  // };
+
+  // async function deleteAdminByAdminID(e) {
+  //   try {
+  //     const response = await fetch(`http://localhost:8081/admins/admin/${e}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     const data = await response.ok;
+  //     console.log("data : ", data);
+  //     setAdminList((prevList) => prevList.filter((item) => item.userID !== e));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
+  const handleSearchChange = (event) => {
+    setSearch(event.target.value);
+    console.log("Search => ", event.target.value);
+    const currentSearch = event.target.value;
+    console.log("Search => ", search);
+    if (currentSearch === "" || currentSearch.length === 0) {
+      setFilteredRows(list);
+    } else {
+      const updatedRows = [...list];
+      const filteredRows = updatedRows.filter((list) =>
+        list.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
+      );
+      console.log("Filtered Rows => ", filteredRows);
+      setFilteredRows(filteredRows);
+    }
+  };
 
   const handleAdminSearchChange = (event) => {
     setAdminSearch(event.target.value);
@@ -295,6 +291,11 @@ export default function AdminHome({ sendUrllist }) {
       );
       setFilteredAdminRows(filteredRows);
     }
+  };
+
+  const handleDelete = (userID) => {
+    setOpenDeleteDialog(true);
+    setDeleteUserId(userID);
   };
 
   const handleAdminDelete = (adminID) => {
@@ -588,7 +589,7 @@ export default function AdminHome({ sendUrllist }) {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {filteredAdminRows.map((item, index) => (
+                          {adminList.map((item, index) => (
                             <TableRow key={index}>
                               <TableCell
                                 align="center"
@@ -651,9 +652,7 @@ export default function AdminHome({ sendUrllist }) {
                                 <DeleteIcon
                                   color="error"
                                   style={{ cursor: "pointer" }}
-                                  onClick={() =>
-                                    handleAdminDelete(item.adminID)
-                                  }
+                                  onClick={() => handleAdminDelete(item.userID)}
                                 />
                                 <Dialog
                                   open={openAdminDeleteDialog}
@@ -683,7 +682,7 @@ export default function AdminHome({ sendUrllist }) {
                                     </Button>
                                     <Button
                                       onClick={() => {
-                                        deleteAdminByAdminID(deleteAdminID);
+                                        deleteUserByUserID(deleteAdminID);
                                         setOpenAdminDeleteDialog(false);
                                       }}
                                       color="error"
@@ -924,7 +923,7 @@ export default function AdminHome({ sendUrllist }) {
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {filteredRows.map((item, index) => (
+                          {list.map((item, index) => (
                             <TableRow key={index}>
                               {/* <TableCell
                                 //  align="right"
@@ -1014,7 +1013,7 @@ export default function AdminHome({ sendUrllist }) {
                                   color="error"
                                   style={{ cursor: "pointer" }}
                                   // onClick={(e) => {
-                                  //   deleteUserByUserID(item.adminID);
+                                  //   deleteUserByUserID(item.userID);
                                   // }}
                                   onClick={(e) => handleDelete(item.userID)}
                                 />
@@ -1330,7 +1329,7 @@ export default function AdminHome({ sendUrllist }) {
                             color="error"
                             style={{ cursor: "pointer" }}
                             // onClick={(e) => {
-                            //   deleteUserByUserID(item.adminID);
+                            //   deleteUserByUserID(item.userID);
                             // }}
                             onClick={(e) => handleDelete(item.userID)}
                           />
@@ -1555,7 +1554,7 @@ export default function AdminHome({ sendUrllist }) {
                           <DeleteIcon
                             color="error"
                             style={{ cursor: "pointer" }}
-                            onClick={() => handleAdminDelete(item.adminID)}
+                            onClick={() => handleAdminDelete(item.userID)}
                           />
                           <Dialog
                             open={openAdminDeleteDialog}

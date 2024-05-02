@@ -442,43 +442,7 @@ export default function AdminHome({ sendUrllist }) {
                                     columnGap: "1rem",
                                   }}
                                 >
-                                  <div>
-                                    {/* <Textfield
-                                    onChange={(e) => handleAdminSearchChange(e)}
-                                    variant={"outlined"}
-                                    size="small"
-                                    label={
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <SearchOutlinedIcon
-                                          style={{ marginRight: "5px" }}
-                                        />
-                                        Search...
-                                      </div>
-                                    }
-                                    value={adminSearch}
-                                    sx={{
-                                      marginLeft: "5px",
-                                      width: "200px",
-                                    }}
-                                  />
-                                  <Tooltip title="Clear">
-                                    <IconButton
-                                      variant="contained"
-                                      aria-label="delete"
-                                      size="medium"
-                                      onClick={() => {
-                                        setAdminSearch("");
-                                        setFilteredAdminRows(adminList);
-                                      }}
-                                    >
-                                      <CloseIcon fontSize="inherit" />
-                                    </IconButton>
-                                  </Tooltip> */}
+                                  {/* <div>
                                     <FormControl fullWidth>
                                       <InputLabel htmlFor="search">
                                         Search
@@ -513,6 +477,49 @@ export default function AdminHome({ sendUrllist }) {
                                         }
                                       />
                                     </FormControl>
+                                  </div> */}
+
+                                  <div>
+                                    <Textfield
+                                      onChange={(e) =>
+                                        handleAdminSearchChange(e)
+                                      }
+                                      variant={"outlined"}
+                                      size="small"
+                                      label={
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <SearchOutlinedIcon
+                                            style={{ marginRight: "5px" }}
+                                          />
+                                          Search...
+                                        </div>
+                                      }
+                                      value={search}
+                                      sx={{
+                                        marginLeft: "5px",
+                                        width: "200px",
+                                        // Set the background color to white
+                                      }}
+                                    />
+
+                                    <Tooltip title="Clear">
+                                      <IconButton
+                                        variant="contained"
+                                        aria-label="delete"
+                                        size="medium"
+                                        onClick={() => {
+                                          setSearch("");
+                                          setFilteredRows(list);
+                                        }}
+                                      >
+                                        <CloseIcon fontSize="inherit" />
+                                      </IconButton>
+                                    </Tooltip>
                                   </div>
 
                                   {divIsVisibleList.includes(

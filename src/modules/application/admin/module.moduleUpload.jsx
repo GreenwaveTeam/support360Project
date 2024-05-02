@@ -297,6 +297,33 @@ const Application = ({ sendUrllist }) => {
 
   const handleFileChange = (event) => {
     setImageUrl(null);
+    if (
+      modulelist !== null &&
+      modulelist.some(
+        (module) => module.modulename.trim() === module_Name.trim()
+      )
+    ) {
+      console.log("Module name found");
+      setDialogPopup(true);
+      setsnackbarSeverity("error");
+      setDialogMessage("Module Name is already present");
+      setSelectedFile(null);
+      setSelectedByteArray(null);
+      return;
+    }
+    if (module_Name.trim() === "") {
+      setDialogPopup(true);
+      setsnackbarSeverity("error");
+      setDialogMessage("Blank string is not accepted");
+      return;
+    }
+    const regex = /[^A-Za-z0-9 _]/;
+    if (regex.test(module_Name.trim())) {
+      setDialogPopup(true);
+      setsnackbarSeverity("error");
+      setDialogMessage("Special Character is not allowed");
+      return;
+    }
     setSelectedFile(event.target.files[event.target.files.length - 1]);
     // Clear previous image URL when selecting a new file
     const file = event.target.files[0];
@@ -375,31 +402,8 @@ const Application = ({ sendUrllist }) => {
 
   const handleModuleNameChange = async (e) => {
     setModule_Name(e.target.value);
-    if (e.target.value.trim() === "") {
-      setDialogPopup(true);
-      setsnackbarSeverity("error");
-      setDialogMessage("Blank string is not accepted");
-      return;
-    }
-    const regex = /[^A-Za-z0-9 _]/;
-    if (regex.test(e.target.value.trim())) {
-      setDialogPopup(true);
-      setsnackbarSeverity("error");
-      setDialogMessage("Special Character is not allowed");
-      return;
-    }
-    if (
-      modulelist !== null &&
-      modulelist.some((module) => module.modulename === e.target.value.trim())
-    ) {
-      console.log("Module name found");
-      setDialogPopup(true);
-      setsnackbarSeverity("error");
-      setDialogMessage("Module Name is already present");
-      setSelectedFile(null);
-      setSelectedByteArray(null);
-      return;
-    }
+
+    console.log("Current Module : ", e.target.value);
   };
   const handleMouseDown = async (event) => {
     setShowPopup(false);

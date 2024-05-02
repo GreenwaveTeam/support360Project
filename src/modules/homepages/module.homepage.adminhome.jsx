@@ -24,6 +24,8 @@ import {
   FormControl,
   InputAdornment,
   OutlinedInput,
+  Container,
+  Chip,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import Textfield from "../../components/textfield/textfield.component";
@@ -77,7 +79,16 @@ export default function AdminHome({ sendUrllist }) {
     const parts = name.split(" ");
     const initials = parts[0].charAt(0).toUpperCase();
     return initials;
+    return name
+      .split(" ")
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase();
   }
+  const newColors = ["#ff7043", "#7e57c2", "#81c784"];
+  const getColor = (index) => {
+    return newColors[index % newColors.length]; // Cycle through colors based on index
+  };
 
   const { userData, setUserData } = useUserContext();
   console.log("userData ==>> ", userData);
@@ -331,47 +342,48 @@ export default function AdminHome({ sendUrllist }) {
   };
 
   return (
-    <Box>
-      <TabContext value={value}>
-        <Box
-          sx={{
-            borderBottom: 1,
-            borderColor: "divider",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <TabList
-            textColor="secondary"
-            indicatorColor="secondary"
-            onChange={handleChange}
-            aria-label="lab API tabs example"
-            sx={{ display: "flex", justifyContent: "center" }}
+    <Container maxWidth="lg">
+      <Box>
+        <TabContext value={value}>
+          <Box
+            sx={{
+              borderBottom: 1,
+              borderColor: "divider",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
           >
-            <Tab label="Admin" value="1" />
-            <Tab label="User" value="2" />
-          </TabList>
-          <div style={{ height: "inherit" }}>
-            <Button
-              variant="contained"
-              startIcon={<SendIcon />}
-              sx={{
-                mt: 1.2,
-                mb: 1,
-                backgroundImage:
-                  "linear-gradient(to top, #0ba360 0%, #3cba92 100%);",
-              }}
-              onClick={() => {
-                navigate("/admin/Role");
-              }}
+            <TabList
+              textColor="secondary"
+              indicatorColor="secondary"
+              onChange={handleChange}
+              aria-label="lab API tabs example"
+              sx={{ display: "flex", justifyContent: "center" }}
             >
-              Page Assign
-            </Button>
-          </div>
-        </Box>
-        <TabPanel value="1" sx={{ padding: "5px" }}>
-          <div>
-            {/* <div>
+              <Tab label="Admin" value="1" />
+              <Tab label="User" value="2" />
+            </TabList>
+            <div style={{ height: "inherit" }}>
+              <Button
+                variant="contained"
+                startIcon={<SendIcon />}
+                sx={{
+                  mt: 1.2,
+                  mb: 1,
+                  backgroundImage:
+                    "linear-gradient(to top, #0ba360 0%, #3cba92 100%);",
+                }}
+                onClick={() => {
+                  navigate("/admin/Role");
+                }}
+              >
+                Page Assign
+              </Button>
+            </div>
+          </Box>
+          <TabPanel value="1" sx={{ padding: "5px" }}>
+            <div>
+              {/* <div>
               {divIsVisibleList.includes("register-new-admin") && (
                 <Button
                   variant="contained"
@@ -383,66 +395,66 @@ export default function AdminHome({ sendUrllist }) {
                 </Button>
               )}
             </div> */}
-            <div>
-              {divIsVisibleList.includes("existing-admins") && (
-                <>
-                  <Box
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                    margin="1rem"
-                  >
-                    {/* <Typography component="h1" variant="h5">
+              <div>
+                {divIsVisibleList.includes("existing-admins") && (
+                  <>
+                    <Box
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                      margin="1rem"
+                    >
+                      {/* <Typography component="h1" variant="h5">
                   User Information
                 </Typography> */}
-                  </Box>
-                  <Grid
-                    item
-                    xs={12}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <TableContainer sx={tableStyle}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              colSpan={5}
-                              sx={{
-                                textAlign: "center",
-                                fontSize: "15px",
-                                fontWeight: "bold",
-                                backgroundColor: colors.primary[400],
-                              }}
-                            >
-                              {" "}
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  padding: "0rem 1rem",
+                    </Box>
+                    <Grid
+                      item
+                      xs={12}
+                      display={"flex"}
+                      flexDirection={"column"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
+                      <TableContainer sx={tableStyle}>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell
+                                colSpan={5}
+                                sx={{
+                                  textAlign: "center",
+                                  fontSize: "15px",
+                                  fontWeight: "bold",
+                                  backgroundColor: colors.primary[400],
                                 }}
                               >
-                                <Typography
-                                  component="h1"
-                                  variant="h6"
-                                  sx={{ fontWeight: "600" }}
-                                >
-                                  Existing Admins
-                                </Typography>
+                                {" "}
                                 <div
                                   style={{
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "space-between",
-
-                                    columnGap: "1rem",
+                                    padding: "0rem 1rem",
                                   }}
                                 >
-                                  {/* <div>
+                                  <Typography
+                                    component="h1"
+                                    variant="h6"
+                                    sx={{ fontWeight: "600" }}
+                                  >
+                                    Existing Admins
+                                  </Typography>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+
+                                      columnGap: "1rem",
+                                    }}
+                                  >
+                                    {/* <div>
                                     <FormControl fullWidth>
                                       <InputLabel htmlFor="search">
                                         Search
@@ -479,151 +491,166 @@ export default function AdminHome({ sendUrllist }) {
                                     </FormControl>
                                   </div> */}
 
-                                  <div>
-                                    <Textfield
-                                      onChange={(e) =>
-                                        handleAdminSearchChange(e)
-                                      }
-                                      variant={"outlined"}
-                                      size="small"
-                                      label={
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
+                                    <div>
+                                      <Textfield
+                                        onChange={(e) =>
+                                          handleAdminSearchChange(e)
+                                        }
+                                        variant={"outlined"}
+                                        size="small"
+                                        label={
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <SearchOutlinedIcon
+                                              style={{ marginRight: "5px" }}
+                                            />
+                                            Search...
+                                          </div>
+                                        }
+                                        value={search}
+                                        sx={{
+                                          marginLeft: "5px",
+                                          width: "200px",
+                                          // Set the background color to white
+                                        }}
+                                      />
+
+                                      <Tooltip title="Clear">
+                                        <IconButton
+                                          variant="contained"
+                                          aria-label="delete"
+                                          size="medium"
+                                          onClick={() => {
+                                            setSearch("");
+                                            setFilteredRows(list);
                                           }}
                                         >
-                                          <SearchOutlinedIcon
-                                            style={{ marginRight: "5px" }}
-                                          />
-                                          Search...
-                                        </div>
-                                      }
-                                      value={search}
-                                      sx={{
-                                        marginLeft: "5px",
-                                        width: "200px",
-                                        // Set the background color to white
-                                      }}
-                                    />
+                                          <CloseIcon fontSize="inherit" />
+                                        </IconButton>
+                                      </Tooltip>
+                                    </div>
 
-                                    <Tooltip title="Clear">
-                                      <IconButton
-                                        variant="contained"
-                                        aria-label="delete"
-                                        size="medium"
-                                        onClick={() => {
-                                          setSearch("");
-                                          setFilteredRows(list);
+                                    {divIsVisibleList.includes(
+                                      "register-new-admin"
+                                    ) && (
+                                      <Button
+                                        sx={{
+                                          backgroundImage:
+                                            "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
                                         }}
+                                        variant="contained"
+                                        startIcon={<AddCircleIcon />}
+                                        onClick={() =>
+                                          navigate("/admin/adminregistration")
+                                        }
                                       >
-                                        <CloseIcon fontSize="inherit" />
-                                      </IconButton>
-                                    </Tooltip>
+                                        Register New Admin
+                                      </Button>
+                                    )}
                                   </div>
-
-                                  {divIsVisibleList.includes(
-                                    "register-new-admin"
-                                  ) && (
-                                    <Button
-                                      sx={{
-                                        backgroundImage:
-                                          "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
-                                      }}
-                                      variant="contained"
-                                      startIcon={<AddCircleIcon />}
-                                      onClick={() =>
-                                        navigate("/admin/adminregistration")
-                                      }
-                                    >
-                                      Register New Admin
-                                    </Button>
-                                  )}
                                 </div>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableHead>
-                          <TableRow
-                            sx={{ backgroundColor: colors.primary[400] }}
-                          >
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                              }}
-                              align="center"
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableHead>
+                            <TableRow
+                              sx={{ backgroundColor: colors.primary[400] }}
                             >
-                              Name
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                              }}
-                              align="center"
-                            >
-                              Email
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                              }}
-                              align="center"
-                            >
-                              Admin ID
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                              }}
-                              align="center"
-                            >
-                              Edit
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                              }}
-                              align="center"
-                            >
-                              Delete
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {adminList.map((item, index) => (
-                            <TableRow key={index}>
                               <TableCell
-                                align="center"
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  flexDirection: "row-reverse",
-                                  justifyContent: "flex-end",
-                                  columnGap: "1.2rem",
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
                                 }}
+                                align="center"
                               >
-                                <div>{item.name}</div>
-                                <div>
-                                  <Avatar
+                                Name
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                }}
+                                align="center"
+                              >
+                                Email
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                }}
+                                align="center"
+                              >
+                                Admin ID
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                }}
+                                align="center"
+                              >
+                                Edit
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                }}
+                                align="center"
+                              >
+                                Delete
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {adminList.map((item, index) => (
+                              <TableRow key={index}>
+                                <TableCell align="center" width={200}>
+                                  <Box
                                     sx={{
-                                      bgcolor: colors.blueAccent[500],
+                                      display: "flex",
+                                      alignItems: "center",
+                                      flexDirection: "row-reverse",
+                                      justifyContent: " flex-end",
+                                      columnGap: "0.8rem",
+                                      flexBasis: "0",
+                                      marginLeft: "2.5rem",
                                     }}
                                   >
-                                    {convertToInitials(item.name)}
-                                  </Avatar>
-                                </div>
-                              </TableCell>
-                              <TableCell align="center">{item.email}</TableCell>
-                              <TableCell align="center">
-                                {item.userID}
-                              </TableCell>
-                              {/* <TableCell
+                                    {item.name}
+                                    <Avatar
+                                      sx={{
+                                        bgcolor: getColor(index),
+                                        width: 30,
+                                        height: 30,
+                                      }}
+                                      // size={{sx}}
+                                    >
+                                      {convertToInitials(item.name)}
+                                    </Avatar>
+                                  </Box>
+                                </TableCell>
+                                <TableCell align="center">
+                                  {item.email}
+                                </TableCell>
+                                <TableCell align="center">
+                                  {/* {item.userID} */}
+                                  <Chip
+                                    variant="outlined"
+                                    label={item.userID}
+                                    sx={{
+                                      color: getColor(index),
+                                      borderColor: getColor(index),
+                                      fontWeight: 600,
+                                    }}
+                                  />
+                                </TableCell>
+                                {/* <TableCell
                             style={{
                               cursor: "pointer",
                               fontWeight: "bold",
@@ -640,80 +667,82 @@ export default function AdminHome({ sendUrllist }) {
                           >
                             {item.userID}
                           </TableCell> */}
-                              <TableCell align="center">
-                                <EditIcon
-                                  color="primary"
-                                  style={{
-                                    cursor: "pointer",
-                                    color: "#42a5f5",
-                                  }}
-                                  onClick={() => {
-                                    console.log("item : ", item);
-                                    navigate("/admin/adminregistration", {
-                                      state: { admin: item },
-                                    });
-                                  }}
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <DeleteIcon
-                                  color="error"
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() => handleAdminDelete(item.userID)}
-                                />
-                                <Dialog
-                                  open={openAdminDeleteDialog}
-                                  onClose={() =>
-                                    setOpenAdminDeleteDialog(false)
-                                  }
-                                  aria-labelledby="alert-dialog-title"
-                                  aria-describedby="alert-dialog-description"
-                                >
-                                  <DialogTitle id="alert-dialog-title">
-                                    {"Delete Admin?"}
-                                  </DialogTitle>
-                                  <DialogContent>
-                                    <DialogContentText id="alert-dialog-description">
-                                      Are you sure you want to delete this
-                                      admin: {deleteAdminID} ?
-                                    </DialogContentText>
-                                  </DialogContent>
-                                  <DialogActions>
-                                    <Button
-                                      onClick={() =>
-                                        setOpenAdminDeleteDialog(false)
-                                      }
-                                      color="primary"
-                                    >
-                                      Cancel
-                                    </Button>
-                                    <Button
-                                      onClick={() => {
-                                        deleteUserByUserID(deleteAdminID);
-                                        setOpenAdminDeleteDialog(false);
-                                      }}
-                                      color="error"
-                                      autoFocus
-                                    >
-                                      Delete
-                                    </Button>
-                                  </DialogActions>
-                                </Dialog>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Grid>
-                </>
-              )}
+                                <TableCell align="center">
+                                  <EditIcon
+                                    color="primary"
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#42a5f5",
+                                    }}
+                                    onClick={() => {
+                                      console.log("item : ", item);
+                                      navigate("/admin/adminregistration", {
+                                        state: { admin: item },
+                                      });
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <DeleteIcon
+                                    color="error"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                      handleAdminDelete(item.userID)
+                                    }
+                                  />
+                                  <Dialog
+                                    open={openAdminDeleteDialog}
+                                    onClose={() =>
+                                      setOpenAdminDeleteDialog(false)
+                                    }
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                  >
+                                    <DialogTitle id="alert-dialog-title">
+                                      {"Delete Admin?"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                      <DialogContentText id="alert-dialog-description">
+                                        Are you sure you want to delete this
+                                        admin: {deleteAdminID} ?
+                                      </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button
+                                        onClick={() =>
+                                          setOpenAdminDeleteDialog(false)
+                                        }
+                                        color="primary"
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        onClick={() => {
+                                          deleteUserByUserID(deleteAdminID);
+                                          setOpenAdminDeleteDialog(false);
+                                        }}
+                                        color="error"
+                                        autoFocus
+                                      >
+                                        Delete
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </TabPanel>
-        <TabPanel value="2" sx={{ padding: "5px" }}>
-          <div>
-            {/* <div>
+          </TabPanel>
+          <TabPanel value="2" sx={{ padding: "5px" }}>
+            <div>
+              {/* <div>
               {divIsVisibleList.includes("register-new-user") && (
                 <Button
                   variant="contained"
@@ -725,54 +754,40 @@ export default function AdminHome({ sendUrllist }) {
                 </Button>
               )}
             </div> */}
-            <div>
-              {divIsVisibleList.includes("existing-users") && (
-                <>
-                  <Box
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                    margin="1rem"
-                  >
-                    {/* <Typography component="h1" variant="h5">
+              <div>
+                {divIsVisibleList.includes("existing-users") && (
+                  <>
+                    <Box
+                      alignItems="center"
+                      justifyContent="center"
+                      display="flex"
+                      margin="1rem"
+                    >
+                      {/* <Typography component="h1" variant="h5">
                   Existing Users
                 </Typography> */}
-                  </Box>
-                  <Grid
-                    item
-                    xs={12}
-                    display={"flex"}
-                    flexDirection={"column"}
-                    justifyContent={"center"}
-                    alignItems={"center"}
-                  >
-                    <TableContainer sx={tableStyle}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              colSpan={6}
-                              sx={{
-                                textAlign: "center",
-                                fontSize: "15px",
-                                fontWeight: "bold",
-                                backgroundColor: colors.primary[400],
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
+                    </Box>
+                    <Grid
+                      item
+                      xs={12}
+                      display={"flex"}
+                      flexDirection={"column"}
+                      justifyContent={"center"}
+                      alignItems={"center"}
+                    >
+                      <TableContainer sx={tableStyle}>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell
+                                colSpan={6}
+                                sx={{
+                                  textAlign: "center",
+                                  fontSize: "15px",
+                                  fontWeight: "bold",
+                                  backgroundColor: colors.primary[400],
                                 }}
                               >
-                                <Typography
-                                  component="h1"
-                                  variant="h6"
-                                  sx={{ fontWeight: "600" }}
-                                >
-                                  Existing Users
-                                </Typography>
                                 <div
                                   style={{
                                     display: "flex",
@@ -780,39 +795,53 @@ export default function AdminHome({ sendUrllist }) {
                                     justifyContent: "space-between",
                                   }}
                                 >
-                                  <div>
-                                    <Textfield
-                                      onChange={(e) => handleSearchChange(e)}
-                                      variant={"outlined"}
-                                      size="small"
-                                      label={
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                          }}
-                                        >
-                                          <SearchOutlinedIcon
-                                            style={{ marginRight: "5px" }}
-                                          />
-                                          Search...
-                                        </div>
-                                      }
-                                      value={search}
-                                      sx={{
-                                        marginLeft: "5px",
-                                        width: "200px",
-                                        // Set the background color to white
-                                      }}
-                                      //   InputProps={{
-                                      //     startAdornment: (
-                                      //         <InputAdornment position="start">
-                                      //             <SearchOutlinedIcon />
-                                      //         </InputAdornment>
-                                      //     ),
-                                      // }}
-                                    />
-                                    {/* <Tooltip title="Clear">
+                                  <Typography
+                                    component="h1"
+                                    variant="h6"
+                                    sx={{ fontWeight: "600" }}
+                                  >
+                                    Existing Users
+                                  </Typography>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+                                    }}
+                                  >
+                                    <div>
+                                      <Textfield
+                                        onChange={(e) => handleSearchChange(e)}
+                                        variant={"outlined"}
+                                        size="small"
+                                        label={
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                            }}
+                                          >
+                                            <SearchOutlinedIcon
+                                              style={{ marginRight: "5px" }}
+                                            />
+                                            Search...
+                                          </div>
+                                        }
+                                        value={search}
+                                        sx={{
+                                          marginLeft: "5px",
+                                          width: "200px",
+                                          // Set the background color to white
+                                        }}
+                                        //   InputProps={{
+                                        //     startAdornment: (
+                                        //         <InputAdornment position="start">
+                                        //             <SearchOutlinedIcon />
+                                        //         </InputAdornment>
+                                        //     ),
+                                        // }}
+                                      />
+                                      {/* <Tooltip title="Clear">
                             <Button
                               variant="contained"
                               color="primary"
@@ -826,113 +855,113 @@ export default function AdminHome({ sendUrllist }) {
                               Clear
                             </Button>
                           </Tooltip> */}
-                                    <Tooltip title="Clear">
-                                      <IconButton
-                                        variant="contained"
-                                        aria-label="delete"
-                                        size="medium"
-                                        onClick={() => {
-                                          setSearch("");
-                                          setFilteredRows(list);
+                                      <Tooltip title="Clear">
+                                        <IconButton
+                                          variant="contained"
+                                          aria-label="delete"
+                                          size="medium"
+                                          onClick={() => {
+                                            setSearch("");
+                                            setFilteredRows(list);
+                                          }}
+                                        >
+                                          <CloseIcon fontSize="inherit" />
+                                        </IconButton>
+                                      </Tooltip>
+                                    </div>
+                                    {divIsVisibleList.includes(
+                                      "register-new-user"
+                                    ) && (
+                                      <Button
+                                        sx={{
+                                          backgroundImage:
+                                            "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
                                         }}
+                                        variant="contained"
+                                        startIcon={<AddCircleIcon />}
+                                        onClick={() =>
+                                          navigate("/admin/userregistration")
+                                        }
                                       >
-                                        <CloseIcon fontSize="inherit" />
-                                      </IconButton>
-                                    </Tooltip>
+                                        Register New User
+                                      </Button>
+                                    )}
                                   </div>
-                                  {divIsVisibleList.includes(
-                                    "register-new-user"
-                                  ) && (
-                                    <Button
-                                      sx={{
-                                        backgroundImage:
-                                          "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
-                                      }}
-                                      variant="contained"
-                                      startIcon={<AddCircleIcon />}
-                                      onClick={() =>
-                                        navigate("/admin/userregistration")
-                                      }
-                                    >
-                                      Register New User
-                                    </Button>
-                                  )}
                                 </div>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableHead>
-                          <TableRow
-                            sx={{ backgroundColor: colors.primary[400] }}
-                          >
-                            {/* <TableCell sx={{ width: 0 }}></TableCell> */}
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                                width: "20%",
-                              }}
-                              align="center"
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableHead>
+                            <TableRow
+                              sx={{ backgroundColor: colors.primary[400] }}
                             >
-                              Name
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                                width: "20%",
-                              }}
-                              align="center"
-                            >
-                              Email
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                                width: "20%",
-                              }}
-                              align="center"
-                            >
-                              Plant Name
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                                width: "20%",
-                              }}
-                              align="center"
-                            >
-                              User ID
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                                width: "10%",
-                              }}
-                              align="center"
-                            >
-                              Edit
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                fontSize: "14px",
-                                width: "10%",
-                              }}
-                              align="center"
-                            >
-                              Delete
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {list.map((item, index) => (
-                            <TableRow key={index}>
-                              {/* <TableCell
+                              {/* <TableCell sx={{ width: 0 }}></TableCell> */}
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                  width: "20%",
+                                }}
+                                align="center"
+                              >
+                                Name
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                  width: "20%",
+                                }}
+                                align="center"
+                              >
+                                Email
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                  width: "20%",
+                                }}
+                                align="center"
+                              >
+                                Plant Name
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                  width: "20%",
+                                }}
+                                align="center"
+                              >
+                                User ID
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                  width: "10%",
+                                }}
+                                align="center"
+                              >
+                                Edit
+                              </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                  width: "10%",
+                                }}
+                                align="center"
+                              >
+                                Delete
+                              </TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {list.map((item, index) => (
+                              <TableRow key={index}>
+                                {/* <TableCell
                                 //  align="right"
                                 sx={{
                                   // display: "flex",
@@ -950,129 +979,149 @@ export default function AdminHome({ sendUrllist }) {
                                   {convertToInitials(item.name)}
                                 </Avatar>
                               </TableCell> */}
-                              <TableCell
-                                align="center"
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  flexDirection: "row-reverse",
-                                  justifyContent: "center",
-                                  columnGap: "0.8rem",
-                                }}
-                              >
-                                {item.name}
-                                <Avatar
-                                  sx={{
-                                    bgcolor: colors.blueAccent[500],
-                                  }}
-                                >
-                                  {convertToInitials(item.name)}
-                                </Avatar>
-                              </TableCell>
-                              <TableCell align="center">{item.email}</TableCell>
-                              <TableCell align="center">
-                                {item.plantName}
-                              </TableCell>
-                              <TableCell
-                                style={{
-                                  cursor: "pointer",
-                                  fontWeight: "bold",
-                                  fontSize: "14px",
-                                }}
-                                onClick={() => {
-                                  // localStorage.setItem(
-                                  //   "adminPlantID",
-                                  //   item.plantID
-                                  // );
-                                  navigate("/admin/configurePage");
-                                  setUserData({
-                                    ...userData,
-                                    plantID: item.plantID,
-                                    role: item.role,
-                                    userID: item.userID,
-                                    name: item.name,
-                                  });
-                                }}
-                                align="center"
-                              >
-                                {item.userID}
-                              </TableCell>
-                              {/* </Link> */}
-                              <TableCell align="center">
-                                {/* <Link
-                            style={{ textDecoration: "none", color: "inherit" }}
-                          > */}
-                                <EditIcon
+                                <TableCell align="center" width={200}>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      flexDirection: "row-reverse",
+                                      justifyContent: " flex-end",
+                                      columnGap: "0.8rem",
+                                      flexBasis: "0",
+                                      marginLeft: "2.5rem",
+                                    }}
+                                  >
+                                    {item.name}
+                                    <Avatar
+                                      sx={{
+                                        // bgcolor: colors.blueAccent[500],
+                                        bgcolor: getColor(index),
+                                        width: 30,
+                                        height: 30,
+                                      }}
+                                    >
+                                      <p> {convertToInitials(item.name)}</p>
+                                    </Avatar>
+                                  </Box>
+                                </TableCell>
+
+                                <TableCell align="center">
+                                  {item.email}
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Chip
+                                    variant="outlined"
+                                    label={item.plantName}
+                                    sx={{
+                                      color: getColor(index),
+                                      borderColor: getColor(index),
+                                      fontWeight: 600,
+                                    }}
+                                  />
+                                  {console.log("color", getColor(index))}
+                                </TableCell>
+                                <TableCell
                                   style={{
                                     cursor: "pointer",
-                                    color: "#42a5f5",
+                                    fontWeight: "600",
+                                    fontSize: "14px",
                                   }}
                                   onClick={() => {
-                                    console.log("item : ", item);
-                                    navigate("/admin/userregistration", {
-                                      state: { user: item },
+                                    // localStorage.setItem(
+                                    //   "adminPlantID",
+                                    //   item.plantID
+                                    // );
+                                    navigate("/admin/configurePage");
+                                    setUserData({
+                                      ...userData,
+                                      plantID: item.plantID,
+                                      role: item.role,
+                                      userID: item.userID,
+                                      name: item.name,
                                     });
                                   }}
-                                />
-                              </TableCell>
-                              <TableCell align="center">
-                                <DeleteIcon
-                                  color="error"
-                                  style={{ cursor: "pointer" }}
-                                  // onClick={(e) => {
-                                  //   deleteUserByUserID(item.userID);
-                                  // }}
-                                  onClick={(e) => handleDelete(item.userID)}
-                                />
-                                <Dialog
-                                  open={openDeleteDialog}
-                                  onClose={() => setOpenDeleteDialog(false)}
-                                  aria-labelledby="alert-dialog-title"
-                                  aria-describedby="alert-dialog-description"
+                                  align="center"
                                 >
-                                  <DialogTitle id="alert-dialog-title">
-                                    {"Delete User?"}
-                                  </DialogTitle>
-                                  <DialogContent>
-                                    <DialogContentText id="alert-dialog-description">
-                                      Are you sure you want to delete this user
-                                      : {deleteUserID} ?
-                                    </DialogContentText>
-                                  </DialogContent>
-                                  <DialogActions>
-                                    <Button
-                                      onClick={() => setOpenDeleteDialog(false)}
-                                      color="primary"
-                                    >
-                                      Cancel
-                                    </Button>
-                                    <Button
-                                      onClick={() => {
-                                        deleteUserByUserID(deleteUserID);
-                                        setOpenDeleteDialog(false);
-                                      }}
-                                      color="error"
-                                      autoFocus
-                                    >
-                                      Delete
-                                    </Button>
-                                  </DialogActions>
-                                </Dialog>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Grid>
-                </>
-              )}
+                                  {item.userID}
+                                </TableCell>
+                                {/* </Link> */}
+                                <TableCell align="center">
+                                  {/* <Link
+                            style={{ textDecoration: "none", color: "inherit" }}
+                          > */}
+                                  <EditIcon
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#42a5f5",
+                                    }}
+                                    onClick={() => {
+                                      console.log("item : ", item);
+                                      navigate("/admin/userregistration", {
+                                        state: { user: item },
+                                      });
+                                    }}
+                                  />
+                                </TableCell>
+                                <TableCell align="center">
+                                  <DeleteIcon
+                                    color="error"
+                                    style={{ cursor: "pointer" }}
+                                    // onClick={(e) => {
+                                    //   deleteUserByUserID(item.userID);
+                                    // }}
+                                    onClick={(e) => handleDelete(item.userID)}
+                                  />
+                                  <Dialog
+                                    open={openDeleteDialog}
+                                    onClose={() => setOpenDeleteDialog(false)}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                  >
+                                    <DialogTitle id="alert-dialog-title">
+                                      {"Delete User?"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                      <DialogContentText id="alert-dialog-description">
+                                        Are you sure you want to delete this
+                                        user : {deleteUserID} ?
+                                      </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button
+                                        onClick={() =>
+                                          setOpenDeleteDialog(false)
+                                        }
+                                        color="primary"
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        onClick={() => {
+                                          deleteUserByUserID(deleteUserID);
+                                          setOpenDeleteDialog(false);
+                                        }}
+                                        color="error"
+                                        autoFocus
+                                      >
+                                        Delete
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </TabPanel>
-      </TabContext>
-      <div>
-        {/* <Grid
+          </TabPanel>
+        </TabContext>
+        <div>
+          {/* <Grid
           item
           xs={8}
           display={"flex"}
@@ -1121,7 +1170,7 @@ export default function AdminHome({ sendUrllist }) {
           )}
         </Grid> */}
 
-        {/* {!switchChecked && divIsVisibleList.includes("existing-users") && (
+          {/* {!switchChecked && divIsVisibleList.includes("existing-users") && (
           <>
             <Box
               alignItems="center"
@@ -1384,7 +1433,7 @@ export default function AdminHome({ sendUrllist }) {
           </>
         )} */}
 
-        {/* {switchChecked && divIsVisibleList.includes("existing-admins") && (
+          {/* {switchChecked && divIsVisibleList.includes("existing-admins") && (
           <>
             <Box
               alignItems="center"
@@ -1606,7 +1655,8 @@ export default function AdminHome({ sendUrllist }) {
             </Grid>
           </>
         )} */}
-      </div>
-    </Box>
+        </div>
+      </Box>
+    </Container>
   );
 }

@@ -450,6 +450,18 @@ export default function AdminRegistration() {
                         onChange={handleFormdataInputChange}
                       />
                     </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="phoneNumber"
+                        label="Phone Number"
+                        id="phoneNumber"
+                        autoComplete="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handlePhoneNumberChange}
+                      />
+                    </Grid>
                     {!adminExist && (
                       <Grid item xs={6}>
                         <FormControl fullWidth>
@@ -526,18 +538,6 @@ export default function AdminRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="phoneNumber"
-                        label="Phone Number"
-                        id="phoneNumber"
-                        autoComplete="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handlePhoneNumberChange}
-                      />
-                    </Grid>
                     <Grid item xs={6}>
                       {/* <Dropdown
                         fullWidth

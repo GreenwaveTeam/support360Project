@@ -74,7 +74,7 @@ export default function UserRegistration({ sendUrllist }) {
     designation: false,
     email: false,
     password: false,
-    confirmPassword: false,
+    // confirmPassword: false,
     phoneNumber: false,
     plantID: false,
     plantName: false,
@@ -463,6 +463,18 @@ export default function UserRegistration({ sendUrllist }) {
         return;
       }
     }
+    // if (cnfpass === null || cnfpass === "") {
+    //   setFormErrors({ ...formErrors, confirmPassword: true });
+    // } else {
+    //   setFormErrors({ ...formErrors, confirmPassword: false });
+    // }
+    // if (cnfpass === null || cnfpass === "") {
+    //   handleClick();
+    //   setSnackbarText("Confirm Password must be filled");
+    //   setsnackbarSeverity("error");
+    //   console.log("Confirm Password must be filled");
+    //   return;
+    // }
     if (cnfpass !== pass) {
       handleClick();
       setSnackbarText("Password does not match !");
@@ -964,7 +976,7 @@ export default function UserRegistration({ sendUrllist }) {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <FormControl fullWidth>
+                      <FormControl fullWidth error={formErrors.userID}>
                         <InputLabel htmlFor="userID">userID</InputLabel>
                         <OutlinedInput
                           autoComplete="userID"
@@ -1003,7 +1015,7 @@ export default function UserRegistration({ sendUrllist }) {
                     </Grid>
                     {!userExist && (
                       <Grid item xs={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth error={formErrors.password}>
                           <InputLabel htmlFor="password">Password</InputLabel>
                           <OutlinedInput
                             label="Password"
@@ -1153,7 +1165,7 @@ export default function UserRegistration({ sendUrllist }) {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <FormControl fullWidth>
+                      <FormControl fullWidth error={formErrors.plantID}>
                         <InputLabel htmlFor="PlantID">PlantID</InputLabel>
                         <OutlinedInput
                           inputProps={{

@@ -243,7 +243,9 @@ export default function AdminHome({ sendUrllist }) {
       const data = await response.ok;
       console.log("data : ", data);
       setList((prevList) => prevList.filter((item) => item.userID !== e));
+      setFilteredRows(list);
       setAdminList((prevList) => prevList.filter((item) => item.userID !== e));
+      setFilteredAdminRows(adminList);
     } catch (error) {
       console.log(error);
     }
@@ -292,7 +294,9 @@ export default function AdminHome({ sendUrllist }) {
 
   const handleAdminSearchChange = (event) => {
     setAdminSearch(event.target.value);
+    console.log("Search => ", event.target.value);
     const currentSearch = event.target.value;
+    console.log("Search => ", adminSearch);
     if (currentSearch === "" || currentSearch.length === 0) {
       setFilteredAdminRows(adminList);
     } else {
@@ -511,7 +515,7 @@ export default function AdminHome({ sendUrllist }) {
                                             Search...
                                           </div>
                                         }
-                                        value={search}
+                                        value={adminSearch}
                                         sx={{
                                           marginLeft: "5px",
                                           width: "200px",
@@ -525,8 +529,8 @@ export default function AdminHome({ sendUrllist }) {
                                           aria-label="delete"
                                           size="medium"
                                           onClick={() => {
-                                            setSearch("");
-                                            setFilteredRows(list);
+                                            setAdminSearch("");
+                                            setFilteredAdminRows(adminList);
                                           }}
                                         >
                                           <CloseIcon fontSize="inherit" />

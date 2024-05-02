@@ -206,7 +206,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
+            "Content-Type": "text/plain",
           },
           body: JSON.stringify({
             prev_infra: prev_infra,

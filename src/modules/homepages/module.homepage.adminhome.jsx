@@ -494,9 +494,25 @@ export default function AdminHome({ sendUrllist }) {
                                       />
                                     </FormControl>
                                   </div> */}
-
+                                    {divIsVisibleList.includes(
+                                      "register-new-admin"
+                                    ) && (
+                                      <Button
+                                        sx={{
+                                          backgroundImage:
+                                            "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+                                        }}
+                                        variant="contained"
+                                        startIcon={<AddCircleIcon />}
+                                        onClick={() =>
+                                          navigate("/admin/adminregistration")
+                                        }
+                                      >
+                                        Register New Admin
+                                      </Button>
+                                    )}
                                     <div>
-                                      <Textfield
+                                      {/* <Textfield
                                         onChange={(e) =>
                                           handleAdminSearchChange(e)
                                         }
@@ -522,7 +538,6 @@ export default function AdminHome({ sendUrllist }) {
                                           // Set the background color to white
                                         }}
                                       />
-
                                       <Tooltip title="Clear">
                                         <IconButton
                                           variant="contained"
@@ -535,26 +550,52 @@ export default function AdminHome({ sendUrllist }) {
                                         >
                                           <CloseIcon fontSize="inherit" />
                                         </IconButton>
-                                      </Tooltip>
-                                    </div>
+                                      </Tooltip> */}
 
-                                    {divIsVisibleList.includes(
-                                      "register-new-admin"
-                                    ) && (
-                                      <Button
-                                        sx={{
-                                          backgroundImage:
-                                            "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
-                                        }}
-                                        variant="contained"
-                                        startIcon={<AddCircleIcon />}
-                                        onClick={() =>
-                                          navigate("/admin/adminregistration")
-                                        }
-                                      >
-                                        Register New Admin
-                                      </Button>
-                                    )}
+                                      <FormControl fullWidth>
+                                        <InputLabel htmlFor="search">
+                                          <SearchOutlinedIcon
+                                            style={{ marginRight: "5px" }}
+                                          />
+                                          Search...
+                                        </InputLabel>
+                                        <OutlinedInput
+                                          label="   Search..."
+                                          autoComplete="search"
+                                          name="search"
+                                          required
+                                          fullWidth
+                                          id="search"
+                                          value={adminSearch}
+                                          sx={{
+                                            marginLeft: "5px",
+                                            width: "200px",
+                                          }}
+                                          onChange={(e) =>
+                                            handleAdminSearchChange(e)
+                                          }
+                                          endAdornment={
+                                            <Tooltip title="Clear">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  variant="contained"
+                                                  aria-label="delete"
+                                                  size="medium"
+                                                  onClick={() => {
+                                                    setAdminSearch("");
+                                                    setFilteredAdminRows(
+                                                      adminList
+                                                    );
+                                                  }}
+                                                >
+                                                  <CloseIcon fontSize="inherit" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
+                                          }
+                                        />
+                                      </FormControl>
+                                    </div>
                                   </div>
                                 </div>
                               </TableCell>

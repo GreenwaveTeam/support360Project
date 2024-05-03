@@ -35,7 +35,8 @@ import {
   TableCell,
   TableBody,
   DialogTitle,
-  Chip, // Import TextField
+  Chip,
+  Container, // Import TextField
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Dialog from "@mui/material/Dialog";
@@ -463,13 +464,14 @@ export default function UserDeviceTree({ sendUrllist }) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
-    <div>
-      {divIsVisibleList && divIsVisibleList.includes("device-report") && (
-        <div id="device-report">
-          {deviceIssueDetails.length > 0 && (
-            <TableContainer>
-              <center>
-                {/* <Table>
+    <Container maxWidth="lg">
+      <Card sx={{ boxShadow: 2, borderRadius: 2 }}>
+        {divIsVisibleList && divIsVisibleList.includes("device-report") && (
+          <div id="device-report">
+            {deviceIssueDetails.length > 0 && (
+              <TableContainer>
+                <center>
+                  {/* <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell>
@@ -542,85 +544,85 @@ export default function UserDeviceTree({ sendUrllist }) {
                   </TableBody>
                 </Table> */}
 
-                <br></br>
-                <Card
-                  sx={{ boxShadow: 1, padding: "7px", margin: "0px 2px" }}
-                  style={{}}
-                >
-                  <div
-                    align="center"
-                    style={{
-                      padding: "5px",
-                      flex: 1,
-                      overflow: "auto",
-                    }}
+                  <br></br>
+                  <Card
+                    sx={{ boxShadow: 1, padding: "7px", margin: "0px 2px" }}
+                    style={{}}
                   >
-                    <span
+                    <div
+                      align="center"
                       style={{
-                        fontSize: "14px",
-                        fontWeight: "bold",
+                        padding: "5px",
                         flex: 1,
+                        overflow: "auto",
                       }}
                     >
-                      Issues Overview
-                    </span>
-                    <span
-                      style={{
-                        color: "#610C9F",
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                      }}
-                    ></span>
-                    <ExpandMore
-                      expand={expanded}
-                      onClick={handleExpandClick}
-                      aria-expanded={expanded}
-                      aria-label="show more"
-                    >
-                      <ExpandMoreIcon />
+                      <span
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                          flex: 1,
+                        }}
+                      >
+                        Issues Overview
+                      </span>
+                      <span
+                        style={{
+                          color: "#610C9F",
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                        }}
+                      ></span>
+                      <ExpandMore
+                        expand={expanded}
+                        onClick={handleExpandClick}
+                        aria-expanded={expanded}
+                        aria-label="show more"
+                      >
+                        <ExpandMoreIcon />
+                        &nbsp;
+                      </ExpandMore>
+                      <Badge
+                        badgeContent={deviceIssueDetails.length}
+                        color="info"
+                        sx={{ marginLeft: "8px" }}
+                      >
+                        {/* <NotificationsActiveIcon color="secondary" /> */}
+                      </Badge>
                       &nbsp;
-                    </ExpandMore>
-                    <Badge
-                      badgeContent={deviceIssueDetails.length}
-                      color="info"
-                      sx={{ marginLeft: "8px" }}
-                    >
-                      {/* <NotificationsActiveIcon color="secondary" /> */}
-                    </Badge>
-                    &nbsp;
-                  </div>
+                    </div>
 
-                  <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CustomTable
-                      rows={deviceIssueDetails}
-                      columns={overviewTableColumns}
-                      setRows={setDeviceIssueDetails}
-                      tablename={"Summary"}
-                      deleteFromDatabase={handleDeleteItemFromReviewTableTest}
-                      style={{
-                        borderRadius: 2,
-                        // maxHeight: 440,
-                        // maxWidth: 1200,
-                      }}
-                      isDeleteDialog={false}
-                    ></CustomTable>
-                    <br />
-                    <Button
-                      className="button"
-                      variant="contained"
-                      color="secondary" // Use secondary color for delete button
-                      onClick={() => handleSubmitPost(deviceTicketJSON)}
-                    >
-                      <SaveIcon
-                        fontSize="small"
-                        sx={{ marginRight: "0.3rem" }}
-                      />
-                      Submit
-                    </Button>
-                  </Collapse>
-                </Card>
-                <br></br>
-                {/* <Button
+                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                      <CustomTable
+                        rows={deviceIssueDetails}
+                        columns={overviewTableColumns}
+                        setRows={setDeviceIssueDetails}
+                        tablename={"Summary"}
+                        deleteFromDatabase={handleDeleteItemFromReviewTableTest}
+                        style={{
+                          borderRadius: 2,
+                          // maxHeight: 440,
+                          // maxWidth: 1200,
+                        }}
+                        isDeleteDialog={false}
+                      ></CustomTable>
+                      <br />
+                      <Button
+                        className="button"
+                        variant="contained"
+                        color="secondary" // Use secondary color for delete button
+                        onClick={() => handleSubmitPost(deviceTicketJSON)}
+                      >
+                        <SaveIcon
+                          fontSize="small"
+                          sx={{ marginRight: "0.3rem" }}
+                        />
+                        Submit
+                      </Button>
+                    </Collapse>
+                  </Card>
+                  <br></br>
+                  {/* <Button
                   className="button"
                   variant="contained"
                   color="secondary" // Use secondary color for delete button
@@ -628,41 +630,46 @@ export default function UserDeviceTree({ sendUrllist }) {
                 >
                   Submit
                 </Button> */}
-              </center>
-            </TableContainer>
-          )}
-          <Card
-            borderRadius={2}
-            className="split-screen"
-            onClick={handleClickOutsideNode}
-          >
-            <div className="left-panel">
-              {data !== null && (
-                <div className="treeViewContainer">
-                  <Chip
-                    color="info"
-                    variant="outlined"
-                    size="large"
-                    sx={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}
-                    label="Device Tree :"
-                  />
-                  <TreeView
-                    className="treeView"
-                    aria-label="rich object"
-                    defaultCollapseIcon={<ExpandMoreIcon />}
-                    defaultExpanded={["root"]}
-                    defaultExpandIcon={<ChevronRightIcon />}
-                  >
-                    {renderTree(data)}
-                  </TreeView>
-                  <br />
-                </div>
-              )}
-            </div>
-            <div className={`right-panel ${data === null ? "hidden" : ""}`}>
-              {data !== null && selectedNode && (
-                <>
-                  {/* <Box>
+                </center>
+              </TableContainer>
+            )}
+            <Card
+              borderRadius={2}
+              className="split-screen"
+              onClick={handleClickOutsideNode}
+            >
+              <div className="left-panel">
+                {data !== null && (
+                  <div className="treeViewContainer">
+                    <Chip
+                      color="info"
+                      variant="outlined"
+                      size="large"
+                      sx={{
+                        fontSize: "0.9rem",
+                        marginLeft: "5px",
+                        marginBottom: "10px",
+                      }}
+                      label="Device Tree :"
+                    />
+                    <Divider sx={{ marginBottom: "0.6rem" }} />
+                    <TreeView
+                      className="treeView"
+                      aria-label="rich object"
+                      defaultCollapseIcon={<ExpandMoreIcon />}
+                      defaultExpanded={["root"]}
+                      defaultExpandIcon={<ChevronRightIcon />}
+                    >
+                      {renderTree(data)}
+                    </TreeView>
+                    <br />
+                  </div>
+                )}
+              </div>
+              <div className={`right-panel ${data === null ? "hidden" : ""}`}>
+                {data !== null && selectedNode && (
+                  <>
+                    {/* <Box>
                 <p className="selectedNodeInfo">
                   {selectedNode
                     ? `Selected Node: ${selectedNode.name}`
@@ -670,82 +677,82 @@ export default function UserDeviceTree({ sendUrllist }) {
                 </p>
               </Box> */}
 
-                  <div>
-                    <Dialog
-                      // header={`Report Issue for : ${selectedNode.name}`}
-                      fullWidth
-                      open={visible}
-                      PaperProps={{
-                        sx: {
-                          // padding: "15px", // Add padding in the four corners
-                          borderRadius: 2,
-                          overflowX: "hidden", // Hide horizontal overflow
-                        },
-                      }}
-                      onClose={onHideDialog}
-                    >
-                      <DialogTitle
-                        id="alert-dialog-title"
-                        sx={{ padding: "15px", fontWeight: "600" }}
+                    <div>
+                      <Dialog
+                        // header={`Report Issue for : ${selectedNode.name}`}
+                        fullWidth
+                        open={visible}
+                        PaperProps={{
+                          sx: {
+                            // padding: "15px", // Add padding in the four corners
+                            borderRadius: 2,
+                            overflowX: "hidden", // Hide horizontal overflow
+                          },
+                        }}
+                        onClose={onHideDialog}
                       >
-                        {`Report Issue for : ${selectedNode.name}`}
-                      </DialogTitle>
-                      <Divider />
-
-                      <div style={{ padding: "5px 15px" }}>
-                        <TableContainer
-                          sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            columnGap: "1rem",
-                          }}
+                        <DialogTitle
+                          id="alert-dialog-title"
+                          sx={{ padding: "15px", fontWeight: "600" }}
                         >
-                          {categoryIssues && categoryIssues.issueList ? (
-                            <FormControl
-                              variant="outlined"
-                              sx={{ width: "200px" }}
-                            >
-                              <InputLabel>Select Issue</InputLabel>
-                              <Select
-                                value={selectedIssue}
-                                onChange={(e) => {
-                                  setSelectedIssue(e.target.value);
-                                  if (e.target.value !== "Other") {
-                                    setOtherIssue("");
-                                  }
-                                }}
-                                label="Select Issue"
-                              >
-                                {categoryIssues.issueList.map(
-                                  (issue, index) => (
-                                    <MenuItem
-                                      key={index}
-                                      value={issue.issuename}
-                                    >
-                                      {issue.issuename}
-                                    </MenuItem>
-                                  )
-                                )}
-                                <MenuItem value="Other">Other</MenuItem>
-                              </Select>
-                            </FormControl>
-                          ) : (
-                            <div>No issues found</div>
-                          )}
+                          {`Report Issue for : ${selectedNode.name}`}
+                        </DialogTitle>
+                        <Divider />
 
-                          {selectedIssue === "Other" && (
-                            <TextField
-                              sx={{ width: "200px" }}
-                              label="miscellaneous issue"
-                              value={otherIssue}
-                              onChange={(e) => setOtherIssue(e.target.value)}
-                              variant="outlined"
-                              margin="dense"
-                              fullWidth
-                            />
-                          )}
-                          {/* <FormControl variant="outlined" sx={{ width: "200px" }}>
+                        <div style={{ padding: "5px 15px" }}>
+                          <TableContainer
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              columnGap: "1rem",
+                            }}
+                          >
+                            {categoryIssues && categoryIssues.issueList ? (
+                              <FormControl
+                                variant="outlined"
+                                sx={{ width: "200px" }}
+                              >
+                                <InputLabel>Select Issue</InputLabel>
+                                <Select
+                                  value={selectedIssue}
+                                  onChange={(e) => {
+                                    setSelectedIssue(e.target.value);
+                                    if (e.target.value !== "Other") {
+                                      setOtherIssue("");
+                                    }
+                                  }}
+                                  label="Select Issue"
+                                >
+                                  {categoryIssues.issueList.map(
+                                    (issue, index) => (
+                                      <MenuItem
+                                        key={index}
+                                        value={issue.issuename}
+                                      >
+                                        {issue.issuename}
+                                      </MenuItem>
+                                    )
+                                  )}
+                                  <MenuItem value="Other">Other</MenuItem>
+                                </Select>
+                              </FormControl>
+                            ) : (
+                              <div>No issues found</div>
+                            )}
+
+                            {selectedIssue === "Other" && (
+                              <TextField
+                                sx={{ width: "200px" }}
+                                label="miscellaneous issue"
+                                value={otherIssue}
+                                onChange={(e) => setOtherIssue(e.target.value)}
+                                variant="outlined"
+                                margin="dense"
+                                fullWidth
+                              />
+                            )}
+                            {/* <FormControl variant="outlined" sx={{ width: "200px" }}>
                           <InputLabel>Select Priority</InputLabel>
                           <Select
                             value={selectedPriority}
@@ -757,33 +764,42 @@ export default function UserDeviceTree({ sendUrllist }) {
                             <MenuItem value="Critical">Critical</MenuItem>
                           </Select>
                         </FormControl> */}
-                          <FormControl
-                            variant="outlined"
-                            sx={{ width: "200px" }}
-                          >
-                            <Dropdown
-                              label={"Severity"}
-                              //select
-                              //formstyle={{ width: "50%" }}
-                              value={selectedPriority}
-                              list={["Critical", "Major", "Minor"]}
-                              onChange={handleSelectPriority}
-                            />
-                          </FormControl>
-
-                          <FormControl
-                            variant="outlined"
-                            sx={{ width: "200px" }}
-                          >
-                            <TextField
-                              label="Remarks"
+                            <FormControl
                               variant="outlined"
-                              value={remarks}
-                              onChange={handleRemarksChange}
-                              style={{ margin: "10px 0" }}
-                            />
-                          </FormControl>
-                          {/* Plus icon button */}
+                              sx={{ width: "200px" }}
+                            >
+                              <Dropdown
+                                label={"Severity"}
+                                //select
+                                //formstyle={{ width: "50%" }}
+                                value={selectedPriority}
+                                list={["Critical", "Major", "Minor"]}
+                                onChange={handleSelectPriority}
+                              />
+                            </FormControl>
+
+                            <FormControl
+                              variant="outlined"
+                              sx={{ width: "200px" }}
+                            >
+                              <TextField
+                                label="Remarks"
+                                variant="outlined"
+                                value={remarks}
+                                onChange={handleRemarksChange}
+                                style={{ margin: "10px 0" }}
+                              />
+                            </FormControl>
+                            {/* Plus icon button */}
+                            {/* <IconButton
+                          color="primary"
+                          aria-label="add"
+                          onClick={() => handleAddItem()}
+                        >
+                          <AddIcon />
+                        </IconButton> */}
+                          </TableContainer>
+
                           {/* <IconButton
                           color="primary"
                           aria-label="add"
@@ -791,128 +807,119 @@ export default function UserDeviceTree({ sendUrllist }) {
                         >
                           <AddIcon />
                         </IconButton> */}
-                        </TableContainer>
 
-                        {/* <IconButton
-                          color="primary"
-                          aria-label="add"
-                          onClick={() => handleAddItem()}
-                        >
-                          <AddIcon />
-                        </IconButton> */}
-
-                        <Button
-                          variant="contained"
-                          onClick={() => handleAddItem()}
-                          style={{
-                            backgroundImage:
-                              "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
-                            width: "30%",
-                            margin: "auto",
-                            display: "flex",
-                          }}
-                        >
-                          Add Category
-                          <AddIcon
-                            fontSize="medium"
-                            sx={{ paddingLeft: "0.2rem" }}
-                          />
-                        </Button>
-                        <br />
-                        {showAlert && (
-                          <Alert
-                            severity="error"
-                            onClose={() => setShowAlert(false)}
-                          >
-                            {alertMessage}
-                          </Alert>
-                        )}
-
-                        {tableData.length > 0 && (
-                          // <TableContainer>
-                          //   <Table>
-                          //     <TableHead>
-                          //       <TableRow>
-                          //         <TableCell>Issue</TableCell>
-                          //         <TableCell>Priority</TableCell>
-                          //         <TableCell>Remarks</TableCell>
-                          //         <TableCell>Action</TableCell>
-                          //       </TableRow>
-                          //     </TableHead>
-                          //     <TableBody>
-                          //       {tableData.map((row, index) => (
-                          //         <TableRow key={index}>
-                          //           <TableCell>{row.issue}</TableCell>
-                          //           <TableCell>{row.priority}</TableCell>
-                          //           <TableCell>{row.remarks}</TableCell>
-                          //           <TableCell>
-                          //             <IconButton
-                          //               onClick={() => handleDeleteItem(row.issue)}
-                          //             >
-                          //               <DeleteIcon />
-                          //             </IconButton>
-                          //           </TableCell>
-                          //         </TableRow>
-                          //       ))}
-                          //     </TableBody>
-                          //   </Table>
-                          // </TableContainer>
-                          <CustomTable
-                            rows={tableData}
-                            columns={columns}
-                            setRows={setTableData}
-                            deleteFromDatabase={handleDeleteItem}
-                            editActive={false}
-                            tablename={"Added Issues"}
-                            redirectIconActive={false}
-                            isDeleteDialog={false}
-                          ></CustomTable>
-                        )}
-                        <br />
-                      </div>
-                    </Dialog>
-                  </div>
-
-                  {clickedNode &&
-                    selectedNode.id !== "root" &&
-                    clickedNode.id !== "root" && (
-                      <div className="dlg">
-                        <div className="clicked-node">
-                          <Card
-                            sx={{
-                              minWidth: 550,
-
-                              backgroundColor: colors.primary[400],
-                              borderRadius: "10px",
-                              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                          <Button
+                            variant="contained"
+                            onClick={() => handleAddItem()}
+                            style={{
+                              backgroundImage:
+                                "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                              width: "30%",
+                              margin: "auto",
+                              display: "flex",
                             }}
                           >
-                            <div className="Card-Components">
-                              <div
-                                style={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  alignItems: "center",
-                                  padding: "0px 1rem",
-                                }}
-                              >
-                                <h4>Node Details:</h4>
-                                <Button
-                                  className="button"
-                                  variant="contained"
-                                  startIcon={<ReportIcon />}
-                                  color="error" // Use secondary color for delete button
-                                  onClick={() =>
-                                    handleOpenDialog(
-                                      selectedNode.issue_category_name
-                                    )
-                                  }
+                            Add Category
+                            <AddIcon
+                              fontSize="medium"
+                              sx={{ paddingLeft: "0.2rem" }}
+                            />
+                          </Button>
+                          <br />
+                          {showAlert && (
+                            <Alert
+                              severity="error"
+                              onClose={() => setShowAlert(false)}
+                            >
+                              {alertMessage}
+                            </Alert>
+                          )}
+
+                          {tableData.length > 0 && (
+                            // <TableContainer>
+                            //   <Table>
+                            //     <TableHead>
+                            //       <TableRow>
+                            //         <TableCell>Issue</TableCell>
+                            //         <TableCell>Priority</TableCell>
+                            //         <TableCell>Remarks</TableCell>
+                            //         <TableCell>Action</TableCell>
+                            //       </TableRow>
+                            //     </TableHead>
+                            //     <TableBody>
+                            //       {tableData.map((row, index) => (
+                            //         <TableRow key={index}>
+                            //           <TableCell>{row.issue}</TableCell>
+                            //           <TableCell>{row.priority}</TableCell>
+                            //           <TableCell>{row.remarks}</TableCell>
+                            //           <TableCell>
+                            //             <IconButton
+                            //               onClick={() => handleDeleteItem(row.issue)}
+                            //             >
+                            //               <DeleteIcon />
+                            //             </IconButton>
+                            //           </TableCell>
+                            //         </TableRow>
+                            //       ))}
+                            //     </TableBody>
+                            //   </Table>
+                            // </TableContainer>
+                            <CustomTable
+                              rows={tableData}
+                              columns={columns}
+                              setRows={setTableData}
+                              deleteFromDatabase={handleDeleteItem}
+                              editActive={false}
+                              tablename={"Added Issues"}
+                              redirectIconActive={false}
+                              isDeleteDialog={false}
+                            ></CustomTable>
+                          )}
+                          <br />
+                        </div>
+                      </Dialog>
+                    </div>
+
+                    {clickedNode &&
+                      selectedNode.id !== "root" &&
+                      clickedNode.id !== "root" && (
+                        <div className="dlg">
+                          <div className="clicked-node">
+                            <Card
+                              sx={{
+                                minWidth: 550,
+
+                                backgroundColor: colors.primary[400],
+                                borderRadius: 2,
+                                boxShadow: 2,
+                              }}
+                            >
+                              <div className="Card-Components">
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    padding: "0px 1rem",
+                                  }}
                                 >
-                                  Report Issue
-                                </Button>
-                              </div>
-                              <Divider />
-                              {/* <Toast ref={toast} />
+                                  <h4>Node Details:</h4>
+                                  <Button
+                                    className="button"
+                                    variant="contained"
+                                    startIcon={<ReportIcon />}
+                                    color="error" // Use secondary color for delete button
+                                    onClick={() =>
+                                      handleOpenDialog(
+                                        selectedNode.issue_category_name
+                                      )
+                                    }
+                                  >
+                                    Report Issue
+                                  </Button>
+                                </div>
+                                <Divider />
+                                {/* <Toast ref={toast} />
                             <Dialog
                               group="declarative"
                               visible={visibleConfirm}
@@ -939,218 +946,225 @@ export default function UserDeviceTree({ sendUrllist }) {
                               </center>
                             </div> */}
 
-                              <div style={{ padding: "0rem 1.5rem" }}>
-                                <div className="CardText">
-                                  <div style={{ marginBottom: "10px" }}>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                        textAlign: "left",
-                                      }}
-                                    >
-                                      Name:
-                                    </p>
-                                  </div>
+                                <div style={{ padding: "0rem 1.5rem" }}>
+                                  <div className="CardText">
+                                    <div style={{ marginBottom: "10px" }}>
+                                      <p
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginBottom: "5px",
+                                          textAlign: "left",
+                                        }}
+                                      >
+                                        Name:
+                                      </p>
+                                    </div>
 
-                                  <div>
-                                    <div className="value-comp">
-                                      {selectedNode.name}
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div className="CardText">
-                                  <div style={{ marginBottom: "10px" }}>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                      }}
-                                    >
-                                      Make:
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <div className="value-comp">
-                                      {selectedNode.make}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="CardText">
-                                  <div style={{ marginBottom: "10px" }}>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                      }}
-                                    >
-                                      Model:
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <div className="value-comp">
-                                      {selectedNode.model}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="CardText">
-                                  <div style={{ marginBottom: "10px" }}>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                      }}
-                                    >
-                                      Capacity:
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <div className="value-comp">
-                                      {selectedNode.capacity}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="CardText">
-                                  <div style={{ marginBottom: "10px" }}>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                      }}
-                                    >
-                                      Description:
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <div className="value-comp">
-                                      {selectedNode.description}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="CardText">
-                                  <div style={{ marginBottom: "10px" }}>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                      }}
-                                    >
-                                      Warranty End Date:
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <div className="value-comp">
-                                      {selectedNode.warranty_support_end_date}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="CardText">
-                                  <div style={{ marginBottom: "10px" }}>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                      }}
-                                    >
-                                      Support End Date:
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <div className="value-comp">
-                                      {selectedNode.warranty_end_date}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="CardText">
-                                  <div style={{ marginBottom: "10px" }}>
-                                    <p
-                                      style={{
-                                        fontWeight: "bold",
-                                        marginBottom: "5px",
-                                      }}
-                                    >
-                                      Issue Category Name:
-                                    </p>
-                                  </div>
-                                  <div>
-                                    <div className="value-comp">
-                                      {selectedNode.issue_category_name}
-                                    </div>
-                                  </div>
-                                </div>
-                                {selectedNode.image_file && (
-                                  <div style={{ marginBottom: "10px" }}>
                                     <div>
+                                      <div className="value-comp">
+                                        {selectedNode.name}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="CardText">
+                                    <div style={{ marginBottom: "10px" }}>
                                       <p
                                         style={{
                                           fontWeight: "bold",
                                           marginBottom: "5px",
                                         }}
                                       >
-                                        Image:
+                                        Make:
                                       </p>
                                     </div>
-
                                     <div>
-                                      <div>
-                                        <img
-                                          width="150"
-                                          height="120"
-                                          src={`data:image/jpeg;base64,${selectedNode.image_file}`}
-                                          alt="NoImage"
-                                          style={{ borderRadius: "5px" }}
-                                          onError={(e) => {
-                                            e.target.onerror = null; // Prevent infinite loop
-                                            e.target.src = `data:image/jpeg;base64,${btoa(
-                                              String.fromCharCode.apply(
-                                                null,
-                                                selectedNode.image_file
-                                              )
-                                            )}`;
-                                          }}
-                                        />
+                                      <div className="value-comp">
+                                        {selectedNode.make}
                                       </div>
                                     </div>
                                   </div>
-                                )}
+                                  <div className="CardText">
+                                    <div style={{ marginBottom: "10px" }}>
+                                      <p
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginBottom: "5px",
+                                        }}
+                                      >
+                                        Model:
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <div className="value-comp">
+                                        {selectedNode.model}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="CardText">
+                                    <div style={{ marginBottom: "10px" }}>
+                                      <p
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginBottom: "5px",
+                                        }}
+                                      >
+                                        Capacity:
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <div className="value-comp">
+                                        {selectedNode.capacity}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="CardText">
+                                    <div style={{ marginBottom: "10px" }}>
+                                      <p
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginBottom: "5px",
+                                        }}
+                                      >
+                                        Description:
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <div className="value-comp">
+                                        {selectedNode.description}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="CardText">
+                                    <div style={{ marginBottom: "10px" }}>
+                                      <p
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginBottom: "5px",
+                                        }}
+                                      >
+                                        Warranty End Date:
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <div className="value-comp">
+                                        {selectedNode.warranty_support_end_date}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="CardText">
+                                    <div style={{ marginBottom: "10px" }}>
+                                      <p
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginBottom: "5px",
+                                        }}
+                                      >
+                                        Support End Date:
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <div className="value-comp">
+                                        {selectedNode.warranty_end_date}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="CardText">
+                                    <div
+                                      style={{
+                                        marginBottom: "10px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <p
+                                        style={{
+                                          fontWeight: "bold",
+                                          marginBottom: "5px",
+                                        }}
+                                      >
+                                        Issue Category Name:
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <div className="value-comp">
+                                        {selectedNode.issue_category_name}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  {selectedNode.image_file && (
+                                    <div style={{ marginBottom: "10px" }}>
+                                      <div>
+                                        <p
+                                          style={{
+                                            fontWeight: "bold",
+                                            marginBottom: "5px",
+                                          }}
+                                        >
+                                          Image:
+                                        </p>
+                                      </div>
+
+                                      <div>
+                                        <div>
+                                          <img
+                                            width="150"
+                                            height="120"
+                                            src={`data:image/jpeg;base64,${selectedNode.image_file}`}
+                                            alt="NoImage"
+                                            style={{ borderRadius: "5px" }}
+                                            onError={(e) => {
+                                              e.target.onerror = null; // Prevent infinite loop
+                                              e.target.src = `data:image/jpeg;base64,${btoa(
+                                                String.fromCharCode.apply(
+                                                  null,
+                                                  selectedNode.image_file
+                                                )
+                                              )}`;
+                                            }}
+                                          />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          </Card>
+                            </Card>
+                          </div>
                         </div>
+                      )}
+
+                    {showAddItemButton && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: buttonPosition.y,
+                          left: buttonPosition.x,
+                          zIndex: 9999,
+                        }}
+                      >
+                        <Button
+                          className="button"
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => setVisible(true)}
+                        >
+                          Add Item
+                        </Button>
                       </div>
                     )}
-
-                  {showAddItemButton && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: buttonPosition.y,
-                        left: buttonPosition.x,
-                        zIndex: 9999,
-                      }}
-                    >
-                      <Button
-                        className="button"
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => setVisible(true)}
-                      >
-                        Add Item
-                      </Button>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </Card>
-          <TicketDialog
-            ticketDialogOpen={ticketOpen}
-            setTicketDialogOpen={setTicketOpen}
-            ticketNumber={ticketNumber}
-          ></TicketDialog>
-        </div>
-      )}
-    </div>
+                  </>
+                )}
+              </div>
+            </Card>
+            <TicketDialog
+              ticketDialogOpen={ticketOpen}
+              setTicketDialogOpen={setTicketOpen}
+              ticketNumber={ticketNumber}
+            ></TicketDialog>
+          </div>
+        )}
+      </Card>
+    </Container>
   );
 }

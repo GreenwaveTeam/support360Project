@@ -172,8 +172,8 @@ export default function AdminRegistration() {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    for (const key in formData) {
-      if (formData[key] === null || formData[key] === "") {
+    for (const key in updateFormData) {
+      if (updateFormData[key] === null || updateFormData[key] === "") {
         handleClick();
         setSnackbarText(`${key} must be filled`);
         setsnackbarSeverity("error");
@@ -259,12 +259,17 @@ export default function AdminRegistration() {
         body: JSON.stringify(formData),
       });
       if (response.ok) {
-        console.log("Admin registered successfully");
+        const text = await response.text();
+        handleClick();
+        setSnackbarText(text);
+        setsnackbarSeverity("success");
         navigate(`/admin/home`);
-      } else if (response.status === 400) {
-        console.error("Admin Already Exist");
       } else {
-        console.error("Failed to register admin");
+        const text = await response.text();
+        handleClick();
+        setSnackbarText(text);
+        setsnackbarSeverity("error");
+        return;
       }
     } catch (error) {
       console.error("Error : ", error);
@@ -336,6 +341,7 @@ export default function AdminRegistration() {
                     </Grid>
                     <Grid item xs={6}>
                       <Textfield
+                        InputProps={{ readOnly: true }}
                         autoComplete="adminID"
                         name="adminID"
                         required
@@ -444,6 +450,18 @@ export default function AdminRegistration() {
                         onChange={handleFormdataInputChange}
                       />
                     </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="phoneNumber"
+                        label="Phone Number"
+                        id="phoneNumber"
+                        autoComplete="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handlePhoneNumberChange}
+                      />
+                    </Grid>
                     {!adminExist && (
                       <Grid item xs={6}>
                         <FormControl fullWidth>
@@ -520,18 +538,6 @@ export default function AdminRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="phoneNumber"
-                        label="Phone Number"
-                        id="phoneNumber"
-                        autoComplete="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handlePhoneNumberChange}
-                      />
-                    </Grid>
                     <Grid item xs={6}>
                       {/* <Dropdown
                         fullWidth

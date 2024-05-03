@@ -11,6 +11,8 @@ export default function Datepicker({
   slotProps,
   defaultValue,
   readOnly,
+  error,
+  helperText,
 }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -24,6 +26,8 @@ export default function Datepicker({
         slotProps={slotProps}
         openTo="day"
         readOnly={readOnly}
+        error={error}
+        helperText={helperText}
       />
     </LocalizationProvider>
   );

@@ -264,6 +264,10 @@ export default function UserLogin() {
                         id="userID"
                         label="User ID"
                         value={userID}
+                        focused
+                        color="error"
+                        // variant="filled"
+                        //placeholder="Placeholder"
                         onChange={handleUserIDInputChange}
                       />
                     </Grid>

@@ -221,7 +221,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
   if (localStorage.getItem("token") === null) return <NotFound />;
 
   return (
-    <div>
+    <Container maxWidth="lg">
       {divIsVisibleList.length !== 0 && (
         <Box>
           <Box>
@@ -319,6 +319,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
           />
         </Box>
       )}
-    </div>
+    </Container>
   );
 }

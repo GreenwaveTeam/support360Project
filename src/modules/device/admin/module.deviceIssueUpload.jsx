@@ -291,7 +291,7 @@ const DeviceIssue = ({ sendUrllist }) => {
   };
   if (localStorage.getItem("token") === null) return <NotFound />;
   return (
-    <div>
+    <Container maxWidth="lg">
       {divIsVisibleList.length !== 0 && (
         <Box>
           <Box
@@ -384,7 +384,7 @@ const DeviceIssue = ({ sendUrllist }) => {
           />
         </Box>
       )}
-    </div>
+    </Container>
   );
 };
 

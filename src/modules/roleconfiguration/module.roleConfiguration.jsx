@@ -18,14 +18,13 @@ import Table from "../../components/table/table.component";
 import { Container } from "@mui/material";
 import axios from "axios";
 /*Navigation Pane*/
-import Sidebar from '../../components/navigation/sidebar/sidebar';
-import Topbar from '../../components/navigation/topbar/topbar';
-import Main from '../../components/navigation/mainbody/mainbody';
-import DrawerHeader from '../../components/navigation/drawerheader/drawerheader.component';
+import Sidebar from "../../components/navigation/sidebar/sidebar";
+import Topbar from "../../components/navigation/topbar/topbar";
+import Main from "../../components/navigation/mainbody/mainbody";
+import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-
-export default function RoleConfiguration({sendUrllist}) {
+export default function RoleConfiguration({ sendUrllist }) {
   const [role, setRole] = useState("");
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
@@ -33,9 +32,10 @@ export default function RoleConfiguration({sendUrllist}) {
   const [dialogMessage, setDialogMessage] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
   const [open, setOpen] = useState(false);
-  const urllist=[
-    {pageName:'Admin Home',pagelink:'/admin/home'},{ pageName: 'Role', pagelink: '/admin/role' }]
-  
+  const urllist = [
+    { pageName: "Admin Home", pagelink: "/admin/home" },
+    { pageName: "Role", pagelink: "/admin/role" },
+  ];
 
   const navigate = useNavigate();
 
@@ -54,8 +54,7 @@ export default function RoleConfiguration({sendUrllist}) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -87,7 +86,7 @@ export default function RoleConfiguration({sendUrllist}) {
       }
     };
     fetchData();
-    sendUrllist(urllist)
+    sendUrllist(urllist);
   }, []);
   const handleRedirect = () => {
     //if()
@@ -126,12 +125,10 @@ export default function RoleConfiguration({sendUrllist}) {
     });
   };
   return (
-    
-        <Box 
-        // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-        >
-    
-      <Container sx={{ marginTop: "20px" }}>
+    <Box
+    // style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
+      <Container maxWidth="lg">
         <Box
           sx={{
             display: "flex",
@@ -152,7 +149,10 @@ export default function RoleConfiguration({sendUrllist}) {
             variant="contained"
             style={{ width: "200px" }}
             startIcon={<AddCircleIcon />}
-            sx={{backgroundImage :"linear-gradient(to right, #6a11cb 0%, #2575fc 100%);"}}
+            sx={{
+              backgroundImage:
+                "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+            }}
             type="submit"
             onClick={handleRedirect}
           >

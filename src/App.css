@@ -10,6 +10,9 @@
   color: white !important;
   background: #447ac4;
   padding: 2px 12px;
+  font-style: normal !important;
+  
+  font-weight: 700 !important;
   border-radius: 8px;} */
 .MuiAvatar-root{width: 32px !important;height:32px !important;font-size: 0.96rem !important;}
 /* .MuiTab-root.Mui-selected {

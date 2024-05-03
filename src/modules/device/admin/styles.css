@@ -23,7 +23,9 @@
   }
   
   .treeViewContainer {
-    margin-top: 20px;
+    margin-top: 10px !important;
+    
+    
   }
   
   .treeView {
@@ -61,19 +63,19 @@
  
   .split-screen {
     display: flex;
-    height: 100vh;
+    height: 91vh;
   }
   
   .left-panel {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 0px;
     border-right: 1px solid #ccc;
   }
   
   .right-panel {
     flex: 2;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start; 

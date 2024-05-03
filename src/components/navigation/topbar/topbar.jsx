@@ -129,7 +129,11 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     <AppBar
       position="fixed"
       open={open}
-      sx={{ backgroundColor: colors.newColor[100], color: colors.primary[900] }}
+      sx={{
+        backgroundColor: colors.newColor[100],
+        color: colors.primary[900],
+        boxShadow: 2,
+      }}
     >
       <Toolbar>
         <IconButton

@@ -28,6 +28,7 @@ import {
   DialogTitle,
   Divider,
   Card,
+  Container,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import AddIcon from "@mui/icons-material/Add";
@@ -382,7 +383,7 @@ export default function InfrastructureUser({ sendUrllist }) {
   ];
 
   return (
-    <div>
+    <Container maxWidth="lg">
       {divIsVisibleList &&
         divIsVisibleList.includes("infrastructure-report") && (
           <div id="infrastructure-report">
@@ -644,7 +645,7 @@ export default function InfrastructureUser({ sendUrllist }) {
                         tablename={"Summary"}
                         deleteFromDatabase={handleDeleteItemFromReviewTableTest}
                         style={{
-                          borderRadius: 10,
+                          borderRadius: 1,
                           // maxHeight: 440,
                           // maxWidth: 1200,
                         }}
@@ -676,6 +677,6 @@ export default function InfrastructureUser({ sendUrllist }) {
             ></TicketDialog>
           </div>
         )}
-    </div>
+    </Container>
   );
 }

@@ -554,11 +554,19 @@ export default function AdminHome({ sendUrllist }) {
 
                                       <FormControl fullWidth>
                                         <InputLabel htmlFor="search">
-                                          <SearchOutlinedIcon
-                                            style={{ marginRight: "5px" }}
-                                          />
-                                          Search...
+                                          <div style={{ display: "flex" }}>
+                                            <SearchOutlinedIcon
+                                              style={{
+                                                marginRight: "5px",
+                                                padding:
+                                                  "14.5px 14px !important",
+                                                height: "0.9375rem !important",
+                                              }}
+                                            />
+                                            Search...
+                                          </div>
                                         </InputLabel>
+
                                         <OutlinedInput
                                           label="   Search..."
                                           autoComplete="search"
@@ -570,6 +578,8 @@ export default function AdminHome({ sendUrllist }) {
                                           sx={{
                                             marginLeft: "5px",
                                             width: "200px",
+                                            padding: "23.5px 14px !important",
+                                            height: "1.1375rem !important",
                                           }}
                                           onChange={(e) =>
                                             handleAdminSearchChange(e)
@@ -910,10 +920,17 @@ export default function AdminHome({ sendUrllist }) {
                                       </Tooltip> */}
                                       <FormControl fullWidth>
                                         <InputLabel htmlFor="search">
-                                          <SearchOutlinedIcon
-                                            style={{ marginRight: "5px" }}
-                                          />
-                                          Search...
+                                          <div style={{ display: "flex" }}>
+                                            <SearchOutlinedIcon
+                                              style={{
+                                                marginRight: "5px",
+                                                padding:
+                                                  "14.5px 14px !important",
+                                                height: "0.9375rem !important",
+                                              }}
+                                            />
+                                            Search...
+                                          </div>
                                         </InputLabel>
                                         <OutlinedInput
                                           label="   Search..."
@@ -926,6 +943,8 @@ export default function AdminHome({ sendUrllist }) {
                                           sx={{
                                             marginLeft: "5px",
                                             width: "200px",
+                                            padding: "23.5px 14px !important",
+                                            height: "1.1375rem !important",
                                           }}
                                           onChange={(e) =>
                                             handleSearchChange(e)

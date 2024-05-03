@@ -743,7 +743,11 @@ export default function RichObjectTreeView({ sendUrllist }) {
               {data !== null && (
                 <div className="treeViewContainer">
                   <Chip
-                    sx={{ marginLeft: "5px", marginBottom: "10px" }}
+                    sx={{
+                      marginLeft: "5px",
+                      fontSize: "0.9rem",
+                      marginBottom: "10px",
+                    }}
                     label="Device Tree:"
                     color="success"
                     variant="outlined"
@@ -971,7 +975,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
                             //backgroundColor: "#f4f4f4",
                             borderRadius: "10px",
-                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                            boxShadow: 2,
                           }}
                         >
                           <Box
@@ -1040,7 +1044,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
                           <div
                             className="Card-Components"
-                            style={{ padding: "0.7rem" }}
+                            style={{ padding: "0.7rem 0.7rem 0.7rem 1.3rem" }}
                           >
                             {/* <h3
                           style={{
@@ -1057,7 +1061,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 columnGap: "1rem",
                               }}
                             >
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{ marginBottom: "10px", width: "10rem" }}
+                              >
                                 <p
                                   style={{
                                     fontWeight: "bold",
@@ -1159,7 +1165,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 columnGap: "1rem",
                               }}
                             >
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{ marginBottom: "10px", width: "10rem" }}
+                              >
                                 <p
                                   style={{
                                     fontWeight: "bold",
@@ -1261,7 +1269,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 columnGap: "1rem",
                               }}
                             >
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{ marginBottom: "10px", width: "10rem" }}
+                              >
                                 <p
                                   style={{
                                     fontWeight: "bold",
@@ -1364,7 +1374,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 columnGap: "1rem",
                               }}
                             >
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{ marginBottom: "10px", width: "10rem" }}
+                              >
                                 <p
                                   style={{
                                     fontWeight: "bold",
@@ -1470,7 +1482,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 columnGap: "1rem",
                               }}
                             >
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{ marginBottom: "10px", width: "10rem" }}
+                              >
                                 <p
                                   style={{
                                     fontWeight: "bold",
@@ -1578,7 +1592,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 columnGap: "1rem",
                               }}
                             >
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{ marginBottom: "10px", width: "10rem" }}
+                              >
                                 <p
                                   style={{
                                     fontWeight: "bold",
@@ -1685,7 +1701,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 columnGap: "1rem",
                               }}
                             >
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{ marginBottom: "10px", width: "10rem" }}
+                              >
                                 <p
                                   style={{
                                     fontWeight: "bold",
@@ -1792,7 +1810,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 columnGap: "1rem",
                               }}
                             >
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{ marginBottom: "10px", width: "10rem" }}
+                              >
                                 <p
                                   style={{
                                     fontWeight: "bold",
@@ -1874,7 +1894,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               </div>
                             </div>
                             {selectedNode.image_file && (
-                              <div style={{ marginBottom: "10px" }}>
+                              <div
+                                style={{
+                                  marginBottom: "10px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
                                 <div>
                                   <p
                                     style={{

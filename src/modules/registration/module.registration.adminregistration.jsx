@@ -21,6 +21,9 @@ import {
   Tooltip,
   Snackbar,
   Slide,
+  FormHelperText,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
@@ -41,6 +44,16 @@ export default function AdminRegistration() {
     phoneNumber: "",
     role: "",
     homepage: "",
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    adminID: false,
+    name: false,
+    email: false,
+    password: false,
+    phoneNumber: false,
+    role: false,
+    homepage: false,
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -170,6 +183,11 @@ export default function AdminRegistration() {
     setPasswordErrorOpen(true);
   };
 
+  const handleHomepageChange = (event) => {
+    const { value } = event.target;
+    setFormData({ ...formData, homepage: value });
+  };
+
   const handleUpdate = async (event) => {
     event.preventDefault();
     for (const key in updateFormData) {
@@ -234,6 +252,16 @@ export default function AdminRegistration() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const newFormErrors = {};
+    Object.keys(formData).forEach((key) => {
+      if (formData[key] === null || formData[key] === "") {
+        newFormErrors[key] = true;
+      } else {
+        newFormErrors[key] = false;
+      }
+    });
+    setFormErrors(newFormErrors);
+
     for (const key in formData) {
       if (formData[key] === null || formData[key] === "") {
         handleClick();
@@ -423,6 +451,8 @@ export default function AdminRegistration() {
                         autoFocus
                         value={formData.name}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.name}
+                        helperText={formErrors.name && "Name must be filled"}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -435,6 +465,8 @@ export default function AdminRegistration() {
                         label="Admin ID"
                         value={formData.adminID}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.adminID}
+                        helperText={formErrors.adminID && "AdminID must be filled"}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -448,6 +480,8 @@ export default function AdminRegistration() {
                         autoComplete="email"
                         value={formData.email}
                         onChange={handleFormdataInputChange}
+                        error={formErrors.email}
+                        helperText={formErrors.email && "Email must be filled"}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -460,11 +494,13 @@ export default function AdminRegistration() {
                         autoComplete="phoneNumber"
                         value={formData.phoneNumber}
                         onChange={handlePhoneNumberChange}
+                        error={formErrors.phoneNumber}
+                        helperText={formErrors.phoneNumber && "Phone Number must be filled"}
                       />
                     </Grid>
                     {!adminExist && (
                       <Grid item xs={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth error={formErrors.password}>
                           <InputLabel htmlFor="password">Password</InputLabel>
                           <OutlinedInput
                             label="Password"
@@ -493,6 +529,11 @@ export default function AdminRegistration() {
                               </InputAdornment>
                             }
                           />
+                          {formErrors.password && (
+                            <FormHelperText>
+                              Password must be filled
+                            </FormHelperText>
+                          )}
                         </FormControl>
                       </Grid>
                     )}
@@ -538,22 +579,12 @@ export default function AdminRegistration() {
                   </Alert>
                 </Box>
               )} */}
-                    <Grid item xs={6}>
-                      {/* <Dropdown
-                        fullWidth
-                        id="role"
-                        value={formData.role}
-                        label="Role"
-                        onChange={handleRoleChange}
-                        list={["admin", "superadmin", "developer"]}
-                      /> */}
+                    {/* <Grid item xs={6}>
                       <Dropdown
                         fullWidth
                         id="role"
                         value={formData.role}
                         label="Role"
-                        // onChange={handleRoleChange}
-                        // list={["ROLE_USER", "ROLE_SUPERVISOR"]}
                         onChange={(event) => {
                           const { value } = event.target;
                           for (let i of roleList) {
@@ -568,8 +599,40 @@ export default function AdminRegistration() {
                         }}
                         list={roleList.map((p) => p)}
                       />
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={6}>
+                      <FormControl fullWidth error={formErrors.role}>
+                        <InputLabel id="role-label">Role</InputLabel>
+                        <Select
+                          labelId="role-label"
+                          label="Role"
+                          id="role"
+                          value={formData.role}
+                          onChange={(event) => {
+                            const { value } = event.target;
+                            for (let i of roleList) {
+                              if (i === value) {
+                                setFormData({
+                                  ...formData,
+                                  role: value,
+                                });
+                                return;
+                              }
+                            }
+                          }}
+                        >
+                          {roleList.map((role) => (
+                            <MenuItem key={role} value={role}>
+                              {role}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {formErrors.role && (
+                          <FormHelperText>Role must be filled</FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    {/* <Grid item xs={6}>
                       <Dropdown
                         fullWidth
                         id="homepage"
@@ -581,6 +644,26 @@ export default function AdminRegistration() {
                         }}
                         list={["admin/home", "user/home"]}
                       />
+                    </Grid> */}
+                    <Grid item xs={6}>
+                      <FormControl fullWidth error={formErrors.homepage}>
+                        <InputLabel id="homepage-label">Homepage</InputLabel>
+                        <Select
+                          labelId="homepage-label"
+                          label="Homepage"
+                          id="homepage"
+                          value={formData.homepage}
+                          onChange={handleHomepageChange}
+                        >
+                          <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem>
+                        </Select>
+                        {formErrors.homepage && (
+                          <FormHelperText>
+                            Homepage must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                   </Grid>
                   <Button

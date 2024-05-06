@@ -2086,5 +2086,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
         cancelButtonText={"NO"}
       ></CustomDialog>
     </div>
+    </Card>
+    </Container>
   );
 }

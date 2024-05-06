@@ -60,6 +60,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     fetchInfraFromDb();
     fetchDivs();
     sendUrllist(urllist);
+
   }, []);
 
   //Will include id later on to implement the same to identify the list item .....

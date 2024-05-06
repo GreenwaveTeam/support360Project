@@ -50,6 +50,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import SendIcon from "@mui/icons-material/Send";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { width } from "@mui/system";
+import { extendTokenExpiration } from "../helper/Support360Api";
 
 export default function AdminHome({ sendUrllist }) {
   const [list, setList] = useState([]);
@@ -105,6 +106,7 @@ export default function AdminHome({ sendUrllist }) {
   const currentPageLocation = useLocation().pathname;
 
   useEffect(() => {
+    extendTokenExpiration();
     fetchUserData();
     fetchAdminData();
     sendUrllist(urllist);

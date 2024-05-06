@@ -41,6 +41,7 @@ import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import Main from "../../components/navigation/mainbody/mainbody";
 import SaveSharpIcon from "@mui/icons-material/SaveSharp";
+import { extendTokenExpiration } from "../helper/Support360Api";
 
 export default function UserRegistration({ sendUrllist }) {
   const [newPlantName, setNewPlantName] = useState({
@@ -172,6 +173,7 @@ export default function UserRegistration({ sendUrllist }) {
 
   useEffect(() => {
     // console.log("user : ", state.user);
+    extendTokenExpiration();
     checkstate();
     fetchData();
     fetchRoles();

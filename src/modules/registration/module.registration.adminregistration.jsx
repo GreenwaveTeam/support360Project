@@ -33,6 +33,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { extendTokenExpiration } from "../helper/Support360Api";
 
 export default function AdminRegistration() {
   const { adminID } = useParams();
@@ -107,6 +108,7 @@ export default function AdminRegistration() {
 
   useEffect(() => {
     // console.log("admin : ", state.admin);
+    extendTokenExpiration();
     checkstate();
     fetchRoles();
   }, []);
@@ -466,7 +468,9 @@ export default function AdminRegistration() {
                         value={formData.adminID}
                         onChange={handleFormdataInputChange}
                         error={formErrors.adminID}
-                        helperText={formErrors.adminID && "AdminID must be filled"}
+                        helperText={
+                          formErrors.adminID && "AdminID must be filled"
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -495,7 +499,10 @@ export default function AdminRegistration() {
                         value={formData.phoneNumber}
                         onChange={handlePhoneNumberChange}
                         error={formErrors.phoneNumber}
-                        helperText={formErrors.phoneNumber && "Phone Number must be filled"}
+                        helperText={
+                          formErrors.phoneNumber &&
+                          "Phone Number must be filled"
+                        }
                       />
                     </Grid>
                     {!adminExist && (

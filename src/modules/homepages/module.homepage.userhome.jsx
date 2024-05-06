@@ -17,6 +17,7 @@ import Main from "../../components/navigation/mainbody/mainbody";
 import TopbarPage from "../../components/navigation/topbar/topbar";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import { useUserContext } from "../contexts/UserContext";
+import { extendTokenExpiration } from "../helper/Support360Api";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -77,6 +78,7 @@ function UserHome({ sendUrllist }) {
   const currentPageLocation = useLocation().pathname;
 
   useEffect(() => {
+    extendTokenExpiration();
     // setToken(`${localStorage.getItem("token")}`);
     fetchUser();
     fetchTicketDetails();

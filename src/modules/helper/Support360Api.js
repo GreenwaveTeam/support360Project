@@ -173,7 +173,7 @@ export const registerAdmin = async (formData) => {
   }
 };
 
-const extendTokenExpiration = async () => {
+export const extendTokenExpiration = async () => {
   try {
     const response = await fetch(
       `http://localhost:8081/auth/extendTokenExpiration?token=${localStorage.getItem(

@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { PanelMenu } from "primereact/panelmenu";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useUserContext } from "../../modules/contexts/UserContext";
-
+import "./newStyle.css";
+import { createContext, useMemo } from "react";
+import { createTheme } from "@mui/material/styles";
 // import { useUserContext } from "../../contexts/UserContext";
-
+import { ThemeProvider, createMuiTheme } from "@mui/material/styles";
 const defaultStyles = {
-  color: "#000",
+  //color: "#c50808",
 };
 
 const CustomMenuItem = ({ label, path }) => {
@@ -120,6 +122,22 @@ const CustomPanelBar = () => {
   const [menuJson, SetMenuJson] = useState();
   const { userData, setUserData } = useUserContext();
   const [formData, setFormData] = useState();
+  const [currentTheme, setCurrentTheme] = useState("dark");
+
+  const theme = createMuiTheme({
+    palette: {
+      type: "dark",
+      background: {
+        default: "#000000",
+      },
+      secondary: {
+        main: "#E19A4C",
+      },
+    },
+  });
+
+  const storedTheme = localStorage.getItem("theme");
+  // const [mode, setMode] = useState(storedTheme || "light");
 
   //console.log("navi role => ", formData.role);
 
@@ -199,9 +217,21 @@ const CustomPanelBar = () => {
 
   return (
     <div>
-      <div className="sidebar">
-        {menuJson && <PanelMenu model={renderMenuItems(menuJson)} />}
-      </div>
+      <ThemeProvider theme={theme}>
+        <div className="sidebar">
+          {menuJson && (
+            <PanelMenu
+              className={
+                storedTheme === "light"
+                  ? "panelMenuStyleLightMode"
+                  : "panelMenuStyleDarkMode"
+              }
+              //className="panelMenuStyle"
+              model={renderMenuItems(menuJson)}
+            />
+          )}
+        </div>
+      </ThemeProvider>
     </div>
   );
 };

@@ -18,6 +18,8 @@ import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 import Badge from "@mui/material/Badge";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -132,7 +134,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       sx={{
         backgroundColor: colors.newColor[100],
         color: colors.primary[900],
-        boxShadow: 2,
+        boxShadow: 1,
       }}
     >
       <Toolbar>

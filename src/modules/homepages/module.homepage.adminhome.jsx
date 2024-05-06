@@ -1127,7 +1127,9 @@ export default function AdminHome({ sendUrllist }) {
                                   }}
                                   align="center"
                                 >
+                                  <Tooltip title="Configure ➚ ">
                                   {item.userID}
+                                  </Tooltip>
                                 </TableCell>
                                 {/* </Link> */}
                                 <TableCell align="center">

@@ -87,12 +87,12 @@ function UserHome({ sendUrllist }) {
     // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      calculateTimeRemaining();
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     calculateTimeRemaining();
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   useEffect(() => {
     const tokenExpiryString = localStorage.getItem("expire");
@@ -112,25 +112,25 @@ function UserHome({ sendUrllist }) {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    calculateTimeRemaining();
-  }, [userData]);
+  // useEffect(() => {
+  //   calculateTimeRemaining();
+  // }, [userData]);
 
-  const calculateTimeRemaining = () => {
-    const now = new Date();
-    const expiry = new Date(tokenExpiry);
-    console.log("expiry : ", expiry);
-    const difference = expiry.getTime() - now.getTime();
-    console.log("difference : ", difference);
-    if (difference > 0) {
-      const hours = Math.floor(difference / (1000 * 60 * 60));
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-      setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
-    } else {
-      setTimeRemaining("Token expired");
-    }
-  };
+  // const calculateTimeRemaining = () => {
+  //   const now = new Date();
+  //   const expiry = new Date(tokenExpiry);
+  //   console.log("expiry : ", expiry);
+  //   const difference = expiry.getTime() - now.getTime();
+  //   console.log("difference : ", difference);
+  //   if (difference > 0) {
+  //     const hours = Math.floor(difference / (1000 * 60 * 60));
+  //     const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+  //     const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+  //     setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+  //   } else {
+  //     setTimeRemaining("Token expired");
+  //   }
+  // };
 
   const showAlert = () => {
     alert(`Time remaining until token expiry: ${timeRemaining}`);
@@ -459,7 +459,7 @@ function UserHome({ sendUrllist }) {
           </div>
         </>
       </Container>
-      <Snackbar
+      {/* <Snackbar
         open={showTimeRemaining}
         autoHideDuration={5000}
         onClose={handleClose}
@@ -474,7 +474,7 @@ function UserHome({ sendUrllist }) {
         >
           Time remaining until token expiry: {timeRemaining}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </Box>
   );
 }

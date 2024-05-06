@@ -181,6 +181,8 @@ export const extendTokenExpiration = async () => {
       )}`
     );
     const data = await response.text();
+    console.log("old token : ", localStorage.getItem("token"));
+    console.log("new token : ", data);
     localStorage.setItem("token", data);
     console.log("extendTokenExpiration data : ", data);
   } catch (error) {

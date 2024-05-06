@@ -27,6 +27,7 @@ import NotFound from "../../../components/notfound/notfound.component";
 
 import styles from "./module.module.css";
 import { borderBottom } from "@mui/system";
+import { extendTokenExpiration } from "../../helper/Support360Api";
 
 const Application = ({ sendUrllist }) => {
   const [open, setOpen] = useState(false);
@@ -81,6 +82,7 @@ const Application = ({ sendUrllist }) => {
   ];
 
   useEffect(() => {
+    extendTokenExpiration();
     fetchDivs();
     sendUrllist(urllist);
   }, []);

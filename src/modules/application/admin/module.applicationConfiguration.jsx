@@ -18,6 +18,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import NotFound from "../../../components/notfound/notfound.component";
 import { useUserContext } from "../../contexts/UserContext";
+import { extendTokenExpiration } from "../../helper/Support360Api";
 
 export default function ModuleConfiguration({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
@@ -117,7 +118,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
         console.error("Error fetching data:", error);
       }
     };
-
+    extendTokenExpiration();
     fetchData();
     fetchDivs();
     sendUrllist(urllist);

@@ -40,6 +40,7 @@ import { useContext } from "react";
 //Theme
 import { ColorModeContext, tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
+import { extendTokenExpiration } from "../../helper/Support360Api";
 
 export default function ModuleConfigure({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
@@ -169,7 +170,7 @@ export default function ModuleConfigure({ sendUrllist }) {
         console.error("Error fetching data:", error);
       }
     };
-
+    extendTokenExpiration();
     fetchData();
     fetchDivs();
     sendUrllist(urllist);

@@ -13,6 +13,7 @@ import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOu
 import NotFound from "../../../components/notfound/notfound.component";
 import { useUserContext } from "../../contexts/UserContext";
 import { padding } from "@mui/system";
+import { extendTokenExpiration } from "../../helper/Support360Api";
 
 const DeviceIssue = ({ sendUrllist }) => {
   const [open, setOpen] = useState(false);
@@ -139,7 +140,7 @@ const DeviceIssue = ({ sendUrllist }) => {
         console.error("Error fetching data:", error);
       }
     };
-
+    extendTokenExpiration();
     fetchData();
     fetchDivs();
     sendUrllist(urllist);

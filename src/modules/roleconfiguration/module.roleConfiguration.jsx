@@ -23,6 +23,7 @@ import Topbar from "../../components/navigation/topbar/topbar";
 import Main from "../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { extendTokenExpiration } from "../helper/Support360Api";
 
 export default function RoleConfiguration({ sendUrllist }) {
   const [role, setRole] = useState("");
@@ -85,6 +86,7 @@ export default function RoleConfiguration({ sendUrllist }) {
         setsnackbarSeverity("error");
       }
     };
+    extendTokenExpiration();
     fetchData();
     sendUrllist(urllist);
   }, []);

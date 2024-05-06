@@ -1,6 +1,7 @@
 // import TextField from '@mui/material/TextField';
 import Button from "@mui/material/Button";
 import React, { useState, useEffect, useContext } from "react";
+import { extendTokenExpiration } from '../../../modules/helper/Support360Api'
 
 /*Navigation Pane*/
 import Sidebar from "../../../components/navigation/sidebar/sidebar";
@@ -131,7 +132,7 @@ const DeviceCategory = ({ sendUrllist }) => {
         console.error("Error fetching data:", error);
       }
     };
-
+    extendTokenExpiration();
     fetchData();
     fetchDivs();
     sendUrllist(urllist);

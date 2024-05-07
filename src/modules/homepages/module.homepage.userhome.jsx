@@ -342,7 +342,74 @@ function UserHome({ sendUrllist }) {
   return (
     <Box>
       <Container maxWidth="">
-        <h1>UserHome</h1>
+        <div class="row" style={{ marginBottom: "1rem" }}>
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-md-12">
+                <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography>User Dashboard</Typography>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="col-md-12">
+              <Card>
+                <CardContent sx={{ paddingBottom: "16px !important" }}>
+                  <div className="row">
+                    <div className="col-md-12">
+                      <Typography>User Dashboard</Typography>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="col-md-4">
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={(e) => {
+                          navigate("/user/ReportDevice", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                      >
+                        Device
+                      </Button>
+                    </div>
+                    <div className="col-md-4">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        onClick={(e) => {
+                          navigate("/user/ReportApplication", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                      >
+                        Application
+                      </Button>
+                    </div>
+                    <div className="col-md-4">
+                      <Button
+                        variant="contained"
+                        size="small"
+                        //style={{ width: "7.5rem" }}
+                        onClick={(e) => {
+                          navigate("/user/ReportInfrastructure", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                      >
+                        Infrastructure
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-8">
             <div class="row">
@@ -379,6 +446,17 @@ function UserHome({ sendUrllist }) {
                 </Card>
               </div>
             </div>
+            <div class="row" style={{ marginTop: "1rem" }}>
+              <div class="col-md-12">
+                <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Last Ticket Raised
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
           <div class="col-md-4">
             <div class="col-md-12">
@@ -404,8 +482,8 @@ function UserHome({ sendUrllist }) {
                   </Card>
                 </div>
               </div>
-              <br />
-              <div class="row">
+
+              <div class="row" style={{ marginTop: "1rem" }}>
                 <div class="col-md-12">
                   <Card>
                     <CardContent sx={{ paddingBottom: "16px !important" }}>
@@ -525,17 +603,6 @@ function UserHome({ sendUrllist }) {
               }}
             >
               Application
-            </Button>
-            <Button
-              variant="contained"
-              style={{ margin: "10px" }}
-              onClick={(e) => {
-                navigate("/user/ReportInfrastructure", {
-                  state: { plantID: formData.plantID },
-                });
-              }}
-            >
-              Infrastructure
             </Button>
           </div>
         </div>

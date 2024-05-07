@@ -9,6 +9,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import {
   Alert,
   Button,
+  Chip,
   Fade,
   IconButton,
   InputAdornment,
@@ -52,7 +53,7 @@ export default function CustomTable({
   redirectIconActive,
 }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
-
+  console.log("Columns::",columns)
   const [open, setOpen] = useState(false);
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
@@ -515,9 +516,17 @@ export default function CustomTable({
                         </Button>
                         </Tooltip>} */}
 
-                                {editRowIndex !== index &&
+                                {editRowIndex !== index && column.id!=='severity'&&
                                   column.id !== redirectColumn && (
                                     <Typography>{value}</Typography>
+                                  )}
+                                  {editRowIndex !== index && column.id==='severity'&&
+                                  column.id !== redirectColumn && (
+                                    <>
+                                    {value==='Critical'&&<Chip label={value} color="warning"></Chip>}
+                                    {value==='Major'&&<Chip label={value} color="primary"></Chip>}
+                                    {value==='Minor'&&<Chip label={value} color="success"></Chip>}
+                                    </>
                                   )}
                                 {editRowIndex === index &&
                                   column.type === "textbox" && (

@@ -15,6 +15,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import Typography from "@mui/material/Typography";
 import { Toast } from "primereact/toast";
 
 import {
@@ -821,7 +822,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                     sx={{
                       marginLeft: "5px",
                       fontSize: "0.9rem",
-                      marginBottom: "10px",
+                      marginBottom: "15px",
                     }}
                     label="Device Tree:"
                     color="success"
@@ -1134,18 +1135,19 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               display: "flex",
                               alignItems: "center",
                               columnGap: "1rem",
+                              marginBottom: "15px",
                             }}
                           >
-                            <div style={{ marginBottom: "10px" }}>
-                              <p
+                            <div style={{ marginBottom: "0px" }}>
+                              <Typography
                                 style={{
                                   fontWeight: "bold",
-                                  marginBottom: "5px",
+                                  marginBottom: "0px",
                                   textAlign: "left",
                                 }}
                               >
                                 Name:
-                              </p>
+                              </Typography>
                             </div>
 
                             <div>
@@ -1236,13 +1238,14 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               display: "flex",
                               alignItems: "center",
                               columnGap: "1rem",
+                              marginBottom: "15px",
                             }}
                           >
-                            <div style={{ marginBottom: "10px" }}>
+                            <div style={{ marginBottom: "0px" }}>
                               <p
                                 style={{
                                   fontWeight: "bold",
-                                  marginBottom: "5px",
+                                  marginBottom: "0px",
                                 }}
                               >
                                 Make:
@@ -1338,13 +1341,14 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               display: "flex",
                               alignItems: "center",
                               columnGap: "1rem",
+                              marginBottom: "15px",
                             }}
                           >
-                            <div style={{ marginBottom: "10px" }}>
+                            <div style={{ marginBottom: "0px" }}>
                               <p
                                 style={{
                                   fontWeight: "bold",
-                                  marginBottom: "5px",
+                                  marginBottom: "0px",
                                 }}
                               >
                                 Model:
@@ -1439,13 +1443,14 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               display: "flex",
                               alignItems: "center",
                               columnGap: "1rem",
+                              marginBottom: "15px",
                             }}
                           >
-                            <div style={{ marginBottom: "10px" }}>
+                            <div style={{ marginBottom: "0px" }}>
                               <p
                                 style={{
                                   fontWeight: "bold",
-                                  marginBottom: "5px",
+                                  marginBottom: "0px",
                                 }}
                               >
                                 Capacity:
@@ -1545,13 +1550,14 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               display: "flex",
                               alignItems: "center",
                               columnGap: "1rem",
+                              marginBottom: "15px",
                             }}
                           >
-                            <div style={{ marginBottom: "10px" }}>
+                            <div style={{ marginBottom: "0px" }}>
                               <p
                                 style={{
                                   fontWeight: "bold",
-                                  marginBottom: "5px",
+                                  marginBottom: "0px",
                                 }}
                               >
                                 Description:
@@ -1651,13 +1657,14 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               display: "flex",
                               alignItems: "center",
                               columnGap: "1rem",
+                              marginBottom: "15px",
                             }}
                           >
-                            <div style={{ marginBottom: "10px" }}>
+                            <div style={{ marginBottom: "0px" }}>
                               <p
                                 style={{
                                   fontWeight: "bold",
-                                  marginBottom: "5px",
+                                  marginBottom: "0px",
                                 }}
                               >
                                 Support End Date:
@@ -1756,13 +1763,14 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               display: "flex",
                               alignItems: "center",
                               columnGap: "1rem",
+                              marginBottom: "15px",
                             }}
                           >
-                            <div style={{ marginBottom: "10px" }}>
+                            <div style={{ marginBottom: "0px" }}>
                               <p
                                 style={{
                                   fontWeight: "bold",
-                                  marginBottom: "5px",
+                                  marginBottom: "0px",
                                 }}
                               >
                                 Warranty End Date:
@@ -1861,13 +1869,14 @@ export default function RichObjectTreeView({ sendUrllist }) {
                               display: "flex",
                               alignItems: "center",
                               columnGap: "1rem",
+                              marginBottom: "15px",
                             }}
                           >
-                            <div style={{ marginBottom: "10px" }}>
+                            <div style={{ marginBottom: "0px" }}>
                               <p
                                 style={{
                                   fontWeight: "bold",
-                                  marginBottom: "5px",
+                                  marginBottom: "0px",
                                 }}
                               >
                                 Issue Category Name:

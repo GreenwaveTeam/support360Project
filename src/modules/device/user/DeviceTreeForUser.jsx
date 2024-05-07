@@ -889,7 +889,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                               sx={{
                                 minWidth: 550,
 
-                                backgroundColor: colors.primary[400],
+                                // backgroundColor: colors.primary[400],
                                 borderRadius: 2,
                                 boxShadow: 2,
                               }}
@@ -903,7 +903,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     padding: "0px 1rem",
                                   }}
                                 >
-                                  <h4>Node Details:</h4>
+                                  <h4>Device Details:</h4>
                                   <Button
                                     className="button"
                                     variant="contained"

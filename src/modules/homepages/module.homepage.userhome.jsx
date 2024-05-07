@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Button } from "primereact/button";
 import { Knob } from "primereact/knob";
+import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useEffect } from "react";
 import dayjs from "dayjs";
@@ -360,19 +361,7 @@ function UserHome({ sendUrllist }) {
             <div class="col-md-12">
               <Card>
                 <CardContent sx={{ paddingBottom: "16px !important" }}>
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Typography
-                        sx={{
-                          textAlign: "center",
-                          fontWeight: "600",
-                          marginBottom: "0.5rem",
-                        }}
-                      >
-                        User Dashboard
-                      </Typography>
-                    </div>
-                  </div>
+                  <div className="row"></div>
                   <div className="row">
                     <div className="col-md-4">
                       <Button
@@ -426,32 +415,102 @@ function UserHome({ sendUrllist }) {
               <div class="col-md-4">
                 <Card sx={{ borderRadius: 1 }}>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Total Issue Raised
-                    </Typography>
-                    <Avatar color="info">
-                      {ticketData.total_ticket_raised}
-                    </Avatar>
+                    <div className="row">
+                      <div class="col-md-5">
+                        <div className="row">
+                          <div class="col-md-12">
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              Total Issue Raised
+                            </Typography>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div class="col-md-12">
+                            <Avatar color="info">
+                              {ticketData.total_ticket_raised}
+                            </Avatar>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-7">
+                        <SparkLineChart
+                          data={[1, 4, 2, 5, 7, 2, 4, 6]}
+                          height={100}
+                        />
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
               <div class="col-md-4">
                 <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Pending Tickets
-                    </Typography>
-                    <Avatar color="info">{ticketData.pending_tickets}</Avatar>
+                    <div className="row">
+                      <div class="col-md-5">
+                        <div className="row">
+                          <div class="col-md-12">
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              Total Issue Raised
+                            </Typography>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div class="col-md-12">
+                            <Avatar color="info">
+                              {ticketData.pending_tickets}
+                            </Avatar>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-7">
+                        <SparkLineChart
+                          data={[3, 5, 7, 5, 4, 2, 4, 6]}
+                          height={100}
+                        />
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
               <div class="col-md-4">
                 <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Total Issue Raised
-                    </Typography>
-                    <Avatar color="info"> {ticketData.resolved_tickets}</Avatar>
+                    <div className="row">
+                      <div class="col-md-5">
+                        <div className="row">
+                          <div class="col-md-12">
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              Total Issue Raised
+                            </Typography>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div class="col-md-12">
+                            <Avatar color="info">
+                              {ticketData.resolved_tickets}
+                            </Avatar>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-7">
+                        <SparkLineChart
+                          data={[5, 4, 4, 5, 4, 2, 4, 6]}
+                          height={100}
+                        />
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -473,21 +532,51 @@ function UserHome({ sendUrllist }) {
               <div class="row">
                 <div class="col-md-6">
                   <Card>
-                    <CardContent sx={{ paddingBottom: "16px !important" }}>
-                      <Typography gutterBottom variant="h5" component="div">
+                    <CardContent
+                      sx={{
+                        paddingBottom: "16px !important",
+                        display: "grid",
+                        justifyItems: "center",
+                      }}
+                    >
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        sx={{ marginBottom: "0.7rem" }}
+                      >
                         Last Ticket Raised
                       </Typography>
-                      <Chip label={ticketData.last_ticket_raised} />
+                      <Chip
+                        variant="outlined"
+                        color="info"
+                        label={ticketData.last_ticket_raised}
+                      />
                     </CardContent>
                   </Card>
                 </div>
                 <div class="col-md-6">
                   <Card>
-                    <CardContent sx={{ paddingBottom: "16px !important" }}>
-                      <Typography gutterBottom variant="h5" component="div">
+                    <CardContent
+                      sx={{
+                        paddingBottom: "16px !important",
+                        display: "grid",
+                        justifyItems: "center",
+                      }}
+                    >
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        sx={{ marginBottom: "0.7rem" }}
+                      >
                         Support Till Date
                       </Typography>
-                      <Chip label={formData.supportEndDate} />
+                      <Chip
+                        variant="outlined"
+                        color="info"
+                        label={formData.supportEndDate}
+                      />
                     </CardContent>
                   </Card>
                 </div>
@@ -497,22 +586,31 @@ function UserHome({ sendUrllist }) {
                 <div class="col-md-12">
                   <Card>
                     <CardContent sx={{ paddingBottom: "16px !important" }}>
-                      <Typography gutterBottom variant="h5" component="div">
-                        Pending Support Date
-                      </Typography>
-                      <div>
+                      <div className="row">
+                        <div className="col-md-8">
+                          <Typography gutterBottom variant="h5" component="div">
+                            License Information
+                          </Typography>
+                        </div>
+                        <div className="col-md-4">
+                          <Chip label={`Total ${daysDifference} Days`} />
+                        </div>
+                      </div>
+                      <div style={{ display: "grid", justifyItems: "center" }}>
                         <Knob
                           value={parseInt(daysDifferenceTillNow)}
                           // min={parseInt(daysDifference)}
-                          valueColor="#708090"
-                          rangeColor="#48d1cc"
+                          valueColor="#48d1cc"
+                          rangeColor="#708090"
+                          //valueColor="#708090"
                           minLength={parseInt(daysDifference)}
                         />
+
+                        <Typography gutterBottom variant="h5" component="div">
+                          {daysDifferenceTillNow} Days Left of {daysDifference}{" "}
+                          Days
+                        </Typography>
                       </div>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {daysDifferenceTillNow} Days Left of {daysDifference}{" "}
-                        Days
-                      </Typography>
                     </CardContent>
                   </Card>
                 </div>
@@ -520,7 +618,7 @@ function UserHome({ sendUrllist }) {
             </div>
           </div>
         </div>
-        <div
+        {/* <div
           style={{
             display: "flex",
             justifyContent: "center",
@@ -548,17 +646,7 @@ function UserHome({ sendUrllist }) {
                   borderRadius: "5px",
                 }}
               >
-                {/* {item === "support-till-date" && (
-                  <Box>
-                    <Typography>Support Till Date</Typography>
-                    <Datepicker
-                      value={formData.supportEndDate}
-                      format="DD-MM-YYYY"
-                      readOnly
-                      sx={{ borderRadius: "50px" }}
-                    />
-                  </Box>
-                )} */}
+                
                 {item === "ticket-information" && (
                   <Box>
                     <Typography variant="h5">
@@ -572,17 +660,7 @@ function UserHome({ sendUrllist }) {
                     </Typography>
                   </Box>
                 )}
-                {/* {item === "last-ticket-raised" && (
-                  <Box>
-                    <Typography>Last Ticket Raised</Typography>
-                    <Datepicker
-                      value={ticketData.last_ticket_raised}
-                      format="DD-MM-YYYY"
-                      readOnly
-                      sx={{ borderRadius: "50px" }}
-                    />
-                  </Box>
-                )} */}
+            
               </Box>
             ))}
           </div>
@@ -619,7 +697,7 @@ function UserHome({ sendUrllist }) {
               Application
             </Button>
           </div>
-        </div>
+        </div> */}
       </Container>
     </Box>
   );

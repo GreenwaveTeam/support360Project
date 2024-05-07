@@ -20,6 +20,7 @@ import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 import { useLayoutEffect } from "react";
 import { useUserContext } from "../contexts/UserContext";
+import { extendTokenExpiration } from "../helper/Support360Api";
 
 export default function AddInfrastructureIssue({ sendUrllist }) {
   //********************* Data ********************
@@ -88,6 +89,8 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
     console.log("plantId", plantId);
     console.log("Infrastructure : ", inf);
     console.log("search value is ", search);
+    extendTokenExpiration();
+
     fetchDBdata(plantId, inf);
     fetchDivs();
 

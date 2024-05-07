@@ -65,6 +65,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import CloseIcon from "@mui/icons-material/Close";
+import { extendTokenExpiration } from "../../helper/Support360Api";
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -148,6 +149,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
   /**************************************   UseEffect()   ******************************* */
   useEffect(() => {
+    extendTokenExpiration();
     sendUrllist(urllist);
     console.log("useEffect() called ");
     console.log("USER from context : ", userData);

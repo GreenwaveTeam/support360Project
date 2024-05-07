@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Box,
-  Button,
   Container,
   Typography,
   Slide,
@@ -9,7 +8,11 @@ import {
   Snackbar,
   Card,
   CardContent,
+  Avatar,
+  Chip,
 } from "@mui/material";
+import { Button } from "primereact/button";
+import { Knob } from "primereact/knob";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useEffect } from "react";
 import dayjs from "dayjs";
@@ -59,6 +62,8 @@ function UserHome({ sendUrllist }) {
   const [showTimeRemaining, setShowTimeRemaining] = useState(false);
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
+  const [daysDifference, setDaysDifference] = useState(null);
+  const [daysDifferenceTillNow, setDaysDifferenceTillNow] = useState(null);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -86,6 +91,8 @@ function UserHome({ sendUrllist }) {
     fetchTicketDetails();
     sendUrllist(urllist);
     fetchDivs();
+    differenceInDays(formData.supportStartDate, formData.supportEndDate);
+    differenceInDaysTillNow(new Date(), formData.supportEndDate);
     // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
 
@@ -96,23 +103,23 @@ function UserHome({ sendUrllist }) {
   //   return () => clearInterval(interval);
   // }, []);
 
-  useEffect(() => {
-    const tokenExpiryString = localStorage.getItem("expire");
-    if (tokenExpiryString) {
-      const expiryDate = new Date(tokenExpiryString);
-      if (!isNaN(expiryDate.getTime())) {
-        setTokenExpiry(expiryDate);
-      } else {
-        console.error("Invalid token expiry date:", tokenExpiryString);
-      }
-    } else {
-      console.error("Token expiry date not found in localStorage.");
-    }
-    const interval = setInterval(() => {
-      setShowTimeRemaining(true);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const tokenExpiryString = localStorage.getItem("expire");
+  //   if (tokenExpiryString) {
+  //     const expiryDate = new Date(tokenExpiryString);
+  //     if (!isNaN(expiryDate.getTime())) {
+  //       setTokenExpiry(expiryDate);
+  //     } else {
+  //       console.error("Invalid token expiry date:", tokenExpiryString);
+  //     }
+  //   } else {
+  //     console.error("Token expiry date not found in localStorage.");
+  //   }
+  //   const interval = setInterval(() => {
+  //     setShowTimeRemaining(true);
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   // useEffect(() => {
   //   calculateTimeRemaining();
@@ -311,6 +318,24 @@ function UserHome({ sendUrllist }) {
   //     return dateString;
   //   }
   // }
+  //
+  const differenceInDays = async (startDate, endDate) => {
+    // const startDate = formData.supportStartDate;
+    // const endDate = formData.supportEndDate;
+    const differenceInMilliseconds = endDate - startDate;
+    const differenceInDay = Math.floor(
+      differenceInMilliseconds / (1000 * 60 * 60 * 24)
+    );
+    setDaysDifference(differenceInDay);
+  };
+
+  const differenceInDaysTillNow = async (startDate, endDate) => {
+    const differenceInMilliseconds = endDate - startDate;
+    const differenceInDay = Math.floor(
+      differenceInMilliseconds / (1000 * 60 * 60 * 24)
+    );
+    setDaysDifferenceTillNow(differenceInDay);
+  };
 
   const urllist = [{ pageName: "User Home Page", pagelink: "/user/home" }];
 
@@ -319,83 +344,88 @@ function UserHome({ sendUrllist }) {
       <Container maxWidth="">
         <h1>UserHome</h1>
         <div class="row">
-          <div class="col-md-2">
-            <Card sx={{ borderRadius: 1 }}>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Total Issue Raised
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-            </Card>
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-md-4">
+                <Card sx={{ borderRadius: 1 }}>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Total Issue Raised
+                    </Typography>
+                    <Avatar color="info">
+                      {ticketData.total_ticket_raised}
+                    </Avatar>
+                  </CardContent>
+                </Card>
+              </div>
+              <div class="col-md-4">
+                <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Pending Tickets
+                    </Typography>
+                    <Avatar color="info">{ticketData.pending_tickets}</Avatar>
+                  </CardContent>
+                </Card>
+              </div>
+              <div class="col-md-4">
+                <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Total Issue Raised
+                    </Typography>
+                    <Avatar color="info"> {ticketData.resolved_tickets}</Avatar>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
-          <div class="col-md-2">
-            <Card>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Total Issue Raised
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-            </Card>
-          </div>
-          <div class="col-md-2">
-            <Card>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Total Issue Raised
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-            </Card>
-          </div>
-          <div class="col-md-2">
-            <Card>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Total Issue Raised
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-            </Card>
-          </div>
-          <div class="col-md-2">
-            <Card>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Total Issue Raised
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-            </Card>
-          </div>
-          <div class="col-md-2">
-            <Card>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Total Issue Raised
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                </Typography>
-              </CardContent>
-            </Card>
+          <div class="col-md-4">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-6">
+                  <Card>
+                    <CardContent sx={{ paddingBottom: "16px !important" }}>
+                      <Typography gutterBottom variant="h5" component="div">
+                        Last Ticket Raised
+                      </Typography>
+                      <Chip label="LastDate" />
+                    </CardContent>
+                  </Card>
+                </div>
+                <div class="col-md-6">
+                  <Card>
+                    <CardContent sx={{ paddingBottom: "16px !important" }}>
+                      <Typography gutterBottom variant="h5" component="div">
+                        Support Till Date
+                      </Typography>
+                      <Chip label="Support Till Date" />
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-md-12">
+                  <Card>
+                    <CardContent sx={{ paddingBottom: "16px !important" }}>
+                      <Typography gutterBottom variant="h5" component="div">
+                        Support Till Date
+                      </Typography>
+
+                      <div>
+                        <Knob
+                          value={30}
+                          //onChange={(e) => setValue(e.value)}
+                          min={-50}
+                          max={50}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div

@@ -248,14 +248,8 @@ function UserHome({ sendUrllist }) {
         address: data.address,
         division: data.division,
         customerName: data.customerName,
-        supportStartDate: dayjs(
-          convertDateFormat(data.supportStartDate),
-          "DD-MM-YYYY"
-        ),
-        supportEndDate: dayjs(
-          convertDateFormat(data.supportEndDate),
-          "DD-MM-YYYY"
-        ),
+        supportStartDate: data.supportStartDate,
+        supportEndDate: data.supportEndDate,
         accountOwnerCustomer: data.accountOwnerCustomer,
         accountOwnerGW: data.accountOwnerGW,
         role: data.role,
@@ -295,10 +289,7 @@ function UserHome({ sendUrllist }) {
         total_ticket_raised: data.total_ticket_raised,
         pending_tickets: data.pending_tickets,
         resolved_tickets: data.resolved_tickets,
-        last_ticket_raised: dayjs(
-          convertDateFormat(data.last_ticket_raised),
-          "DD-MM-YYYY"
-        ),
+        last_ticket_raised: data.last_ticket_raised,
       }));
     } catch (error) {
       console.error("Error fetching user list:", error);
@@ -486,7 +477,7 @@ function UserHome({ sendUrllist }) {
                       <Typography gutterBottom variant="h5" component="div">
                         Last Ticket Raised
                       </Typography>
-                      <Chip label="LastDate" />
+                      <Chip label={ticketData.last_ticket_raised} />
                     </CardContent>
                   </Card>
                 </div>
@@ -496,7 +487,7 @@ function UserHome({ sendUrllist }) {
                       <Typography gutterBottom variant="h5" component="div">
                         Support Till Date
                       </Typography>
-                      <Chip label="Support Till Date" />
+                      <Chip label={formData.supportEndDate} />
                     </CardContent>
                   </Card>
                 </div>
@@ -557,7 +548,7 @@ function UserHome({ sendUrllist }) {
                   borderRadius: "5px",
                 }}
               >
-                {item === "support-till-date" && (
+                {/* {item === "support-till-date" && (
                   <Box>
                     <Typography>Support Till Date</Typography>
                     <Datepicker
@@ -567,7 +558,7 @@ function UserHome({ sendUrllist }) {
                       sx={{ borderRadius: "50px" }}
                     />
                   </Box>
-                )}
+                )} */}
                 {item === "ticket-information" && (
                   <Box>
                     <Typography variant="h5">
@@ -581,7 +572,7 @@ function UserHome({ sendUrllist }) {
                     </Typography>
                   </Box>
                 )}
-                {item === "last-ticket-raised" && (
+                {/* {item === "last-ticket-raised" && (
                   <Box>
                     <Typography>Last Ticket Raised</Typography>
                     <Datepicker
@@ -591,7 +582,7 @@ function UserHome({ sendUrllist }) {
                       sx={{ borderRadius: "50px" }}
                     />
                   </Box>
-                )}
+                )} */}
               </Box>
             ))}
           </div>

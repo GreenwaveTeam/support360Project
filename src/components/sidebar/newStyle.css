@@ -27,5 +27,7 @@
   .panelMenuStyleLightMode.p-panelmenu .p-panelmenu-header .p-panelmenu-header-content{
     background:  white !important ;
   }
-
+  /* Common Section*/
+  .p-panelmenu-header-link{text-decoration:  none !important;}
+  .p-menuitem-link{text-decoration:  none !important;}
   

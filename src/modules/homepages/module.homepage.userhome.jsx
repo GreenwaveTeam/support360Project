@@ -65,6 +65,7 @@ function UserHome({ sendUrllist }) {
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
   const [daysDifference, setDaysDifference] = useState(null);
   const [daysDifferenceTillNow, setDaysDifferenceTillNow] = useState(null);
+  const [monthwiseticket, setMonthwiseticket] = useState([]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -92,7 +93,7 @@ function UserHome({ sendUrllist }) {
     fetchTicketDetails();
     sendUrllist(urllist);
     fetchDivs();
-
+    monthwiseticketraised();
     // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
 
@@ -183,6 +184,55 @@ function UserHome({ sendUrllist }) {
       // setSearch("");
       // setEditRowIndex(null);
       // setEditValue("");
+    }
+  };
+
+  // const monthwiseticketraised = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       "http://localhost:8081/users/user/monthwiseticketraised",
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     console.log("monthwiseticketraised : ", data);
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
+
+  const monthwiseticketraised = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8081/users/user/monthwiseticketraised",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("monthwiseticketraised : ", data);
+      const numbersList = [];
+      for (const month in data) {
+        if (data.hasOwnProperty(month)) {
+          const ticketsRaised = parseInt(data[month]);
+          if (!isNaN(ticketsRaised)) {
+            numbersList.push(ticketsRaised);
+          }
+        }
+      }
+      console.log("Numbers List:", numbersList);
+      setMonthwiseticket(numbersList);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
     }
   };
 
@@ -437,10 +487,7 @@ function UserHome({ sendUrllist }) {
                         </div>
                       </div>
                       <div class="col-md-7">
-                        <SparkLineChart
-                          data={[1, 4, 2, 5, 7, 2, 4, 6]}
-                          height={100}
-                        />
+                        <SparkLineChart data={monthwiseticket} height={100} />
                       </div>
                     </div>
                   </CardContent>

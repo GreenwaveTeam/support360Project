@@ -23,6 +23,8 @@ import { useNavigate } from "react-router";
 import { isAuthenticated, login } from "../helper/AuthService";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import "./UserLogin.css";
+import { Card, CardContent, TextField, Checkbox } from "@mui/material";
+import { Facebook, Twitter, Google, GitHub } from "@mui/icons-material";
 
 export default function UserLogin() {
   const [userID, setUserID] = useState("");
@@ -198,153 +200,163 @@ export default function UserLogin() {
 
   return (
     <>
-      <Container
-        component="main"
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          background: "white",
-        }}
+      <div
+        className="background-radial-gradient overflow-hidden"
+        style={{ width: "100vw", height: "100vh" }}
       >
-        <CssBaseline />
-        {loading && (
-          <Box
-            sx={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-
-              zIndex: 9999,
-            }}
-          >
-            <CircularProgress color="primary" />
-          </Box>
-        )}
-        <div
-          //className="shape"
+        <Container
+          //component="main"
           style={{
-            display: "grid",
-            justifyContent: "center",
-            alignitems: "center",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+
+            //width: "100vw",
+            //height: "100vh",
           }}
+          //maxWidth="lg"
         >
-          <div className="login shape">
+          <CssBaseline />
+          {loading && (
             <Box
               sx={{
-                marginTop: 8,
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
                 display: "flex",
-                flexDirection: "column",
                 alignItems: "center",
+                justifyContent: "center",
+                ///background: "green",
+
+                //zIndex: 9999,
               }}
             >
-              <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-                <HowToRegTwoToneIcon />
-              </Avatar>
+              <CircularProgress color="primary" />
+            </Box>
+          )}
+          <div
+            //className="shape"
+            style={{
+              display: "grid",
+              justifyContent: "center",
+              alignitems: "center",
+            }}
+          >
+            <div className="login shape">
+              <Box
+                sx={{
+                  marginTop: 8,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
+                  <HowToRegTwoToneIcon />
+                </Avatar>
 
-              <Typography component="h1" variant="h5">
-                Login Page
-              </Typography>
-              <form className="fromSection">
-                <Box noValidate sx={{ mt: 3 }}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <Textfield
-                        autoFocus
-                        autoComplete="userID"
-                        name="userID"
-                        required
-                        fullWidth
-                        id="userID"
-                        label="User ID"
-                        value={userID}
-                        focused
-                        color="error"
-                        // variant="filled"
-                        //placeholder="Placeholder"
-                        onChange={handleUserIDInputChange}
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor="password">Password</InputLabel>
-                        <OutlinedInput
+                <Typography component="h1" variant="h5">
+                  Login Page
+                </Typography>
+                <form className="fromSection">
+                  <Box noValidate sx={{ mt: 3 }}>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Textfield
                           autoFocus
-                          autoComplete="password"
-                          name="password"
+                          autoComplete="userID"
+                          name="userID"
                           required
                           fullWidth
-                          id="password"
-                          label="Password"
-                          value={password}
-                          onChange={handlePasswordInputChange}
-                          type={showPassword ? "text" : "password"}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                              >
-                                {showPassword ? (
-                                  <VisibilityOff />
-                                ) : (
-                                  <Visibility />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          }
+                          id="userID"
+                          label="User ID"
+                          value={userID}
+                          focused
+                          color="error"
+                          // variant="filled"
+                          //placeholder="Placeholder"
+                          onChange={handleUserIDInputChange}
                         />
-                      </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="password">Password</InputLabel>
+                          <OutlinedInput
+                            autoFocus
+                            autoComplete="password"
+                            name="password"
+                            required
+                            fullWidth
+                            id="password"
+                            label="Password"
+                            value={password}
+                            onChange={handlePasswordInputChange}
+                            type={showPassword ? "text" : "password"}
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={handleClickShowPassword}
+                                  onMouseDown={handleMouseDownPassword}
+                                  edge="end"
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            }
+                          />
+                        </FormControl>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </Box>
+                  </Box>
 
-                {error && (
-                  <Typography color="error" variant="body2">
-                    {error}
-                  </Typography>
-                )}
-                <Grid item xs={12} marginTop={"50px"}>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    onClick={handleLogin}
-                    className="shining-effect"
-                    // autoFocus
-                  >
-                    Login
-                  </Button>
-                </Grid>
-              </form>
-            </Box>
+                  {error && (
+                    <Typography color="error" variant="body2">
+                      {error}
+                    </Typography>
+                  )}
+                  <Grid item xs={12} marginTop={"50px"}>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      onClick={handleLogin}
+                      // className="shining-effect"
+                      // autoFocus
+                    >
+                      Login
+                    </Button>
+                  </Grid>
+                </form>
+              </Box>
+            </div>
           </div>
-        </div>
-      </Container>
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        TransitionComponent={Slide}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleClose}
-          severity={snackbarSeverity}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {snackbarText}
-        </Alert>
-      </Snackbar>
+
+          <Snackbar
+            open={open}
+            autoHideDuration={3000}
+            onClose={handleClose}
+            TransitionComponent={Slide}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          >
+            <Alert
+              onClose={handleClose}
+              severity={snackbarSeverity}
+              variant="filled"
+              sx={{ width: "100%" }}
+            >
+              {snackbarText}
+            </Alert>
+          </Snackbar>
+        </Container>
+      </div>
     </>
   );
 }

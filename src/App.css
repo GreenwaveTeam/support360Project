@@ -78,3 +78,10 @@
   background-color: #a8bbbf;
 }
 
+
+/* Mobile View Hide Section*/
+@media screen and (max-width: 480px) {
+  .hideSection{
+    display: none !important;
+  }
+}

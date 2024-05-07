@@ -7,6 +7,8 @@ import {
   Slide,
   Alert,
   Snackbar,
+  Card,
+  CardContent,
 } from "@mui/material";
 import Datepicker from "../../components/datepicker/datepicker.component";
 import { useEffect } from "react";
@@ -313,168 +315,201 @@ function UserHome({ sendUrllist }) {
   const urllist = [{ pageName: "User Home Page", pagelink: "/user/home" }];
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Container style={{ display: "flex", height: "100vh", width: "100vw" }}>
-        <>
-          <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-            {divIsVisibleList.includes("support-till-date") && (
-              <div
-                style={{
-                  borderRadius: "20px",
-                  border: "2px solid black",
-                  marginTop: "20px",
-                  marginBottom: "20px",
-                  marginLeft: "20px",
-                  marginRight: "20px",
-                  width: "100%",
-                  height: "30%",
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography>Support Till Date</Typography>
-                <Datepicker
-                  value={formData.supportEndDate}
-                  format="DD-MM-YYYY"
-                  // slotProps={{ textField: { fullWidth: true } }}
-                  readOnly
-                />
-              </div>
-            )}
-            {divIsVisibleList.includes("open-ticket") && (
-              <div
-                style={{
-                  borderRadius: "20px",
-                  border: "2px solid black",
-                  marginTop: "20px",
-                  marginBottom: "20px",
-                  marginLeft: "20px",
-                  marginRight: "20px",
-                  width: "100%",
-                  height: "70%",
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "stretch",
-                  flexDirection: "column",
-                }}
-              >
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <Typography>OPEN TICKETS</Typography>
-                </div>
-                <div style={{ display: "flex", justifyContent: "center" }}>
-                  <Button
-                    variant="contained"
-                    style={{ margin: "10px" }}
-                    onClick={(e) => {
-                      navigate("/user/ReportDevice", {
-                        state: { plantID: formData.plantID },
-                      });
-                    }}
-                  >
-                    Device
-                  </Button>
-                  <Button
-                    variant="contained"
-                    style={{ margin: "10px" }}
-                    onClick={(e) => {
-                      navigate("/user/ReportApplication", {
-                        state: { plantID: formData.plantID },
-                      });
-                    }}
-                  >
-                    Application
-                  </Button>
-                  <Button
-                    variant="contained"
-                    style={{ margin: "10px" }}
-                    onClick={(e) => {
-                      navigate("/user/ReportInfrastructure", {
-                        state: { plantID: formData.plantID },
-                      });
-                    }}
-                  >
-                    Infrastructure
-                  </Button>
-                </div>
-              </div>
-            )}
+    <Box>
+      <Container maxWidth="">
+        <h1>UserHome</h1>
+        <div class="row">
+          <div class="col-md-2">
+            <Card sx={{ borderRadius: 1 }}>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Total Issue Raised
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
+                </Typography>
+              </CardContent>
+            </Card>
           </div>
-          <div style={{ width: "50%", height: "100%", padding: "50px" }}>
-            {divIsVisibleList.includes("ticket-information") && (
-              <div
-                style={{
-                  borderRadius: "20px",
-                  border: "2px solid black",
-                  marginTop: "20px",
-                  marginBottom: "20px",
-                  marginLeft: "20px",
-                  marginRight: "20px",
-                  width: "100%",
-                  height: "70%",
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography variant="h5">
-                  Total Issue Raised : {ticketData.total_ticket_raised}
+          <div class="col-md-2">
+            <Card>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Total Issue Raised
                 </Typography>
-                <Typography variant="h5">
-                  Pending Tickets : {ticketData.pending_tickets}
+                <Typography variant="body2" color="text.secondary">
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
                 </Typography>
-                <Typography variant="h5">
-                  Resolved Tickets : {ticketData.resolved_tickets}
-                </Typography>
-              </div>
-            )}
-            {divIsVisibleList.includes("last-ticket-raised") && (
-              <div
-                style={{
-                  borderRadius: "20px",
-                  border: "2px solid black",
-                  marginTop: "20px",
-                  marginBottom: "20px",
-                  marginLeft: "20px",
-                  marginRight: "20px",
-                  width: "100%",
-                  height: "30%",
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography>Last Ticket Raised</Typography>
-                <Datepicker
-                  value={ticketData.last_ticket_raised}
-                  format="DD-MM-YYYY"
-                  // slotProps={{ textField: { fullWidth: true } }}
-                  readOnly
-                />
-              </div>
-            )}
+              </CardContent>
+            </Card>
           </div>
-        </>
-      </Container>
-      {/* <Snackbar
-        open={showTimeRemaining}
-        autoHideDuration={5000}
-        onClose={handleClose}
-        TransitionComponent={Slide}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleClose}
-          severity="info"
-          variant="filled"
-          sx={{ width: "100%" }}
+          <div class="col-md-2">
+            <Card>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Total Issue Raised
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
+                </Typography>
+              </CardContent>
+            </Card>
+          </div>
+          <div class="col-md-2">
+            <Card>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Total Issue Raised
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
+                </Typography>
+              </CardContent>
+            </Card>
+          </div>
+          <div class="col-md-2">
+            <Card>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Total Issue Raised
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
+                </Typography>
+              </CardContent>
+            </Card>
+          </div>
+          <div class="col-md-2">
+            <Card>
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="div">
+                  Total Issue Raised
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Lizards are a widespread group of squamate reptiles, with over
+                  6,000 species, ranging across all continents except Antarctica
+                </Typography>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
         >
-          Time remaining until token expiry: {timeRemaining}
-        </Alert>
-      </Snackbar> */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            {list.map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: "flex",
+                  marginBottom: 2,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  border: "2px dash black",
+                  borderRadius: "5px",
+                }}
+              >
+                {item === "support-till-date" && (
+                  <Box>
+                    <Typography>Support Till Date</Typography>
+                    <Datepicker
+                      value={formData.supportEndDate}
+                      format="DD-MM-YYYY"
+                      readOnly
+                      sx={{ borderRadius: "50px" }}
+                    />
+                  </Box>
+                )}
+                {item === "ticket-information" && (
+                  <Box>
+                    <Typography variant="h5">
+                      Total Issue Raised: {ticketData.total_ticket_raised}
+                    </Typography>
+                    <Typography variant="h5">
+                      Pending Tickets: {ticketData.pending_tickets}
+                    </Typography>
+                    <Typography variant="h5">
+                      Resolved Tickets: {ticketData.resolved_tickets}
+                    </Typography>
+                  </Box>
+                )}
+                {item === "last-ticket-raised" && (
+                  <Box>
+                    <Typography>Last Ticket Raised</Typography>
+                    <Datepicker
+                      value={ticketData.last_ticket_raised}
+                      format="DD-MM-YYYY"
+                      readOnly
+                      sx={{ borderRadius: "50px" }}
+                    />
+                  </Box>
+                )}
+              </Box>
+            ))}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+              border: "2px dash black",
+              borderRadius: "5px",
+            }}
+          >
+            <Button
+              variant="contained"
+              style={{ margin: "10px" }}
+              onClick={(e) => {
+                navigate("/user/ReportDevice", {
+                  state: { plantID: formData.plantID },
+                });
+              }}
+            >
+              Device
+            </Button>
+            <Button
+              variant="contained"
+              style={{ margin: "10px" }}
+              onClick={(e) => {
+                navigate("/user/ReportApplication", {
+                  state: { plantID: formData.plantID },
+                });
+              }}
+            >
+              Application
+            </Button>
+            <Button
+              variant="contained"
+              style={{ margin: "10px" }}
+              onClick={(e) => {
+                navigate("/user/ReportInfrastructure", {
+                  state: { plantID: formData.plantID },
+                });
+              }}
+            >
+              Infrastructure
+            </Button>
+          </div>
+        </div>
+      </Container>
     </Box>
   );
 }

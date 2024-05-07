@@ -170,7 +170,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                 )}
               </IconButton>
             </Tooltip>
-            <Chip size="small" label={userName} />
+            <Chip size="small" label={userName} className="hideSection" />
             <Tooltip title={userName} placement="bottom">
               <StyledBadge
                 overlap="circular"

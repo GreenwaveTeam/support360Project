@@ -371,7 +371,15 @@ function UserHome({ sendUrllist }) {
                 <CardContent sx={{ paddingBottom: "16px !important" }}>
                   <div className="row">
                     <div className="col-md-12">
-                      <Typography>User Dashboard</Typography>
+                      <Typography
+                        sx={{
+                          textAlign: "center",
+                          fontWeight: "600",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        User Dashboard
+                      </Typography>
                     </div>
                   </div>
                   <div className="row">

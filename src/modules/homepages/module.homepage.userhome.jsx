@@ -91,8 +91,7 @@ function UserHome({ sendUrllist }) {
     fetchTicketDetails();
     sendUrllist(urllist);
     fetchDivs();
-    differenceInDays(formData.supportStartDate, formData.supportEndDate);
-    differenceInDaysTillNow(new Date(), formData.supportEndDate);
+
     // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
 
@@ -268,6 +267,8 @@ function UserHome({ sendUrllist }) {
         role: data.role,
         userID: data.userID,
       });
+      differenceInDays(data.supportStartDate, data.supportEndDate);
+      differenceInDaysTillNow(new Date(), data.supportEndDate);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -322,19 +323,29 @@ function UserHome({ sendUrllist }) {
   const differenceInDays = async (startDate, endDate) => {
     // const startDate = formData.supportStartDate;
     // const endDate = formData.supportEndDate;
-    const differenceInMilliseconds = endDate - startDate;
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    const differenceInMilliseconds =
+      endDateObj.getTime() - startDateObj.getTime();
     const differenceInDay = Math.floor(
       differenceInMilliseconds / (1000 * 60 * 60 * 24)
     );
     setDaysDifference(differenceInDay);
+    console.log("DaysDifference : ", differenceInDay);
   };
 
   const differenceInDaysTillNow = async (startDate, endDate) => {
-    const differenceInMilliseconds = endDate - startDate;
+    console.log("differenceInDaysTillNow  startDate : ", startDate);
+    console.log("differenceInDaysTillNow  endDate : ", endDate);
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    const differenceInMilliseconds =
+      endDateObj.getTime() - startDateObj.getTime();
     const differenceInDay = Math.floor(
       differenceInMilliseconds / (1000 * 60 * 60 * 24)
     );
     setDaysDifferenceTillNow(differenceInDay);
+    console.log("DaysDifferenceTillNow : ", differenceInDay);
   };
 
   const urllist = [{ pageName: "User Home Page", pagelink: "/user/home" }];
@@ -410,17 +421,21 @@ function UserHome({ sendUrllist }) {
                   <Card>
                     <CardContent sx={{ paddingBottom: "16px !important" }}>
                       <Typography gutterBottom variant="h5" component="div">
-                        Support Till Date
+                        Pending Support Date
                       </Typography>
-
                       <div>
                         <Knob
-                          value={30}
-                          //onChange={(e) => setValue(e.value)}
-                          min={-50}
-                          max={50}
+                          value={parseInt(daysDifferenceTillNow)}
+                          // min={parseInt(daysDifference)}
+                          valueColor="#708090"
+                          rangeColor="#48d1cc"
+                          minLength={parseInt(daysDifference)}
                         />
                       </div>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {daysDifferenceTillNow} Days Left of {daysDifference}{" "}
+                        Days
+                      </Typography>
                     </CardContent>
                   </Card>
                 </div>

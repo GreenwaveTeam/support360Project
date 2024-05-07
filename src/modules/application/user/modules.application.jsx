@@ -66,6 +66,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import CloseIcon from "@mui/icons-material/Close";
 import { extendTokenExpiration } from "../../helper/Support360Api";
+import dayjs from "dayjs";
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -147,7 +148,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const { userData, setUserData } = useUserContext();
 
-  /**************************************   UseEffect()   ******************************* */
+  /**************************************    useEffect()   ******************************* */
   useEffect(() => {
     extendTokenExpiration();
     sendUrllist(urllist);
@@ -1230,7 +1231,7 @@ export default function ApplicationUser({ sendUrllist }) {
   };
 
   const generateRandomNumber = () => {
-    const randomNumber = Math.floor(10000 + Math.random() * 90000);
+    const randomNumber =dayjs().format("YYYYMMDDTHHmmssSSS")
     return "A" + randomNumber;
   };
 

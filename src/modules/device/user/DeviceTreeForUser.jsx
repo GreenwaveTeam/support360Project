@@ -56,6 +56,8 @@ import { useTheme } from "@mui/material";
 import { useContext } from "react";
 import { ExpandMore } from "@mui/icons-material";
 import Dropdown from "../../../components/dropdown/dropdown.component";
+import dayjs from "dayjs";
+import { extendTokenExpiration } from "../../helper/Support360Api";
 
 export default function UserDeviceTree({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -129,6 +131,7 @@ export default function UserDeviceTree({ sendUrllist }) {
   //   }, [deviceIssueDetails]);
 
   useEffect(() => {
+    extendTokenExpiration();
     fetchDivs();
   }, []);
 
@@ -200,7 +203,7 @@ export default function UserDeviceTree({ sendUrllist }) {
   }, []);
 
   const generateRandomNumber = () => {
-    const randomNumber = Math.floor(10000 + Math.random() * 90000);
+    const randomNumber = dayjs().format("YYYYMMDDTHHmmssSSS");
     return "D" + randomNumber;
   };
 

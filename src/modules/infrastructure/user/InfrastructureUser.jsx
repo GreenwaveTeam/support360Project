@@ -39,6 +39,8 @@ import { useLocation } from "react-router-dom";
 import { ExpandMore } from "@mui/icons-material";
 import SaveIcon from "@mui/icons-material/Save";
 import Dropdown from "../../../components/dropdown/dropdown.component";
+import dayjs from "dayjs";
+import { extendTokenExpiration } from "../../helper/Support360Api";
 
 export default function InfrastructureUser({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -126,6 +128,7 @@ export default function InfrastructureUser({ sendUrllist }) {
   };
 
   useEffect(() => {
+    extendTokenExpiration();
     fetchDivs();
   }, []);
 
@@ -254,8 +257,8 @@ export default function InfrastructureUser({ sendUrllist }) {
     setTicketNumber(generateRandomNumber);
   };
   const generateRandomNumber = () => {
-    const randomNumber = Math.floor(10000 + Math.random() * 90000);
-    return "D" + randomNumber;
+    const randomNumber = dayjs().format("YYYYMMDDTHHmmssSSS");
+    return "I" + randomNumber;
   };
   const handleInfrastructureChange = (event) => {
     console.log("handleInfrastructureChange called");

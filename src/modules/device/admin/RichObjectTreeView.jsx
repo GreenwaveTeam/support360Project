@@ -47,6 +47,7 @@ import { useUserContext } from "../../contexts/UserContext";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Visibility } from "@mui/icons-material";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
+import { extendTokenExpiration } from "../../helper/Support360Api";
 
 export default function RichObjectTreeView({ sendUrllist }) {
   const toast = useRef(null);
@@ -113,6 +114,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
   };
 
   useEffect(() => {
+    extendTokenExpiration();
     fetchDivs();
   }, []);
 

@@ -115,7 +115,8 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
   useEffect(() => {
     extendTokenExpiration();
-    fetchDivs();
+    fetchUser();
+    // fetchDivs();
   }, []);
 
   React.useEffect(() => {
@@ -190,14 +191,35 @@ export default function RichObjectTreeView({ sendUrllist }) {
       updateNodeLevel(data, 0);
     }
   }, [data]);
+  const fetchUser = async () => {
+    let role = "";
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      // setFormData(data.role);
+      role = data.role;
 
-  const fetchDivs = async () => {
+      console.log("Role Test : ", role);
+      fetchDivs(role);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  const fetchDivs = async (role) => {
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${userData.role}&pagename=${currentPageLocation}`,
+        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {

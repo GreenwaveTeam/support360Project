@@ -164,7 +164,8 @@ export default function ApplicationUser({ sendUrllist }) {
       console.log("Current plantID : ", plantID);
       console.log("useEffect() for fetching data for first time....");
       fetchApplicationNames(plantID);
-      fetchDivs();
+      //fetchDivs();
+      fetchUser();
       setTicketNumber(generateRandomNumber());
     } else {
       setSnackbarSeverity("error");
@@ -417,17 +418,39 @@ export default function ApplicationUser({ sendUrllist }) {
 
   /* ********************** API ************************** */
 
-  const fetchDivs = async () => {
+  const fetchUser = async () => {
     let role = "";
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      // setFormData(data.role);
+      role = data.role;
+
+      console.log("Role Test : ", role);
+      fetchDivs(role);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  const fetchDivs = async (role) => {
+    //let role = "";
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
       // console.log("Currently passed Data : ",location.state)
-      if (userData.role) {
-        role = userData.role;
-      } else {
-        throw new Error("UserRole not found ! ");
-      }
+      // if (userData.role) {
+      //   role = userData.role;
+      // } else {
+      //   throw new Error("UserRole not found ! ");
+      // }
       const response = await fetch(
         `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
@@ -1231,7 +1254,7 @@ export default function ApplicationUser({ sendUrllist }) {
   };
 
   const generateRandomNumber = () => {
-    const randomNumber =dayjs().format("YYYYMMDDTHHmmssSSS")
+    const randomNumber = dayjs().format("YYYYMMDDTHHmmssSSS");
     return "A" + randomNumber;
   };
 

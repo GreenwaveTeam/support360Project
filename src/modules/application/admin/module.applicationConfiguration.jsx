@@ -24,7 +24,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
 
   const plantid = userData.plantID;
-  const role = userData.role;
+  // const [role,setRole] = useState("")
   const [open, setOpen] = useState(false);
   const [application_name, setApplication_name] = useState("");
   const [dialogPopup, setDialogPopup] = useState(false);
@@ -58,11 +58,37 @@ export default function ModuleConfiguration({ sendUrllist }) {
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
 
-  const fetchDivs = async () => {
+  const fetchUser = async () => {
+    let role = "";
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      // setFormData(data.role);
+      role = data.role;
+
+      console.log("Role Test : ", role);
+      fetchDivs(role);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  const fetchDivs = async (role) => {
+    console.log("Role in Fetch Div ", role);
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
-
+      console.log(
+        "url Role ",
+        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`
+      );
       const response = await fetch(
         `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`,
         {
@@ -120,7 +146,8 @@ export default function ModuleConfiguration({ sendUrllist }) {
     };
     extendTokenExpiration();
     fetchData();
-    fetchDivs();
+    fetchUser();
+    // fetchDivs();
     sendUrllist(urllist);
   }, []);
 

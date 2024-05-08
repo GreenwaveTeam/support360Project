@@ -59,12 +59,12 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   /******************************* useEffect()********************************/
 
   useLayoutEffect(() => {
-    fetchDivsForCurrentPage();
+    //fetchDivsForCurrentPage();
+    fetchUser();
     extendTokenExpiration();
     fetchInfraFromDb();
     // fetchDivsForCurrentPage(userData);
     sendUrllist(urllist);
-   
   }, []);
 
   //Will include id later on to implement the same to identify the list item .....
@@ -148,26 +148,41 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
   /**************************************************   API    **************************************************** */
 
+  const fetchUser = async () => {
+    let role = "";
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      // setFormData(data.role);
+      role = data.role;
 
+      console.log("Role Test : ", role);
+      fetchDivsForCurrentPage(role);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
 
-  const fetchDivsForCurrentPage = async () => {
-    console.log('fetchDivsForCurrentPage() called ! ')
+  const fetchDivsForCurrentPage = async (role) => {
+    console.log("fetchDivsForCurrentPage() called ! ");
     //fetchDivs(userData,location,currentPageLocation);
-    const divs=await fetchDivs(userData,location,currentPageLocation);
-    console.log("Response for divs : ",divs)
-    if (divs) 
-    {
+    const divs = await fetchDivs(userData, location, currentPageLocation, role);
+    console.log("Response for divs : ", divs);
+    if (divs) {
       setDivIsVisibleList(divs);
       return;
     }
-    console.log('Components not found ! ')
-    navigate("/*")
-
+    console.log("Components not found ! ");
+    navigate("/*");
   };
-
-  
-
-
 
   // const updateInfraNameDB = async (prev_infra, new_infraname) => {
   //   console.log("updateInfraNameDB() called");
@@ -382,12 +397,12 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     console.log("The updated category => ", updated_category.categoryname);
 
     // let plantID = "";
-      try {
-        // if (userData.plantID) {//
-        //   plantID = userData.plantID;
-        // } else {
-        //   throw new Error("PlantID not found ! ");
-        // }
+    try {
+      // if (userData.plantID) {//
+      //   plantID = userData.plantID;
+      // } else {
+      //   throw new Error("PlantID not found ! ");
+      // }
       const success = await updateInfraNameDB(
         selected_category.categoryname,
         updated_category.categoryname,

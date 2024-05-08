@@ -1085,7 +1085,7 @@ export default function AdminHome({ sendUrllist }) {
                                         height: 30,
                                       }}
                                     >
-                                      <p> {convertToInitials(item.name)}</p>
+                                      {convertToInitials(item.name)}
                                     </Avatar>
                                   </Box>
                                 </TableCell>
@@ -1128,7 +1128,7 @@ export default function AdminHome({ sendUrllist }) {
                                   align="center"
                                 >
                                   <Tooltip title="Configure ➚ ">
-                                  {item.userID}
+                                    {item.userID}
                                   </Tooltip>
                                 </TableCell>
                                 {/* </Link> */}

@@ -513,7 +513,10 @@ function UserHome({ sendUrllist }) {
                         </div>
                       </div>
                       <div class="col-md-7">
-                        <SparkLineChart data={monthwiseticket} height={100} />
+                        <SparkLineChart
+                          data={[5, 3, 4, 5, 3, 5, 4, 6]}
+                          height={100}
+                        />
                       </div>
                     </div>
                   </CardContent>

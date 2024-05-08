@@ -24,6 +24,8 @@ import TopbarPage from "../../components/navigation/topbar/topbar";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import { useUserContext } from "../contexts/UserContext";
 import { extendTokenExpiration } from "../helper/Support360Api";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { axisClasses } from "@mui/x-charts";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -206,6 +208,21 @@ function UserHome({ sendUrllist }) {
   //   }
   // };
 
+  const chartSetting = {
+    yAxis: [
+      {
+        label: "Issue Info",
+      },
+    ],
+    width: 500,
+    height: 300,
+    sx: {
+      [`.${axisClasses.left} .${axisClasses.label}`]: {
+        transform: 'translate(-20px, 0)',
+      },
+    },
+  };
+
   const monthwiseticketraised = async () => {
     try {
       const response = await fetch(
@@ -220,6 +237,15 @@ function UserHome({ sendUrllist }) {
       );
       const data = await response.json();
       console.log("monthwiseticketraised : ", data);
+      const outputList = data.map((item) => {
+        const month = Object.keys(item)[0];
+        const data = item[month];
+        return {
+          ...data,
+          month: month.split(" ")[0],
+        };
+      });
+      console.log("outputList : ", outputList);
       const numbersList = [];
       for (const month in data) {
         if (data.hasOwnProperty(month)) {
@@ -230,7 +256,7 @@ function UserHome({ sendUrllist }) {
         }
       }
       console.log("Numbers List:", numbersList);
-      setMonthwiseticket(numbersList);
+      setMonthwiseticket(outputList);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -505,7 +531,7 @@ function UserHome({ sendUrllist }) {
                               variant="h5"
                               component="div"
                             >
-                              Total Issue Raised
+                              Pending Issues
                             </Typography>
                           </div>
                         </div>
@@ -539,7 +565,7 @@ function UserHome({ sendUrllist }) {
                               variant="h5"
                               component="div"
                             >
-                              Total Issue Raised
+                              Resolved Issues
                             </Typography>
                           </div>
                         </div>
@@ -564,11 +590,36 @@ function UserHome({ sendUrllist }) {
             </div>
             <div class="row" style={{ marginTop: "1rem" }}>
               <div class="col-md-12">
-                <Card>
+                {/* <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <Typography gutterBottom variant="h5" component="div">
                       Last Ticket Raised
                     </Typography>
+                  </CardContent>
+                </Card> */}
+                <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <div>
+                      <BarChart
+                        dataset={monthwiseticket}
+                        xAxis={[{ scaleType: "band", dataKey: "month" }]}
+                        series={[
+                          {
+                            dataKey: "Issue_Count",
+                            label: "Issue_Count",
+                          },
+                          {
+                            dataKey: "Pending_Issues",
+                            label: "Pending_Issues",
+                          },
+                          {
+                            dataKey: "Resolved_Issues",
+                            label: "Resolved_Issues",
+                          },
+                        ]}
+                        {...chartSetting}
+                      />
+                    </div>
                   </CardContent>
                 </Card>
               </div>

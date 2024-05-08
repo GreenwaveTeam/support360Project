@@ -1,7 +1,7 @@
 // import TextField from '@mui/material/TextField';
 import Button from "@mui/material/Button";
 import React, { useState, useEffect, useContext } from "react";
-import { extendTokenExpiration } from '../../../modules/helper/Support360Api'
+import { extendTokenExpiration } from "../../../modules/helper/Support360Api";
 
 /*Navigation Pane*/
 import Sidebar from "../../../components/navigation/sidebar/sidebar";
@@ -27,7 +27,7 @@ const DeviceCategory = ({ sendUrllist }) => {
   const { userData, setUserData } = useUserContext();
 
   const plantid = userData.plantID;
-  const role = userData.role;
+  //const role = userData.role;
   console.log(userData);
   const [open, setOpen] = useState(false);
   const [categorylist, setCategorylist] = useState([]);
@@ -58,7 +58,29 @@ const DeviceCategory = ({ sendUrllist }) => {
       canRepeatSameValue: false,
     },
   ];
-  const fetchDivs = async () => {
+  const fetchUser = async () => {
+    let role = "";
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      // setFormData(data.role);
+      role = data.role;
+
+      console.log("Role Test : ", role);
+      fetchDivs(role);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  const fetchDivs = async (role) => {
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
@@ -134,7 +156,8 @@ const DeviceCategory = ({ sendUrllist }) => {
     };
     extendTokenExpiration();
     fetchData();
-    fetchDivs();
+    // fetchDivs();
+    fetchUser();
     sendUrllist(urllist);
   }, []);
 

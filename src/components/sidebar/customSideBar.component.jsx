@@ -143,6 +143,7 @@ const CustomPanelBar = () => {
 
   React.useEffect(() => {
     fetchUser();
+    fetchToken();
     // fetchData();
   }, []);
 
@@ -178,6 +179,12 @@ const CustomPanelBar = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+
+ const fetchToken= async () => {
+  console.log("Token Test : ", localStorage.getItem("token"));
+ }
+  
 
   const fetchUser = async () => {
     let role = "";

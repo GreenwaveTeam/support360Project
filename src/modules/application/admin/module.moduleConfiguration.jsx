@@ -46,7 +46,7 @@ export default function ModuleConfigure({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
 
   const plantid = userData.plantID;
-  const role = userData.role;
+  // const role = userData.role;
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("1");
   const [showPopup, setShowPopup] = useState(false);
@@ -98,7 +98,29 @@ export default function ModuleConfigure({ sendUrllist }) {
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
 
-  const fetchDivs = async () => {
+  const fetchUser = async () => {
+    let role = "";
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      // setFormData(data.role);
+      role = data.role;
+
+      console.log("Role Test : ", role);
+      fetchDivs(role);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  const fetchDivs = async (role) => {
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
@@ -172,7 +194,8 @@ export default function ModuleConfigure({ sendUrllist }) {
     };
     extendTokenExpiration();
     fetchData();
-    fetchDivs();
+    fetchUser();
+    //fetchDivs();
     sendUrllist(urllist);
   }, []);
 

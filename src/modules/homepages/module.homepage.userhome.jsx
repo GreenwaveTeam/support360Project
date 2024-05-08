@@ -523,13 +523,7 @@ function UserHome({ sendUrllist }) {
                         </div>
                       </div>
                       <div class="col-md-7">
-                        <Button
-                          icon="pi pi-times"
-                          rounded
-                          outlined
-                          severity="danger"
-                          aria-label="Cancel"
-                        />
+                        <SparkLineChart data={monthwiseticket} height={100} />
                       </div>
                     </div>
                   </CardContent>

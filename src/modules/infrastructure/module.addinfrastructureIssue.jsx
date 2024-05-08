@@ -92,8 +92,8 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
     extendTokenExpiration();
 
     fetchDBdata(plantId, inf);
-    fetchDivs();
-
+    // fetchDivs();
+    fetchUser();
     sendUrllist(urllist);
 
     const handleOnBeforeUnload = (event) => {
@@ -130,18 +130,39 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
   }, []); //useEffect ends here
 
   // ***************************************************  API  **************************************************
+  const fetchUser = async () => {
+    let role = "";
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      // setFormData(data.role);
+      role = data.role;
 
-  const fetchDivs = async () => {
+      console.log("Role Test : ", role);
+      fetchDivs(role);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+  const fetchDivs = async (role) => {
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
       console.log("Current userData : ", userData);
-      let role = "";
-      if (userData.role) {
-        role = userData.role;
-      } else {
-        throw new Error("UserRole not found ! ");
-      }
+      // let role = "";
+      // if (userData.role) {
+      //   role = userData.role;
+      // } else {
+      //   throw new Error("UserRole not found ! ");
+      // }
 
       const response = await fetch(
         `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,

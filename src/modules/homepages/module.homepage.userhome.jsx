@@ -553,33 +553,6 @@ function UserHome({ sendUrllist }) {
                   </CardContent>
                 </Card>
               </div>
-              <div class="col-md-12">
-                <Card>
-                  <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <div>
-                      <BarChart
-                        dataset={monthwiseticket}
-                        xAxis={[{ scaleType: "band", dataKey: "month" }]}
-                        series={[
-                          {
-                            dataKey: "Issue_Count",
-                            label: "Issue_Count",
-                          },
-                          {
-                            dataKey: "Pending_Issues",
-                            label: "Pending_Issues",
-                          },
-                          {
-                            dataKey: "Resolved_Issues",
-                            label: "Resolved_Issues",
-                          },
-                        ]}
-                        {...chartSetting}
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
               <div class="col-md-4">
                 <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
@@ -617,11 +590,36 @@ function UserHome({ sendUrllist }) {
             </div>
             <div class="row" style={{ marginTop: "1rem" }}>
               <div class="col-md-12">
-                <Card>
+                {/* <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <Typography gutterBottom variant="h5" component="div">
                       Last Ticket Raised
                     </Typography>
+                  </CardContent>
+                </Card> */}
+                <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <div>
+                      <BarChart
+                        dataset={monthwiseticket}
+                        xAxis={[{ scaleType: "band", dataKey: "month" }]}
+                        series={[
+                          {
+                            dataKey: "Issue_Count",
+                            label: "Issue_Count",
+                          },
+                          {
+                            dataKey: "Pending_Issues",
+                            label: "Pending_Issues",
+                          },
+                          {
+                            dataKey: "Resolved_Issues",
+                            label: "Resolved_Issues",
+                          },
+                        ]}
+                        {...chartSetting}
+                      />
+                    </div>
                   </CardContent>
                 </Card>
               </div>

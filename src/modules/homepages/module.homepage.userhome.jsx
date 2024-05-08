@@ -531,7 +531,7 @@ function UserHome({ sendUrllist }) {
                               variant="h5"
                               component="div"
                             >
-                              Total Issue Raised
+                              Pending Issues
                             </Typography>
                           </div>
                         </div>
@@ -565,7 +565,7 @@ function UserHome({ sendUrllist }) {
                               variant="h5"
                               component="div"
                             >
-                              Total Issue Raised
+                              Resolved Issues
                             </Typography>
                           </div>
                         </div>

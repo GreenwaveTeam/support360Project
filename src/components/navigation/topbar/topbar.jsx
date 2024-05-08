@@ -6,7 +6,15 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import { styled } from "@mui/material/styles";
 import BreadCrumbs from "../../breadcrumbs/breadcrumbs.component";
-import { Avatar, Button, Chip, Paper, Tooltip } from "@mui/material";
+import {
+  Avatar,
+  Button,
+  Chip,
+  Divider,
+  ListItemIcon,
+  Paper,
+  Tooltip,
+} from "@mui/material";
 import { logout } from "../../../modules/helper/AuthService";
 import { useNavigate } from "react-router-dom";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -20,6 +28,12 @@ import { useTheme } from "@mui/material";
 import Badge from "@mui/material/Badge";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+//Icon
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+//import LogoutIcon from "@mui/icons-material/Logout";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Box } from "@mui/system";
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -83,6 +97,17 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       console.error("Error fetching user list:", error);
     }
   };
+  //Avater Click Section
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenu = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  //
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -171,7 +196,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
               </IconButton>
             </Tooltip>
             <Chip size="small" label={userName} className="hideSection" />
-            <Tooltip title={userName} placement="bottom">
+            {/* <Tooltip title={userName} placement="bottom">
               <StyledBadge
                 overlap="circular"
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -185,13 +210,66 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                     height: 32,
                     bgcolor: colors.blueAccent[500],
                   }}
+                  onClick={handleClick}
                 >
                   {convertToInitials(userName)}
                 </Avatar>
               </StyledBadge>
-            </Tooltip>
+            </Tooltip> */}
 
-            <IconButton>
+            <div>
+              <Avatar
+                sizes=""
+                sx={{
+                  marginLeft: "auto",
+                  width: 32,
+                  height: 32,
+                  bgcolor: colors.blueAccent[500],
+                }}
+                onClick={handleClick}
+              >
+                {convertToInitials(userName)}
+              </Avatar>
+              <Box sx={{ boxShadow: 0 }}>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={openMenu}
+                  onClose={handleClose}
+                  transformOrigin={{ horizontal: "center", vertical: "top" }}
+                  sx={{ boxShadow: 0 }}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <>
+                      <AccountCircleIcon
+                        sx={{ marginRight: "0.4rem" }}
+                        fontSize="medium"
+                      />
+                    </>
+                    {userName}
+                  </MenuItem>
+                  <Divider sx={{ margin: "0 !important" }} />
+
+                  <Divider sx={{ margin: "0 !important" }} />
+                  <MenuItem
+                    onClick={() => {
+                      logout();
+                      navigate("/login");
+                    }}
+                  >
+                    <>
+                      <LogoutIcon
+                        sx={{ marginRight: "0.4rem" }}
+                        fontSize="small"
+                      />
+                    </>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </Box>
+            </div>
+
+            {/* <IconButton>
               <Tooltip title="Logout" placement="right">
                 <LogoutIcon
                   onClick={() => {
@@ -206,7 +284,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                   }}
                 />
               </Tooltip>
-            </IconButton>
+            </IconButton> */}
           </div>
         </div>
       </Toolbar>

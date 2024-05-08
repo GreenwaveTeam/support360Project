@@ -25,7 +25,10 @@ import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.
 import { useUserContext } from "../contexts/UserContext";
 import { extendTokenExpiration } from "../helper/Support360Api";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { axisClasses } from "@mui/x-charts";
+import { ResponsiveChartContainer, axisClasses } from "@mui/x-charts";
+import "primeicons/primeicons.css";
+//bootstrap
+import "bootstrap/dist/css/bootstrap.css";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -218,7 +221,7 @@ function UserHome({ sendUrllist }) {
     height: 300,
     sx: {
       [`.${axisClasses.left} .${axisClasses.label}`]: {
-        transform: 'translate(-20px, 0)',
+        transform: "translate(-20px, 0)",
       },
     },
   };
@@ -421,7 +424,7 @@ function UserHome({ sendUrllist }) {
   return (
     <Box>
       <Container maxWidth="">
-        <div class="row" style={{ marginBottom: "1rem" }}>
+        {/* <div class="row" style={{ marginBottom: "1rem" }}>
           <div class="col-md-8">
             <div class="row">
               <div class="col-md-12">
@@ -484,12 +487,19 @@ function UserHome({ sendUrllist }) {
               </Card>
             </div>
           </div>
-        </div>
+        </div> */}
         <div class="row">
           <div class="col-md-8">
             <div class="row">
               <div class="col-md-4">
-                <Card sx={{ borderRadius: 1 }}>
+                <Card
+                  onClick={(e) => {
+                    navigate("/user/ReportDevice", {
+                      state: { plantID: formData.plantID },
+                    });
+                  }}
+                  sx={{ borderRadius: 1 }}
+                >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
                       <div class="col-md-5">
@@ -500,7 +510,7 @@ function UserHome({ sendUrllist }) {
                               variant="h5"
                               component="div"
                             >
-                              Total Issue Raised
+                              Device
                             </Typography>
                           </div>
                         </div>
@@ -513,14 +523,26 @@ function UserHome({ sendUrllist }) {
                         </div>
                       </div>
                       <div class="col-md-7">
-                        <SparkLineChart data={monthwiseticket} height={100} />
+                        <Button
+                          icon="pi pi-times"
+                          rounded
+                          outlined
+                          severity="danger"
+                          aria-label="Cancel"
+                        />
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
               <div class="col-md-4">
-                <Card>
+                <Card
+                  onClick={(e) => {
+                    navigate("/user/ReportApplication", {
+                      state: { plantID: formData.plantID },
+                    });
+                  }}
+                >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
                       <div class="col-md-5">
@@ -531,7 +553,7 @@ function UserHome({ sendUrllist }) {
                               variant="h5"
                               component="div"
                             >
-                              Pending Issues
+                              Application
                             </Typography>
                           </div>
                         </div>
@@ -544,17 +566,23 @@ function UserHome({ sendUrllist }) {
                         </div>
                       </div>
                       <div class="col-md-7">
-                        <SparkLineChart
+                        {/* <SparkLineChart
                           data={[3, 5, 7, 5, 4, 2, 4, 6]}
                           height={100}
-                        />
+                        /> */}
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
               <div class="col-md-4">
-                <Card>
+                <Card
+                  onClick={(e) => {
+                    navigate("/user/ReportInfrastructure", {
+                      state: { plantID: formData.plantID },
+                    });
+                  }}
+                >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
                       <div class="col-md-5">
@@ -565,7 +593,7 @@ function UserHome({ sendUrllist }) {
                               variant="h5"
                               component="div"
                             >
-                              Resolved Issues
+                              Infrastructure
                             </Typography>
                           </div>
                         </div>
@@ -578,10 +606,10 @@ function UserHome({ sendUrllist }) {
                         </div>
                       </div>
                       <div class="col-md-7">
-                        <SparkLineChart
+                        {/* <SparkLineChart
                           data={[5, 4, 4, 5, 4, 2, 4, 6]}
                           height={100}
-                        />
+                        /> */}
                       </div>
                     </div>
                   </CardContent>
@@ -599,27 +627,28 @@ function UserHome({ sendUrllist }) {
                 </Card> */}
                 <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <div>
-                      <BarChart
-                        dataset={monthwiseticket}
-                        xAxis={[{ scaleType: "band", dataKey: "month" }]}
-                        series={[
-                          {
-                            dataKey: "Issue_Count",
-                            label: "Issue_Count",
-                          },
-                          {
-                            dataKey: "Pending_Issues",
-                            label: "Pending_Issues",
-                          },
-                          {
-                            dataKey: "Resolved_Issues",
-                            label: "Resolved_Issues",
-                          },
-                        ]}
-                        {...chartSetting}
-                      />
-                    </div>
+                    {/* <ResponsiveChartContainer> */}
+                    <BarChart
+                      width={1200}
+                      dataset={monthwiseticket}
+                      xAxis={[{ scaleType: "band", dataKey: "month" }]}
+                      series={[
+                        {
+                          dataKey: "Issue_Count",
+                          label: "Issue_Count",
+                        },
+                        {
+                          dataKey: "Pending_Issues",
+                          label: "Pending_Issues",
+                        },
+                        {
+                          dataKey: "Resolved_Issues",
+                          label: "Resolved_Issues",
+                        },
+                      ]}
+                      {...chartSetting}
+                    />
+                    {/* </ResponsiveChartContainer> */}
                   </CardContent>
                 </Card>
               </div>

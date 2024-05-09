@@ -111,7 +111,7 @@ export default function UserDeviceTree({ sendUrllist }) {
       canRepeatSameValue: false,
     },
     {
-      id: "priority",
+      id: "severity",
       label: "Severity",
       type: "textbox",
       canRepeatSameValue: false,
@@ -257,7 +257,7 @@ export default function UserDeviceTree({ sendUrllist }) {
       canRepeatSameValue: true,
     },
     {
-      id: "priority",
+      id: "severity",
       label: " Severity ",
       type: "chip",
       canRepeatSameValue: true,
@@ -355,7 +355,7 @@ export default function UserDeviceTree({ sendUrllist }) {
         if (selectedIssue === "Other") {
           const newItem = {
             issue: otherIssue,
-            priority: selectedPriority,
+            severity: selectedPriority,
             remarks: remarks,
             category: selectedIssue,
           };
@@ -368,7 +368,7 @@ export default function UserDeviceTree({ sendUrllist }) {
         } else {
           const newItem = {
             issue: selectedIssue,
-            priority: selectedPriority,
+            severity: selectedPriority,
             remarks: remarks,
             category: selectedNode.issue_category_name,
           };

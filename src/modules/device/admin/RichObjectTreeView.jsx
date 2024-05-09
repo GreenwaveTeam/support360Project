@@ -989,20 +989,21 @@ export default function RichObjectTreeView({ sendUrllist }) {
                         />
                         <br />
                         <br />
-                        <CustomDatePicker
-                          label="Warranty End Date"
-                          value={warrantyEndDate}
-                          onChange={(newDate) => setwarrantyEndDate(newDate)}
-                        />
+                        <div style={{ display: "flex", columnGap: "1rem" }}>
+                          <CustomDatePicker
+                            label="Warranty End Date"
+                            value={warrantyEndDate}
+                            onChange={(newDate) => setwarrantyEndDate(newDate)}
+                          />
+
+                          <CustomDatePicker
+                            label="Support End Date"
+                            value={supportEndDate}
+                            onChange={(newDate) => setSupportEndDate(newDate)}
+                          />
+                        </div>
                         <br />
-                        <br />
-                        <CustomDatePicker
-                          label="Support End Date"
-                          value={supportEndDate}
-                          onChange={(newDate) => setSupportEndDate(newDate)}
-                        />
-                        <br />
-                        <br />
+
                         <Select
                           value={selectedCategory}
                           onChange={handleCategoryChange}
@@ -1032,12 +1033,10 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             onChange={handleImageChange}
                           />
                         </div>
-                        <br />
-                        <br />
+
                         {selectedImage && (
                           <div className="image-preview">
                             Preview:
-                            <br />
                             <br />
                             <img
                               src={selectedImage}
@@ -1064,89 +1063,136 @@ export default function RichObjectTreeView({ sendUrllist }) {
                   </Dialog>
                 </div>
 
-                {clickedNode && selectedNode && (
-                  // selectedNode.id !== "root" &&
-                  // clickedNode.id !== "root" &&
-                  <div className="dlg">
-                    <div className="clicked-node">
-                      <Card
-                        sx={{
-                          minWidth: 550,
+                {clickedNode &&
+                  selectedNode &&
+                  selectedNode.id === "root" &&
+                  clickedNode.id === "root" && (
+                    <>
+                      <div style={{ display: "flex" }}>
+                        &nbsp;&nbsp;&nbsp;
+                        {divIsVisibleList &&
+                          divIsVisibleList.includes("delete-selected-node") && (
+                            <div
+                              id="delete-selected-node"
+                              style={{ display: "flex" }}
+                            >
+                              <CustomButton
+                                className="button"
+                                variant="contained"
+                                size={"small"}
+                                color="error" // Use secondary color for delete button
+                                //onClick={handleDeleteNode}
+                                endIcon={<DeleteIcon />}
+                                onClick={handleDialogOpen}
+                                buttontext={"Delete Node"}
+                              ></CustomButton>
+                            </div>
+                          )}
+                        &nbsp;&nbsp;
+                        {divIsVisibleList &&
+                          divIsVisibleList.includes("add-new-node") && (
+                            <div id="add-new-node" style={{ display: "flex" }}>
+                              <CustomButton
+                                className="button"
+                                size={"small"}
+                                variant="contained"
+                                color="secondary" // Use secondary color for delete button
+                                //onClick={handleDeleteNode}
 
-                          //backgroundColor: "#f4f4f4",
-                          borderRadius: "10px",
-                          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
-                        }}
-                      >
-                        <Box
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            padding: "0.9rem",
+                                onClick={() => setVisible(true)}
+                                endIcon={<AddCircleIcon />}
+                                buttontext={"Add Item"}
+                              ></CustomButton>
+                            </div>
+                          )}
+                      </div>
+                    </>
+                  )}
+
+                {clickedNode &&
+                  selectedNode &&
+                  selectedNode.id !== "root" &&
+                  clickedNode.id !== "root" && (
+                    <div className="dlg">
+                      <div className="clicked-node">
+                        <Card
+                          sx={{
+                            minWidth: 550,
+
+                            //backgroundColor: "#f4f4f4",
+                            borderRadius: "10px",
+                            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                           }}
                         >
-                          <Chip
-                            size="large"
-                            sx={{ fontSize: "0.8rem", fontWeight: "600" }}
-                            label={
-                              selectedNode
-                                ? `Selected Asset: ${selectedNode.name}
+                          <Box
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              padding: "0.9rem",
+                            }}
+                          >
+                            <Chip
+                              size="large"
+                              sx={{ fontSize: "0.8rem", fontWeight: "600" }}
+                              label={
+                                selectedNode
+                                  ? `Selected Asset: ${selectedNode.name}
                               `
-                                : "Select a Asset"
-                            }
-                          />
+                                  : "Select a Asset"
+                              }
+                            />
 
-                          <div style={{ display: "flex" }}>
-                            &nbsp;&nbsp;&nbsp;
-                            {divIsVisibleList &&
-                              divIsVisibleList.includes(
-                                "delete-selected-node"
-                              ) && (
-                                <div
-                                  id="delete-selected-node"
-                                  style={{ display: "flex" }}
-                                >
-                                  <CustomButton
-                                    className="button"
-                                    variant="contained"
-                                    size={"small"}
-                                    color="error" // Use secondary color for delete button
-                                    //onClick={handleDeleteNode}
-                                    endIcon={<DeleteIcon />}
-                                    onClick={handleDialogOpen}
-                                    buttontext={"Delete Node"}
-                                  ></CustomButton>
-                                </div>
-                              )}
-                            &nbsp;&nbsp;
-                            {divIsVisibleList &&
-                              divIsVisibleList.includes("add-new-node") && (
-                                <div
-                                  id="add-new-node"
-                                  style={{ display: "flex" }}
-                                >
-                                  <CustomButton
-                                    className="button"
-                                    size={"small"}
-                                    variant="contained"
-                                    color="secondary" // Use secondary color for delete button
-                                    //onClick={handleDeleteNode}
+                            <div style={{ display: "flex" }}>
+                              &nbsp;&nbsp;&nbsp;
+                              {divIsVisibleList &&
+                                divIsVisibleList.includes(
+                                  "delete-selected-node"
+                                ) && (
+                                  <div
+                                    id="delete-selected-node"
+                                    style={{ display: "flex" }}
+                                  >
+                                    <CustomButton
+                                      className="button"
+                                      variant="contained"
+                                      size={"small"}
+                                      color="error" // Use secondary color for delete button
+                                      //onClick={handleDeleteNode}
+                                      endIcon={<DeleteIcon />}
+                                      onClick={handleDialogOpen}
+                                      buttontext={"Delete Node"}
+                                    ></CustomButton>
+                                  </div>
+                                )}
+                              &nbsp;&nbsp;
+                              {divIsVisibleList &&
+                                divIsVisibleList.includes("add-new-node") && (
+                                  <div
+                                    id="add-new-node"
+                                    style={{ display: "flex" }}
+                                  >
+                                    <CustomButton
+                                      className="button"
+                                      size={"small"}
+                                      variant="contained"
+                                      color="secondary" // Use secondary color for delete button
+                                      //onClick={handleDeleteNode}
 
-                                    onClick={() => setVisible(true)}
-                                    endIcon={<AddCircleIcon />}
-                                    buttontext={"Add Item"}
-                                  ></CustomButton>
-                                </div>
-                              )}
-                          </div>
-                        </Box>
-                        <Divider />
+                                      onClick={() => setVisible(true)}
+                                      endIcon={<AddCircleIcon />}
+                                      buttontext={"Add Item"}
+                                    ></CustomButton>
+                                  </div>
+                                )}
+                            </div>
+                          </Box>
+                          <Divider />
 
-                        <div
-                          className="Card-Components"
-                          style={{ padding: "0.9rem" }}
-                        >
-                          {/* <h3
+                          <div
+                            className="Card-Components"
+                            style={{ padding: "0.9rem" }}
+                          >
+                            {/* <h3
                           style={{
                             marginBottom: "15px",
                             color: "#333",
@@ -1154,30 +1200,30 @@ export default function RichObjectTreeView({ sendUrllist }) {
                         >
                           Node Details:
                         </h3> */}
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              columnGap: "1rem",
-                              marginBottom: "15px",
-                            }}
-                          >
-                            <div style={{ marginBottom: "0px" }}>
-                              <Typography
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "0px",
-                                  textAlign: "left",
-                                }}
-                              >
-                                Name:
-                              </Typography>
-                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: "1rem",
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <div style={{ marginBottom: "0px" }}>
+                                <Typography
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "0px",
+                                    textAlign: "left",
+                                  }}
+                                >
+                                  Name:
+                                </Typography>
+                              </div>
 
-                            <div>
-                              {isEditing ? (
-                                <>
-                                  {/* <Textfield
+                              <div>
+                                {isEditing ? (
+                                  <>
+                                    {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   value={editedName}
@@ -1197,91 +1243,91 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   onClick={() => handleCancelNameEdit("Name")}
                                   buttontext={"Cancel"}
                                 ></CustomButton> */}
-                                  <FormControl fullWidth>
-                                    <InputLabel htmlFor="EditNodeName">
-                                      Edit Name
-                                    </InputLabel>
-                                    <OutlinedInput
-                                      autoFocus
-                                      autoComplete="Edit Name"
-                                      name="Edit Name"
-                                      required
-                                      fullWidth
-                                      id="EditNodeName"
-                                      label="Edit Name"
-                                      value={editedName}
-                                      onChange={(e) =>
-                                        setEditedName(e.target.value)
-                                      }
-                                      endAdornment={
-                                        <>
-                                          <Tooltip title="Save">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleSaveName("Name")
-                                                }
-                                                edge="end"
-                                              >
-                                                <SaveOutlinedIcon color="success" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
+                                    <FormControl fullWidth>
+                                      <InputLabel htmlFor="EditNodeName">
+                                        Edit Name
+                                      </InputLabel>
+                                      <OutlinedInput
+                                        autoFocus
+                                        autoComplete="Edit Name"
+                                        name="Edit Name"
+                                        required
+                                        fullWidth
+                                        id="EditNodeName"
+                                        label="Edit Name"
+                                        value={editedName}
+                                        onChange={(e) =>
+                                          setEditedName(e.target.value)
+                                        }
+                                        endAdornment={
+                                          <>
+                                            <Tooltip title="Save">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleSaveName("Name")
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <SaveOutlinedIcon color="success" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
 
-                                          <Tooltip title="Cancel">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleCancelNameEdit("Name")
-                                                }
-                                                edge="end"
-                                              >
-                                                <CancelOutlinedIcon color="error" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
-                                        </>
-                                      }
-                                    />
-                                  </FormControl>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("Name")}
-                                  >
-                                    {selectedNode.name === ""
-                                      ? "NA"
-                                      : selectedNode.name}
-                                  </div>
-                                </>
-                              )}
+                                            <Tooltip title="Cancel">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleCancelNameEdit("Name")
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <CancelOutlinedIcon color="error" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
+                                          </>
+                                        }
+                                      />
+                                    </FormControl>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="value-comp"
+                                      onClick={() => handleEdit("Name")}
+                                    >
+                                      {selectedNode.name === ""
+                                        ? "NA"
+                                        : selectedNode.name}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              columnGap: "1rem",
-                              marginBottom: "15px",
-                            }}
-                          >
-                            <div style={{ marginBottom: "0px" }}>
-                              <p
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "0px",
-                                }}
-                              >
-                                Make:
-                              </p>
-                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: "1rem",
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <div style={{ marginBottom: "0px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "0px",
+                                  }}
+                                >
+                                  Make:
+                                </p>
+                              </div>
 
-                            <div>
-                              {isEditingMake ? (
-                                <>
-                                  {/* <Textfield
+                              <div>
+                                {isEditingMake ? (
+                                  <>
+                                    {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   value={editedMake}
@@ -1302,90 +1348,90 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   buttontext={"Cancel"}
                                 ></CustomButton> */}
 
-                                  <FormControl fullWidth>
-                                    <InputLabel htmlFor="EditNodeName">
-                                      Edit Make
-                                    </InputLabel>
-                                    <OutlinedInput
-                                      autoFocus
-                                      autoComplete="Edit Make"
-                                      name="Edit Make"
-                                      required
-                                      fullWidth
-                                      id="EditNodeName"
-                                      label="Edit Make"
-                                      value={editedMake}
-                                      onChange={(e) =>
-                                        setEditedMake(e.target.value)
-                                      }
-                                      endAdornment={
-                                        <>
-                                          <Tooltip title="Save">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleSaveName("Make")
-                                                }
-                                                edge="end"
-                                              >
-                                                <SaveOutlinedIcon color="success" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
+                                    <FormControl fullWidth>
+                                      <InputLabel htmlFor="EditNodeName">
+                                        Edit Make
+                                      </InputLabel>
+                                      <OutlinedInput
+                                        autoFocus
+                                        autoComplete="Edit Make"
+                                        name="Edit Make"
+                                        required
+                                        fullWidth
+                                        id="EditNodeName"
+                                        label="Edit Make"
+                                        value={editedMake}
+                                        onChange={(e) =>
+                                          setEditedMake(e.target.value)
+                                        }
+                                        endAdornment={
+                                          <>
+                                            <Tooltip title="Save">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleSaveName("Make")
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <SaveOutlinedIcon color="success" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
 
-                                          <Tooltip title="Cancel">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleCancelNameEdit("Make")
-                                                }
-                                                edge="end"
-                                              >
-                                                <CancelOutlinedIcon color="error" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
-                                        </>
-                                      }
-                                    />
-                                  </FormControl>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("Make")}
-                                  >
-                                    {selectedNode.make === ""
-                                      ? "NA"
-                                      : selectedNode.make}
-                                  </div>
-                                </>
-                              )}
+                                            <Tooltip title="Cancel">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleCancelNameEdit("Make")
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <CancelOutlinedIcon color="error" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
+                                          </>
+                                        }
+                                      />
+                                    </FormControl>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="value-comp"
+                                      onClick={() => handleEdit("Make")}
+                                    >
+                                      {selectedNode.make === ""
+                                        ? "NA"
+                                        : selectedNode.make}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              columnGap: "1rem",
-                              marginBottom: "15px",
-                            }}
-                          >
-                            <div style={{ marginBottom: "0px" }}>
-                              <p
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "0px",
-                                }}
-                              >
-                                Model:
-                              </p>
-                            </div>
-                            <div>
-                              {isEditingModel ? (
-                                <>
-                                  {/* <Textfield
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: "1rem",
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <div style={{ marginBottom: "0px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "0px",
+                                  }}
+                                >
+                                  Model:
+                                </p>
+                              </div>
+                              <div>
+                                {isEditingModel ? (
+                                  <>
+                                    {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   value={editedModel}
@@ -1406,90 +1452,92 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   buttontext={"Cancel"}
                                 ></CustomButton> */}
 
-                                  <FormControl fullWidth>
-                                    <InputLabel htmlFor="EditNodeName">
-                                      Edit Model
-                                    </InputLabel>
-                                    <OutlinedInput
-                                      autoFocus
-                                      autoComplete="Edit Model"
-                                      name="Edit Model"
-                                      required
-                                      fullWidth
-                                      id="EditNodeName"
-                                      label="Edit Model"
-                                      value={editedModel}
-                                      onChange={(e) =>
-                                        setEditedModel(e.target.value)
-                                      }
-                                      endAdornment={
-                                        <>
-                                          <Tooltip title="Save">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleSaveName("Model")
-                                                }
-                                                edge="end"
-                                              >
-                                                <SaveOutlinedIcon color="success" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
+                                    <FormControl fullWidth>
+                                      <InputLabel htmlFor="EditNodeName">
+                                        Edit Model
+                                      </InputLabel>
+                                      <OutlinedInput
+                                        autoFocus
+                                        autoComplete="Edit Model"
+                                        name="Edit Model"
+                                        required
+                                        fullWidth
+                                        id="EditNodeName"
+                                        label="Edit Model"
+                                        value={editedModel}
+                                        onChange={(e) =>
+                                          setEditedModel(e.target.value)
+                                        }
+                                        endAdornment={
+                                          <>
+                                            <Tooltip title="Save">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleSaveName("Model")
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <SaveOutlinedIcon color="success" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
 
-                                          <Tooltip title="Cancel">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleCancelNameEdit("Model")
-                                                }
-                                                edge="end"
-                                              >
-                                                <CancelOutlinedIcon color="error" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
-                                        </>
-                                      }
-                                    />
-                                  </FormControl>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("Model")}
-                                  >
-                                    {selectedNode.model === ""
-                                      ? "NA"
-                                      : selectedNode.model}
-                                  </div>
-                                </>
-                              )}
+                                            <Tooltip title="Cancel">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleCancelNameEdit(
+                                                      "Model"
+                                                    )
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <CancelOutlinedIcon color="error" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
+                                          </>
+                                        }
+                                      />
+                                    </FormControl>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="value-comp"
+                                      onClick={() => handleEdit("Model")}
+                                    >
+                                      {selectedNode.model === ""
+                                        ? "NA"
+                                        : selectedNode.model}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              columnGap: "1rem",
-                              marginBottom: "15px",
-                            }}
-                          >
-                            <div style={{ marginBottom: "0px" }}>
-                              <p
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "0px",
-                                }}
-                              >
-                                Capacity:
-                              </p>
-                            </div>
-                            <div>
-                              {isEditingCapacity ? (
-                                <>
-                                  {/* <Textfield
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: "1rem",
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <div style={{ marginBottom: "0px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "0px",
+                                  }}
+                                >
+                                  Capacity:
+                                </p>
+                              </div>
+                              <div>
+                                {isEditingCapacity ? (
+                                  <>
+                                    {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   type="number"
@@ -1513,91 +1561,92 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   buttontext={"Cancel"}
                                 ></CustomButton> */}
 
-                                  <FormControl fullWidth>
-                                    <InputLabel htmlFor="EditNodeName">
-                                      Edit Capacity
-                                    </InputLabel>
-                                    <OutlinedInput
-                                      autoFocus
-                                      autoComplete="Edit Capacity"
-                                      name="Edit Capacity"
-                                      required
-                                      fullWidth
-                                      id="EditNodeName"
-                                      label="Edit Capacity"
-                                      value={editedCapacity}
-                                      onChange={(e) =>
-                                        setEditedCapacity(e.target.value)
-                                      }
-                                      endAdornment={
-                                        <>
-                                          <Tooltip title="Save">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleSaveName("Capacity")
-                                                }
-                                                edge="end"
-                                              >
-                                                <SaveOutlinedIcon color="success" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
+                                    <FormControl fullWidth>
+                                      <InputLabel htmlFor="EditNodeName">
+                                        Edit Capacity
+                                      </InputLabel>
+                                      <OutlinedInput
+                                        autoFocus
+                                        autoComplete="Edit Capacity"
+                                        name="Edit Capacity"
+                                        required
+                                        type="number"
+                                        fullWidth
+                                        id="EditNodeName"
+                                        label="Edit Capacity"
+                                        value={editedCapacity}
+                                        onChange={(e) =>
+                                          setEditedCapacity(e.target.value)
+                                        }
+                                        endAdornment={
+                                          <>
+                                            <Tooltip title="Save">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleSaveName("Capacity")
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <SaveOutlinedIcon color="success" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
 
-                                          <Tooltip title="Cancel">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleCancelNameEdit(
-                                                    "Capacity"
-                                                  )
-                                                }
-                                                edge="end"
-                                              >
-                                                <CancelOutlinedIcon color="error" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
-                                        </>
-                                      }
-                                    />
-                                  </FormControl>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("Capacity")}
-                                  >
-                                    {selectedNode.capacity}
-                                  </div>
-                                </>
-                              )}
+                                            <Tooltip title="Cancel">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleCancelNameEdit(
+                                                      "Capacity"
+                                                    )
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <CancelOutlinedIcon color="error" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
+                                          </>
+                                        }
+                                      />
+                                    </FormControl>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="value-comp"
+                                      onClick={() => handleEdit("Capacity")}
+                                    >
+                                      {selectedNode.capacity}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              columnGap: "1rem",
-                              marginBottom: "15px",
-                            }}
-                          >
-                            <div style={{ marginBottom: "0px" }}>
-                              <p
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "0px",
-                                }}
-                              >
-                                Description:
-                              </p>
-                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: "1rem",
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <div style={{ marginBottom: "0px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "0px",
+                                  }}
+                                >
+                                  Description:
+                                </p>
+                              </div>
 
-                            <div>
-                              {isEditingDescription ? (
-                                <>
-                                  {/* <Textfield
+                              <div>
+                                {isEditingDescription ? (
+                                  <>
+                                    {/* <Textfield
                                   label="Edit Node Name"
                                   variant="outlined"
                                   value={editedDescription}
@@ -1620,29 +1669,122 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   buttontext={"Cancel"}
                                 ></CustomButton> */}
 
-                                  <FormControl fullWidth>
-                                    <InputLabel htmlFor="EditNodeName">
-                                      Edit Description
-                                    </InputLabel>
-                                    <OutlinedInput
-                                      autoFocus
-                                      autoComplete="Edit Description"
-                                      name="Edit Description"
-                                      required
-                                      fullWidth
-                                      id="EditNodeName"
-                                      label="Edit Description"
-                                      value={editedDescription}
-                                      onChange={(e) =>
-                                        setEditedDescription(e.target.value)
-                                      }
-                                      endAdornment={
-                                        <>
+                                    <FormControl fullWidth>
+                                      <InputLabel htmlFor="EditNodeName">
+                                        Edit Description
+                                      </InputLabel>
+                                      <OutlinedInput
+                                        autoFocus
+                                        autoComplete="Edit Description"
+                                        name="Edit Description"
+                                        required
+                                        fullWidth
+                                        id="EditNodeName"
+                                        label="Edit Description"
+                                        value={editedDescription}
+                                        onChange={(e) =>
+                                          setEditedDescription(e.target.value)
+                                        }
+                                        endAdornment={
+                                          <>
+                                            <Tooltip title="Save">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleSaveName(
+                                                      "Description"
+                                                    )
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <SaveOutlinedIcon color="success" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
+
+                                            <Tooltip title="Cancel">
+                                              <InputAdornment position="end">
+                                                <IconButton
+                                                  onClick={() =>
+                                                    handleCancelNameEdit(
+                                                      "Description"
+                                                    )
+                                                  }
+                                                  edge="end"
+                                                >
+                                                  <CancelOutlinedIcon color="error" />
+                                                </IconButton>
+                                              </InputAdornment>
+                                            </Tooltip>
+                                          </>
+                                        }
+                                      />
+                                    </FormControl>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="value-comp"
+                                      onClick={() => handleEdit("Description")}
+                                    >
+                                      {selectedNode.description === ""
+                                        ? "NA"
+                                        : selectedNode.description}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: "1rem",
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <div style={{ marginBottom: "0px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "0px",
+                                  }}
+                                >
+                                  Support End Date:
+                                </p>
+                              </div>
+
+                              <div>
+                                {isEditingSupportDate ? (
+                                  <>
+                                    <FormControl fullWidth>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <div>
+                                          <CustomDatePicker
+                                            label="Edit Support End Date"
+                                            value={editedSupportDate}
+                                            onChange={(newDate) =>
+                                              setEditedSupportDate(newDate)
+                                            }
+                                          />
+                                        </div>
+
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
                                           <Tooltip title="Save">
                                             <InputAdornment position="end">
                                               <IconButton
                                                 onClick={() =>
-                                                  handleSaveName("Description")
+                                                  handleSaveName("SupportDate")
                                                 }
                                                 edge="end"
                                               >
@@ -1656,7 +1798,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                               <IconButton
                                                 onClick={() =>
                                                   handleCancelNameEdit(
-                                                    "Description"
+                                                    "SupportDate"
                                                   )
                                                 }
                                                 edge="end"
@@ -1665,136 +1807,45 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                               </IconButton>
                                             </InputAdornment>
                                           </Tooltip>
-                                        </>
-                                      }
-                                    />
-                                  </FormControl>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("Description")}
-                                  >
-                                    {selectedNode.description === ""
-                                      ? "NA"
-                                      : selectedNode.description}
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              columnGap: "1rem",
-                              marginBottom: "15px",
-                            }}
-                          >
-                            <div style={{ marginBottom: "0px" }}>
-                              <p
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "0px",
-                                }}
-                              >
-                                Support End Date:
-                              </p>
-                            </div>
-
-                            <div>
-                              {isEditingSupportDate ? (
-                                <>
-                                  <FormControl fullWidth>
+                                        </div>
+                                      </div>
+                                    </FormControl>
+                                  </>
+                                ) : (
+                                  <>
                                     <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                      }}
+                                      className="value-comp"
+                                      onClick={() => handleEdit("SupportDate")}
                                     >
-                                      <div>
-                                        <CustomDatePicker
-                                          label="Edit Support End Date"
-                                          value={editedSupportDate}
-                                          onChange={(newDate) =>
-                                            setEditedSupportDate(newDate)
-                                          }
-                                        />
-                                      </div>
-
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                        }}
-                                      >
-                                        <Tooltip title="Save">
-                                          <InputAdornment position="end">
-                                            <IconButton
-                                              onClick={() =>
-                                                handleSaveName("SupportDate")
-                                              }
-                                              edge="end"
-                                            >
-                                              <SaveOutlinedIcon color="success" />
-                                            </IconButton>
-                                          </InputAdornment>
-                                        </Tooltip>
-
-                                        <Tooltip title="Cancel">
-                                          <InputAdornment position="end">
-                                            <IconButton
-                                              onClick={() =>
-                                                handleCancelNameEdit(
-                                                  "SupportDate"
-                                                )
-                                              }
-                                              edge="end"
-                                            >
-                                              <CancelOutlinedIcon color="error" />
-                                            </IconButton>
-                                          </InputAdornment>
-                                        </Tooltip>
-                                      </div>
+                                      {selectedNode.warranty_support_end_date}
                                     </div>
-                                  </FormControl>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("SupportDate")}
-                                  >
-                                    {selectedNode.warranty_support_end_date}
-                                  </div>
-                                </>
-                              )}
+                                  </>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              columnGap: "1rem",
-                              marginBottom: "15px",
-                            }}
-                          >
-                            <div style={{ marginBottom: "0px" }}>
-                              <p
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "0px",
-                                }}
-                              >
-                                Warranty End Date:
-                              </p>
-                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: "1rem",
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <div style={{ marginBottom: "0px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "0px",
+                                  }}
+                                >
+                                  Warranty End Date:
+                                </p>
+                              </div>
 
-                            <div>
-                              {isEditingWarrantyDate ? (
-                                <>
-                                  {/* <CustomDatePicker
+                              <div>
+                                {isEditingWarrantyDate ? (
+                                  <>
+                                    {/* <CustomDatePicker
                                   label="Warranty End Date"
                                   value={editedWarrantyDate}
                                   onChange={(newDate) =>
@@ -1816,113 +1867,113 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   buttontext={"Cancel"}
                                 ></CustomButton> */}
 
-                                  <FormControl fullWidth>
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                      }}
-                                    >
-                                      <div>
-                                        <CustomDatePicker
-                                          label="Edit Warranty End Date"
-                                          value={editedWarrantyDate}
-                                          onChange={(newDate) =>
-                                            setEditedWarrantyDate(newDate)
-                                          }
-                                        />
-                                      </div>
+                                    <FormControl fullWidth>
                                       <div
                                         style={{
                                           display: "flex",
                                           alignItems: "center",
                                         }}
                                       >
-                                        <Tooltip title="Save">
-                                          <InputAdornment position="end">
-                                            <IconButton
-                                              onClick={() =>
-                                                handleSaveName("WarrantyDate")
-                                              }
-                                              edge="end"
-                                            >
-                                              <SaveOutlinedIcon color="success" />
-                                            </IconButton>
-                                          </InputAdornment>
-                                        </Tooltip>
+                                        <div>
+                                          <CustomDatePicker
+                                            label="Edit Warranty End Date"
+                                            value={editedWarrantyDate}
+                                            onChange={(newDate) =>
+                                              setEditedWarrantyDate(newDate)
+                                            }
+                                          />
+                                        </div>
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <Tooltip title="Save">
+                                            <InputAdornment position="end">
+                                              <IconButton
+                                                onClick={() =>
+                                                  handleSaveName("WarrantyDate")
+                                                }
+                                                edge="end"
+                                              >
+                                                <SaveOutlinedIcon color="success" />
+                                              </IconButton>
+                                            </InputAdornment>
+                                          </Tooltip>
 
-                                        <Tooltip title="Cancel">
-                                          <InputAdornment position="end">
-                                            <IconButton
-                                              onClick={() =>
-                                                handleCancelNameEdit(
-                                                  "WarrantyDate"
-                                                )
-                                              }
-                                              edge="end"
-                                            >
-                                              <CancelOutlinedIcon color="error" />
-                                            </IconButton>
-                                          </InputAdornment>
-                                        </Tooltip>
+                                          <Tooltip title="Cancel">
+                                            <InputAdornment position="end">
+                                              <IconButton
+                                                onClick={() =>
+                                                  handleCancelNameEdit(
+                                                    "WarrantyDate"
+                                                  )
+                                                }
+                                                edge="end"
+                                              >
+                                                <CancelOutlinedIcon color="error" />
+                                              </IconButton>
+                                            </InputAdornment>
+                                          </Tooltip>
+                                        </div>
                                       </div>
+                                    </FormControl>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="value-comp"
+                                      onClick={() => handleEdit("WarrantyDate")}
+                                    >
+                                      {selectedNode.warranty_end_date}
                                     </div>
-                                  </FormControl>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("WarrantyDate")}
-                                  >
-                                    {selectedNode.warranty_end_date}
-                                  </div>
-                                </>
-                              )}
+                                  </>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              columnGap: "1rem",
-                              marginBottom: "15px",
-                            }}
-                          >
-                            <div style={{ marginBottom: "0px" }}>
-                              <p
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "0px",
-                                }}
-                              >
-                                Issue Category Name:
-                              </p>
-                            </div>
-                            <div>
-                              {isEditingCatagory ? (
-                                <>
-                                  <Select
-                                    value={editedCategory}
-                                    onChange={handleEditCategoryChange}
-                                    displayEmpty
-                                    inputProps={{
-                                      "aria-label": "Select Issue Category",
-                                    }}
-                                  >
-                                    <MenuItem value="" disabled>
-                                      Select Issue Category
-                                    </MenuItem>
-                                    {categories.map((category) => (
-                                      <MenuItem
-                                        key={category.issuecategoryname}
-                                        value={category.issuecategoryname}
-                                      >
-                                        {category.issuecategoryname}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                columnGap: "1rem",
+                                marginBottom: "15px",
+                              }}
+                            >
+                              <div style={{ marginBottom: "0px" }}>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "0px",
+                                  }}
+                                >
+                                  Issue Category Name:
+                                </p>
+                              </div>
+                              <div>
+                                {isEditingCatagory ? (
+                                  <>
+                                    <Select
+                                      value={editedCategory}
+                                      onChange={handleEditCategoryChange}
+                                      displayEmpty
+                                      inputProps={{
+                                        "aria-label": "Select Issue Category",
+                                      }}
+                                    >
+                                      <MenuItem value="" disabled>
+                                        Select Issue Category
                                       </MenuItem>
-                                    ))}
-                                  </Select>
-                                  {/* <CustomButton
+                                      {categories.map((category) => (
+                                        <MenuItem
+                                          key={category.issuecategoryname}
+                                          value={category.issuecategoryname}
+                                        >
+                                          {category.issuecategoryname}
+                                        </MenuItem>
+                                      ))}
+                                    </Select>
+                                    {/* <CustomButton
                                   variant="contained"
                                   color="primary"
                                   onClick={() => handleSaveName("Catagory")}
@@ -1936,62 +1987,64 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                   }
                                   buttontext={"Cancel"}
                                 ></CustomButton> */}
-                                  <Tooltip title="Save">
-                                    <IconButton
-                                      onClick={() => handleSaveName("Catagory")}
-                                      edge="end"
-                                    >
-                                      <SaveOutlinedIcon color="success" />
-                                    </IconButton>
-                                  </Tooltip>
+                                    <Tooltip title="Save">
+                                      <IconButton
+                                        onClick={() =>
+                                          handleSaveName("Catagory")
+                                        }
+                                        edge="end"
+                                      >
+                                        <SaveOutlinedIcon color="success" />
+                                      </IconButton>
+                                    </Tooltip>
 
-                                  <Tooltip title="Cancel">
-                                    <IconButton
-                                      onClick={() =>
-                                        handleCancelNameEdit("Catagory")
-                                      }
-                                      edge="end"
+                                    <Tooltip title="Cancel">
+                                      <IconButton
+                                        onClick={() =>
+                                          handleCancelNameEdit("Catagory")
+                                        }
+                                        edge="end"
+                                      >
+                                        <CancelOutlinedIcon color="error" />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="value-comp"
+                                      onClick={() => handleEdit("Catagory")}
                                     >
-                                      <CancelOutlinedIcon color="error" />
-                                    </IconButton>
-                                  </Tooltip>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("Catagory")}
-                                  >
-                                    {selectedNode.issue_category_name === ""
-                                      ? "NA"
-                                      : selectedNode.issue_category_name}
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          </div>
-
-                          <div style={{ marginBottom: "10px" }}>
-                            <div>
-                              <p
-                                style={{
-                                  fontWeight: "bold",
-                                  marginBottom: "5px",
-                                }}
-                              >
-                                Image:
-                              </p>
+                                      {selectedNode.issue_category_name === ""
+                                        ? "NA"
+                                        : selectedNode.issue_category_name}
+                                    </div>
+                                  </>
+                                )}
+                              </div>
                             </div>
 
-                            <div>
-                              {isEditingImageFile ? (
-                                <>
-                                  <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleEditImageChange}
-                                  />
-                                  {/* <CustomButton
+                            <div style={{ marginBottom: "10px" }}>
+                              <div>
+                                <p
+                                  style={{
+                                    fontWeight: "bold",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Image:
+                                </p>
+                              </div>
+
+                              <div>
+                                {isEditingImageFile ? (
+                                  <>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      onChange={handleEditImageChange}
+                                    />
+                                    {/* <CustomButton
                                     variant="contained"
                                     color="primary"
                                     onClick={() => handleSaveName("ImageFile")}
@@ -2005,66 +2058,66 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     }
                                     buttontext={"Cancel"}
                                   ></CustomButton> */}
-                                  <Tooltip title="Save">
-                                    <IconButton
-                                      onClick={() =>
-                                        handleSaveName("ImageFile")
-                                      }
-                                      edge="end"
-                                    >
-                                      <SaveOutlinedIcon color="success" />
-                                    </IconButton>
-                                  </Tooltip>
-                                  <Tooltip title="Cancel">
-                                    <IconButton
-                                      onClick={() =>
-                                        handleCancelNameEdit("ImageFile")
-                                      }
-                                      edge="end"
-                                    >
-                                      <CancelOutlinedIcon color="error" />
-                                    </IconButton>
-                                  </Tooltip>
-                                </>
-                              ) : (
-                                <>
-                                  <div
-                                    className="value-comp"
-                                    onClick={() => handleEdit("ImageFile")}
-                                  >
-                                    <div>
-                                      <img
-                                        width="150"
-                                        height="120"
-                                        src={
-                                          selectedNode.image_file
-                                            ? `data:image/jpeg;base64,${selectedNode.image_file}`
-                                            : "path/to/placeholder/image.jpg"
+                                    <Tooltip title="Save">
+                                      <IconButton
+                                        onClick={() =>
+                                          handleSaveName("ImageFile")
                                         }
-                                        alt="NoImage"
-                                        style={{ borderRadius: "5px" }}
-                                        onError={(e) => {
-                                          e.target.onerror = null; // Prevent infinite loop
-                                          if (selectedNode.image_file) {
-                                            const base64String =
-                                              arrayBufferToBase64(
-                                                selectedNode.image_file
-                                              );
-                                            e.target.src = `data:image/jpeg;base64,${base64String}`;
+                                        edge="end"
+                                      >
+                                        <SaveOutlinedIcon color="success" />
+                                      </IconButton>
+                                    </Tooltip>
+                                    <Tooltip title="Cancel">
+                                      <IconButton
+                                        onClick={() =>
+                                          handleCancelNameEdit("ImageFile")
+                                        }
+                                        edge="end"
+                                      >
+                                        <CancelOutlinedIcon color="error" />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div
+                                      className="value-comp"
+                                      onClick={() => handleEdit("ImageFile")}
+                                    >
+                                      <div>
+                                        <img
+                                          width="150"
+                                          height="120"
+                                          src={
+                                            selectedNode.image_file
+                                              ? `data:image/jpeg;base64,${selectedNode.image_file}`
+                                              : "path/to/placeholder/image.jpg"
                                           }
-                                        }}
-                                      />
+                                          alt="NoImage"
+                                          style={{ borderRadius: "5px" }}
+                                          onError={(e) => {
+                                            e.target.onerror = null; // Prevent infinite loop
+                                            if (selectedNode.image_file) {
+                                              const base64String =
+                                                arrayBufferToBase64(
+                                                  selectedNode.image_file
+                                                );
+                                              e.target.src = `data:image/jpeg;base64,${base64String}`;
+                                            }
+                                          }}
+                                        />
+                                      </div>
                                     </div>
-                                  </div>
-                                </>
-                              )}
+                                  </>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </Card>
+                        </Card>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* <Button
                             className="button"

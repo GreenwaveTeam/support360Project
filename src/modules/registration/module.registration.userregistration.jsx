@@ -7,7 +7,6 @@ import {
   Box,
   Typography,
   Container,
-  Stack,
   Alert,
   Dialog,
   DialogTitle,
@@ -37,10 +36,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import TopbarPage from "../../components/navigation/topbar/topbar";
-import SidebarPage from "../../components/navigation/sidebar/sidebar";
-import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
-import Main from "../../components/navigation/mainbody/mainbody";
 import SaveSharpIcon from "@mui/icons-material/SaveSharp";
 import { extendTokenExpiration } from "../helper/Support360Api";
 
@@ -48,6 +43,11 @@ export default function UserRegistration({ sendUrllist }) {
   const [newPlantName, setNewPlantName] = useState({
     plantName: "",
     plantID: "",
+    address: "",
+    customerName: "",
+    division: "",
+    supportStartDate: dayjs(),
+    supportEndDate: dayjs(),
   });
 
   const [formData, setFormData] = useState({
@@ -62,6 +62,8 @@ export default function UserRegistration({ sendUrllist }) {
     address: "",
     division: "",
     customerName: "",
+    // supportStartDate: dayjs(),
+    // supportEndDate: dayjs(),
     supportStartDate: "",
     supportEndDate: "",
     accountOwnerCustomer: "",
@@ -104,12 +106,37 @@ export default function UserRegistration({ sendUrllist }) {
     address: "",
     division: "",
     customerName: "",
+    // supportStartDate: dayjs(),
+    // supportEndDate: dayjs(),
     supportStartDate: "",
     supportEndDate: "",
     accountOwnerCustomer: "",
     accountOwnerGW: "",
     role: "",
     homepage: "",
+  });
+
+  const [updateFormErrors, setUpdateFormErrors] = useState({
+    userID: false,
+    name: false,
+    designation: false,
+    email: false,
+    password: false,
+    phoneNumber: false,
+    plantID: false,
+    plantName: false,
+    address: false,
+    division: false,
+    customerName: false,
+    supportStartDate: false,
+    supportEndDate: false,
+    accountOwnerCustomer: false,
+    accountOwnerGW: false,
+    role: false,
+    homepage: false,
+    confirmPassword: false,
+    phoneNumberLength: false,
+    passwordNotMatch: false,
   });
 
   const [cnfpass, setCnfpass] = useState("");
@@ -170,7 +197,6 @@ export default function UserRegistration({ sendUrllist }) {
         role: state.user.role,
         homepage: state.user.homepage,
       });
-      console.log("state.user.homepage : ", state.user.homepage);
     }
   };
 
@@ -183,7 +209,19 @@ export default function UserRegistration({ sendUrllist }) {
     sendUrllist(urllist);
   }, []);
 
-  const urllist = [{ pageName: "Admin Home Page", pagelink: "/admin/home" }];
+  const urllist =
+    state === null
+      ? [
+          { pageName: "Admin Home", pagelink: "/admin/home" },
+          {
+            pageName: "User Registration",
+            pagelink: "/admin/userregistration",
+          },
+        ]
+      : [
+          { pageName: "Admin Home", pagelink: "/admin/home" },
+          { pageName: "User Update", pagelink: "/admin/userregistration" },
+        ];
 
   function removeSpaceAndLowerCase(str) {
     return str.replace(/\s/g, "").toLowerCase();
@@ -228,13 +266,13 @@ export default function UserRegistration({ sendUrllist }) {
     return stringWithoutSpecialChars;
   }
 
+  function removeAllExceptNumber(str) {
+    var stringWithOnlyNumber = str.replace(/[^0-9]/g, "");
+    return stringWithOnlyNumber;
+  }
+
   const handleAddPlantClick = () => {
     setOpenDeleteDialog(true);
-  };
-
-  const handleFormdataInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
   };
 
   const handlenewPlantNameInputChange = (e) => {
@@ -244,38 +282,14 @@ export default function UserRegistration({ sendUrllist }) {
     setUpdateFormData({ ...updateFormData, [name]: value });
   };
 
-  const handleDesignationChange = (e) => {
-    const { value } = e.target;
-    setFormData({ ...formData, designation: value });
-  };
-
-  const handlePhoneNumberChange = (e) => {
-    const { value } = e.target;
-    if (!isNaN(value) && value.length <= 10) {
-      setFormData({ ...formData, phoneNumber: value });
-    }
-  };
-
   const updateHandleFormdataInputChange = (e) => {
     const { name, value } = e.target;
     setUpdateFormData({ ...updateFormData, [name]: value });
   };
 
-  const updateHandleDesignationChange = (e) => {
-    const { value } = e.target;
-    setUpdateFormData({ ...updateFormData, designation: value });
-  };
-
   const updateHandleHomepageChange = (e) => {
     const { value } = e.target;
     setUpdateFormData({ ...updateFormData, homepage: value });
-  };
-
-  const updateHandlePhoneNumberChange = (e) => {
-    const { value } = e.target;
-    if (!isNaN(value) && value.length <= 10) {
-      setUpdateFormData({ ...updateFormData, phoneNumber: value });
-    }
   };
 
   const confirmPassword = async (e) => {
@@ -285,17 +299,6 @@ export default function UserRegistration({ sendUrllist }) {
       setSnackbarText("Password does not match !");
       setsnackbarSeverity("error");
     }
-  };
-
-  const handleUserIDChange = (e) => {
-    setFormData({ ...formData, userID: e.target.value });
-    setUnchangedUserID(e.target.value);
-    setUpdateFormData({ ...updateFormData, userID: e.target.value });
-  };
-
-  const handleEmailChange = (e) => {
-    setFormData({ ...formData, email: e.target.value });
-    setUpdateFormData({ ...updateFormData, email: e.target.value });
   };
 
   const convertToInitials = (name) => {
@@ -324,7 +327,11 @@ export default function UserRegistration({ sendUrllist }) {
       }
       const data = await response.json();
       console.log("plantDetails : ", data);
-      setPlantList(data);
+      const filteredPlantList = data.filter(
+        (plant) => plant.plantName !== "NA"
+      );
+      console.log("filteredPlantList : ", filteredPlantList);
+      setPlantList(filteredPlantList);
     } catch (error) {
       console.log(error);
     }
@@ -385,14 +392,39 @@ export default function UserRegistration({ sendUrllist }) {
         address: selectedPlant ? selectedPlant.address : "",
         customerName: selectedPlant ? selectedPlant.customerName : "",
         division: selectedPlant ? selectedPlant.division : "",
-        supportStartDate: selectedPlant ? selectedPlant.supportEndDate : "",
-        supportEndDate: selectedPlant ? selectedPlant.supportStartDate : "",
+        supportStartDate: selectedPlant ? selectedPlant.supportStartDate : "",
+        supportEndDate: selectedPlant ? selectedPlant.supportEndDate : "",
+      });
+      setUpdateFormData({
+        ...updateFormData,
+        plantID: selectedPlant ? selectedPlant.plantID : "",
+        plantName: newValue,
+        address: selectedPlant ? selectedPlant.address : "",
+        customerName: selectedPlant ? selectedPlant.customerName : "",
+        division: selectedPlant ? selectedPlant.division : "",
+        supportStartDate: selectedPlant ? selectedPlant.supportStartDate : "",
+        supportEndDate: selectedPlant ? selectedPlant.supportEndDate : "",
       });
     } else {
       setFormData({
         ...formData,
         plantID: "",
         plantName: "",
+        address: "",
+        customerName: "",
+        division: "",
+        supportStartDate: "",
+        supportEndDate: "",
+      });
+      setUpdateFormData({
+        ...updateFormData,
+        plantID: "",
+        plantName: "",
+        address: "",
+        customerName: "",
+        division: "",
+        supportStartDate: "",
+        supportEndDate: "",
       });
     }
   };
@@ -438,6 +470,9 @@ export default function UserRegistration({ sendUrllist }) {
         navigate("/admin/home");
       } else {
         console.error("Failed to update user");
+        handleClick();
+        setSnackbarText("Failed to update User");
+        setsnackbarSeverity("error");
       }
     } catch (error) {
       console.error("Error : ", error);
@@ -601,11 +636,26 @@ export default function UserRegistration({ sendUrllist }) {
                         label="Name"
                         autoFocus
                         value={updateFormData.name}
-                        onChange={updateHandleFormdataInputChange}
+                        onBlur={(e) => {
+                          setUpdateFormData({
+                            ...updateFormData,
+                            name: e.target.value.trim(),
+                          });
+                        }}
+                        onChange={(e) => {
+                          setUpdateFormData({
+                            ...updateFormData,
+                            name: removeAllSpecialChar(e.target.value),
+                          });
+                          setUpdateFormErrors({
+                            ...updateFormErrors,
+                            name: e.target.value.trim() === "",
+                          });
+                        }}
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <Dropdown
+                      {/* <Dropdown
                         id="designation"
                         value={updateFormData.designation}
                         label="Designation"
@@ -617,10 +667,52 @@ export default function UserRegistration({ sendUrllist }) {
                           "Engineer",
                         ]}
                         fullWidth
-                      />
+                      /> */}
+                      <FormControl
+                        fullWidth
+                        error={updateFormErrors.designation}
+                      >
+                        <InputLabel id="designation-label">
+                          Designation
+                        </InputLabel>
+                        <Select
+                          labelId="designation-label"
+                          label="Designation"
+                          id="designation"
+                          value={updateFormData.designation}
+                          onChange={(e) => {
+                            const selectedDesignation = e.target.value;
+                            setUpdateFormData({
+                              ...updateFormData,
+                              designation: selectedDesignation,
+                            });
+                            if (selectedDesignation !== "") {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                designation: false,
+                              });
+                            } else {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                designation: true,
+                              });
+                            }
+                          }}
+                        >
+                          <MenuItem value="Operator">Operator</MenuItem>
+                          <MenuItem value="Supervisor">Supervisor</MenuItem>
+                          <MenuItem value="Lab Tester">Lab Tester</MenuItem>
+                        </Select>
+                        {updateFormErrors.designation && (
+                          <FormHelperText>
+                            Designation must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                     <Grid item xs={6}>
                       <Textfield
+                        InputProps={{ readOnly: true }}
                         required
                         fullWidth
                         id="email"
@@ -629,7 +721,7 @@ export default function UserRegistration({ sendUrllist }) {
                         name="email"
                         autoComplete="email"
                         value={updateFormData.email}
-                        onChange={handleEmailChange}
+                        // onChange={handleEmailChange}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -642,7 +734,7 @@ export default function UserRegistration({ sendUrllist }) {
                         id="userID"
                         label="User ID"
                         value={updateFormData.userID}
-                        onChange={handleUserIDChange}
+                        // onChange={handleUserIDChange}
                       />
                     </Grid>
                     {/* {!userExist && (
@@ -707,8 +799,7 @@ export default function UserRegistration({ sendUrllist }) {
                         </Stack>
                       )}
                     </Grid>
-                  )} */}
-                    {/* {showPasswordError && (
+                    {showPasswordError && (
                 <Box
                   sx={{
                     position: "fixed",
@@ -731,120 +822,42 @@ export default function UserRegistration({ sendUrllist }) {
                         id="phoneNumber"
                         autoComplete="phoneNumber"
                         value={updateFormData.phoneNumber}
-                        onChange={updateHandlePhoneNumberChange}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Dropdown
-                        fullWidth={true}
-                        id="plantName"
-                        value={updateFormData.plantName}
-                        label="Plant Name"
-                        onChange={(e) => {
-                          const { value } = e.target;
-                          for (let i of plantList) {
-                            if (i.plantName === value) {
-                              setUpdateFormData({
-                                ...updateFormData,
-                                plantID: i.plantID,
-                                plantName: value,
-                              });
-                              return;
-                            }
-                          }
+                        onBlur={(e) => {
+                          setUpdateFormData({
+                            ...updateFormData,
+                            phoneNumber: e.target.value.trim(),
+                          });
                         }}
-                        list={plantList.map((p) => p.plantName)}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor="PlantID">PlantID</InputLabel>
-                        <OutlinedInput
-                          inputProps={{
-                            readOnly: true,
-                          }}
-                          label="PlantID"
-                          autoComplete="PlantID"
-                          name="PlantID"
-                          required
-                          fullWidth
-                          id="PlantID"
-                          value={updateFormData.plantID}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <Tooltip title="Add Plant" placement="right">
-                                <IconButton
-                                  onClick={handleAddPlantClick}
-                                  edge="end"
-                                >
-                                  <AddCircleOutlineIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </InputAdornment>
-                          }
-                        />
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="address"
-                        label="Address"
-                        id="address"
-                        autoComplete="address"
-                        value={updateFormData.address}
-                        onChange={updateHandleFormdataInputChange}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="division"
-                        label="Division"
-                        id="division"
-                        autoComplete="division"
-                        value={updateFormData.division}
-                        onChange={updateHandleFormdataInputChange}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="customerName"
-                        label="Customer Name"
-                        id="customerName"
-                        autoComplete="customerName"
-                        value={updateFormData.customerName}
-                        onChange={updateHandleFormdataInputChange}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Datepicker
-                        label="Support Start Date"
-                        value={dayjs(updateFormData.supportStartDate)}
-                        onChange={(startDate) =>
+                        onChange={(e) => {
+                          const isValidPhoneNumber =
+                            !isNaN(e.target.value) &&
+                            e.target.value.length <= 10;
+                          const isPhoneNumberFilled =
+                            e.target.value.trim() === "";
+                          const isPhoneNumberLengthValid =
+                            e.target.value.length <= 9;
                           setUpdateFormData({
                             ...updateFormData,
-                            supportStartDate: startDate,
-                          })
+                            phoneNumber: isValidPhoneNumber
+                              ? removeAllExceptNumber(e.target.value)
+                              : formData.phoneNumber,
+                          });
+                          setUpdateFormErrors({
+                            ...updateFormErrors,
+                            phoneNumber: isPhoneNumberFilled,
+                            phoneNumberLength: isPhoneNumberLengthValid,
+                          });
+                        }}
+                        error={
+                          updateFormErrors.phoneNumber ||
+                          updateFormErrors.phoneNumberLength
                         }
-                        slotProps={{ textField: { fullWidth: true } }}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Datepicker
-                        label="Support End Date"
-                        value={dayjs(updateFormData.supportEndDate)}
-                        onChange={(endDate) =>
-                          setUpdateFormData({
-                            ...updateFormData,
-                            supportEndDate: endDate,
-                          })
+                        helperText={
+                          (updateFormErrors.phoneNumber &&
+                            "Phone Number must be filled") ||
+                          (updateFormErrors.phoneNumberLength &&
+                            "Phone Number must be 10 digits")
                         }
-                        slotProps={{ textField: { fullWidth: true } }}
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -856,6 +869,12 @@ export default function UserRegistration({ sendUrllist }) {
                         id="accountOwnerCustomer"
                         autoComplete="accountOwnerCustomer"
                         value={updateFormData.accountOwnerCustomer}
+                        onBlur={(e) => {
+                          setUpdateFormData({
+                            ...updateFormData,
+                            accountOwnerCustomer: e.target.value.trim(),
+                          });
+                        }}
                         onChange={updateHandleFormdataInputChange}
                       />
                     </Grid>
@@ -868,6 +887,12 @@ export default function UserRegistration({ sendUrllist }) {
                         id="accountOwnerGW"
                         autoComplete="accountOwnerGW"
                         value={updateFormData.accountOwnerGW}
+                        onBlur={(e) => {
+                          setUpdateFormData({
+                            ...updateFormData,
+                            accountOwnerGW: e.target.value.trim(),
+                          });
+                        }}
                         onChange={updateHandleFormdataInputChange}
                       />
                     </Grid>
@@ -916,6 +941,207 @@ export default function UserRegistration({ sendUrllist }) {
                         // }}
                       />
                     </Grid>
+                    <Grid item xs={6}>
+                      <Autocomplete
+                        value={updateFormData.plantName}
+                        disablePortal
+                        fullWidth
+                        id="plantName"
+                        options={plantList.map((p) => p.plantName)}
+                        getOptionLabel={(option) => option}
+                        onChange={handleAutocompleteChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Plant Name"
+                            error={updateFormErrors.plantName}
+                            helperText={
+                              updateFormErrors.plantName &&
+                              "Plant Name must be filled"
+                            }
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormControl fullWidth error={updateFormErrors.plantID}>
+                        <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                        <OutlinedInput
+                          inputProps={{
+                            readOnly: true,
+                          }}
+                          label="PlantID"
+                          autoComplete="PlantID"
+                          name="PlantID"
+                          required
+                          fullWidth
+                          id="PlantID"
+                          value={updateFormData.plantID}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <Tooltip title="Add Plant">
+                                <IconButton
+                                  onClick={handleAddPlantClick}
+                                  edge="end"
+                                >
+                                  <AddCircleOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </InputAdornment>
+                          }
+                        />
+                        {updateFormErrors.plantID && (
+                          <FormHelperText>
+                            Plant ID must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="address"
+                        label="Address"
+                        id="address"
+                        autoComplete="address"
+                        value={updateFormData.address}
+                        // onChange={(e) => {
+                        //   setupdateFormData({
+                        //     ...updateFormData,
+                        //     address: e.target.value,
+                        //   });
+                        //   setupdateFormErrors({
+                        //     ...updateFormErrors,
+                        //     address: e.target.value.trim() === "",
+                        //   });
+                        // }}
+                        error={updateFormErrors.address}
+                        helperText={
+                          updateFormErrors.address && "Address must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="division"
+                        label="Division"
+                        id="division"
+                        autoComplete="division"
+                        value={updateFormData.division}
+                        // onChange={(e) => {
+                        //   setupdateFormData({
+                        //     ...updateFormData,
+                        //     division: e.target.value,
+                        //   });
+                        //   setupdateFormErrors({
+                        //     ...updateFormErrors,
+                        //     division: e.target.value.trim() === "",
+                        //   });
+                        // }}
+                        error={updateFormErrors.division}
+                        helperText={
+                          updateFormErrors.division && "Division must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="customerName"
+                        label="Customer Name"
+                        id="customerName"
+                        autoComplete="customerName"
+                        value={updateFormData.customerName}
+                        // onChange={(e) => {
+                        //   setupdateFormData({
+                        //     ...updateFormData,
+                        //     customerName: removeAllSpecialChar(e.target.value),
+                        //   });
+                        //   setupdateFormErrors({
+                        //     ...updateFormErrors,
+                        //     customerName: e.target.value.trim() === "",
+                        //   });
+                        // }}
+                        error={updateFormErrors.customerName}
+                        helperText={
+                          updateFormErrors.customerName &&
+                          "Customer Name must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      {/* <Datepicker
+                        label="Support Start Date"
+                        value={dayjs(updateFormData.supportStartDate)}
+                        onChange={(startDate) =>
+                          setupdateFormData({
+                            ...updateFormData,
+                            supportStartDate: startDate.format("YYYY-MM-DD"),
+                          })
+                        }
+                        slotProps={{ textField: { fullWidth: true } }}
+                      /> */}
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="supportStartDate"
+                        label="Support Start Date"
+                        id="supportStartDate"
+                        autoComplete="supportStartDate"
+                        value={updateFormData.supportStartDate}
+                        error={updateFormErrors.supportStartDate}
+                        helperText={
+                          updateFormErrors.supportStartDate &&
+                          "Support Start Date must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      {/* <Datepicker
+                        label="Support End Date"
+                        value={dayjs(updateFormData.supportEndDate)}
+                        onChange={(endDate) =>
+                          setupdateFormData({
+                            ...updateFormData,
+                            supportEndDate: endDate.format("YYYY-MM-DD"),
+                          })
+                        }
+                        slotProps={{ textField: { fullWidth: true } }}
+                      /> */}
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="supportEndDate"
+                        label="Support End Date"
+                        id="supportEndDate"
+                        autoComplete="supportEndDate"
+                        value={updateFormData.supportEndDate}
+                        error={updateFormErrors.supportEndDate}
+                        helperText={
+                          updateFormErrors.supportEndDate &&
+                          "Support End Date must be filled"
+                        }
+                      />
+                    </Grid>
                   </Grid>
                   <Button
                     type="submit"
@@ -952,6 +1178,12 @@ export default function UserRegistration({ sendUrllist }) {
                         label="Name"
                         autoFocus
                         value={formData.name}
+                        onBlur={(e) => {
+                          setFormData({
+                            ...formData,
+                            name: e.target.value.trim(),
+                          });
+                        }}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
@@ -991,7 +1223,24 @@ export default function UserRegistration({ sendUrllist }) {
                           label="Designation"
                           id="designation"
                           value={formData.designation}
-                          onChange={handleDesignationChange}
+                          onChange={(e) => {
+                            const selectedDesignation = e.target.value;
+                            setFormData({
+                              ...formData,
+                              designation: selectedDesignation,
+                            });
+                            if (selectedDesignation !== "") {
+                              setFormErrors({
+                                ...formErrors,
+                                designation: false,
+                              });
+                            } else {
+                              setFormErrors({
+                                ...formErrors,
+                                designation: true,
+                              });
+                            }
+                          }}
                         >
                           <MenuItem value="Operator">Operator</MenuItem>
                           <MenuItem value="Supervisor">Supervisor</MenuItem>
@@ -1014,6 +1263,12 @@ export default function UserRegistration({ sendUrllist }) {
                         name="email"
                         autoComplete="email"
                         value={formData.email}
+                        onBlur={(e) => {
+                          setFormData({
+                            ...formData,
+                            email: e.target.value.trim(),
+                          });
+                        }}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
@@ -1031,7 +1286,7 @@ export default function UserRegistration({ sendUrllist }) {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <FormControl fullWidth error={formErrors.userID}>
+                      {/* <FormControl fullWidth error={formErrors.userID}>
                         <InputLabel htmlFor="userID">UserID</InputLabel>
                         <OutlinedInput
                           autoComplete="userID"
@@ -1064,8 +1319,68 @@ export default function UserRegistration({ sendUrllist }) {
                                       onChange={(e) => {
                                         setFormData({
                                           ...formData,
-                                          adminID:
-                                            formData.adminID === formData.email
+                                          userID:
+                                            formData.userID === formData.email
+                                              ? unchangedUserID
+                                              : formData.email,
+                                        });
+                                      }}
+                                      name="autoFillUserID"
+                                      color="primary"
+                                    />
+                                  }
+                                />
+                              </Tooltip>
+                            </InputAdornment>
+                          }
+                        />
+                        {formErrors.userID && (
+                          <FormHelperText>
+                            User ID must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl> */}
+                      <FormControl fullWidth error={formErrors.userID}>
+                        <InputLabel htmlFor="userID">UserID</InputLabel>
+                        <OutlinedInput
+                          autoComplete="userID"
+                          name="userID"
+                          required
+                          fullWidth
+                          id="userID"
+                          label="UserID"
+                          value={formData.userID}
+                          onBlur={(e) => {
+                            setFormData({
+                              ...formData,
+                              userID: e.target.value.trim(),
+                            });
+                          }}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              userID: removeOnlySpecialChar(e.target.value),
+                            });
+                            setUnchangedUserID(e.target.value);
+                            setFormErrors({
+                              ...formErrors,
+                              userID: e.target.value.trim() === "",
+                            });
+                          }}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <Tooltip title="Auto-fill UserID with Email Address">
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      checked={
+                                        formData.userID === formData.email
+                                      }
+                                      onChange={(e) => {
+                                        setFormData({
+                                          ...formData,
+                                          userID:
+                                            formData.userID === formData.email
                                               ? unchangedUserID
                                               : formData.email,
                                         });
@@ -1189,170 +1504,41 @@ export default function UserRegistration({ sendUrllist }) {
                         id="phoneNumber"
                         autoComplete="phoneNumber"
                         value={formData.phoneNumber}
-                        onChange={handlePhoneNumberChange}
-                        error={formErrors.phoneNumber}
-                        helperText={
-                          formErrors.phoneNumber &&
-                          "Phone Number must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Autocomplete
-                        value={formData.plantName}
-                        disablePortal
-                        fullWidth
-                        id="plantName"
-                        options={plantList.map((p) => p.plantName)}
-                        getOptionLabel={(option) => option}
-                        onChange={handleAutocompleteChange}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Plant Name"
-                            error={formErrors.plantName}
-                            helperText={
-                              formErrors.plantName &&
-                              "Plant Name must be filled"
-                            }
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl fullWidth error={formErrors.plantID}>
-                        <InputLabel htmlFor="PlantID">PlantID</InputLabel>
-                        <OutlinedInput
-                          inputProps={{
-                            readOnly: true,
-                          }}
-                          label="PlantID"
-                          autoComplete="PlantID"
-                          name="PlantID"
-                          required
-                          fullWidth
-                          id="PlantID"
-                          value={formData.plantID}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <Tooltip title="Add Plant">
-                                <IconButton
-                                  onClick={handleAddPlantClick}
-                                  edge="end"
-                                >
-                                  <AddCircleOutlineIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </InputAdornment>
-                          }
-                        />
-                        {formErrors.plantID && (
-                          <FormHelperText>
-                            Designation must be filled
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="address"
-                        label="Address"
-                        id="address"
-                        autoComplete="address"
-                        value={formData.address}
-                        onChange={handleFormdataInputChange}
-                        error={formErrors.address}
-                        helperText={
-                          formErrors.address && "Address must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="division"
-                        label="Division"
-                        id="division"
-                        autoComplete="division"
-                        value={formData.division}
-                        onChange={handleFormdataInputChange}
-                        error={formErrors.division}
-                        helperText={
-                          formErrors.division && "Division must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="customerName"
-                        label="Customer Name"
-                        id="customerName"
-                        autoComplete="customerName"
-                        value={formData.customerName}
-                        onChange={handleFormdataInputChange}
-                        error={formErrors.customerName}
-                        helperText={
-                          formErrors.customerName &&
-                          "Customer Name must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    label="Support Start Date"
-                    value={formData.supportStartDate}
-                    onChange={(startDate) =>
-                      setFormData({ ...formData, supportStartDate: startDate })
-                    }
-                    format="DD/MM/YYYY"
-                    slotProps={{ textField: { fullWidth: true } }}
-                  />
-                </LocalizationProvider> */}
-                      <Datepicker
-                        label="Support Start Date"
-                        value={formData.supportStartDate}
-                        onChange={(startDate) =>
+                        onBlur={(e) => {
                           setFormData({
                             ...formData,
-                            supportStartDate: startDate,
-                          })
-                        }
-                        // defaultValue={dayjs("04/17/2022")}
-                        // convertDateFormat(i.supportStartDate),
-                        // "DD-MM-YYYY"
-                        // format="DD-MM-YYYY"
-                        error={!formData.supportStartDate}
-                        helperText={
-                          !formData.supportStartDate &&
-                          "Support Start Date must be filled"
-                        }
-                        slotProps={{ textField: { fullWidth: true } }}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Datepicker
-                        label="Support End Date"
-                        value={formData.supportEndDate}
-                        onChange={(endDate) => {
-                          setFormData({
-                            ...formData,
-                            supportEndDate: endDate,
+                            phoneNumber: e.target.value.trim(),
                           });
                         }}
-                        error={!formData.supportEndDate}
-                        helperText={
-                          !formData.supportEndDate &&
-                          "Support End Date must be filled"
+                        onChange={(e) => {
+                          const isValidPhoneNumber =
+                            !isNaN(e.target.value) &&
+                            e.target.value.length <= 10;
+                          const isPhoneNumberFilled =
+                            e.target.value.trim() === "";
+                          const isPhoneNumberLengthValid =
+                            e.target.value.length <= 9;
+                          setFormData({
+                            ...formData,
+                            phoneNumber: isValidPhoneNumber
+                              ? removeAllExceptNumber(e.target.value)
+                              : formData.phoneNumber,
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            phoneNumber: isPhoneNumberFilled,
+                            phoneNumberLength: isPhoneNumberLengthValid,
+                          });
+                        }}
+                        error={
+                          formErrors.phoneNumber || formErrors.phoneNumberLength
                         }
-                        // defaultValue={dayjs("2022-04-17")}
-                        // format="DD-MM-YYYY"
-                        slotProps={{ textField: { fullWidth: true } }}
+                        helperText={
+                          (formErrors.phoneNumber &&
+                            "Phone Number must be filled") ||
+                          (formErrors.phoneNumberLength &&
+                            "Phone Number must be 10 digits")
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -1364,7 +1550,26 @@ export default function UserRegistration({ sendUrllist }) {
                         id="accountOwnerCustomer"
                         autoComplete="accountOwnerCustomer"
                         value={formData.accountOwnerCustomer}
-                        onChange={handleFormdataInputChange}
+                        onBlur={(e) => {
+                          setFormData({
+                            ...formData,
+                            accountOwnerCustomer: e.target.value.trim(),
+                          });
+                        }}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            accountOwnerCustomer:
+                              // removeNumberAndSpecialChar(
+                              //   removeSpaceAndLowerCase(
+                              e.target.value,
+                            // )),
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            accountOwnerCustomer: e.target.value.trim() === "",
+                          });
+                        }}
                         error={formErrors.accountOwnerCustomer}
                         helperText={
                           formErrors.accountOwnerCustomer &&
@@ -1381,7 +1586,26 @@ export default function UserRegistration({ sendUrllist }) {
                         id="accountOwnerGW"
                         autoComplete="accountOwnerGW"
                         value={formData.accountOwnerGW}
-                        onChange={handleFormdataInputChange}
+                        onBlur={(e) => {
+                          setFormData({
+                            ...formData,
+                            accountOwnerGW: e.target.value.trim(),
+                          });
+                        }}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            accountOwnerGW:
+                              // removeNumberAndSpecialChar(
+                              //   removeSpaceAndLowerCase(
+                              e.target.value,
+                            // )),
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            accountOwnerGW: e.target.value.trim() === "",
+                          });
+                        }}
                         error={formErrors.accountOwnerGW}
                         helperText={
                           formErrors.accountOwnerGW &&
@@ -1470,6 +1694,366 @@ export default function UserRegistration({ sendUrllist }) {
                         )}
                       </FormControl>
                     </Grid>
+                    {/* <Grid item xs={6}>
+                      <Autocomplete
+                        value={formData.plantName}
+                        disablePortal
+                        fullWidth
+                        id="plantName"
+                        options={plantList.map((p) => p.plantName)}
+                        getOptionLabel={(option) => option}
+                        onChange={handleAutocompleteChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Plant Name"
+                            error={formErrors.plantName}
+                            helperText={
+                              formErrors.plantName &&
+                              "Plant Name must be filled"
+                            }
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormControl fullWidth error={formErrors.plantID}>
+                        <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                        <OutlinedInput
+                          inputProps={{
+                            readOnly: true,
+                          }}
+                          label="PlantID"
+                          autoComplete="PlantID"
+                          name="PlantID"
+                          required
+                          fullWidth
+                          id="PlantID"
+                          value={formData.plantID}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <Tooltip title="Add Plant">
+                                <IconButton
+                                  onClick={handleAddPlantClick}
+                                  edge="end"
+                                >
+                                  <AddCircleOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </InputAdornment>
+                          }
+                        />
+                        {formErrors.plantID && (
+                          <FormHelperText>
+                            Designation must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="address"
+                        label="Address"
+                        id="address"
+                        autoComplete="address"
+                        value={formData.address}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            address: e.target.value,
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            address: e.target.value.trim() === "",
+                          });
+                        }}
+                        error={formErrors.address}
+                        helperText={
+                          formErrors.address && "Address must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="division"
+                        label="Division"
+                        id="division"
+                        autoComplete="division"
+                        value={formData.division}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            division: e.target.value,
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            division: e.target.value.trim() === "",
+                          });
+                        }}
+                        error={formErrors.division}
+                        helperText={
+                          formErrors.division && "Division must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="customerName"
+                        label="Customer Name"
+                        id="customerName"
+                        autoComplete="customerName"
+                        value={formData.customerName}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            customerName: removeAllSpecialChar(e.target.value),
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            customerName: e.target.value.trim() === "",
+                          });
+                        }}
+                        error={formErrors.customerName}
+                        helperText={
+                          formErrors.customerName &&
+                          "Customer Name must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Datepicker
+                        label="Support Start Date"
+                        value={dayjs(formData.supportStartDate)}
+                        onChange={(startDate) =>
+                          setFormData({
+                            ...formData,
+                            supportStartDate: startDate.format("YYYY-MM-DD"),
+                          })
+                        }
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Datepicker
+                        label="Support End Date"
+                        value={dayjs(formData.supportEndDate)}
+                        onChange={(startDate) =>
+                          setFormData({
+                            ...formData,
+                            supportStartDate: startDate.format("YYYY-MM-DD"),
+                          })
+                        }
+                        slotProps={{ textField: { fullWidth: true } }}
+                      />
+                    </Grid> */}
+
+                    <Grid item xs={6}>
+                      <Autocomplete
+                        value={formData.plantName}
+                        disablePortal
+                        fullWidth
+                        id="plantName"
+                        options={plantList.map((p) => p.plantName)}
+                        getOptionLabel={(option) => option}
+                        onChange={handleAutocompleteChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Plant Name"
+                            error={formErrors.plantName}
+                            helperText={
+                              formErrors.plantName &&
+                              "Plant Name must be filled"
+                            }
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormControl fullWidth error={formErrors.plantID}>
+                        <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                        <OutlinedInput
+                          inputProps={{
+                            readOnly: true,
+                          }}
+                          label="PlantID"
+                          autoComplete="PlantID"
+                          name="PlantID"
+                          required
+                          fullWidth
+                          id="PlantID"
+                          value={formData.plantID}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <Tooltip title="Add Plant">
+                                <IconButton
+                                  onClick={handleAddPlantClick}
+                                  edge="end"
+                                >
+                                  <AddCircleOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </InputAdornment>
+                          }
+                        />
+                        {formErrors.plantID && (
+                          <FormHelperText>
+                            Plant ID must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="address"
+                        label="Address"
+                        id="address"
+                        autoComplete="address"
+                        value={formData.address}
+                        // onChange={(e) => {
+                        //   setFormData({
+                        //     ...formData,
+                        //     address: e.target.value,
+                        //   });
+                        //   setFormErrors({
+                        //     ...formErrors,
+                        //     address: e.target.value.trim() === "",
+                        //   });
+                        // }}
+                        error={formErrors.address}
+                        helperText={
+                          formErrors.address && "Address must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="division"
+                        label="Division"
+                        id="division"
+                        autoComplete="division"
+                        value={formData.division}
+                        // onChange={(e) => {
+                        //   setFormData({
+                        //     ...formData,
+                        //     division: e.target.value,
+                        //   });
+                        //   setFormErrors({
+                        //     ...formErrors,
+                        //     division: e.target.value.trim() === "",
+                        //   });
+                        // }}
+                        error={formErrors.division}
+                        helperText={
+                          formErrors.division && "Division must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="customerName"
+                        label="Customer Name"
+                        id="customerName"
+                        autoComplete="customerName"
+                        value={formData.customerName}
+                        // onChange={(e) => {
+                        //   setFormData({
+                        //     ...formData,
+                        //     customerName: removeAllSpecialChar(e.target.value),
+                        //   });
+                        //   setFormErrors({
+                        //     ...formErrors,
+                        //     customerName: e.target.value.trim() === "",
+                        //   });
+                        // }}
+                        error={formErrors.customerName}
+                        helperText={
+                          formErrors.customerName &&
+                          "Customer Name must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      {/* <Datepicker
+                        label="Support Start Date"
+                        value={dayjs(formData.supportStartDate)}
+                        onChange={(startDate) =>
+                          setFormData({
+                            ...formData,
+                            supportStartDate: startDate.format("YYYY-MM-DD"),
+                          })
+                        }
+                        slotProps={{ textField: { fullWidth: true } }}
+                      /> */}
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="supportStartDate"
+                        label="Support Start Date"
+                        id="supportStartDate"
+                        autoComplete="supportStartDate"
+                        value={formData.supportStartDate}
+                        error={formErrors.supportStartDate}
+                        helperText={
+                          formErrors.supportStartDate &&
+                          "Support Start Date must be filled"
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={6}>
+                      {/* <Datepicker
+                        label="Support End Date"
+                        value={dayjs(formData.supportEndDate)}
+                        onChange={(endDate) =>
+                          setFormData({
+                            ...formData,
+                            supportEndDate: endDate.format("YYYY-MM-DD"),
+                          })
+                        }
+                        slotProps={{ textField: { fullWidth: true } }}
+                      /> */}
+                      <TextField
+                        inputProps={{
+                          readOnly: true,
+                        }}
+                        required
+                        fullWidth
+                        name="supportEndDate"
+                        label="Support End Date"
+                        id="supportEndDate"
+                        autoComplete="supportEndDate"
+                        value={formData.supportEndDate}
+                        error={formErrors.supportEndDate}
+                        helperText={
+                          formErrors.supportEndDate &&
+                          "Support End Date must be filled"
+                        }
+                      />
+                    </Grid>
                   </Grid>
                   <Button
                     type="submit"
@@ -1495,25 +2079,89 @@ export default function UserRegistration({ sendUrllist }) {
                 {"Add New Plant"}
               </DialogTitle>
               <DialogContent style={{ padding: "10px" }}>
-                <Textfield
-                  required
-                  fullWidth={true}
-                  name="plantName"
-                  label="Plant Name"
-                  id="plantName"
-                  value={newPlantName.plantName}
-                  onChange={handlenewPlantNameInputChange}
-                />
-                <Textfield
-                  style={{ marginTop: "20px" }}
-                  required
-                  fullWidth={true}
-                  name="plantID"
-                  label="PlantID"
-                  id="plantID"
-                  value={newPlantName.plantID}
-                  onChange={handlenewPlantNameInputChange}
-                />
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Textfield
+                      required
+                      fullWidth={true}
+                      name="plantName"
+                      label="Plant Name"
+                      id="plantName"
+                      value={newPlantName.plantName}
+                      onChange={handlenewPlantNameInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Textfield
+                      required
+                      fullWidth={true}
+                      name="plantID"
+                      label="PlantID"
+                      id="plantID"
+                      value={newPlantName.plantID}
+                      onChange={handlenewPlantNameInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Textfield
+                      required
+                      fullWidth={true}
+                      name="address"
+                      label="Address"
+                      id="address"
+                      value={newPlantName.address}
+                      onChange={handlenewPlantNameInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Textfield
+                      required
+                      fullWidth={true}
+                      name="customerName"
+                      label="Customer Name"
+                      id="customerName"
+                      value={newPlantName.customerName}
+                      onChange={handlenewPlantNameInputChange}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Datepicker
+                      label="Support Start Date"
+                      value={dayjs(newPlantName.supportStartDate)}
+                      onChange={(startDate) =>
+                        setNewPlantName({
+                          ...newPlantName,
+                          supportStartDate: startDate.format("YYYY-MM-DD"),
+                        })
+                      }
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Datepicker
+                      label="Support End Date"
+                      value={dayjs(newPlantName.supportEndDate)}
+                      onChange={(endDate) =>
+                        setNewPlantName({
+                          ...newPlantName,
+                          supportEndDate: endDate.format("YYYY-MM-DD"),
+                        })
+                      }
+                      slotProps={{ textField: { fullWidth: true } }}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Textfield
+                      required
+                      fullWidth={true}
+                      name="division"
+                      label="Division"
+                      id="division"
+                      value={newPlantName.division}
+                      onChange={handlenewPlantNameInputChange}
+                    />
+                  </Grid>
+                </Grid>
               </DialogContent>
               <DialogActions>
                 <Button

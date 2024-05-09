@@ -118,7 +118,19 @@ export default function AdminRegistration({ sendUrllist }) {
     sendUrllist(urllist);
   }, []);
 
-  const urllist = [{ pageName: "Admin Home Page", pagelink: "/admin/home" }];
+  const urllist =
+    state === null
+      ? [
+          { pageName: "Admin Home", pagelink: "/admin/home" },
+          {
+            pageName: "Admin Registration",
+            pagelink: "/admin/adminregistration",
+          },
+        ]
+      : [
+          { pageName: "Admin Home", pagelink: "/admin/home" },
+          { pageName: "Admin Update", pagelink: "/admin/adminregistration" },
+        ];
 
   const confirmPassword = async (e) => {
     const passwordsMatch = pass === e;
@@ -183,6 +195,11 @@ export default function AdminRegistration({ sendUrllist }) {
     return stringWithoutSpecialChars;
   }
 
+  function removeAllExceptNumber(str) {
+    var stringWithOnlyNumber = str.replace(/[^0-9]/g, "");
+    return stringWithOnlyNumber;
+  }
+
   const fetchRoles = async () => {
     try {
       const response = await fetch("http://localhost:8081/role", {
@@ -234,8 +251,12 @@ export default function AdminRegistration({ sendUrllist }) {
       );
       if (response.ok) {
         console.log("Admin Updated successfully");
+        navigate("/admin/home");
       } else {
         console.error("Failed to update admin");
+        handleClick();
+        setSnackbarText("Failed to update Admin");
+        setsnackbarSeverity("error");
       }
     } catch (error) {
       console.error("Error : ", error);
@@ -362,6 +383,12 @@ export default function AdminRegistration({ sendUrllist }) {
                         //     name: removeAllSpecialChar(e.target.value),
                         //   })
                         // }
+                        onBlur={(e) => {
+                          setUpdateFormData({
+                            ...updateFormData,
+                            name: e.target.value.trim(),
+                          });
+                        }}
                         onChange={(e) => {
                           setUpdateFormData({
                             ...updateFormData,
@@ -395,6 +422,12 @@ export default function AdminRegistration({ sendUrllist }) {
                         //     ),
                         //   })
                         // }
+                        onBlur={(e) => {
+                          setUpdateFormData({
+                            ...updateFormData,
+                            phoneNumber: e.target.value.trim(),
+                          });
+                        }}
                         onChange={(e) => {
                           const isValidPhoneNumber =
                             !isNaN(e.target.value) &&
@@ -406,7 +439,7 @@ export default function AdminRegistration({ sendUrllist }) {
                           setUpdateFormData({
                             ...updateFormData,
                             phoneNumber: isValidPhoneNumber
-                              ? e.target.value
+                              ? removeAllExceptNumber(e.target.value)
                               : updateFormData.phoneNumber,
                           });
                           setUpdateFormErrors({
@@ -599,6 +632,12 @@ export default function AdminRegistration({ sendUrllist }) {
                         label="Name"
                         autoFocus
                         value={formData.name}
+                        onBlur={(e) => {
+                          setFormData({
+                            ...formData,
+                            name: e.target.value.trim(),
+                          });
+                        }}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
@@ -622,6 +661,12 @@ export default function AdminRegistration({ sendUrllist }) {
                         id="phoneNumber"
                         autoComplete="phoneNumber"
                         value={formData.phoneNumber}
+                        onBlur={(e) => {
+                          setFormData({
+                            ...formData,
+                            phoneNumber: e.target.value.trim(),
+                          });
+                        }}
                         onChange={(e) => {
                           const isValidPhoneNumber =
                             !isNaN(e.target.value) &&
@@ -633,7 +678,7 @@ export default function AdminRegistration({ sendUrllist }) {
                           setFormData({
                             ...formData,
                             phoneNumber: isValidPhoneNumber
-                              ? e.target.value
+                              ? removeAllExceptNumber(e.target.value)
                               : formData.phoneNumber,
                           });
                           setFormErrors({
@@ -663,6 +708,12 @@ export default function AdminRegistration({ sendUrllist }) {
                         name="email"
                         autoComplete="email"
                         value={formData.email}
+                        onBlur={(e) => {
+                          setFormData({
+                            ...formData,
+                            email: e.target.value.trim(),
+                          });
+                        }}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
@@ -715,6 +766,12 @@ export default function AdminRegistration({ sendUrllist }) {
                           id="adminID"
                           label="AdminID"
                           value={formData.adminID}
+                          onBlur={(e) => {
+                            setFormData({
+                              ...formData,
+                              adminID: e.target.value.trim(),
+                            });
+                          }}
                           onChange={(e) => {
                             setFormData({
                               ...formData,

@@ -858,6 +858,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
                   tablename={"Added Issues List"}
                   redirectIconActive={false}
                   isDeleteDialog={true}
+                  progressVisible={true}
                 ></CustomTable>
               </div>
             )}

@@ -44,6 +44,14 @@ import SaveIcon from "@mui/icons-material/Save";
 import Dropdown from "../../../components/dropdown/dropdown.component";
 import dayjs from "dayjs";
 import { extendTokenExpiration } from "../../helper/Support360Api";
+import Fab from "@mui/material/Fab";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import Slide from "@mui/material/Slide";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import CustomButton from "../../../components/button/button.component";
+import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
 
 export default function InfrastructureUser({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -62,6 +70,10 @@ export default function InfrastructureUser({ sendUrllist }) {
   const [filteredDeviceIssueDetails, setFilteredDeviceIssueDetails] = useState(
     []
   );
+  const [snackbarText, setSnackbarText] = useState("Data saved !");
+  const [snackbarSeverity, setsnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+ 
   const [expanded, setExpanded] = useState(false);
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
   const [ticketOpen, setTicketOpen] = useState(false);
@@ -69,6 +81,24 @@ export default function InfrastructureUser({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
   const currentPageLocation = useLocation().pathname;
   console.log("userData ==>> ", userData);
+
+
+   //Dialog
+ 
+   const [reviewOpen, setReviewOpen] = React.useState(false);
+ 
+   const handleClickOpen = () => {
+    setReviewOpen(true);
+   };
+ 
+   const handleCloseDialog = (event,reason) => {
+ 
+     if (reason === "backdropClick") {
+      setReviewOpen(false);
+     }
+     // setOpen(false);
+   };
+
 
   const infraTicketJSON = {
     plantId: "plant101",
@@ -252,6 +282,7 @@ export default function InfrastructureUser({ sendUrllist }) {
   }, [selectedInfrastructure]); // Fetch issues when selectedInfrastructure changes
 
   const handleSubmitPost = async (dataLocal) => {
+   
     try {
       const response = await fetch(
         "http://localhost:8081/infrastructure/user/saveInfraTicket",
@@ -269,6 +300,7 @@ export default function InfrastructureUser({ sendUrllist }) {
         // setPostDataStatus("Data successfully posted!");
         console.log("post completed");
         setTicketOpen(true);
+        setReviewOpen(false)
       } else {
         console.log("Error posting data. Please try again.");
       }
@@ -319,12 +351,20 @@ export default function InfrastructureUser({ sendUrllist }) {
 
   const handleAddItem = () => {
     if (!selectedIssue) {
-      setAlertMessage("Please select an issue");
-      setShowAlert(true);
+      // setAlertMessage("Please select an issue");
+      // setShowAlert(true);
+      setsnackbarSeverity("error");
+      setSnackbarText("Please select an issue !");
+      setSnackbarOpen(true);
+      return;
     }
     if (!selectedPriority) {
-      setAlertMessage("Please select an Seviarity");
-      setShowAlert(true);
+      // setAlertMessage("Please select an Seviarity");
+      // setShowAlert(true);
+      setsnackbarSeverity("error");
+      setSnackbarText("Please select an Severity !");
+      setSnackbarOpen(true);
+      return;
     }
     if (selectedIssue && selectedPriority) {
       const existingIssue = tableData.find(
@@ -412,6 +452,29 @@ export default function InfrastructureUser({ sendUrllist }) {
 
   return (
     <Container maxWidth="lg">
+      <>
+        {
+          <Fab
+            size="large"
+            variant="extended"
+            color="secondary"
+            aria-label="add"
+            sx={{ position: "fixed", left: "90%", bottom: "5%" }}
+            className="mobileViewFloatBtn"
+            onClick={handleClickOpen}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <AddIcon />
+
+              <Typography style={{ marginRight: "14px" }}>Review</Typography>
+              <Badge
+                badgeContent={infraIssueDetails.length}
+                color="primary"
+              ></Badge>
+            </div>
+          </Fab>
+        }
+      </>
       <Card>
         <CardContent sx={{ padding: "0" }}>
           <div style={{ padding: "1.1rem  0.8rem  0.6rem  0.8rem " }}>
@@ -576,7 +639,7 @@ export default function InfrastructureUser({ sendUrllist }) {
                             display: "flex",
                           }}
                         >
-                          Add Category
+                          Add Issue 
                           <AddIcon
                             fontSize="medium"
                             sx={{ paddingLeft: "0.2rem" }}
@@ -640,7 +703,8 @@ export default function InfrastructureUser({ sendUrllist }) {
                     </Dialog>
                   </div>
                 </div>
-                {infraIssueDetails.length > 0 && (
+
+                {/* {infraIssueDetails.length > 0 && (
                   <TableContainer>
                     <center>
                       <br></br>
@@ -687,7 +751,7 @@ export default function InfrastructureUser({ sendUrllist }) {
                             sx={{ marginLeft: "8px" }}
                           >
                             {/* <NotificationsActiveIcon color="secondary" /> */}
-                          </Badge>
+                {/* </Badge>
                           &nbsp;
                         </div>
 
@@ -725,7 +789,279 @@ export default function InfrastructureUser({ sendUrllist }) {
                       <br></br>
                     </center>
                   </TableContainer>
-                )}
+                )}  */}
+
+                <Dialog
+                  open={reviewOpen}
+                  onClose={(event, reason) => handleCloseDialog(event, reason)}
+                >
+                  <DialogTitle>
+                    <div className="IssueDialog">
+                      {infraIssueDetails.length !== 0 && (
+                        <div>
+                          <div
+                            style={{
+                              overflowY: "auto",
+                            }}
+                          >
+                            <div
+                              align="center"
+                              style={{
+                                flex: 1,
+                                overflow: "auto",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "bold",
+                                  flex: 1,
+                                }}
+                              >
+                                Issues Overview
+                              </span>
+                              <span
+                                style={{
+                                  color: "#610C9F",
+                                  fontSize: "14px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {/* [{dropdownValue}]{" "} */}
+                              </span>
+                            </div>
+                            {/* <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "blue",
+                      }}
+                    >
+                      {tabsmoduleNames.length !== 0 && (
+                        <CustomButton
+                          size={"large"}
+                          id={"final-submit"}
+                          variant={"contained"}
+                          color={"success"}
+                          onClick={handleFinalReportClick}
+                          style={classes.btn}
+                          buttontext={
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              Raise a Ticket
+                              <ArrowRightIcon fontSize="small" />
+                            </div>
+                          }
+                        ></CustomButton>
+                      )}
+                      &nbsp;
+                      {progressVisible && (
+                        <CircularProgress
+                          color="info"
+                          thickness={5}
+                          size={20}
+                        />
+                      )}
+                    </div> */}
+                          </div>
+                          {/* <Collapse in={expanded} timeout="auto" unmountOnExit> */}
+
+                          {/* </Collapse> */}
+                        </div>
+                      )}
+                    </div>
+                  </DialogTitle>
+                  <Divider textAlign="left"></Divider>
+
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                      <div>
+                        {
+                          <div>
+                            <CustomTable
+                              rows={infraIssueDetails}
+                              columns={overviewTableColumns}
+                              setRows={setInfraIssueDetails}
+                              tablename={"Issues Overview"}
+                              deleteFromDatabase={
+                                handleDeleteItemFromReviewTableTest
+                              }
+                              style={{
+                                borderRadius: 1,
+                                // maxHeight: 440,
+                                // maxWidth: 1200,
+                              }}
+                              isDeleteDialog={false}
+                            ></CustomTable>
+                            <br />
+                            {/* </Collapse> */}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              {/* <Button
+                            // className="button"
+                            variant="contained"
+                            color="success" // Use secondary color for delete button
+                            disabled={infraIssueDetails.length === 0}
+                            onClick={() => handleSubmitPost(infraTicketJSON)}
+                          >
+                            <SaveIcon
+                              fontSize="small"
+                              sx={{ marginRight: "0.3rem" }}
+                            />
+                            Raise a Ticket
+                          </Button> */}
+
+                              <CustomButton
+                                size={"large"}
+                                id={"final-submit"}
+                                variant={"contained"}
+                                color={"success"}
+                                onClick={() => handleSubmitPost(infraTicketJSON)}
+                                // style={classes.btn}
+                                disabled={infraIssueDetails.length === 0}
+                                buttontext={
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    Raise a Ticket
+                                    <ArrowRightIcon fontSize="small" />
+                                  </div>
+                                }
+                              ></CustomButton>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                      {/* <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "10px",
+              }}
+            >
+              <Textfield
+                id="user-misc-issue"
+                label={
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Miscellaneous Issue
+                  </span>
+                }
+                multiline={true}
+                rows={1}
+                InputProps={{
+                  style: {
+                    borderRadius: "8px",
+                  },
+                }}
+                style={{
+                  flex: "1",
+                  marginRight: "10px",
+                }}
+                value={miscellaneousInput}
+                onChange={(e) => {
+                  setMiscellaneousInput(e.target.value);
+                  console.log("Miscellaneous Issue:", e.target.value);
+                }}
+                error={additionalMiscellaneousError}
+              />
+
+              <Textfield
+                id="user-misc-remarks"
+                label={
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Remarks
+                  </span>
+                }
+                multiline
+                rows={1}
+                InputProps={{
+                  style: {
+                    borderRadius: "8px",
+                  },
+                }}
+                style={{
+                  flex: "1",
+                  marginRight: "10px",
+                }}
+                value={miscellaneousRemarks}
+                onChange={(e) => {
+                  setmiscellaneousRemarks(e.target.value);
+                  console.log("Remarks:", e.target.value);
+                }}
+              />
+
+              <div>
+                <Dropdown
+                  style={{ width: "200px", marginRight: "10px" }}
+                  id={"modal-severity-dropdown"}
+                  list={severityList}
+                  label={
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Severity
+                    </span>
+                  }
+                  value={miscellaneousSeverity}
+                  onChange={(e) => {
+                    setmiscellaneousSeverity(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                  error={additionalMiscellaneousSeverityError}
+                />
+                <Button
+                  size="small"
+                  id="miscellaneous-add"
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    height: "50px",
+                    width: "80px",
+                    borderRadius: "5px",
+                    backgroundImage:
+                      "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+                  }}
+                  startIcon={<AddCircleIcon />}
+                  onClick={handleAdditionalMiscellaneous}
+                >
+                  Add
+                  
+                </Button>
+              </div>
+            </div> */}
+                    </DialogContentText>
+                  </DialogContent>
+                </Dialog>
+
                 <TicketDialog
                   ticketDialogOpen={ticketOpen}
                   setTicketDialogOpen={setTicketOpen}
@@ -735,6 +1071,12 @@ export default function InfrastructureUser({ sendUrllist }) {
             )}
         </CardContent>
       </Card>
+      <SnackbarComponent
+            openPopup={snackbarOpen}
+            setOpenPopup={setSnackbarOpen}
+            dialogMessage={snackbarText}
+            snackbarSeverity={snackbarSeverity}
+          ></SnackbarComponent>
     </Container>
   );
 }

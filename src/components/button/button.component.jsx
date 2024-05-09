@@ -10,6 +10,7 @@ export default function CustomButton({
   buttontext,
   color,
   endIcon,
+  disabled
 }) {
   return (
     <Button
@@ -20,6 +21,7 @@ export default function CustomButton({
       id={id}
       color={color}
       endIcon={endIcon}
+      disabled={disabled}
     >
       {buttontext}
     </Button>

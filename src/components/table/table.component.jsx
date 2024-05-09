@@ -20,7 +20,7 @@ import {
   TextField,
   Tooltip,
   Typography,
-  Box
+  Box,
 } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -38,8 +38,8 @@ import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import { useTheme } from "@mui/material";
 import { height } from "@mui/system";
-import LinearProgress from '@mui/material/LinearProgress';
-import CircularProgress from '@mui/material/CircularProgress';
+import LinearProgress from "@mui/material/LinearProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function CustomTable({
   isDeleteDialog,
@@ -58,7 +58,7 @@ export default function CustomTable({
   progressVisible,
 }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
-  console.log("Columns::",columns)
+  console.log("Columns::", columns);
   const [open, setOpen] = useState(false);
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
@@ -313,7 +313,7 @@ export default function CustomTable({
     borderColor: "#f2f0f063", //colors.grey[800]
     borderRadius: "0.5rem",
     boxShadow: 0,
-    height:300
+    //height:300
   };
 
   const oddRowColor = colors.grey[900]; // Light gray color for odd rows
@@ -442,7 +442,6 @@ export default function CustomTable({
                 </>
               )} */}
             <TableBody>
-           
               {filteredrows &&
                 filteredrows
                   .slice(page * rowperpage, page * rowperpage + rowperpage)
@@ -540,21 +539,30 @@ export default function CustomTable({
                                       {value.toLowerCase() === "critical" && (
                                         <Chip
                                           label={value}
-                                          sx={{background:'red',color:'white'}}
+                                          sx={{
+                                            background: "red",
+                                            color: "white",
+                                          }}
                                         ></Chip>
                                       )}
                                       {value.toLowerCase() === "major" && (
                                         <Chip
                                           label={value}
                                           // color="primary"
-                                          sx={{background:'blue',color:'white'}}
+                                          sx={{
+                                            background: "blue",
+                                            color: "white",
+                                          }}
                                         ></Chip>
                                       )}
                                       {value.toLowerCase() === "minor" && (
                                         <Chip
                                           label={value}
                                           // color="success"
-                                          sx={{background:'green',color:'white'}}
+                                          sx={{
+                                            background: "green",
+                                            color: "white",
+                                          }}
                                         ></Chip>
                                       )}
                                     </>

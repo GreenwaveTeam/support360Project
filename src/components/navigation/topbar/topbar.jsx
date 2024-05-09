@@ -10,6 +10,8 @@ import {
   Avatar,
   Button,
   Chip,
+  Dialog,
+  DialogTitle,
   Divider,
   ListItemIcon,
   Paper,
@@ -32,6 +34,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 //import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import { Box } from "@mui/system";
 
 import gwlogo from "../../../../src/resources/images/gwlogo.png";
@@ -153,8 +156,17 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       },
     },
   }));
+  const [dialogopen, setdialogopen] = React.useState(false);
 
+  const ChangePasswordClickOpen = () => {
+    setdialogopen(true);
+  };
+
+  const ChangePasswordDialoghandleClose = () => {
+    setdialogopen(false);
+  };
   return (
+    <>
     <AppBar
       position="fixed"
       open={open}
@@ -251,9 +263,18 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                     </>
                     {userName}
                   </MenuItem>
-                  <Divider sx={{ margin: "0 !important" }} />
+                  <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
+                  <MenuItem onClick={ChangePasswordClickOpen}>
+                    <>
+                      <ManageAccountsIcon
+                        sx={{ marginRight: "0.4rem" }}
+                        fontSize="small"
+                      />
+                    </>
+                    Change Password
+                  </MenuItem>
 
-                  <Divider sx={{ margin: "0 !important" }} />
+                  <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                   <MenuItem
                     onClick={() => {
                       logout();
@@ -292,6 +313,19 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
         </div>
       </Toolbar>
     </AppBar>
+   
+      <Dialog
+        open={dialogopen}
+        onClose={ChangePasswordDialoghandleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Use Google's location service?"}
+        </DialogTitle>
+        
+      </Dialog>
+    </>
   );
 };
 

@@ -25,6 +25,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import "./UserLogin.css";
 import { Card, CardContent, TextField, Checkbox } from "@mui/material";
 import { Facebook, Twitter, Google, GitHub } from "@mui/icons-material";
+import gwlogo from "../../resources/images/gwlogo.png";
 
 export default function UserLogin() {
   const [userID, setUserID] = useState("");
@@ -254,9 +255,11 @@ export default function UserLogin() {
                   alignItems: "center",
                 }}
               >
-                <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-                  <HowToRegTwoToneIcon />
-                </Avatar>
+                <Avatar
+                  sx={{ width: 50, height: 50 }}
+                  alt="Greenwave"
+                  src={gwlogo}
+                />
 
                 <Typography component="h1" variant="h5">
                   Login Page

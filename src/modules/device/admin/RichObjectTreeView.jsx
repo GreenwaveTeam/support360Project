@@ -830,6 +830,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                     fullWidth
                     value={rootNodeName}
                     onChange={(e) => setRootNodeName(e.target.value)}
+                    style={{ marginTop: "0.5rem" }}
                   />
                   <CustomButton
                     className="button"
@@ -849,10 +850,10 @@ export default function RichObjectTreeView({ sendUrllist }) {
                       marginBottom: "15px",
                     }}
                     label="Device Tree:"
-                    color="success"
-                    variant="outlined"
+                    color="info"
+                    //variant="outlined"
                   />
-                  <Divider sx={{ marginBottom: "0.6rem" }} />
+                  <Divider sx={{ marginBottom: "0.6rem", opacity: 0.8 }} />
                   <CustomTreeView
                     data={data}
                     renderTree={renderTree}
@@ -921,7 +922,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                     >
                       {`Create Asset for : ${selectedNode.name}`}
                     </DialogTitle>
-                    <Divider />
+                    <Divider sx={{ opacity: "0.8" }} />
                     <br />
                     <center>
                       <Box
@@ -1186,7 +1187,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 )}
                             </div>
                           </Box>
-                          <Divider />
+                          <Divider sx={{ opacity: 0.8 }} />
 
                           <div
                             className="Card-Components"
@@ -2026,17 +2027,6 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
                             <div style={{ marginBottom: "10px" }}>
                               <div>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Image:
-                                </p>
-                              </div>
-
-                              <div>
                                 {isEditingImageFile ? (
                                   <>
                                     <input
@@ -2085,10 +2075,15 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                       className="value-comp"
                                       onClick={() => handleEdit("ImageFile")}
                                     >
-                                      <div>
+                                      <div
+                                        style={{
+                                          display: "grid",
+                                          justifyItems: "center",
+                                        }}
+                                      >
                                         <img
-                                          width="150"
-                                          height="120"
+                                          width="240"
+                                          height="150"
                                           src={
                                             selectedNode.image_file
                                               ? `data:image/jpeg;base64,${selectedNode.image_file}`

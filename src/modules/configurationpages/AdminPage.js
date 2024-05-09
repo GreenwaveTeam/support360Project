@@ -161,68 +161,68 @@ const AdminPage = ({ sendUrllist }) => {
           //marginTop={"2rem"}
           //sx={{ background: colors.grey[900] }}
         >
-          {divIsVisibleList.includes("application-button") && (
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={() => {
-                  navigate("/admin/ApplicationConfigure", {
-                    state: { plantID: userPlantID },
-                  });
-                }}
-              >
-                Application
-              </Button>
-            </Grid>
-          )}
-          {divIsVisibleList.includes("device-button") && (
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={() => {
-                  navigate("/admin/DeviceConfigure", {
-                    state: { plantID: userPlantID },
-                  });
-                }}
-              >
-                Device
-              </Button>
-            </Grid>
-          )}
-          {divIsVisibleList.includes("device-configure-button") && (
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={() => {
-                  navigate("/admin/Device/CategoryConfigure", {
-                    state: { plantID: userPlantID },
-                  });
-                }}
-              >
-                Device Configure
-              </Button>
-            </Grid>
-          )}
-          {divIsVisibleList.includes("infrastructure-button") && (
-            <Grid item>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={() => {
-                  navigate("/admin/InfrastructureConfigure");
-                }}
-              >
-                Infrastructure
-              </Button>
-            </Grid>
-          )}
+          {/* {divIsVisibleList.includes("application-button") && ( */}
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => {
+                navigate("/admin/ApplicationConfigure", {
+                  state: { plantID: userPlantID },
+                });
+              }}
+            >
+              Application
+            </Button>
+          </Grid>
+          {/* )}
+          {divIsVisibleList.includes("device-button") && ( */}
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => {
+                navigate("/admin/DeviceConfigure", {
+                  state: { plantID: userPlantID },
+                });
+              }}
+            >
+              Device
+            </Button>
+          </Grid>
+          {/* )} */}
+          {/* {divIsVisibleList.includes("device-configure-button") && ( */}
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => {
+                navigate("/admin/Device/CategoryConfigure", {
+                  state: { plantID: userPlantID },
+                });
+              }}
+            >
+              Device Configure
+            </Button>
+          </Grid>
+          {/* )} */}
+          {/* {divIsVisibleList.includes("infrastructure-button") && ( */}
+          <Grid item>
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={() => {
+                navigate("/admin/InfrastructureConfigure");
+              }}
+            >
+              Infrastructure
+            </Button>
+          </Grid>
+          {/* )} */}
         </Grid>
       </Card>
     </Container>

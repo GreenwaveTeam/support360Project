@@ -56,9 +56,11 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   const currentPageLocation = useLocation().pathname;
   const { userData, setUserData } = useUserContext();
 
+  const  [booleanProgressVisible,setBooleanProgressVisible]=useState(false)
+
   /******************************* useEffect()********************************/
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     //fetchDivsForCurrentPage();
     fetchUser();
     extendTokenExpiration();
@@ -114,7 +116,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     ) {
       console.log("Infrastructure already exists ! ");
       setsnackbarSeverity("error");
-      setSnackbarText("Category aready exists ! ");
+      setSnackbarText("Category already exists ! ");
       setOpen(true);
       setCategoryError(true);
 
@@ -550,7 +552,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
           <Container sx={classes.conatiner}>
             {divIsVisibleList &&
               divIsVisibleList.includes("add-new-infrastructure-category") && (
-                <div id="add-new-infrastructure-category">
+                <div id="add-new-infrastructure-category" style={{display:'flex'}}>
                   <Textfield
                     label={"Infrastructure Category"}
                     variant={"outlined"}
@@ -561,19 +563,19 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                     size="large"
                     error={categoryError}
                   ></Textfield>
-                  <br />
-                  <br />
+                  &nbsp;&nbsp;
                   <CustomButton
                     variant={"contained"}
                     size={"large"}
                     color={"success"}
                     style={classes.btn}
                     onClick={() => handleAddIssues()}
-                    buttontext={" Add Issues "}
+                    buttontext={" Add Infrastructure "}
                   ></CustomButton>
                 </div>
               )}
-            <br />
+              <br/>
+            {/* <br />
             <br />
             {divIsVisibleList &&
               divIsVisibleList.includes("existing-infrastructure-table") &&
@@ -583,7 +585,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                 </div>
               )}
             <br />
-            <br />
+            <br /> */}
             {divIsVisibleList &&
               divIsVisibleList.includes("existing-infrastructure-table") && (
                 <div id="existing-infrastructure-table">

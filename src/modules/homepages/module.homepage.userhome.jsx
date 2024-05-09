@@ -86,10 +86,9 @@ function UserHome({ sendUrllist }) {
   };
 
   const matergroupvalues = [
-    { label: "Apps", color: "#34d399", value: 16 },
-    { label: "Messages", color: "#fbbf24", value: 8 },
-    { label: "Media", color: "#60a5fa", value: 24 },
-    { label: "System", color: "#c084fc", value: 10 },
+    { label: "Device", color: "#34d399", value: 50 },
+    { label: "Application", color: "#fbbf24", value: 30 },
+    { label: "Infrastructure", color: "#60a5fa", value: 20 },
   ];
 
   const [open, setOpen] = useState(false);
@@ -667,10 +666,10 @@ function UserHome({ sendUrllist }) {
                   </CardContent>
                 </Card> */}
                 <Card>
-                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                  <CardContent sx={{ padding: "16px 8px 5px 8px !important" }}>
                     <div>
-                      <div className="card flex justify-content-center">
-                        <MeterGroup values={matergroupvalues} />
+                      <div>
+                        <MeterGroup values={matergroupvalues} max={200} />
                       </div>
                     </div>
                   </CardContent>
@@ -773,32 +772,6 @@ function UserHome({ sendUrllist }) {
                   <div class="row">
                     <div class="col-md-12">
                       <Card>
-                        <CardContent
-                          sx={{
-                            paddingBottom: "16px !important",
-                            display: "grid",
-                            justifyItems: "center",
-                          }}
-                        >
-                          <Typography
-                            gutterBottom
-                            variant="h5"
-                            component="div"
-                            sx={{ marginBottom: "0.7rem" }}
-                          >
-                            Reply Time (AVG)
-                          </Typography>
-                          <SparkLineChart
-                            data={[3, 4, 2, 5, 4, 2, 4, 6]}
-                            height={75}
-                          />
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                  <div class="row" style={{ marginTop: "1rem" }}>
-                    <div class="col-md-12">
-                      <Card>
                         <CardContent sx={{ paddingBottom: "16px !important" }}>
                           <div className="row">
                             <div className="col-md-8">
@@ -822,6 +795,7 @@ function UserHome({ sendUrllist }) {
                           >
                             <Knob
                               value={parseInt(daysDifferenceTillNow)}
+                              strokeWidth={5}
                               // min={parseInt(daysDifference)}
                               valueColor="#48d1cc"
                               rangeColor="#708090"
@@ -839,6 +813,15 @@ function UserHome({ sendUrllist }) {
                             </Typography>
                           </div>
                         </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                  <div class="row" style={{ marginTop: "1rem" }}>
+                    <div class="col-md-12">
+                      <Card>
+                        <CardContent
+                          sx={{ paddingBottom: "16px !important" }}
+                        ></CardContent>
                       </Card>
                     </div>
                   </div>

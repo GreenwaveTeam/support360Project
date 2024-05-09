@@ -436,12 +436,13 @@ export default function CustomTable({
                 </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-            {progressVisible&&filteredrows?.length === 0 && (
-                <Box>
+            {/* {progressVisible&&filteredrows?.length === 0 && (
+                <>
                   <CircularProgress />
-                </Box>
-              )}
+                </>
+              )} */}
+            <TableBody>
+           
               {filteredrows &&
                 filteredrows
                   .slice(page * rowperpage, page * rowperpage + rowperpage)
@@ -536,22 +537,24 @@ export default function CustomTable({
                                   column.id === "severity" &&
                                   column.id !== redirectColumn && (
                                     <>
-                                      {value === "Critical" && (
+                                      {value.toLowerCase() === "critical" && (
                                         <Chip
                                           label={value}
-                                          color="warning"
+                                          sx={{background:'red',color:'white'}}
                                         ></Chip>
                                       )}
-                                      {value === "Major" && (
+                                      {value.toLowerCase() === "major" && (
                                         <Chip
                                           label={value}
-                                          color="primary"
+                                          // color="primary"
+                                          sx={{background:'blue',color:'white'}}
                                         ></Chip>
                                       )}
-                                      {value === "Minor" && (
+                                      {value.toLowerCase() === "minor" && (
                                         <Chip
                                           label={value}
-                                          color="success"
+                                          // color="success"
+                                          sx={{background:'green',color:'white'}}
                                         ></Chip>
                                       )}
                                     </>

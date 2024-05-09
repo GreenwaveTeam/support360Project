@@ -6,6 +6,7 @@ import {
   Container,
   Dialog,
   Typography,
+  Menu,
 } from "@mui/material";
 import axios from "axios";
 import Tab from "@mui/material/Tab";
@@ -75,6 +76,10 @@ export default function ModuleConfigure({ sendUrllist }) {
   const [deleteCategory, setDeleteCategory] = useState(null);
   const [deleteArea, setDeleteArea] = useState(null);
   const [filterValue, setFilterValue] = useState("");
+  const [contextMenuPosition, setContextMenuPosition] = useState(null);
+  const [selectedModuleForDelete, setSelectedModuleForDelete] = useState(null);
+
+
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
@@ -97,6 +102,45 @@ export default function ModuleConfigure({ sendUrllist }) {
   ];
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
+  const handleContextClick = (event, module) => {
+    event.preventDefault();
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+    setSelectedModuleForDelete(module.modulename);
+  };
+  const handleDeleteModule=async()=>{
+    try {
+      const response = await axios.delete(
+        `http://localhost:8081/application/admin/${plantid}/${application_name}/${selectedModuleForDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          }
+        }
+      );
+
+      // Optionally, update the UI or perform any additional actions after successful deletion
+      setData((prev) => ({
+        ...prev,
+        modulelist: prev.modulelist.filter(
+          (module) => module.modulename !== selectedModuleForDelete
+        )
+      }));
+      setValue("1")
+      setContextMenuPosition(null)
+      
+      
+
+      //console.log("Category name=>" + categoryName);
+    } catch (error) {
+      // Handle errors, such as displaying an error message to the user
+
+      setsnackbarSeverity("error");
+      setDialogPopup(true);
+
+      setDialogMessage("Database error");
+    }
+  }
 
   const fetchUser = async () => {
     let role = "";
@@ -759,7 +803,7 @@ export default function ModuleConfigure({ sendUrllist }) {
               }}
             >
               {data && data.modulelist.length > 0 && (
-                <TabContext value={value}>
+                <TabContext value={value} >
                   <Box
                     sx={{
                       display: "flex",
@@ -822,12 +866,13 @@ export default function ModuleConfigure({ sendUrllist }) {
                         scrollButtons="auto"
                         textColor="secondary"
                         indicatorColor="secondary"
+                        
                         aria-label="scrollable auto tabs example"
                       >
                         {filteredModules.map((module, index) => (
                           <Tab
                             key={index}
-                            label={module.modulename}
+                            label={module.modulename} onContextMenu={(event)=>handleContextClick(event,module)}
                             value={(index + 1).toString()}
                           />
                         ))}
@@ -1114,6 +1159,19 @@ export default function ModuleConfigure({ sendUrllist }) {
               setOpenPopup={setDialogPopup}
               dialogMessage={dialogMessage}
             />
+            <Menu
+              open={contextMenuPosition !== null}
+              onClose={() => setContextMenuPosition(null)}
+              anchorReference="anchorPosition"
+              anchorPosition={
+                contextMenuPosition !== null
+                  ? { top: contextMenuPosition.y, left: contextMenuPosition.x }
+                  : undefined
+              }
+            >
+              
+              <MenuItem onClick={handleDeleteModule}>Delete Module</MenuItem>
+            </Menu>
           </Box>
         )}
     </div>

@@ -676,9 +676,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                         marginLeft: "5px",
                         marginBottom: "10px",
                       }}
-                      label="Device Tree"
+                      label="Asset Tree"
                     />
-                    <Divider sx={{ marginBottom: "0.6rem" }} />
+                    <Divider sx={{ marginBottom: "0.6rem", opacity: 0.8 }} />
                     <TreeView
                       className="treeView"
                       aria-label="rich object"
@@ -723,7 +723,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                         >
                           {`Report Issue for : ${selectedNode.name}`}
                         </DialogTitle>
-                        <Divider />
+                        <Divider sx={{ opacity: 0.8 }} />
 
                         <div style={{ padding: "5px 15px" }}>
                           <TableContainer
@@ -937,7 +937,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                                       marginLeft: "0.5rem",
                                     }}
                                   >
-                                    Device Details:
+                                    Asset Details:
                                   </Typography>
                                   <Button
                                     className="button"
@@ -953,7 +953,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     Report Issue
                                   </Button>
                                 </div>
-                                <Divider />
+                                <Divider sx={{ opacity: 0.8 }} />
                                 {/* <Toast ref={toast} />
                             <Dialog
                               group="declarative"

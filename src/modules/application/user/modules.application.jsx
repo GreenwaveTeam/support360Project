@@ -67,6 +67,7 @@ import Slide from "@mui/material/Slide";
 import CloseIcon from "@mui/icons-material/Close";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 import dayjs from "dayjs";
+import LinearProgress from '@mui/material/LinearProgress';
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -394,6 +395,8 @@ export default function ApplicationUser({ sendUrllist }) {
     console.log(event);
     event.preventDefault();
     event.stopPropagation();
+    setMainData({})
+
     console.log("Current Miscellaneous Issue => ", miscellaneousInput);
     saveCurrentTabModuleInformation(); //This is meant to save the information for the current modified information in the current Tab
     setValue(newValue);
@@ -1669,7 +1672,7 @@ export default function ApplicationUser({ sendUrllist }) {
   /*************************************************** Component return ************************************** */
   return (
     <div className="row">
-      {tabsmoduleNames.length !== 0 && (
+      {mainData.module_image&&tabsmoduleNames.length !== 0 && (
         <Fab
           size="large"
           variant="extended"
@@ -2242,10 +2245,13 @@ export default function ApplicationUser({ sendUrllist }) {
                     ></Tab>
                   ))}
                 </Tabs>
+                {!mainData.module_image&&<Box sx={{ width: '100%' }}>
+                  <LinearProgress />
+                  </Box>}
                   </div>
                 </div>
               </Box>
-
+                { mainData.module_image && <>
               <center>
                 <div
                   className="floating-div"
@@ -2281,13 +2287,15 @@ export default function ApplicationUser({ sendUrllist }) {
         }
         `}
                   </style> */}
+                 
                 </div>
               </center>
+              <br/>
+              <Paper elevation={24} square>
+  <CheckCircleIcon fontSize="small" sx={{ color: "#16FF00" }} />
+  <span> - * Indicates Issues have been added </span>
+  </Paper>
 
-              <div style={{ display: "flex" }}>
-                <CheckCircleIcon fontSize="small" sx={{ color: "#16FF00" }} />
-                <span> - * Indicates Issues have been added </span>
-              </div>
               <motion.div
                 variants={icon}
                 initial="hidden"
@@ -2673,6 +2681,7 @@ export default function ApplicationUser({ sendUrllist }) {
                   </Paper>
                 </Container>
               </center>
+              </>}
 
               {/* {test} */}
               <br />

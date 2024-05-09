@@ -38,7 +38,7 @@ import "bootstrap/dist/css/bootstrap.css";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
-    userID: "",
+    userId: "",
     name: "",
     designation: "",
     email: "",
@@ -76,7 +76,10 @@ function UserHome({ sendUrllist }) {
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
   const [daysDifference, setDaysDifference] = useState(null);
   const [daysDifferenceTillNow, setDaysDifferenceTillNow] = useState(null);
-  const [monthwiseticket, setMonthwiseticket] = useState([]);
+  const [monthWiseTicket, setMonthWiseTicket] = useState([]);
+  const [monthAndCatagoryWiseTicket, setMonthAndCatagoryWiseTicket] = useState(
+    []
+  );
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -111,6 +114,7 @@ function UserHome({ sendUrllist }) {
     sendUrllist(urllist);
     fetchDivs();
     monthwiseticketraised();
+    monthAndCatagoryWiseTicketRaised();
     // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
 
@@ -266,7 +270,47 @@ function UserHome({ sendUrllist }) {
         }
       }
       console.log("Numbers List:", numbersList);
-      setMonthwiseticket(outputList);
+      setMonthWiseTicket(outputList);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const monthAndCatagoryWiseTicketRaised = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8081/users/user/monthAndCatagoryWiseTicketRaised",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("monthAndCatagoryWiseTicketRaised : ", data);
+      console.log("monthAndCatagoryWiseTicketRaised[0] : ", data[0]);
+      const outputList = data.map((item) => {
+        const month = Object.keys(item)[0];
+        const data = item[month];
+        return {
+          ...data,
+          month: month.split(" ")[0],
+        };
+      });
+      console.log("outputcatagoryList : ", outputList);
+      const numbersList = [];
+      for (const month in data) {
+        if (data.hasOwnProperty(month)) {
+          const ticketsRaised = parseInt(data[month]);
+          if (!isNaN(ticketsRaised)) {
+            numbersList.push(ticketsRaised);
+          }
+        }
+      }
+      console.log("catagory Numbers List:", numbersList);
+      setMonthAndCatagoryWiseTicket(outputList);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -325,7 +369,7 @@ function UserHome({ sendUrllist }) {
       console.log("fetchUser data : ", data);
       setFormData((prevData) => ({
         ...prevData,
-        userID: data.userID,
+        userId: data.userId,
         name: data.name,
         designation: data.designation,
         email: data.email,
@@ -346,7 +390,7 @@ function UserHome({ sendUrllist }) {
         ...userData,
         plantID: data.plantID,
         role: data.role,
-        userID: data.userID,
+        userId: data.userId,
       });
       differenceInDays(data.supportStartDate, data.supportEndDate);
       differenceInDaysTillNow(new Date(), data.supportEndDate);
@@ -690,7 +734,7 @@ function UserHome({ sendUrllist }) {
                     {/* <ResponsiveChartContainer> */}
 
                     <BarChart
-                      dataset={monthwiseticket}
+                      dataset={monthWiseTicket}
                       xAxis={[{ scaleType: "band", dataKey: "month" }]}
                       series={[
                         { dataKey: "Issue_Count", label: "Issue Count" },

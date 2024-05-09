@@ -30,7 +30,7 @@ import { extendTokenExpiration } from "../helper/Support360Api";
 
 export default function AdminRegistration({ sendUrllist }) {
   const [formData, setFormData] = useState({
-    adminID: "",
+    adminId: "",
     name: "",
     email: "",
     password: "",
@@ -40,7 +40,7 @@ export default function AdminRegistration({ sendUrllist }) {
   });
 
   const [formErrors, setFormErrors] = useState({
-    adminID: false,
+    adminId: false,
     name: false,
     email: false,
     password: false,
@@ -53,7 +53,7 @@ export default function AdminRegistration({ sendUrllist }) {
   });
 
   const [updateFormErrors, setUpdateFormErrors] = useState({
-    adminID: false,
+    adminId: false,
     name: false,
     email: false,
     password: false,
@@ -66,7 +66,7 @@ export default function AdminRegistration({ sendUrllist }) {
   });
 
   const [updateFormData, setUpdateFormData] = useState({
-    adminID: "",
+    adminId: "",
     name: "",
     email: "",
     phoneNumber: "",
@@ -98,7 +98,7 @@ export default function AdminRegistration({ sendUrllist }) {
     } else {
       setIsStatePresent(true);
       setUpdateFormData({
-        adminID: state.admin.userID,
+        adminId: state.admin.userId,
         name: state.admin.name,
         email: state.admin.email,
         phoneNumber: state.admin.phoneNumber,
@@ -151,6 +151,14 @@ export default function AdminRegistration({ sendUrllist }) {
   const handleClick = () => {
     setPasswordErrorOpen(true);
   };
+
+  function convertToTitleCase(str) {
+    let words = str.split(/(?=[A-Z])/);
+    let capitalizedWords = words.map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    });
+    return capitalizedWords.join(" ");
+  }
 
   function removeSpaceAndLowerCase(str) {
     return str.replace(/\s/g, "").toLowerCase();
@@ -226,20 +234,20 @@ export default function AdminRegistration({ sendUrllist }) {
     for (const key in updateFormData) {
       if (updateFormData[key] === null || updateFormData[key] === "") {
         handleClick();
-        setSnackbarText(`${key} must be filled`);
+        setSnackbarText(`${convertToTitleCase(key)} must be filled`);
         setsnackbarSeverity("error");
-        console.log(`${key} must be filled`);
+        console.log(`${convertToTitleCase(key)} must be filled`);
         return;
       }
     }
     try {
       console.log(
-        "updateFormData.adminID : ",
-        `http://localhost:8081/admins/admin/${updateFormData.adminID}`
+        "updateFormData.adminId : ",
+        `http://localhost:8081/admins/admin/${updateFormData.adminId}`
       );
       console.log("updateFormData : ", updateFormData);
       const response = await fetch(
-        `http://localhost:8081/admins/admin/${updateFormData.adminID}`,
+        `http://localhost:8081/admins/admin/${updateFormData.adminId}`,
         {
           method: "PUT",
           headers: {
@@ -286,9 +294,9 @@ export default function AdminRegistration({ sendUrllist }) {
     for (const key in formData) {
       if (formData[key] === null || formData[key] === "") {
         handleClick();
-        setSnackbarText(`${key} must be filled`);
+        setSnackbarText(`${convertToTitleCase(key)} must be filled`);
         setsnackbarSeverity("error");
-        console.log(`${key} must be filled`);
+        console.log(`${convertToTitleCase(key)} must be filled`);
         return;
       }
     }
@@ -484,17 +492,17 @@ export default function AdminRegistration({ sendUrllist }) {
                     <Grid item xs={6}>
                       <Textfield
                         InputProps={{ readOnly: true }}
-                        autoComplete="adminID"
-                        name="adminID"
+                        autoComplete="adminId"
+                        name="adminId"
                         required
                         fullWidth
-                        id="adminID"
+                        id="adminId"
                         label="Admin ID"
-                        value={updateFormData.adminID}
+                        value={updateFormData.adminId}
                         // onChange={(e) =>
                         //   setUpdateFormData({
                         //     ...updateFormData,
-                        //     adminID: removeNumberAndSpecialChar(
+                        //     adminId: removeNumberAndSpecialChar(
                         //       removeSpaceAndLowerCase(e.target.value)
                         //     ),
                         //   })
@@ -732,55 +740,55 @@ export default function AdminRegistration({ sendUrllist }) {
                     </Grid>
                     <Grid item xs={6}>
                       {/* <Textfield
-                        autoComplete="adminID"
-                        name="adminID"
+                        autoComplete="adminId"
+                        name="adminId"
                         required
                         fullWidth
-                        id="adminID"
+                        id="adminId"
                         label="Admin ID"
-                        value={formData.adminID}
+                        value={formData.adminId}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
-                            adminID: removeOnlySpecialChar(
+                            adminId: removeOnlySpecialChar(
                               removeSpaceAndLowerCase(e.target.value)
                             ),
                           });
                           setFormErrors({
                             ...formErrors,
-                            adminID: e.target.value.trim() === "",
+                            adminId: e.target.value.trim() === "",
                           });
                         }}
-                        error={formErrors.adminID}
+                        error={formErrors.adminId}
                         helperText={
-                          formErrors.adminID && "AdminID must be filled"
+                          formErrors.adminId && "AdminID must be filled"
                         }
                       /> */}
-                      <FormControl fullWidth error={formErrors.adminID}>
-                        <InputLabel htmlFor="adminID">AdminID</InputLabel>
+                      <FormControl fullWidth error={formErrors.adminId}>
+                        <InputLabel htmlFor="adminId">AdminID</InputLabel>
                         <OutlinedInput
-                          autoComplete="adminID"
-                          name="adminID"
+                          autoComplete="adminId"
+                          name="adminId"
                           required
                           fullWidth
-                          id="adminID"
+                          id="adminId"
                           label="AdminID"
-                          value={formData.adminID}
+                          value={formData.adminId}
                           onBlur={(e) => {
                             setFormData({
                               ...formData,
-                              adminID: e.target.value.trim(),
+                              adminId: e.target.value.trim(),
                             });
                           }}
                           onChange={(e) => {
                             setFormData({
                               ...formData,
-                              adminID: removeOnlySpecialChar(e.target.value),
+                              adminId: removeOnlySpecialChar(e.target.value),
                             });
                             setUnchangedAdminID(e.target.value);
                             setFormErrors({
                               ...formErrors,
-                              adminID: e.target.value.trim() === "",
+                              adminId: e.target.value.trim() === "",
                             });
                           }}
                           endAdornment={
@@ -790,13 +798,13 @@ export default function AdminRegistration({ sendUrllist }) {
                                   control={
                                     <Checkbox
                                       checked={
-                                        formData.adminID === formData.email
+                                        formData.adminId === formData.email
                                       }
                                       onChange={(e) => {
                                         setFormData({
                                           ...formData,
-                                          adminID:
-                                            formData.adminID === formData.email
+                                          adminId:
+                                            formData.adminId === formData.email
                                               ? unchangedAdminID
                                               : formData.email,
                                         });
@@ -810,7 +818,7 @@ export default function AdminRegistration({ sendUrllist }) {
                             </InputAdornment>
                           }
                         />
-                        {formErrors.adminID && (
+                        {formErrors.adminId && (
                           <FormHelperText>
                             Admin ID must be filled
                           </FormHelperText>

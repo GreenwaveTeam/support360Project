@@ -69,7 +69,7 @@ export const addPlant = async (newPlantName) => {
 export const updateUser = async (updateFormData) => {
   try {
     const response = await fetch(
-      `http://localhost:8081/users/user/${updateFormData.userID}`,
+      `http://localhost:8081/users/user/${updateFormData.userId}`,
       {
         method: "PUT",
         headers: {
@@ -120,12 +120,12 @@ export const registerUser = async (formData) => {
 export const updateAdmin = async (updateFormData) => {
   try {
     console.log(
-      "updateFormData.adminID : ",
-      `http://localhost:8081/admins/admin/${updateFormData.adminID}`
+      "updateFormData.adminId : ",
+      `http://localhost:8081/admins/admin/${updateFormData.adminId}`
     );
     console.log("updateFormData : ", updateFormData);
     const response = await fetch(
-      `http://localhost:8081/admins/admin/${updateFormData.adminID}`,
+      `http://localhost:8081/admins/admin/${updateFormData.adminId}`,
       {
         method: "PUT",
         headers: {

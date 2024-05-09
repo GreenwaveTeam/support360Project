@@ -32,6 +32,7 @@ import RichObjectTreeView from "./modules/device/admin/RichObjectTreeView";
 import RoleConfiguration from "./modules/roleconfiguration/module.roleConfiguration";
 import RolePageConfiguration from "./modules/roleconfiguration/module.rolePageConfiguration";
 import AdminPage from "./modules/configurationpages/AdminPage";
+import PlantPage from "./modules/configurationpages/PlantPage";
 
 function AdminRoutes() {
   const [urllist, setUrllist] = useState([]);
@@ -139,6 +140,10 @@ function AdminRoutes() {
               path="/home"
               element={<AdminHome sendUrllist={receiveUrllist} />}
             />
+            <Route
+              path="/plantConfigure"
+              element={<PlantPage sendUrllist={receiveUrllist} />}
+            />
 
             <Route
               path="/DeviceConfigure"
@@ -162,7 +167,6 @@ function AdminRoutes() {
               path="/*"
               element={<NotfoundComponent setIsNotFound={setIsNotFound} />}
             />
-            {/*  */}
           </Routes>
         </Box>
       </Main>

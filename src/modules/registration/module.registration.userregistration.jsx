@@ -51,7 +51,7 @@ export default function UserRegistration({ sendUrllist }) {
   });
 
   const [formData, setFormData] = useState({
-    userID: "",
+    userId: "",
     name: "",
     designation: "",
     email: "",
@@ -73,7 +73,7 @@ export default function UserRegistration({ sendUrllist }) {
   });
 
   const [formErrors, setFormErrors] = useState({
-    userID: false,
+    userId: false,
     name: false,
     designation: false,
     email: false,
@@ -96,7 +96,7 @@ export default function UserRegistration({ sendUrllist }) {
   });
 
   const [updateFormData, setUpdateFormData] = useState({
-    userID: "",
+    userId: "",
     name: "",
     designation: "",
     email: "",
@@ -117,7 +117,7 @@ export default function UserRegistration({ sendUrllist }) {
   });
 
   const [updateFormErrors, setUpdateFormErrors] = useState({
-    userID: false,
+    userId: false,
     name: false,
     designation: false,
     email: false,
@@ -180,7 +180,7 @@ export default function UserRegistration({ sendUrllist }) {
     } else {
       setIsStatePresent(true);
       setUpdateFormData({
-        userID: state.user.userID,
+        userId: state.user.userId,
         name: state.user.name,
         designation: state.user.designation,
         email: state.user.email,
@@ -222,6 +222,14 @@ export default function UserRegistration({ sendUrllist }) {
           { pageName: "Admin Home", pagelink: "/admin/home" },
           { pageName: "User Update", pagelink: "/admin/userregistration" },
         ];
+
+  function convertToTitleCase(str) {
+    let words = str.split(/(?=[A-Z])/);
+    let capitalizedWords = words.map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    });
+    return capitalizedWords.join(" ");
+  }
 
   function removeSpaceAndLowerCase(str) {
     return str.replace(/\s/g, "").toLowerCase();
@@ -434,9 +442,9 @@ export default function UserRegistration({ sendUrllist }) {
     for (const key in updateFormData) {
       if (updateFormData[key] === null || updateFormData[key] === "") {
         handleClick();
-        setSnackbarText(`${key} must be filled`);
+        setSnackbarText(`${convertToTitleCase(key)} must be filled`);
         setsnackbarSeverity("error");
-        console.log(`${key} must be filled`);
+        console.log(`${convertToTitleCase(key)} must be filled`);
         return;
       }
     }
@@ -450,12 +458,12 @@ export default function UserRegistration({ sendUrllist }) {
     }
     try {
       console.log(
-        "updateFormData.userID : ",
-        `http://localhost:8081/users/user/${updateFormData.userID}`
+        "updateFormData.userId : ",
+        `http://localhost:8081/users/user/${updateFormData.userId}`
       );
       console.log("updateFormData : ", updateFormData);
       const response = await fetch(
-        `http://localhost:8081/users/user/${updateFormData.userID}`,
+        `http://localhost:8081/users/user/${updateFormData.userId}`,
         {
           method: "PUT",
           headers: {
@@ -524,9 +532,9 @@ export default function UserRegistration({ sendUrllist }) {
     for (const key in formData) {
       if (formData[key] === null || formData[key] === "") {
         handleClick();
-        setSnackbarText(`${key} must be filled`);
+        setSnackbarText(`${convertToTitleCase(key)} must be filled`);
         setsnackbarSeverity("error");
-        console.log(`${key} must be filled`);
+        console.log(`${convertToTitleCase(key)} must be filled`);
         return;
       }
     }
@@ -561,6 +569,7 @@ export default function UserRegistration({ sendUrllist }) {
       setsnackbarSeverity("error");
       return;
     }
+
     console.log("formData : : ", formData);
     try {
       const response = await fetch("http://localhost:8081/auth/user/signup", {
@@ -621,7 +630,7 @@ export default function UserRegistration({ sendUrllist }) {
                   variant="h4"
                   sx={{ fontWeight: "bold" }}
                 >
-                  {updateFormData.userID}
+                  {updateFormData.userId}
                 </Typography>
               </Typography>
               <form>
@@ -727,13 +736,13 @@ export default function UserRegistration({ sendUrllist }) {
                     <Grid item xs={6}>
                       <Textfield
                         InputProps={{ readOnly: true }}
-                        autoComplete="userID"
-                        name="userID"
+                        autoComplete="userId"
+                        name="userId"
                         required
                         fullWidth
-                        id="userID"
+                        id="userId"
                         label="User ID"
-                        value={updateFormData.userID}
+                        value={updateFormData.userId}
                         // onChange={handleUserIDChange}
                       />
                     </Grid>
@@ -1286,25 +1295,25 @@ export default function UserRegistration({ sendUrllist }) {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      {/* <FormControl fullWidth error={formErrors.userID}>
-                        <InputLabel htmlFor="userID">UserID</InputLabel>
+                      {/* <FormControl fullWidth error={formErrors.userId}>
+                        <InputLabel htmlFor="userId">UserID</InputLabel>
                         <OutlinedInput
-                          autoComplete="userID"
-                          name="userID"
+                          autoComplete="userId"
+                          name="userId"
                           required
                           fullWidth
-                          id="userID"
+                          id="userId"
                           label="User ID"
-                          value={formData.userID}
+                          value={formData.userId}
                           onChange={(e) => {
                             setFormData({
                               ...formData,
-                              userID: removeOnlySpecialChar(e.target.value),
+                              userId: removeOnlySpecialChar(e.target.value),
                             });
                             setUnchangedUserID(e.target.value);
                             setFormErrors({
                               ...formErrors,
-                              userID: e.target.value.trim() === "",
+                              userId: e.target.value.trim() === "",
                             });
                           }}
                           endAdornment={
@@ -1314,13 +1323,13 @@ export default function UserRegistration({ sendUrllist }) {
                                   control={
                                     <Checkbox
                                       checked={
-                                        formData.userID === formData.email
+                                        formData.userId === formData.email
                                       }
                                       onChange={(e) => {
                                         setFormData({
                                           ...formData,
-                                          userID:
-                                            formData.userID === formData.email
+                                          userId:
+                                            formData.userId === formData.email
                                               ? unchangedUserID
                                               : formData.email,
                                         });
@@ -1334,37 +1343,37 @@ export default function UserRegistration({ sendUrllist }) {
                             </InputAdornment>
                           }
                         />
-                        {formErrors.userID && (
+                        {formErrors.userId && (
                           <FormHelperText>
                             User ID must be filled
                           </FormHelperText>
                         )}
                       </FormControl> */}
-                      <FormControl fullWidth error={formErrors.userID}>
-                        <InputLabel htmlFor="userID">UserID</InputLabel>
+                      <FormControl fullWidth error={formErrors.userId}>
+                        <InputLabel htmlFor="userId">UserID</InputLabel>
                         <OutlinedInput
-                          autoComplete="userID"
-                          name="userID"
+                          autoComplete="userId"
+                          name="userId"
                           required
                           fullWidth
-                          id="userID"
+                          id="userId"
                           label="UserID"
-                          value={formData.userID}
+                          value={formData.userId}
                           onBlur={(e) => {
                             setFormData({
                               ...formData,
-                              userID: e.target.value.trim(),
+                              userId: e.target.value.trim(),
                             });
                           }}
                           onChange={(e) => {
                             setFormData({
                               ...formData,
-                              userID: removeOnlySpecialChar(e.target.value),
+                              userId: removeOnlySpecialChar(e.target.value),
                             });
                             setUnchangedUserID(e.target.value);
                             setFormErrors({
                               ...formErrors,
-                              userID: e.target.value.trim() === "",
+                              userId: e.target.value.trim() === "",
                             });
                           }}
                           endAdornment={
@@ -1374,13 +1383,13 @@ export default function UserRegistration({ sendUrllist }) {
                                   control={
                                     <Checkbox
                                       checked={
-                                        formData.userID === formData.email
+                                        formData.userId === formData.email
                                       }
                                       onChange={(e) => {
                                         setFormData({
                                           ...formData,
-                                          userID:
-                                            formData.userID === formData.email
+                                          userId:
+                                            formData.userId === formData.email
                                               ? unchangedUserID
                                               : formData.email,
                                         });
@@ -1394,7 +1403,7 @@ export default function UserRegistration({ sendUrllist }) {
                             </InputAdornment>
                           }
                         />
-                        {formErrors.userID && (
+                        {formErrors.userId && (
                           <FormHelperText>
                             User ID must be filled
                           </FormHelperText>

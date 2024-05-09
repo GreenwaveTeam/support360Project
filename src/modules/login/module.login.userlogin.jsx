@@ -28,7 +28,7 @@ import { Facebook, Twitter, Google, GitHub } from "@mui/icons-material";
 import gwlogo from "../../resources/images/gwlogo.png";
 
 export default function UserLogin() {
-  const [userID, setUserID] = useState("");
+  const [userId, setUserID] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -84,14 +84,14 @@ export default function UserLogin() {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    if (!userID || !password) {
+    if (!userId || !password) {
       handleClick();
       setSnackbarText("User ID and password are required.");
       setsnackbarSeverity("error");
       return;
     }
     setLoading(true);
-    const loggedIn = await login(userID, password);
+    const loggedIn = await login(userId, password);
     if (loggedIn) {
       let token = localStorage.getItem("token");
       // let attempts = 0;
@@ -270,13 +270,13 @@ export default function UserLogin() {
                       <Grid item xs={12}>
                         <Textfield
                           autoFocus
-                          autoComplete="userID"
-                          name="userID"
+                          autoComplete="userId"
+                          name="userId"
                           required
                           fullWidth
-                          id="userID"
+                          id="userId"
                           label="User ID"
-                          value={userID}
+                          value={userId}
                           focused
                           color="error"
                           // variant="filled"

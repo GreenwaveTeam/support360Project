@@ -49,6 +49,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import SendIcon from "@mui/icons-material/Send";
+import WarehouseOutlinedIcon from "@mui/icons-material/WarehouseOutlined";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { width } from "@mui/system";
 import { extendTokenExpiration } from "../helper/Support360Api";
@@ -265,7 +266,7 @@ export default function AdminHome({ sendUrllist }) {
   //     const data = await response.json();
   //     console.log("data : ", data);
   //     setList((prevList) => {
-  //       prevList.filter((item) => item.userID !== e);
+  //       prevList.filter((item) => item.userId !== e);
   //     });
   //   } catch (error) {
   //     console.log(error);
@@ -273,6 +274,7 @@ export default function AdminHome({ sendUrllist }) {
   // }
 
   async function deleteUserByUserID(e) {
+    console.log("e : ", e);
     try {
       const response = await fetch(`http://localhost:8081/users/user/${e}`, {
         method: "DELETE",
@@ -284,8 +286,10 @@ export default function AdminHome({ sendUrllist }) {
       const data = await response.ok;
       console.log("e : ", e);
       console.log("data : ", data);
-      setUserList((prevList) => prevList.filter((item) => item.userID !== e));
-      setFilteredUserRows(userList);
+      setUserList((prevList) => prevList.filter((item) => item.userId !== e));
+      setFilteredUserRows((prevList) =>
+        prevList.filter((item) => item.userId !== e)
+      );
       if (data) {
         navigate("/admin/home");
       }
@@ -306,8 +310,10 @@ export default function AdminHome({ sendUrllist }) {
       const data = await response.ok;
       console.log("e : ", e);
       console.log("data : ", data);
-      setAdminList((prevList) => prevList.filter((item) => item.userID !== e));
-      setFilteredAdminRows(adminList);
+      setAdminList((prevList) => prevList.filter((item) => item.userId !== e));
+      setFilteredAdminRows((prevList) =>
+        prevList.filter((item) => item.userId !== e)
+      );
       if (data) {
         navigate("/admin/home");
       }
@@ -339,28 +345,28 @@ export default function AdminHome({ sendUrllist }) {
     }
   }
 
-  async function resetPasswordByUserID(e) {
-    try {
-      const response = await fetch(
-        `http://localhost:8081/admins/admin/resetPassword?adminId=${e}&defaultPassword=${defaultPassword}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await response.ok;
-      console.log("e : ", e);
-      console.log("data : ", data);
-      if (data) {
-        navigate("/admin/home");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async function resetPasswordByUserID(e) {
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:8081/admins/admin/resetPassword?adminId=${e}&defaultPassword=${defaultPassword}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     const data = await response.ok;
+  //     console.log("e : ", e);
+  //     console.log("data : ", data);
+  //     if (data) {
+  //       navigate("/admin/home");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   // const handleEdit = (admin) => {
   //   history.push({
@@ -380,7 +386,7 @@ export default function AdminHome({ sendUrllist }) {
   //     });
   //     const data = await response.ok;
   //     console.log("data : ", data);
-  //     setAdminList((prevList) => prevList.filter((item) => item.userID !== e));
+  //     setAdminList((prevList) => prevList.filter((item) => item.userId !== e));
   //   } catch (error) {
   //     console.log(error);
   //   }
@@ -420,24 +426,24 @@ export default function AdminHome({ sendUrllist }) {
     }
   };
 
-  const handleDelete = (userID) => {
+  const handleDelete = (userId) => {
     setOpenDeleteDialog(true);
-    setSelectedUserID(userID);
+    setSelectedUserID(userId);
   };
 
-  const handleAdminDelete = (adminID) => {
+  const handleAdminDelete = (adminId) => {
     setOpenAdminDeleteDialog(true);
-    setSelectedAdminID(adminID);
+    setSelectedAdminID(adminId);
   };
 
-  const handleAdminPasswordReset = (adminID) => {
+  const handleAdminPasswordReset = (adminId) => {
     setOpenAdminResetPasswordDialog(true);
-    setSelectedAdminID(adminID);
+    setSelectedAdminID(adminId);
   };
 
-  const handleUserPasswordReset = (adminID) => {
+  const handleUserPasswordReset = (adminId) => {
     setOpenUserResetPasswordDialog(true);
-    setSelectedUserID(adminID);
+    setSelectedUserID(adminId);
   };
 
   const theme = useTheme();
@@ -489,22 +495,42 @@ export default function AdminHome({ sendUrllist }) {
               <Tab label="Admin" value="1" />
               <Tab label="User" value="2" />
             </TabList>
-            <div style={{ height: "inherit" }}>
-              <Button
-                variant="contained"
-                startIcon={<SendIcon />}
-                sx={{
-                  mt: 1.2,
-                  mb: 1,
-                  backgroundImage:
-                    "linear-gradient(to top, #0ba360 0%, #3cba92 100%);",
-                }}
-                onClick={() => {
-                  navigate("/admin/Role");
-                }}
-              >
-                Page Assign
-              </Button>
+            <div style={{ height: "inherit", display: "flex" }}>
+              <div style={{ height: "inherit" }}>
+                <Button
+                  variant="contained"
+                  startIcon={<SendIcon />}
+                  sx={{
+                    mt: 1.2,
+                    mb: 1,
+                    backgroundImage:
+                      "linear-gradient(to top, #0ba360 0%, #3cba92 100%);",
+                    marginRight: "8px",
+                  }}
+                  onClick={() => {
+                    navigate("/admin/Role");
+                  }}
+                >
+                  Page Assign
+                </Button>
+              </div>
+              <div style={{ height: "inherit" }}>
+                <Button
+                  variant="contained"
+                  startIcon={<WarehouseOutlinedIcon />}
+                  sx={{
+                    mt: 1.2,
+                    mb: 1,
+                    backgroundImage:
+                      "linear-gradient(to top, #0bd360 0%, #3cba92 100%);",
+                  }}
+                  onClick={() => {
+                    navigate("/admin/plantConfigure");
+                  }}
+                >
+                  Plant Configure
+                </Button>
+              </div>
             </div>
           </Box>
           <TabPanel value="1" sx={{ padding: "5px" }}>
@@ -547,7 +573,7 @@ export default function AdminHome({ sendUrllist }) {
                           <TableHead>
                             <TableRow>
                               <TableCell
-                                colSpan={5}
+                                colSpan={6}
                                 sx={{
                                   textAlign: "center",
                                   fontSize: "15px",
@@ -825,10 +851,10 @@ export default function AdminHome({ sendUrllist }) {
                                   {item.email}
                                 </TableCell>
                                 <TableCell align="center">
-                                  {/* {item.userID} */}
+                                  {/* {item.userId} */}
                                   <Chip
                                     variant="outlined"
-                                    label={item.userID}
+                                    label={item.userId}
                                     sx={{
                                       color: getColor(index),
                                       borderColor: getColor(index),
@@ -851,7 +877,7 @@ export default function AdminHome({ sendUrllist }) {
                             }}
                             align="center"
                           >
-                            {item.userID}
+                            {item.userId}
                           </TableCell> */}
                                 <TableCell align="center">
                                   <EditIcon
@@ -873,7 +899,7 @@ export default function AdminHome({ sendUrllist }) {
                                     color="error"
                                     style={{ cursor: "pointer" }}
                                     onClick={() =>
-                                      handleAdminDelete(item.userID)
+                                      handleAdminDelete(item.userId)
                                     }
                                   /> */}
                                   {item.email === logedUser.email ? (
@@ -886,7 +912,7 @@ export default function AdminHome({ sendUrllist }) {
                                       color="error"
                                       style={{ cursor: "pointer" }}
                                       onClick={() =>
-                                        handleAdminDelete(item.userID)
+                                        handleAdminDelete(item.userId)
                                       }
                                     />
                                   )}
@@ -934,7 +960,7 @@ export default function AdminHome({ sendUrllist }) {
                                     color="error"
                                     style={{ cursor: "pointer" }}
                                     onClick={() =>
-                                      handleAdminDelete(item.userID)
+                                      handleAdminDelete(item.userId)
                                     }
                                   /> */}
                                   {item.email === logedUser.email ? (
@@ -946,7 +972,7 @@ export default function AdminHome({ sendUrllist }) {
                                     <LockResetOutlinedIcon
                                       style={{ cursor: "pointer" }}
                                       onClick={() =>
-                                        handleAdminPasswordReset(item.userID)
+                                        handleAdminPasswordReset(item.userId)
                                       }
                                     />
                                   )}
@@ -1045,7 +1071,7 @@ export default function AdminHome({ sendUrllist }) {
                           <TableHead>
                             <TableRow>
                               <TableCell
-                                colSpan={6}
+                                colSpan={7}
                                 sx={{
                                   textAlign: "center",
                                   fontSize: "15px",
@@ -1340,14 +1366,14 @@ export default function AdminHome({ sendUrllist }) {
                                       ...userData,
                                       plantID: item.plantID,
                                       role: item.role,
-                                      userID: item.userID,
+                                      userId: item.userId,
                                       name: item.name,
                                     });
                                   }}
                                   align="center"
                                 >
                                   <Tooltip title="Configure ➚ ">
-                                    {item.userID}
+                                    {item.userId}
                                   </Tooltip>
                                 </TableCell>
                                 {/* </Link> */}
@@ -1373,9 +1399,9 @@ export default function AdminHome({ sendUrllist }) {
                                     color="error"
                                     style={{ cursor: "pointer" }}
                                     // onClick={(e) => {
-                                    //   deleteUserByUserID(item.userID);
+                                    //   deleteUserByUserID(item.userId);
                                     // }}
-                                    onClick={(e) => handleDelete(item.userID)}
+                                    onClick={(e) => handleDelete(item.userId)}
                                   /> */}
                                   {item.email === logedUser.email ? (
                                     <DeleteIcon
@@ -1386,7 +1412,7 @@ export default function AdminHome({ sendUrllist }) {
                                     <DeleteIcon
                                       color="error"
                                       style={{ cursor: "pointer" }}
-                                      onClick={() => handleDelete(item.userID)}
+                                      onClick={() => handleDelete(item.userId)}
                                     />
                                   )}
                                   <Dialog
@@ -1436,7 +1462,7 @@ export default function AdminHome({ sendUrllist }) {
                                     <LockResetOutlinedIcon
                                       style={{ cursor: "pointer" }}
                                       onClick={() =>
-                                        handleUserPasswordReset(item.userID)
+                                        handleUserPasswordReset(item.userId)
                                       }
                                     />
                                   )}
@@ -1469,7 +1495,9 @@ export default function AdminHome({ sendUrllist }) {
                                       <Button
                                         onClick={() => {
                                           // deleteAdminByAdminID(deleteAdminID);
-                                          resetPasswordByUserID(selectedUserID);
+                                          resetPasswordByAdminID(
+                                            selectedUserID
+                                          );
                                           setOpenUserResetPasswordDialog(false);
                                         }}
                                         color="error"
@@ -1727,13 +1755,13 @@ export default function AdminHome({ sendUrllist }) {
                               ...userData,
                               plantID: item.plantID,
                               role: item.role,
-                              userID: item.userID,
+                              userId: item.userId,
                               name: item.name,
                             });
                           }}
                           align="center"
                         >
-                          {item.userID}
+                          {item.userId}
                         </TableCell>
                         
                         <TableCell align="center">
@@ -1756,9 +1784,9 @@ export default function AdminHome({ sendUrllist }) {
                             color="error"
                             style={{ cursor: "pointer" }}
                             // onClick={(e) => {
-                            //   deleteUserByUserID(item.userID);
+                            //   deleteUserByUserID(item.userId);
                             // }}
-                            onClick={(e) => handleDelete(item.userID)}
+                            onClick={(e) => handleDelete(item.userId)}
                           />
                           <Dialog
                             open={openDeleteDialog}
@@ -1963,7 +1991,7 @@ export default function AdminHome({ sendUrllist }) {
                           </Avatar>
                         </TableCell>
                         <TableCell align="center">{item.email}</TableCell>
-                        <TableCell align="center">{item.userID}</TableCell>
+                        <TableCell align="center">{item.userId}</TableCell>
 
                         <TableCell align="center">
                           <EditIcon
@@ -1981,7 +2009,7 @@ export default function AdminHome({ sendUrllist }) {
                           <DeleteIcon
                             color="error"
                             style={{ cursor: "pointer" }}
-                            onClick={() => handleAdminDelete(item.userID)}
+                            onClick={() => handleAdminDelete(item.userId)}
                           />
                           <Dialog
                             open={openAdminDeleteDialog}

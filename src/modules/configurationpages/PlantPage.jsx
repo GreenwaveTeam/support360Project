@@ -1,109 +1,683 @@
-import { Button, Grid } from "@mui/material";
-import React from "react";
+import {
+  Alert,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Slide,
+  Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import React, { useEffect, useState } from "react";
 import Textfield from "../../components/textfield/textfield.component";
 import Datepicker from "../../components/datepicker/datepicker.component";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowDropDownOutlinedIcon from "@mui/icons-material/ArrowDropDownOutlined";
+import ArrowDropUpOutlinedIcon from "@mui/icons-material/ArrowDropUpOutlined";
 import dayjs from "dayjs";
+import { tokens } from "../../theme";
+import { useNavigate } from "react-router-dom";
 
-export default function PlantPage() {
+export default function PlantPage({ sendUrllist }) {
+  const navigate = useNavigate();
+  const [selectedplantId, setSelectedplantId] = useState("");
+  const [plantList, setPlantList] = useState([]);
+  const [filteredPlantRows, setFilteredPlantRows] = useState(plantList);
+  const [plantSearch, setPlantSearch] = useState("");
+  const [openPlantDeleteDialog, setOpenPlantDeleteDialog] = useState(false);
+  const [plantErrorOpen, setPlantErrorOpen] = useState(false);
+  const [snackbarText, setSnackbarText] = useState("");
+  const [snackbarSeverity, setsnackbarSeverity] = useState("");
+  const [newPlant, setNewPlant] = useState({
+    plantName: "",
+    plantID: "",
+    address: "",
+    customerName: "",
+    division: "",
+    supportStartDate: dayjs(),
+    supportEndDate: dayjs(),
+  });
+  const [formErrors, setFormErrors] = useState({
+    plantName: false,
+    plantID: false,
+    address: false,
+    customerName: false,
+    division: false,
+    // supportStartDate: dayjs(),
+    // supportEndDate: dayjs(),
+  });
+
+  const newColors = ["#ff7043", "#7e57c2", "#81c784"];
+  const getColor = (index) => {
+    return newColors[index % newColors.length];
+  };
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  const [showForm, setShowForm] = useState(true);
+
+  const toggleFormVisibility = () => {
+    setShowForm(!showForm);
+  };
+
+  const urllist = [
+    { pageName: "Admin Home", pagelink: "/admin/home" },
+    { pageName: "Plant Configure", pagelink: "/admin/plantConfigure" },
+  ];
+
+  useEffect(() => {
+    fetchPlantData();
+    sendUrllist(urllist);
+  }, []);
+
+  const tableStyle = {
+    color: "blue",
+    border: "1px solid",
+    borderColor: colors.grey[800],
+    borderRadius: "0.7rem",
+  };
+
+  const handleCloseSnackbar = (e, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setPlantErrorOpen(false);
+  };
+
+  const handleClickSnackbar = () => {
+    setPlantErrorOpen(true);
+  };
+
+  function convertToTitleCase(str) {
+    let words = str.split(/(?=[A-Z])/);
+    let capitalizedWords = words.map((word) => {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    });
+    return capitalizedWords.join(" ");
+  }
+
+  const handlePlantSearchChange = (event) => {
+    setPlantSearch(event.target.value);
+    console.log("Search => ", event.target.value);
+    const currentSearch = event.target.value;
+    console.log("Search => ", plantSearch);
+    if (currentSearch === "" || currentSearch.length === 0) {
+      setFilteredPlantRows(plantList);
+    } else {
+      const updatedPlantRows = [...plantList];
+      const filteredPlantRows = updatedPlantRows.filter((plant) =>
+        plant.plantID.toLowerCase().includes(currentSearch.trim().toLowerCase())
+      );
+      console.log("Filtered Rows => ", filteredPlantRows);
+      setFilteredPlantRows(filteredPlantRows);
+    }
+  };
+
+  const fetchPlantData = async () => {
+    try {
+      const response = await fetch("http://localhost:8081/plants/", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 403) {
+        // navigate("/Plant/home");
+        return;
+      }
+      const data = await response.json();
+      console.log("plantDetails : ", data);
+
+      const filteredPlantList = data.filter((plant) => plant.plantID !== "NA");
+      console.log("filteredPlantList : ", filteredPlantList);
+      setPlantList(filteredPlantList);
+      setFilteredPlantRows(filteredPlantList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  async function deletePlantByplantId(e) {
+    console.log("plantId : ", e);
+    try {
+      const response = await fetch(
+        `http://localhost:8081/plants/plant?plantId=${e}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.ok;
+      console.log("e : ", e);
+      console.log("data : ", data);
+      setPlantList((prevList) => prevList.filter((item) => item.plantID !== e));
+      setFilteredPlantRows((prevList) =>
+        prevList.filter((item) => item.plantID !== e)
+      );
+      // if (data) {
+      //   navigate("/Plant/home");
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const postPlantData = async () => {
+    const newFormErrors = {};
+    Object.keys(newPlant).forEach((key) => {
+      if (newPlant[key] === null || newPlant[key] === "") {
+        newFormErrors[key] = true;
+      } else {
+        newFormErrors[key] = false;
+      }
+    });
+    setFormErrors(newFormErrors);
+
+    for (const key in newPlant) {
+      if (newPlant[key] === null || newPlant[key] === "") {
+        handleClickSnackbar();
+        setSnackbarText(`${convertToTitleCase(key)} must be filled`);
+        setsnackbarSeverity("error");
+        console.log(`${convertToTitleCase(key)} must be filled`);
+        return;
+      }
+    }
+
+    if (newPlant.supportStartDate > newPlant.supportEndDate) {
+      handleClickSnackbar();
+      setSnackbarText(
+        "Support Start Date should not be Greater than Support End Date !"
+      );
+      setsnackbarSeverity("error");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8081/plants/", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPlant),
+      });
+
+      if (response.ok) {
+        const text = await response.text();
+        handleClickSnackbar();
+        setSnackbarText(text);
+        setsnackbarSeverity("success");
+      } else {
+        const text = await response.text();
+        handleClickSnackbar();
+        setSnackbarText(text);
+        setsnackbarSeverity("error");
+        return;
+      }
+      fetchPlantData();
+      navigate("/admin/plantConfigure");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePlantDelete = (plantId) => {
+    setOpenPlantDeleteDialog(true);
+    setSelectedplantId(plantId);
+  };
+
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Textfield
-            required
-            fullWidth={true}
-            name="plantName"
-            label="Plant Name"
-            id="plantName"
-            value={newPlantName.plantName}
-            onChange={handlenewPlantNameInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Textfield
-            required
-            fullWidth={true}
-            name="plantID"
-            label="PlantID"
-            id="plantID"
-            value={newPlantName.plantID}
-            onChange={handlenewPlantNameInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Textfield
-            required
-            fullWidth={true}
-            name="address"
-            label="Address"
-            id="address"
-            value={newPlantName.address}
-            onChange={handlenewPlantNameInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Textfield
-            required
-            fullWidth={true}
-            name="customerName"
-            label="Customer Name"
-            id="customerName"
-            value={newPlantName.customerName}
-            onChange={handlenewPlantNameInputChange}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Datepicker
-            label="Support Start Date"
-            value={dayjs(newPlantName.supportStartDate)}
-            onChange={(startDate) =>
-              setNewPlantName({
-                ...newPlantName,
-                supportStartDate: startDate.format("YYYY-MM-DD"),
-              })
-            }
-            slotProps={{ textField: { fullWidth: true } }}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <Datepicker
-            label="Support End Date"
-            value={dayjs(newPlantName.supportEndDate)}
-            onChange={(endDate) =>
-              setNewPlantName({
-                ...newPlantName,
-                supportEndDate: endDate.format("YYYY-MM-DD"),
-              })
-            }
-            slotProps={{ textField: { fullWidth: true } }}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <Textfield
-            required
-            fullWidth={true}
-            name="division"
-            label="Division"
-            id="division"
-            value={newPlantName.division}
-            onChange={handlenewPlantNameInputChange}
-          />
-        </Grid>
-      </Grid>
-      <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
-        Cancel
-      </Button>
-      <Button
-        onClick={() => {
-          setOpenDeleteDialog(false);
-          postPlantName();
-          fetchPlantData();
-        }}
-        color="error"
-        autoFocus
+      <div style={{ marginBottom: "20px" }}>
+        <IconButton
+          variant="contained"
+          onClick={toggleFormVisibility}
+          sx={{
+            backgroundColor: "#ff7043",
+            borderRadius: "50px",
+          }}
+        >
+          {showForm ? (
+            <Tooltip title="Show All Plant">
+              <ArrowDropUpOutlinedIcon />
+            </Tooltip>
+          ) : (
+            <Tooltip title="Add Plant">
+              <ArrowDropDownOutlinedIcon />
+            </Tooltip>
+          )}
+        </IconButton>
+      </div>
+      {showForm && (
+        <>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Textfield
+                required
+                fullWidth={true}
+                name="plantName"
+                label="Plant Name"
+                id="plantName"
+                value={newPlant.plantName}
+                onChange={(e) => {
+                  setNewPlant({ ...newPlant, plantName: e.target.value });
+                  setFormErrors({
+                    ...formErrors,
+                    plantName: e.target.value.trim() === "",
+                  });
+                }}
+                error={formErrors.plantName}
+                helperText={formErrors.plantName && "Plant Name must be filled"}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Textfield
+                required
+                fullWidth={true}
+                name="plantId"
+                label="plantId"
+                id="plantId"
+                value={newPlant.plantID}
+                onChange={(e) => {
+                  setNewPlant({ ...newPlant, plantID: e.target.value });
+                  setFormErrors({
+                    ...formErrors,
+                    plantID: e.target.value.trim() === "",
+                  });
+                }}
+                error={formErrors.plantID}
+                helperText={formErrors.plantID && "Plant Id must be filled"}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Textfield
+                required
+                fullWidth={true}
+                name="address"
+                label="Address"
+                id="address"
+                value={newPlant.address}
+                onChange={(e) => {
+                  setNewPlant({ ...newPlant, address: e.target.value });
+                  setFormErrors({
+                    ...formErrors,
+                    address: e.target.value.trim() === "",
+                  });
+                }}
+                error={formErrors.address}
+                helperText={formErrors.address && "Address must be filled"}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Textfield
+                required
+                fullWidth={true}
+                name="customerName"
+                label="Customer Name"
+                id="customerName"
+                value={newPlant.customerName}
+                onChange={(e) => {
+                  setNewPlant({ ...newPlant, customerName: e.target.value });
+                  setFormErrors({
+                    ...formErrors,
+                    customerName: e.target.value.trim() === "",
+                  });
+                }}
+                error={formErrors.customerName}
+                helperText={
+                  formErrors.customerName && "Customer Name must be filled"
+                }
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Datepicker
+                label="Support Start Date"
+                value={dayjs(newPlant.supportStartDate)}
+                onChange={(startDate) =>
+                  setNewPlant({
+                    ...newPlant,
+                    supportStartDate: startDate.format("YYYY-MM-DD"),
+                  })
+                }
+                slotProps={{ textField: { fullWidth: true } }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Datepicker
+                label="Support End Date"
+                value={dayjs(newPlant.supportEndDate)}
+                onChange={(endDate) =>
+                  setNewPlant({
+                    ...newPlant,
+                    supportEndDate: endDate.format("YYYY-MM-DD"),
+                  })
+                }
+                slotProps={{ textField: { fullWidth: true } }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Textfield
+                required
+                fullWidth={true}
+                name="division"
+                label="Division"
+                id="division"
+                value={newPlant.division}
+                onChange={(e) => {
+                  setNewPlant({ ...newPlant, division: e.target.value });
+                  setFormErrors({
+                    ...formErrors,
+                    division: e.target.value.trim() === "",
+                  });
+                }}
+                error={formErrors.division}
+                helperText={formErrors.division && "Division must be filled"}
+              />
+            </Grid>
+          </Grid>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              variant="contained"
+              sx={{
+                mt: 1,
+                mb: 1,
+                backgroundImage:
+                  "linear-gradient(to top, #0ba360 0%, #3cba92 100%);",
+              }}
+              onClick={() => {
+                postPlantData();
+                fetchPlantData();
+              }}
+            >
+              Save Plant
+            </Button>
+          </div>
+        </>
+      )}
+      <Grid
+        item
+        xs={12}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
       >
-        Save
-      </Button>
+        <TableContainer sx={tableStyle}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  colSpan={8}
+                  sx={{
+                    textAlign: "center",
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                    backgroundColor: colors.primary[400],
+                  }}
+                >
+                  {" "}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "0rem 1rem",
+                    }}
+                  >
+                    <Typography
+                      component="h1"
+                      variant="h6"
+                      sx={{ fontWeight: "600" }}
+                    >
+                      Existing Plants
+                    </Typography>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+
+                        columnGap: "1rem",
+                      }}
+                    >
+                      <div>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="search">
+                            <div style={{ display: "flex" }}>
+                              <SearchOutlinedIcon
+                                style={{
+                                  marginRight: "5px",
+                                  padding: "14.5px 14px !important",
+                                  height: "0.9375rem !important",
+                                }}
+                              />
+                              Search...
+                            </div>
+                          </InputLabel>
+
+                          <OutlinedInput
+                            label="   Search..."
+                            autoComplete="search"
+                            name="search"
+                            required
+                            fullWidth
+                            id="search"
+                            value={plantSearch}
+                            sx={{
+                              marginLeft: "5px",
+                              width: "200px",
+                              padding: "23.5px 14px !important",
+                              height: "1.1375rem !important",
+                            }}
+                            onChange={(e) => handlePlantSearchChange(e)}
+                            endAdornment={
+                              <Tooltip title="Clear">
+                                <InputAdornment position="end">
+                                  <IconButton
+                                    variant="contained"
+                                    aria-label="delete"
+                                    size="medium"
+                                    onClick={() => {
+                                      setPlantSearch("");
+                                      setFilteredPlantRows(plantList);
+                                    }}
+                                  >
+                                    <CloseIcon fontSize="inherit" />
+                                  </IconButton>
+                                </InputAdornment>
+                              </Tooltip>
+                            }
+                          />
+                        </FormControl>
+                      </div>
+                    </div>
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: colors.primary[400] }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                  align="center"
+                >
+                  Plant Name
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                  align="center"
+                >
+                  Plant Id
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                  align="center"
+                >
+                  Address
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                  align="center"
+                >
+                  Customer Name
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                  align="center"
+                >
+                  Division
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                  align="center"
+                >
+                  Support Start Date
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                  align="center"
+                >
+                  Support End Date
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                  align="center"
+                >
+                  Delete
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredPlantRows.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell align="center">{item.plantName}</TableCell>
+                  <TableCell align="center">
+                    <Chip
+                      variant="outlined"
+                      label={item.plantID}
+                      sx={{
+                        color: getColor(index),
+                        borderColor: getColor(index),
+                        fontWeight: 600,
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell align="center">{item.address}</TableCell>
+                  <TableCell align="center">{item.customerName}</TableCell>
+                  <TableCell align="center">{item.division}</TableCell>
+                  <TableCell align="center">{item.supportStartDate}</TableCell>
+                  <TableCell align="center">{item.supportEndDate}</TableCell>
+                  <TableCell align="center">
+                    <DeleteIcon
+                      color="error"
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handlePlantDelete(item.plantID)}
+                    />
+                    <Dialog
+                      open={openPlantDeleteDialog}
+                      onClose={() => setOpenPlantDeleteDialog(false)}
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                    >
+                      <DialogTitle id="alert-dialog-title">
+                        {"Delete Plant Data?"}
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                          Are you sure you want to delete this Plant:{" "}
+                          {selectedplantId} ?
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          onClick={() => setOpenPlantDeleteDialog(false)}
+                          color="primary"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            deletePlantByplantId(selectedplantId);
+                            setOpenPlantDeleteDialog(false);
+                          }}
+                          color="error"
+                          autoFocus
+                        >
+                          Delete
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Grid>
+      <Snackbar
+        open={plantErrorOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        TransitionComponent={Slide}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarText}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

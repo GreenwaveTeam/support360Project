@@ -335,6 +335,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
                   deleteFromDatabase={handleDeleteClick}
                   editActive={true}
                   tablename={"Existing Applications"}
+                  progressVisible={true}
                   /*style={}*/ redirectIconActive={true}
                 />
               )}

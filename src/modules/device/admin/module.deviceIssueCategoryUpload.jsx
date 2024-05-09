@@ -344,6 +344,7 @@ const DeviceCategory = ({ sendUrllist }) => {
                   <Table
                     rows={categorylist}
                     columns={columns}
+                    progressVisible={true}
                     setRows={setCategorylist}
                     savetoDatabse={editCategory}
                     redirectColumn={"categoryname"}

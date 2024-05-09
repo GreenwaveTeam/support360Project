@@ -1058,6 +1058,7 @@ const Application = ({ sendUrllist }) => {
                               </Box>
                               <Table
                                 rows={issues}
+                                progressVisible={true}
                                 setRows={setissues}
                                 savetoDatabse={handleEditIssue}
                                 deleteFromDatabase={handleDeleteIssue}

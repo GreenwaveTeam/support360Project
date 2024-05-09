@@ -78,7 +78,7 @@ export default function ModuleConfigure({ sendUrllist }) {
   const [filterValue, setFilterValue] = useState("");
   const [contextMenuPosition, setContextMenuPosition] = useState(null);
   const [selectedModuleForDelete, setSelectedModuleForDelete] = useState(null);
-
+  const [deleteModuleDialog,setDeleteModuleDialog]=useState(false)
 
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
@@ -108,6 +108,10 @@ export default function ModuleConfigure({ sendUrllist }) {
     setSelectedModuleForDelete(module.modulename);
   };
   const handleDeleteModule=async()=>{
+    setDeleteModuleDialog(true);
+    
+  }
+  const handleDeleteModuleConfirm=async()=>{
     try {
       const response = await axios.delete(
         `http://localhost:8081/application/admin/${plantid}/${application_name}/${selectedModuleForDelete}`,
@@ -1172,6 +1176,13 @@ export default function ModuleConfigure({ sendUrllist }) {
               
               <MenuItem onClick={handleDeleteModule}>Delete Module</MenuItem>
             </Menu>
+            <CustomDialog
+              open={deleteModuleDialog}
+              setOpen={setDeleteModuleDialog}
+              proceedButtonText={"Delete"}
+              proceedButtonClick={handleDeleteModuleConfirm}
+              cancelButtonText="Cancel"
+            />
           </Box>
         )}
     </div>

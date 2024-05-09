@@ -193,6 +193,22 @@ const AdminPage = ({ sendUrllist }) => {
               </Button>
             </Grid>
           )}
+          {divIsVisibleList.includes("device-configure-button") && (
+            <Grid item>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => {
+                  navigate("/admin/Device/CategoryConfigure", {
+                    state: { plantID: userPlantID },
+                  });
+                }}
+              >
+                Device Configure
+              </Button>
+            </Grid>
+          )}
           {divIsVisibleList.includes("infrastructure-button") && (
             <Grid item>
               <Button

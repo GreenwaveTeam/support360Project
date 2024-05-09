@@ -25,8 +25,14 @@ import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.
 import { useUserContext } from "../contexts/UserContext";
 import { extendTokenExpiration } from "../helper/Support360Api";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { Grid } from "@mui/material";
+import { BarPlot } from "@mui/x-charts/BarChart";
+import { LinePlot } from "@mui/x-charts/LineChart";
+import { ChartsXAxis } from "@mui/x-charts/ChartsXAxis";
 import { ResponsiveChartContainer, axisClasses } from "@mui/x-charts";
 import "primeicons/primeicons.css";
+//import { MeterGroup } from "primereact/metergroup";
+
 //bootstrap
 import "bootstrap/dist/css/bootstrap.css";
 
@@ -217,13 +223,8 @@ function UserHome({ sendUrllist }) {
         label: "Issue Info",
       },
     ],
-    width: 500,
-    height: 300,
-    sx: {
-      [`.${axisClasses.left} .${axisClasses.label}`]: {
-        transform: "translate(-20px, 0)",
-      },
-    },
+    //width: 500,
+    height: 264,
   };
 
   const monthwiseticketraised = async () => {
@@ -421,6 +422,9 @@ function UserHome({ sendUrllist }) {
 
   const urllist = [{ pageName: "User Home Page", pagelink: "/user/home" }];
 
+  //
+  const [type, setType] = React.useState("bar");
+
   return (
     <Box>
       <Container maxWidth="">
@@ -502,7 +506,7 @@ function UserHome({ sendUrllist }) {
                 >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
-                      <div class="col-md-5">
+                      <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
                         <div className="row">
                           <div class="col-md-12">
                             <Typography
@@ -522,8 +526,22 @@ function UserHome({ sendUrllist }) {
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-7">
-                        <SparkLineChart data={monthwiseticket} height={100} />
+                      <div
+                        class="col-md-5"
+                        style={{
+                          display: "grid",
+                          alignItems: "center",
+                          justifyItems: "center",
+                        }}
+                      >
+                        <Button
+                          style={{ borderRadius: "50%" }}
+                          icon="pi pi-star-fill"
+                          rounded
+                          //outlined
+                          severity="info"
+                          aria-label="Cancel"
+                        />
                       </div>
                     </div>
                   </CardContent>
@@ -539,7 +557,7 @@ function UserHome({ sendUrllist }) {
                 >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
-                      <div class="col-md-5">
+                      <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
                         <div className="row">
                           <div class="col-md-12">
                             <Typography
@@ -559,11 +577,22 @@ function UserHome({ sendUrllist }) {
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-7">
-                        {/* <SparkLineChart
-                          data={[3, 5, 7, 5, 4, 2, 4, 6]}
-                          height={100}
-                        /> */}
+                      <div
+                        class="col-md-5"
+                        style={{
+                          display: "grid",
+                          alignItems: "center",
+                          justifyItems: "center",
+                        }}
+                      >
+                        <Button
+                          style={{ borderRadius: "50%" }}
+                          icon="pi pi-star-fill"
+                          rounded
+                          //outlined
+                          severity="success"
+                          aria-label="Cancel"
+                        />
                       </div>
                     </div>
                   </CardContent>
@@ -579,7 +608,7 @@ function UserHome({ sendUrllist }) {
                 >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
-                      <div class="col-md-5">
+                      <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
                         <div className="row">
                           <div class="col-md-12">
                             <Typography
@@ -599,11 +628,22 @@ function UserHome({ sendUrllist }) {
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-7">
-                        {/* <SparkLineChart
-                          data={[5, 4, 4, 5, 4, 2, 4, 6]}
-                          height={100}
-                        /> */}
+                      <div
+                        class="col-md-5"
+                        style={{
+                          display: "grid",
+                          alignItems: "center",
+                          justifyItems: "center",
+                        }}
+                      >
+                        <Button
+                          style={{ borderRadius: "50%" }}
+                          icon="pi pi-star-fill"
+                          rounded
+                          //outlined
+                          severity="warning"
+                          aria-label="Cancel"
+                        />
                       </div>
                     </div>
                   </CardContent>
@@ -621,27 +661,45 @@ function UserHome({ sendUrllist }) {
                 </Card> */}
                 <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    {/* <div>
+                      <div className="card flex justify-content-center">
+                        <MeterGroup values={matergroupvalues} />
+                      </div>
+                    </div> */}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            <div class="row" style={{ marginTop: "1rem" }}>
+              <div class="col-md-12">
+                {/* <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Last Ticket Raised
+                    </Typography>
+                  </CardContent>
+                </Card> */}
+                <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
                     {/* <ResponsiveChartContainer> */}
+
                     <BarChart
-                      width={1200}
                       dataset={monthwiseticket}
                       xAxis={[{ scaleType: "band", dataKey: "month" }]}
                       series={[
-                        {
-                          dataKey: "Issue_Count",
-                          label: "Issue_Count",
-                        },
+                        { dataKey: "Issue_Count", label: "Issue Count" },
                         {
                           dataKey: "Pending_Issues",
-                          label: "Pending_Issues",
+                          label: "Pending Issues",
                         },
                         {
                           dataKey: "Resolved_Issues",
-                          label: "Resolved_Issues",
+                          label: "Resolved Issues",
                         },
                       ]}
                       {...chartSetting}
                     />
+
                     {/* </ResponsiveChartContainer> */}
                   </CardContent>
                 </Card>
@@ -705,35 +763,103 @@ function UserHome({ sendUrllist }) {
 
               <div class="row" style={{ marginTop: "1rem" }}>
                 <div class="col-md-12">
-                  <Card>
-                    <CardContent sx={{ paddingBottom: "16px !important" }}>
-                      <div className="row">
-                        <div className="col-md-8">
-                          <Typography gutterBottom variant="h5" component="div">
-                            License Information
+                  <div class="row">
+                    <div class="col-md-6">
+                      <Card>
+                        <CardContent
+                          sx={{
+                            paddingBottom: "16px !important",
+                            display: "grid",
+                            justifyItems: "center",
+                          }}
+                        >
+                          <Typography
+                            gutterBottom
+                            variant="h5"
+                            component="div"
+                            sx={{ marginBottom: "0.7rem" }}
+                          >
+                            Replay Time (AVG)
                           </Typography>
-                        </div>
-                        <div className="col-md-4">
-                          <Chip label={`Total ${daysDifference} Days`} />
-                        </div>
-                      </div>
-                      <div style={{ display: "grid", justifyItems: "center" }}>
-                        <Knob
-                          value={parseInt(daysDifferenceTillNow)}
-                          // min={parseInt(daysDifference)}
-                          valueColor="#48d1cc"
-                          rangeColor="#708090"
-                          //valueColor="#708090"
-                          minLength={parseInt(daysDifference)}
-                        />
+                          <SparkLineChart
+                            data={[3, 4, 2, 5, 4, 2, 4, 6]}
+                            height={75}
+                          />
+                        </CardContent>
+                      </Card>
+                    </div>
 
-                        <Typography gutterBottom variant="h5" component="div">
-                          {daysDifferenceTillNow} Days Left of {daysDifference}{" "}
-                          Days
-                        </Typography>
-                      </div>
-                    </CardContent>
-                  </Card>
+                    <div class="col-md-6">
+                      <Card>
+                        <CardContent
+                          sx={{
+                            paddingBottom: "16px !important",
+                            display: "grid",
+                            justifyItems: "center",
+                          }}
+                        >
+                          <Typography
+                            gutterBottom
+                            variant="h5"
+                            component="div"
+                            sx={{ marginBottom: "0.7rem" }}
+                          >
+                            Resolve Time (AVG)
+                          </Typography>
+                          <SparkLineChart
+                            data={[1, 4, 2, 5, 7, 2, 4, 6]}
+                            height={75}
+                          />
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                  <div class="row" style={{ marginTop: "1rem" }}>
+                    <div class="col-md-12">
+                      <Card>
+                        <CardContent sx={{ paddingBottom: "16px !important" }}>
+                          <div className="row">
+                            <div className="col-md-8">
+                              <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="div"
+                              >
+                                License Information
+                              </Typography>
+                            </div>
+                            <div className="col-md-4">
+                              <Chip label={`Total ${daysDifference} Days`} />
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              display: "grid",
+                              justifyItems: "center",
+                            }}
+                          >
+                            <Knob
+                              value={parseInt(daysDifferenceTillNow)}
+                              // min={parseInt(daysDifference)}
+                              valueColor="#48d1cc"
+                              rangeColor="#708090"
+                              //valueColor="#708090"
+                              minLength={parseInt(daysDifference)}
+                            />
+
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              {daysDifferenceTillNow} Days Left of{" "}
+                              {daysDifference} Days
+                            </Typography>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

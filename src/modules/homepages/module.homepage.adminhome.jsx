@@ -53,9 +53,9 @@ import { width } from "@mui/system";
 import { extendTokenExpiration } from "../helper/Support360Api";
 
 export default function AdminHome({ sendUrllist }) {
-  const [list, setList] = useState([]);
-  const [search, setSearch] = useState("");
-  const [filteredRows, setFilteredRows] = useState(list);
+  const [userList, setUserList] = useState([]);
+  const [userSearch, setUserSearch] = useState("");
+  const [filteredUserRows, setFilteredUserRows] = useState(userList);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [open, setOpen] = useState(false);
   const [deleteUserID, setDeleteUserId] = useState("");
@@ -77,16 +77,23 @@ export default function AdminHome({ sendUrllist }) {
 
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
 
-  function convertToInitials(name) {
+  // function convertToInitials(name) {
+  //   const parts = name.split(" ");
+  //   const initials = parts[0].charAt(0).toUpperCase();
+  //   return initials;
+  //   return name
+  //     .split(" ")
+  //     .map((part) => part[0])
+  //     .join("")
+  //     .toUpperCase();
+  // }
+
+  const convertToInitials = (name) => {
     const parts = name.split(" ");
-    const initials = parts[0].charAt(0).toUpperCase();
+    const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
     return initials;
-    return name
-      .split(" ")
-      .map((part) => part[0])
-      .join("")
-      .toUpperCase();
-  }
+  };
+
   const newColors = ["#ff7043", "#7e57c2", "#81c784"];
   const getColor = (index) => {
     return newColors[index % newColors.length]; // Cycle through colors based on index
@@ -204,8 +211,8 @@ export default function AdminHome({ sendUrllist }) {
 
       const filteredData = data.filter((item) => item.plantID !== "NA");
 
-      setList(filteredData);
-      setFilteredRows(filteredData);
+      setUserList(filteredData);
+      setFilteredUserRows(filteredData);
     } catch (error) {
       console.log(error);
     }
@@ -270,8 +277,8 @@ export default function AdminHome({ sendUrllist }) {
       });
       const data = await response.ok;
       console.log("data : ", data);
-      setList((prevList) => prevList.filter((item) => item.userID !== e));
-      setFilteredRows(list);
+      setUserList((prevList) => prevList.filter((item) => item.userID !== e));
+      setFilteredUserRows(userList);
       setAdminList((prevList) => prevList.filter((item) => item.userID !== e));
       setFilteredAdminRows(adminList);
     } catch (error) {
@@ -303,20 +310,20 @@ export default function AdminHome({ sendUrllist }) {
   //   }
   // }
 
-  const handleSearchChange = (event) => {
-    setSearch(event.target.value);
+  const handleUserSearchChange = (event) => {
+    setUserSearch(event.target.value);
     console.log("Search => ", event.target.value);
     const currentSearch = event.target.value;
-    console.log("Search => ", search);
+    console.log("Search => ", userSearch);
     if (currentSearch === "" || currentSearch.length === 0) {
-      setFilteredRows(list);
+      setFilteredUserRows(userList);
     } else {
-      const updatedRows = [...list];
-      const filteredRows = updatedRows.filter((list) =>
-        list.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
+      const updatedUserRows = [...userList];
+      const filteredUserRows = updatedUserRows.filter((user) =>
+        user.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
       );
-      console.log("Filtered Rows => ", filteredRows);
-      setFilteredRows(filteredRows);
+      console.log("Filtered Rows => ", filteredUserRows);
+      setFilteredUserRows(filteredUserRows);
     }
   };
 
@@ -328,11 +335,12 @@ export default function AdminHome({ sendUrllist }) {
     if (currentSearch === "" || currentSearch.length === 0) {
       setFilteredAdminRows(adminList);
     } else {
-      const updatedRows = [...adminList];
-      const filteredRows = updatedRows.filter((list) =>
-        list.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
+      const updatedAdminRows = [...adminList];
+      const filteredAdminRows = updatedAdminRows.filter((admin) =>
+        admin.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
       );
-      setFilteredAdminRows(filteredRows);
+      console.log("Filtered Rows => ", filteredAdminRows);
+      setFilteredAdminRows(filteredAdminRows);
     }
   };
 
@@ -357,7 +365,7 @@ export default function AdminHome({ sendUrllist }) {
     borderRadius: "0.7rem",
   };
 
-  const urllist = [{ pageName: "Admin Home Page", pagelink: "/admin/home" }];
+  const urllist = [{ pageName: "Admin Home", pagelink: "/admin/home" }];
 
   const lists = [
     "toggle",
@@ -981,7 +989,7 @@ export default function AdminHome({ sendUrllist }) {
                                           required
                                           fullWidth
                                           id="search"
-                                          value={adminSearch}
+                                          value={userSearch}
                                           sx={{
                                             marginLeft: "5px",
                                             width: "200px",
@@ -989,7 +997,7 @@ export default function AdminHome({ sendUrllist }) {
                                             height: "1.1375rem !important",
                                           }}
                                           onChange={(e) =>
-                                            handleSearchChange(e)
+                                            handleUserSearchChange(e)
                                           }
                                           endAdornment={
                                             <Tooltip title="Clear">
@@ -999,8 +1007,10 @@ export default function AdminHome({ sendUrllist }) {
                                                   aria-label="delete"
                                                   size="medium"
                                                   onClick={() => {
-                                                    setSearch("");
-                                                    setFilteredRows(list);
+                                                    setUserSearch("");
+                                                    setFilteredUserRows(
+                                                      userList
+                                                    );
                                                   }}
                                                 >
                                                   <CloseIcon fontSize="inherit" />
@@ -1084,7 +1094,7 @@ export default function AdminHome({ sendUrllist }) {
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {filteredRows.map((item, index) => (
+                            {filteredUserRows.map((item, index) => (
                               <TableRow key={index}>
                                 {/* <TableCell
                                 //  align="right"

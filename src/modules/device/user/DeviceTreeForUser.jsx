@@ -36,7 +36,8 @@ import {
   TableBody,
   DialogTitle,
   Chip,
-  Container, // Import TextField
+  Container,
+  Typography, // Import TextField
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Dialog from "@mui/material/Dialog";
@@ -668,14 +669,14 @@ export default function UserDeviceTree({ sendUrllist }) {
                   <div className="treeViewContainer">
                     <Chip
                       color="info"
-                      variant="outlined"
+                      //variant="outlined"
                       size="large"
                       sx={{
                         fontSize: "0.9rem",
                         marginLeft: "5px",
                         marginBottom: "10px",
                       }}
-                      label="Device Tree :"
+                      label="Device Tree"
                     />
                     <Divider sx={{ marginBottom: "0.6rem" }} />
                     <TreeView
@@ -913,6 +914,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                             <Card
                               sx={{
                                 minWidth: 550,
+                                height: "79.2vh",
 
                                 // backgroundColor: colors.primary[400],
                                 borderRadius: 2,
@@ -925,10 +927,18 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     display: "flex",
                                     justifyContent: "space-between",
                                     alignItems: "center",
-                                    padding: "0px 1rem",
+                                    padding: "12px 1rem",
                                   }}
                                 >
-                                  <h4>Device Details:</h4>
+                                  <Typography
+                                    sx={{
+                                      fontWeight: "600",
+                                      fontSize: "0.9rem",
+                                      marginLeft: "0.5rem",
+                                    }}
+                                  >
+                                    Device Details:
+                                  </Typography>
                                   <Button
                                     className="button"
                                     variant="contained"
@@ -971,7 +981,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                               </center>
                             </div> */}
 
-                                <div style={{ padding: "0rem 1.5rem" }}>
+                                <div style={{ padding: "0.8rem 1.5rem" }}>
                                   <div className="CardText">
                                     <div style={{ marginBottom: "10px" }}>
                                       <p
@@ -1117,24 +1127,19 @@ export default function UserDeviceTree({ sendUrllist }) {
                                       </div>
                                     </div>
                                   </div>
+                                  <br />
                                   {selectedNode.image_file && (
                                     <div style={{ marginBottom: "10px" }}>
                                       <div>
-                                        <p
+                                        <div
                                           style={{
-                                            fontWeight: "bold",
-                                            marginBottom: "5px",
+                                            display: "grid",
+                                            justifyItems: "center",
                                           }}
                                         >
-                                          Image:
-                                        </p>
-                                      </div>
-
-                                      <div>
-                                        <div>
                                           <img
-                                            width="150"
-                                            height="120"
+                                            width="220"
+                                            height="170"
                                             src={`data:image/jpeg;base64,${selectedNode.image_file}`}
                                             alt="NoImage"
                                             style={{ borderRadius: "5px" }}

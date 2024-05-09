@@ -1,12 +1,17 @@
+/* Light Mode */
+
+.panelMenuStyleLightMode.p-panelmenu .p-panelmenu-header .p-panelmenu-header-content{
+    background:  white !important ;
+  }
 /* Dark Mode */
 .panelMenuStyleDarkMode.p-panelmenu .p-panelmenu-header .p-panelmenu-header-content{
-    background:  #121212 !important ;
-    color: white !important;
+    background:  #121212  ;
+    color: white ;
     border-color:  #121212;
   }
 .panelMenuStyleDarkMode.p-panelmenu .p-panelmenu-content{
-    background:  #121212 !important ;
-    color: white !important;
+    background:  #121212  ;
+    color: white ;
     border-color:  #121212;
 }
 .panelMenuStyleDarkMode.p-panelmenu .p-panelmenu-content .p-menuitem:not(.p-highlight):not(.p-disabled) > .p-menuitem-content:hover{
@@ -16,17 +21,13 @@
     background :#393636;
 }
 .panelMenuStyleDarkMode.p-panelmenu .p-panelmenu-header .p-panelmenu-header-content .p-panelmenu-header-link{
-    color: white !important;
+    color: white ;
 }
 .panelMenuStyleDarkMode.p-panelmenu .p-panelmenu-content .p-menuitem > .p-menuitem-content .p-menuitem-link .p-menuitem-text{
-    color: white !important;
+    color: white ;
 }
 
-/* Light Mode */
 
-  .panelMenuStyleLightMode.p-panelmenu .p-panelmenu-header .p-panelmenu-header-content{
-    background:  white !important ;
-  }
   /* Common Section*/
   .p-panelmenu-header-link{text-decoration:  none !important;}
   .p-menuitem-link{text-decoration:  none !important;}

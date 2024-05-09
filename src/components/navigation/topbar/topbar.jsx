@@ -34,6 +34,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Box } from "@mui/system";
 
+import gwlogo from "../../../../src/resources/images/gwlogo.png";
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -180,9 +182,10 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
           <div
             style={{ display: "flex", columnGap: "1rem", alignItems: "center" }}
           >
+            {/* <Avatar alt="Greenwave" src={gwlogo} /> */}
             <Tooltip
               title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              placement="left"
+              placement="bottom"
             >
               <IconButton
                 onClick={colorMode.toggleColorMode}

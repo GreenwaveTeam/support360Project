@@ -137,6 +137,7 @@ const CustomPanelBar = () => {
   });
 
   const storedTheme = localStorage.getItem("theme");
+  console.log(`zdfhgzdfjg ${storedTheme}`);
   // const [mode, setMode] = useState(storedTheme || "light");
 
   //console.log("navi role => ", formData.role);
@@ -180,11 +181,9 @@ const CustomPanelBar = () => {
     }
   };
 
-
- const fetchToken= async () => {
-  console.log("Token Test : ", localStorage.getItem("token"));
- }
-  
+  const fetchToken = async () => {
+    console.log("Token Test : ", localStorage.getItem("token"));
+  };
 
   const fetchUser = async () => {
     let role = "";
@@ -229,11 +228,11 @@ const CustomPanelBar = () => {
           {menuJson && (
             <PanelMenu
               className={
-                storedTheme === "light"
+                storedTheme === "light" || storedTheme == null
                   ? "panelMenuStyleLightMode"
                   : "panelMenuStyleDarkMode"
               }
-              //className="panelMenuStyle"
+              //className="panelMenuStyle  panelMenuStyleDarkMode  panelMenuStyleLightMode"
               model={renderMenuItems(menuJson)}
             />
           )}

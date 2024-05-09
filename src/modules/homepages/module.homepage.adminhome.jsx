@@ -38,6 +38,7 @@ import TopbarPage from "../../components/navigation/topbar/topbar";
 import SidebarPage from "../../components/navigation/sidebar/sidebar";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import { useUserContext } from "../contexts/UserContext";
 import { ColorModeContext, tokens } from "../../theme";
 import { useTheme } from "@mui/material";
@@ -58,24 +59,29 @@ export default function AdminHome({ sendUrllist }) {
   const [filteredUserRows, setFilteredUserRows] = useState(userList);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [open, setOpen] = useState(false);
-  const [deleteUserID, setDeleteUserId] = useState("");
-
+  const [selectedUserID, setSelectedUserID] = useState("");
+  const [openUserResetPasswordDialog, setOpenUserResetPasswordDialog] =
+    useState(false);
   const [adminList, setAdminList] = useState([]);
   const [adminSearch, setAdminSearch] = useState("");
   const [filteredAdminRows, setFilteredAdminRows] = useState(adminList);
   const [openAdminDeleteDialog, setOpenAdminDeleteDialog] = useState(false);
-  const [deleteAdminID, setDeleteAdminId] = useState("");
+  const [openAdminResetPasswordDialog, setOpenAdminResetPasswordDialog] =
+    useState(false);
+  const [selectedAdminID, setSelectedAdminID] = useState("");
   const [logedUser, setLogedUser] = useState([]);
 
   const navigate = useNavigate();
-  const [switchLabel, setSwitchLabel] = useState("Toggle Admin");
-  const [switchChecked, setSwitchChecked] = useState(false);
-  const handleSwitchChange = (event) => {
-    setSwitchChecked(event.target.checked);
-    setSwitchLabel(event.target.checked ? "Toggle User" : "Toggle Admin");
-  };
+  // const [switchLabel, setSwitchLabel] = useState("Toggle Admin");
+  // const [switchChecked, setSwitchChecked] = useState(false);
+  // const handleSwitchChange = (event) => {
+  //   setSwitchChecked(event.target.checked);
+  //   setSwitchLabel(event.target.checked ? "Toggle User" : "Toggle Admin");
+  // };
 
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+
+  const defaultPassword = "user_123";
 
   // function convertToInitials(name) {
   //   const parts = name.split(" ");
@@ -276,11 +282,81 @@ export default function AdminHome({ sendUrllist }) {
         },
       });
       const data = await response.ok;
+      console.log("e : ", e);
       console.log("data : ", data);
       setUserList((prevList) => prevList.filter((item) => item.userID !== e));
       setFilteredUserRows(userList);
+      if (data) {
+        navigate("/admin/home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function deleteAdminByAdminID(e) {
+    try {
+      const response = await fetch(`http://localhost:8081/admins/admin/${e}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.ok;
+      console.log("e : ", e);
+      console.log("data : ", data);
       setAdminList((prevList) => prevList.filter((item) => item.userID !== e));
       setFilteredAdminRows(adminList);
+      if (data) {
+        navigate("/admin/home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function resetPasswordByAdminID(e) {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/users/user/resetPassword?userId=${e}&defaultPassword=${defaultPassword}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.ok;
+      console.log("e : ", e);
+      console.log("data : ", data);
+      if (data) {
+        navigate("/admin/home");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function resetPasswordByUserID(e) {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/admins/admin/resetPassword?adminId=${e}&defaultPassword=${defaultPassword}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.ok;
+      console.log("e : ", e);
+      console.log("data : ", data);
+      if (data) {
+        navigate("/admin/home");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -346,12 +422,22 @@ export default function AdminHome({ sendUrllist }) {
 
   const handleDelete = (userID) => {
     setOpenDeleteDialog(true);
-    setDeleteUserId(userID);
+    setSelectedUserID(userID);
   };
 
   const handleAdminDelete = (adminID) => {
     setOpenAdminDeleteDialog(true);
-    setDeleteAdminId(adminID);
+    setSelectedAdminID(adminID);
+  };
+
+  const handleAdminPasswordReset = (adminID) => {
+    setOpenAdminResetPasswordDialog(true);
+    setSelectedAdminID(adminID);
+  };
+
+  const handleUserPasswordReset = (adminID) => {
+    setOpenUserResetPasswordDialog(true);
+    setSelectedUserID(adminID);
   };
 
   const theme = useTheme();
@@ -696,6 +782,15 @@ export default function AdminHome({ sendUrllist }) {
                               >
                                 Delete
                               </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                }}
+                                align="center"
+                              >
+                                Password Reset
+                              </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -809,7 +904,7 @@ export default function AdminHome({ sendUrllist }) {
                                     <DialogContent>
                                       <DialogContentText id="alert-dialog-description">
                                         Are you sure you want to delete this
-                                        admin: {deleteAdminID} ?
+                                        admin: {selectedAdminID} ?
                                       </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>
@@ -823,8 +918,73 @@ export default function AdminHome({ sendUrllist }) {
                                       </Button>
                                       <Button
                                         onClick={() => {
-                                          deleteUserByUserID(deleteAdminID);
+                                          deleteAdminByAdminID(selectedAdminID);
                                           setOpenAdminDeleteDialog(false);
+                                        }}
+                                        color="error"
+                                        autoFocus
+                                      >
+                                        Delete
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
+                                </TableCell>
+                                <TableCell align="center">
+                                  {/* <DeleteIcon
+                                    color="error"
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                      handleAdminDelete(item.userID)
+                                    }
+                                  /> */}
+                                  {item.email === logedUser.email ? (
+                                    <LockResetOutlinedIcon
+                                      color="disabled"
+                                      style={{ cursor: "not-allowed" }}
+                                    />
+                                  ) : (
+                                    <LockResetOutlinedIcon
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() =>
+                                        handleAdminPasswordReset(item.userID)
+                                      }
+                                    />
+                                  )}
+                                  <Dialog
+                                    open={openAdminResetPasswordDialog}
+                                    onClose={() =>
+                                      setOpenAdminResetPasswordDialog(false)
+                                    }
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                  >
+                                    <DialogTitle id="alert-dialog-title">
+                                      {"Delete Admin?"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                      <DialogContentText id="alert-dialog-description">
+                                        Are you sure you want to reset password
+                                        for admin: {selectedAdminID} ?
+                                      </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button
+                                        onClick={() =>
+                                          setOpenAdminResetPasswordDialog(false)
+                                        }
+                                        color="primary"
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        onClick={() => {
+                                          // deleteAdminByAdminID(deleteAdminID);
+                                          resetPasswordByAdminID(
+                                            selectedAdminID
+                                          );
+                                          setOpenAdminResetPasswordDialog(
+                                            false
+                                          );
                                         }}
                                         color="error"
                                         autoFocus
@@ -1091,6 +1251,15 @@ export default function AdminHome({ sendUrllist }) {
                               >
                                 Delete
                               </TableCell>
+                              <TableCell
+                                sx={{
+                                  fontWeight: "bold",
+                                  fontSize: "14px",
+                                }}
+                                align="center"
+                              >
+                                Password Reset
+                              </TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -1232,7 +1401,7 @@ export default function AdminHome({ sendUrllist }) {
                                     <DialogContent>
                                       <DialogContentText id="alert-dialog-description">
                                         Are you sure you want to delete this
-                                        user : {deleteUserID} ?
+                                        user : {selectedUserID} ?
                                       </DialogContentText>
                                     </DialogContent>
                                     <DialogActions>
@@ -1246,8 +1415,62 @@ export default function AdminHome({ sendUrllist }) {
                                       </Button>
                                       <Button
                                         onClick={() => {
-                                          deleteUserByUserID(deleteUserID);
+                                          deleteUserByUserID(selectedUserID);
                                           setOpenDeleteDialog(false);
+                                        }}
+                                        color="error"
+                                        autoFocus
+                                      >
+                                        Delete
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
+                                </TableCell>
+                                <TableCell align="center">
+                                  {item.email === logedUser.email ? (
+                                    <LockResetOutlinedIcon
+                                      color="disabled"
+                                      style={{ cursor: "not-allowed" }}
+                                    />
+                                  ) : (
+                                    <LockResetOutlinedIcon
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() =>
+                                        handleUserPasswordReset(item.userID)
+                                      }
+                                    />
+                                  )}
+                                  <Dialog
+                                    open={openUserResetPasswordDialog}
+                                    onClose={() =>
+                                      setOpenUserResetPasswordDialog(false)
+                                    }
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                  >
+                                    <DialogTitle id="alert-dialog-title">
+                                      {"Reset Password?"}
+                                    </DialogTitle>
+                                    <DialogContent>
+                                      <DialogContentText id="alert-dialog-description">
+                                        Are you sure you want to reset password
+                                        for user: {selectedUserID} ?
+                                      </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button
+                                        onClick={() =>
+                                          setOpenUserResetPasswordDialog(false)
+                                        }
+                                        color="primary"
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        onClick={() => {
+                                          // deleteAdminByAdminID(deleteAdminID);
+                                          resetPasswordByUserID(selectedUserID);
+                                          setOpenUserResetPasswordDialog(false);
                                         }}
                                         color="error"
                                         autoFocus
@@ -1317,9 +1540,8 @@ export default function AdminHome({ sendUrllist }) {
               Register New Admin
             </Button>
           )}
-        </Grid> */}
-
-          {/* {!switchChecked && divIsVisibleList.includes("existing-users") && (
+        </Grid>
+        {!switchChecked && divIsVisibleList.includes("existing-users") && (
           <>
             <Box
               alignItems="center"

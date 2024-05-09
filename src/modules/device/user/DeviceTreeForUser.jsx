@@ -37,7 +37,9 @@ import {
   DialogTitle,
   Chip,
   Container,
-  Typography, // Import TextField
+  Typography,
+  DialogContent,
+  DialogContentText, // Import TextField
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Dialog from "@mui/material/Dialog";
@@ -59,6 +61,9 @@ import { ExpandMore } from "@mui/icons-material";
 import Dropdown from "../../../components/dropdown/dropdown.component";
 import dayjs from "dayjs";
 import { extendTokenExpiration } from "../../helper/Support360Api";
+import Fab from "@mui/material/Fab";
+import CustomButton from "../../../components/button/button.component";
+import { ArrowRightIcon } from "@mui/x-date-pickers";
 
 export default function UserDeviceTree({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -136,6 +141,24 @@ export default function UserDeviceTree({ sendUrllist }) {
     fetchUser();
     // fetchDivs();
   }, []);
+
+  //Dialog
+ 
+  const [reviewOpen, setReviewOpen] = React.useState(false);
+ 
+  const handleClickOpen = () => {
+   setReviewOpen(true);
+  };
+
+  const handleCloseDialog = (event,reason) => {
+
+    if (reason === "backdropClick") {
+     setReviewOpen(false);
+    }
+    // setOpen(false);
+  };
+
+
   const fetchUser = async () => {
     let role = "";
     try {
@@ -320,6 +343,7 @@ export default function UserDeviceTree({ sendUrllist }) {
         // setPostDataStatus("Data successfully posted!");
         console.log("post completed");
         setTicketOpen(true);
+        setReviewOpen(false);
       } else {
         // setPostDataStatus("Error posting data. Please try again.");
       }
@@ -491,12 +515,321 @@ export default function UserDeviceTree({ sendUrllist }) {
   const colors = tokens(theme.palette.mode);
   return (
     <Container maxWidth="lg">
+       <>
+        {
+          <Fab
+            size="large"
+            variant="extended"
+            color="secondary"
+            aria-label="add"
+            sx={{ position: "fixed", left: "90%", bottom: "5%" }}
+            className="mobileViewFloatBtn"
+            onClick={handleClickOpen}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <AddIcon />
+
+              <Typography style={{ marginRight: "14px" }}>Review</Typography>
+              <Badge
+                badgeContent={deviceIssueDetails.length}
+                color="primary"
+              ></Badge>
+            </div>
+          </Fab>
+        }
+      </>
+
+
       <Card sx={{ boxShadow: 2, borderRadius: 2 }}>
         {divIsVisibleList && divIsVisibleList.includes("device-report") && (
           <div id="device-report">
-            {deviceIssueDetails.length > 0 && (
+
+
+
+
+<Dialog
+                  open={reviewOpen}
+                  onClose={(event, reason) => handleCloseDialog(event, reason)}
+                >
+                  <DialogTitle>
+                    <div className="IssueDialog">
+                      { (
+                        <div>
+                          <div
+                            style={{
+                              overflowY: "auto",
+                            }}
+                          >
+                            <div
+                              align="center"
+                              style={{
+                                flex: 1,
+                                overflow: "auto",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "bold",
+                                  flex: 1,
+                                }}
+                              >
+                                Issues Overview
+                              </span>
+                              <span
+                                style={{
+                                  color: "#610C9F",
+                                  fontSize: "14px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {/* [{dropdownValue}]{" "} */}
+                              </span>
+                            </div>
+                            {/* <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "blue",
+                      }}
+                    >
+                      {tabsmoduleNames.length !== 0 && (
+                        <CustomButton
+                          size={"large"}
+                          id={"final-submit"}
+                          variant={"contained"}
+                          color={"success"}
+                          onClick={handleFinalReportClick}
+                          style={classes.btn}
+                          buttontext={
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              Raise a Ticket
+                              <ArrowRightIcon fontSize="small" />
+                            </div>
+                          }
+                        ></CustomButton>
+                      )}
+                      &nbsp;
+                      {progressVisible && (
+                        <CircularProgress
+                          color="info"
+                          thickness={5}
+                          size={20}
+                        />
+                      )}
+                    </div> */}
+                          </div>
+                          {/* <Collapse in={expanded} timeout="auto" unmountOnExit> */}
+
+                          {/* </Collapse> */}
+                        </div>
+                      )}
+                    </div>
+                  </DialogTitle>
+                  <Divider textAlign="left"></Divider>
+
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                      <div>
+                        {
+                          <div>
+                            <CustomTable
+                        rows={deviceIssueDetails}
+                        columns={overviewTableColumns}
+                        setRows={setDeviceIssueDetails}
+                        tablename={"Issues Overview"}
+                        deleteFromDatabase={handleDeleteItemFromReviewTableTest}
+                        style={{
+                          borderRadius: 2,
+                          // maxHeight: 440,
+                          // maxWidth: 1200,
+                        }}
+                        isDeleteDialog={false}
+                      ></CustomTable>
+                            <br />
+                            {/* </Collapse> */}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              {/* <Button
+                            // className="button"
+                            variant="contained"
+                            color="success" // Use secondary color for delete button
+                            disabled={infraIssueDetails.length === 0}
+                            onClick={() => handleSubmitPost(infraTicketJSON)}
+                          >
+                            <SaveIcon
+                              fontSize="small"
+                              sx={{ marginRight: "0.3rem" }}
+                            />
+                            Raise a Ticket
+                          </Button> */}
+
+                              <CustomButton
+                                size={"large"}
+                                id={"final-submit"}
+                                variant={"contained"}
+                                color={"success"}
+                                onClick={() => handleSubmitPost(deviceTicketJSON)}
+                                // style={classes.btn}
+                                disabled={deviceIssueDetails.length === 0}
+                                buttontext={
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    Raise a Ticket
+                                    <ArrowRightIcon fontSize="small" />
+                                  </div>
+                                }
+                              ></CustomButton>
+                            </div>
+                          </div>
+                        }
+                      </div>
+                      {/* <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "10px",
+              }}
+            >
+              <Textfield
+                id="user-misc-issue"
+                label={
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Miscellaneous Issue
+                  </span>
+                }
+                multiline={true}
+                rows={1}
+                InputProps={{
+                  style: {
+                    borderRadius: "8px",
+                  },
+                }}
+                style={{
+                  flex: "1",
+                  marginRight: "10px",
+                }}
+                value={miscellaneousInput}
+                onChange={(e) => {
+                  setMiscellaneousInput(e.target.value);
+                  console.log("Miscellaneous Issue:", e.target.value);
+                }}
+                error={additionalMiscellaneousError}
+              />
+
+              <Textfield
+                id="user-misc-remarks"
+                label={
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Remarks
+                  </span>
+                }
+                multiline
+                rows={1}
+                InputProps={{
+                  style: {
+                    borderRadius: "8px",
+                  },
+                }}
+                style={{
+                  flex: "1",
+                  marginRight: "10px",
+                }}
+                value={miscellaneousRemarks}
+                onChange={(e) => {
+                  setmiscellaneousRemarks(e.target.value);
+                  console.log("Remarks:", e.target.value);
+                }}
+              />
+
+              <div>
+                <Dropdown
+                  style={{ width: "200px", marginRight: "10px" }}
+                  id={"modal-severity-dropdown"}
+                  list={severityList}
+                  label={
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Severity
+                    </span>
+                  }
+                  value={miscellaneousSeverity}
+                  onChange={(e) => {
+                    setmiscellaneousSeverity(e.target.value);
+                    console.log(e.target.value);
+                  }}
+                  error={additionalMiscellaneousSeverityError}
+                />
+                <Button
+                  size="small"
+                  id="miscellaneous-add"
+                  variant="contained"
+                  color="primary"
+                  sx={{
+                    height: "50px",
+                    width: "80px",
+                    borderRadius: "5px",
+                    backgroundImage:
+                      "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+                  }}
+                  startIcon={<AddCircleIcon />}
+                  onClick={handleAdditionalMiscellaneous}
+                >
+                  Add
+                  
+                </Button>
+              </div>
+            </div> */}
+                    </DialogContentText>
+                  </DialogContent>
+                </Dialog>
+
+
+
+
+
+
+
+
+
+
+
+            
+            {/* {deviceIssueDetails.length > 0 && (
               <TableContainer>
-                <center>
+                <center> */}
                   {/* <Table>
                   <TableHead>
                     <TableRow>
@@ -570,7 +903,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                   </TableBody>
                 </Table> */}
 
-                  <br></br>
+                  {/* <br></br>
                   <Card
                     sx={{ boxShadow: 1, padding: "7px", margin: "0px 2px" }}
                     style={{}}
@@ -612,9 +945,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                         badgeContent={deviceIssueDetails.length}
                         color="info"
                         sx={{ marginLeft: "8px" }}
-                      >
+                      > */}
                         {/* <NotificationsActiveIcon color="secondary" /> */}
-                      </Badge>
+                      {/* </Badge>
                       &nbsp;
                     </div>
 
@@ -639,15 +972,15 @@ export default function UserDeviceTree({ sendUrllist }) {
                         color="secondary" // Use secondary color for delete button
                         onClick={() => handleSubmitPost(deviceTicketJSON)}
                       >
-                        <SaveIcon
-                          fontSize="small"
+                        <SaveIcon */}
+                          {/* fontSize="small"
                           sx={{ marginRight: "0.3rem" }}
                         />
                         Submit
                       </Button>
                     </Collapse>
-                  </Card>
-                  <br></br>
+                  </Card> */}
+                  {/* <br></br> */}
                   {/* <Button
                   className="button"
                   variant="contained"
@@ -656,9 +989,31 @@ export default function UserDeviceTree({ sendUrllist }) {
                 >
                   Submit
                 </Button> */}
-                </center>
+                {/* </center>
               </TableContainer>
-            )}
+            )} */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <Card
               borderRadius={2}
               className="split-screen"
@@ -845,7 +1200,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                               display: "flex",
                             }}
                           >
-                            Add Category
+                            Add Issue
                             <AddIcon
                               fontSize="medium"
                               sx={{ paddingLeft: "0.2rem" }}

@@ -1614,8 +1614,12 @@ export default function ApplicationUser({ sendUrllist }) {
     setOpen(true);
   };
 
-  const handleCloseDialog = () => {
-    setOpen(false);
+  const handleCloseDialog = (event,reason) => {
+
+    if (reason === "backdropClick") {
+      setOpen(false);
+    }
+    // setOpen(false);
   };
 
   const Transition = React.forwardRef(function Transition(props, ref) {
@@ -1672,7 +1676,7 @@ export default function ApplicationUser({ sendUrllist }) {
   /*************************************************** Component return ************************************** */
   return (
     <div className="row">
-      {mainData.module_image&&tabsmoduleNames.length !== 0 && (
+      {mainData.module_image && tabsmoduleNames.length !== 0 && (
         <Fab
           size="large"
           variant="extended"
@@ -1683,17 +1687,19 @@ export default function ApplicationUser({ sendUrllist }) {
           onClick={handleClickOpen}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
-          <AddIcon />
+            <AddIcon />
 
             <Typography style={{ marginRight: "14px" }}>Review</Typography>
-          <Badge
-            badgeContent={overviewTableData.length}
-            color="primary"
-          ></Badge>
+            <Badge
+              badgeContent={overviewTableData.length}
+              color="primary"
+            ></Badge>
           </div>
         </Fab>
       )}
-      <Dialog open={open} onBackdropClick={handleCloseDialog}>
+      <Dialog open={open}
+       onClose={(event, reason) => handleCloseDialog(event, reason)}
+      >
         <DialogTitle>
           <div className="IssueDialog">
             {tabsmoduleNames.length !== 0 && (
@@ -2223,62 +2229,65 @@ export default function ApplicationUser({ sendUrllist }) {
               >
                 <div className="row">
                   <div className="col-md-12">
-                <Tabs
-                  onChange={handleTabsChange}
-                  value={value}
-                  variant="scrollable"
-                  textColor="secondary"
-                  indicatorColor="secondary"
+                    <Tabs
+                      onChange={handleTabsChange}
+                      value={value}
+                      variant="scrollable"
+                      textColor="secondary"
+                      indicatorColor="secondary"
                       className="mobileViewSection"
                       sx={{
                         "& .MuiTabs-flexContainer": {
                           flexWrap: "wrap",
                         },
                       }}
-                >
-                  {tabsmoduleNames.map((module, index) => (
-                    <Tab
-                      className="tab-names"
-                      label={module}
-                      value={module}
-                      key={index}
-                    ></Tab>
-                  ))}
-                </Tabs>
-                {!mainData.module_image&&<Box sx={{ width: '100%' }}>
-                  <LinearProgress />
-                  </Box>}
+                    >
+                      {tabsmoduleNames.map((module, index) => (
+                        <Tab
+                          className="tab-names"
+                          label={module}
+                          value={module}
+                          key={index}
+                        ></Tab>
+                      ))}
+                    </Tabs>
+                    {!mainData.module_image && (
+                      <Box sx={{ width: "100%" }}>
+                        <LinearProgress />
+                      </Box>
+                    )}
                   </div>
                 </div>
               </Box>
-                { mainData.module_image && <>
-              <center>
-                <div
-                  className="floating-div"
-                  // style={{
-                  //   fontWeight: "bold",
-                  //   color: "red",
-                  //   marginTop: "5px",
-                  //   animationName: "floating",
-                  //   animationDuration: "3s",
-                  //   animationIterationCount: "infinite",
-                  //   animationTimingFunction: "ease-in-out",
-                  // }}
-                >
-                  <span
-                    // style={{
-                    //   fontSize: "12px",
-                    //   display: "flex",
-                    //   alignItems: "center",
-                    //   justifyContent: "center",
-                    //   fontWeight: "bold",
-                    // }}
-                    className="floating-div-text"
-                  >
-                    Click on the Image below to add Issue{" "}
-                    <KeyboardDoubleArrowDownIcon />
-                  </span>
-                  {/* <style>
+              {mainData.module_image && (
+                <>
+                  <center>
+                    <div
+                      className="floating-div"
+                      // style={{
+                      //   fontWeight: "bold",
+                      //   color: "red",
+                      //   marginTop: "5px",
+                      //   animationName: "floating",
+                      //   animationDuration: "3s",
+                      //   animationIterationCount: "infinite",
+                      //   animationTimingFunction: "ease-in-out",
+                      // }}
+                    >
+                      <span
+                        // style={{
+                        //   fontSize: "12px",
+                        //   display: "flex",
+                        //   alignItems: "center",
+                        //   justifyContent: "center",
+                        //   fontWeight: "bold",
+                        // }}
+                        className="floating-div-text"
+                      >
+                        Click on the Image below to add Issue{" "}
+                        <KeyboardDoubleArrowDownIcon />
+                      </span>
+                      {/* <style>
                     {`
         @keyframes floating {
           0% { transform: translate(0, 0px); }
@@ -2287,289 +2296,297 @@ export default function ApplicationUser({ sendUrllist }) {
         }
         `}
                   </style> */}
-                 
-                </div>
-              </center>
-              <br/>
-              <Paper elevation={24} square>
-  <CheckCircleIcon fontSize="small" sx={{ color: "#16FF00" }} />
-  <span> - * Indicates Issues have been added </span>
-  </Paper>
+                    </div>
+                  </center>
+                  <br />
+                  <Paper elevation={24} square>
+                    <CheckCircleIcon
+                      fontSize="small"
+                      sx={{ color: "#16FF00" }}
+                    />
+                    <span> - * Indicates Issues have been added </span>
+                  </Paper>
 
-              <motion.div
-                variants={icon}
-                initial="hidden"
-                animate="visible"
-                transition={{
-                  default: { duration: 2, ease: "easeInOut" },
-                  fill: { duration: 4, ease: [1, 0, 0.8, 1] },
-                }}
-              >
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                  // Note : Don't disturb the inline styling because then the click even is not getting triggered
-                  //className="main-image-div"
-                >
-                  {mainData.module_image && (
-                    <Paper
-                      elevation={3}
-                      // style={{
-                      //   width: "95%",
-                      //   height: "95%",
-                      //   margin: "auto",
-                      //   borderRadius: "40px",
-                      // }}
-                      className="paper-img-style"
-                    >
-                      <img
-                        src={`data:image/jpeg;base64,${mainData.module_image}`}
-                        alt={mainData.module_name}
-                        // style={{
-                        //   borderRadius: "10px",
-                        //   width: "100%",
-                        //   height: "100%",
-                        //   // userSelect:'none',
-                        //   // pointerEvents:'none'
-                        // }}
-                        className="img-style"
-                        // onClick={(e) => checkForDialog(e)}
-                      />
-                    </Paper>
-                  )}
-                  {updatedMainData &&
-                    updatedMainData.issuesList &&
-                    updatedMainData.issuesList.map((area, areaIndex) => (
-                      <Tooltip
-                        key={areaIndex}
-                        title="Click me ! "
-                        placement="top-start"
-                      >
-                        <div
-                          onClick={(event) => handleDivClick(event, area)}
-                          key={areaIndex}
-                          style={{
-                            position: "absolute",
-                            left: `${area.left * 100}%`,
-                            top: `${area.top * 100}%`,
-                            width: `${area.width * 100}%`,
-                            height: `${area.height * 100}%`,
-                            border: "2px solid #2196f3",
-                            backgroundColor: "rgba(128, 128, 128, 0.5)",
-
-                            // display: 'flex',
-                            // justifyContent: 'center',
-                            // alignItems: 'center',
-                            // color: 'white',
-                            // fontSize: '16px',
-                            // fontWeight: 'bold',
-                            // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                            //transition: 'all 0.3s ease',
-                            cursor: "pointer",
-                          }}
-                          // onMouseEnter={(e) => {
-                          //   e.target.style.backgroundColor =
-                          //     "rgba(128, 128, 128, 0.5)";
-                          //   // e.target.style.filter = "blur(5px)";
-                          //   e.target.style.transition =
-                          //     "background-color 0.3s, filter 0.3s";
-                          // }}
-                          // onMouseLeave={(e) => {
-                          //   e.target.style.backgroundColor = "rgba(0,0,0,0)";
-                          //   e.target.style.filter = "blur(0px)";
-                          // }}
-                        >
-                          {area.edited && (
-                            <CheckCircleIcon
-                              // style={{
-                              //   position: "absolute",
-                              //   top: "50%",
-                              //   left: "50%",
-                              //   transform: "translate(-50%, -50%)",
-                              //   color: "#66FF00",
-                              // }}
-                              className="check-icon"
-                              fontSize="small"
-                              // onClick={(e) => {
-                              //   e.stopPropagation();
-                              //   handleDivClick(area); // Call a function to delete the area when delete icon is clicked
-                              // }}
-                            />
-                          )}
-                        </div>
-                      </Tooltip>
-                    ))}
-                </div>
-              </motion.div>
-
-              <br />
-
-              <center>
-                <Container maxWidth="md">
-                  <Paper
-                    elevation={4}
-                    style={{
-                      borderRadius: "10px",
-                      boxShadow: 1,
-                      maxHeight: "200px",
+                  <motion.div
+                    variants={icon}
+                    initial="hidden"
+                    animate="visible"
+                    transition={{
+                      default: { duration: 2, ease: "easeInOut" },
+                      fill: { duration: 4, ease: [1, 0, 0.8, 1] },
                     }}
                   >
-                    <center>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          backgroundColor: colors.primary[400],
-                          padding: "10px",
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "100%",
+                        height: "100%",
+                      }}
+                      // Note : Don't disturb the inline styling because then the click even is not getting triggered
+                      //className="main-image-div"
+                    >
+                      {mainData.module_image && (
+                        <Paper
+                          elevation={3}
+                          // style={{
+                          //   width: "95%",
+                          //   height: "95%",
+                          //   margin: "auto",
+                          //   borderRadius: "40px",
+                          // }}
+                          className="paper-img-style"
+                        >
+                          <img
+                            src={`data:image/jpeg;base64,${mainData.module_image}`}
+                            alt={mainData.module_name}
+                            // style={{
+                            //   borderRadius: "10px",
+                            //   width: "100%",
+                            //   height: "100%",
+                            //   // userSelect:'none',
+                            //   // pointerEvents:'none'
+                            // }}
+                            className="img-style"
+                            // onClick={(e) => checkForDialog(e)}
+                          />
+                        </Paper>
+                      )}
+                      {updatedMainData &&
+                        updatedMainData.issuesList &&
+                        updatedMainData.issuesList.map((area, areaIndex) => (
+                          <Tooltip
+                            key={areaIndex}
+                            title="Click me ! "
+                            placement="top-start"
+                          >
+                            <div
+                              onClick={(event) => handleDivClick(event, area)}
+                              key={areaIndex}
+                              style={{
+                                position: "absolute",
+                                left: `${area.left * 100}%`,
+                                top: `${area.top * 100}%`,
+                                width: `${area.width * 100}%`,
+                                height: `${area.height * 100}%`,
+                                border: "2px solid #2196f3",
+                                backgroundColor: "rgba(128, 128, 128, 0.5)",
 
-                          justifyContent: "center",
+                                // display: 'flex',
+                                // justifyContent: 'center',
+                                // alignItems: 'center',
+                                // color: 'white',
+                                // fontSize: '16px',
+                                // fontWeight: 'bold',
+                                // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                                //transition: 'all 0.3s ease',
+                                cursor: "pointer",
+                              }}
+                              // onMouseEnter={(e) => {
+                              //   e.target.style.backgroundColor =
+                              //     "rgba(128, 128, 128, 0.5)";
+                              //   // e.target.style.filter = "blur(5px)";
+                              //   e.target.style.transition =
+                              //     "background-color 0.3s, filter 0.3s";
+                              // }}
+                              // onMouseLeave={(e) => {
+                              //   e.target.style.backgroundColor = "rgba(0,0,0,0)";
+                              //   e.target.style.filter = "blur(0px)";
+                              // }}
+                            >
+                              {area.edited && (
+                                <CheckCircleIcon
+                                  // style={{
+                                  //   position: "absolute",
+                                  //   top: "50%",
+                                  //   left: "50%",
+                                  //   transform: "translate(-50%, -50%)",
+                                  //   color: "#66FF00",
+                                  // }}
+                                  className="check-icon"
+                                  fontSize="small"
+                                  // onClick={(e) => {
+                                  //   e.stopPropagation();
+                                  //   handleDivClick(area); // Call a function to delete the area when delete icon is clicked
+                                  // }}
+                                />
+                              )}
+                            </div>
+                          </Tooltip>
+                        ))}
+                    </div>
+                  </motion.div>
+
+                  <br />
+
+                  <center>
+                    <Container maxWidth="md">
+                      <Paper
+                        elevation={4}
+                        style={{
+                          borderRadius: "10px",
+                          boxShadow: 1,
+                          maxHeight: "200px",
                         }}
                       >
-                        <span
-                          style={{
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            marginLeft: "20px",
-                          }}
-                        >
-                          Additional Information [
-                          <span
+                        <center>
+                          <div
                             style={{
-                              color: "#610C9F",
-                              fontSize: "14px",
-                              fontWeight: "bold",
+                              display: "flex",
+                              alignItems: "center",
+                              backgroundColor: colors.primary[400],
+                              padding: "10px",
+
+                              justifyContent: "center",
                             }}
                           >
-                            {value}
-                          </span>
-                          ] :
-                        </span>
-                      </div>
-                      <br></br>
-                    </center>
-                    <div className="row">
-                      <div className="col-md-12">
-                        <div
-                          className="row"
-                          style={{ alignItems: "center", padding: "0px 12px" }}
-                        >
-                          <div className="col-md-3">
-                            <Textfield
-                              id="user-misc-issue"
-                              label={
-                                <span
-                                  style={{
-                                    fontSize: "14px",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  Miscellaneous Issue
-                                </span>
-                              }
-                              multiline={true}
-                              rows={3}
-                              InputProps={{
-                                style: {
-                                  borderRadius: "7px",
-                                },
-                              }}
+                            <span
                               style={{
-                                flex: "1",
-                                marginRight: "10px",
-                                marginBottom: "15px",
+                                fontSize: "14px",
+                                fontWeight: "bold",
+                                marginLeft: "20px",
                               }}
-                              value={miscellaneousInput}
-                              onChange={(e) => {
-                                setMiscellaneousInput(e.target.value);
-                                console.log(
-                                  "Miscellaneous Issue:",
-                                  e.target.value
-                                );
-                              }}
-                              error={additionalMiscellaneousError}
-                            />
-                          </div>
-                          <div className="col-md-3">
-                            <Textfield
-                              id="user-misc-remarks"
-                              label={
-                                <span
-                                  style={{
-                                    fontSize: "14px",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  Remarks
-                                </span>
-                              }
-                              multiline
-                              rows={3}
-                              InputProps={{
-                                style: {
-                                  borderRadius: "15px",
-                                },
-                              }}
-                              style={{
-                                flex: "1",
-                                marginRight: "10px",
-                                marginBottom: "15px",
-                              }}
-                              value={miscellaneousRemarks}
-                              onChange={(e) => {
-                                setmiscellaneousRemarks(e.target.value);
-                                console.log("Remarks:", e.target.value);
-                              }}
-                            />
-                          </div>
-                          <div className="col-md-3">
-                            <Dropdown
-                              style={{ width: "180px", marginRight: "10px" }}
-                              id={"modal-severity-dropdown"}
-                              list={severityList}
-                              label={
-                                <span
-                                  style={{
-                                    fontSize: "14px",
-                                    fontWeight: "bold",
-                                  }}
-                                >
-                                  Severity
-                                </span>
-                              }
-                              value={miscellaneousSeverity}
-                              onChange={(e) => {
-                                setmiscellaneousSeverity(e.target.value);
-                                console.log(e.target.value);
-                              }}
-                              error={additionalMiscellaneousSeverityError}
-                            />
-                          </div>
-                          <div className="col-md-2">
-                            <Button
-                              //size="large"
-                              id="miscellaneous-add"
-                              variant="contained"
-                              color="primary"
-                              sx={{
-                                height: "50px",
-                                width: "80px",
-                                borderRadius: "10px",
-                                backgroundImage:
-                                  "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
-                              }}
-                              onClick={handleAdditionalMiscellaneous}
                             >
-                              Add
-                            </Button>
+                              Additional Information [
+                              <span
+                                style={{
+                                  color: "#610C9F",
+                                  fontSize: "14px",
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {value}
+                              </span>
+                              ] :
+                            </span>
+                          </div>
+                          <br></br>
+                        </center>
+                        <div className="row">
+                          <div className="col-md-12">
+                            <div
+                              className="row"
+                              style={{
+                                alignItems: "center",
+                                padding: "0px 12px",
+                              }}
+                            >
+                              <div className="col-md-3">
+                                <Textfield
+                                  id="user-misc-issue"
+                                  label={
+                                    <span
+                                      style={{
+                                        fontSize: "14px",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      Miscellaneous Issue
+                                    </span>
+                                  }
+                                  multiline={true}
+                                  rows={3}
+                                  InputProps={{
+                                    style: {
+                                      borderRadius: "7px",
+                                    },
+                                  }}
+                                  style={{
+                                    flex: "1",
+                                    marginRight: "10px",
+                                    marginBottom: "15px",
+                                  }}
+                                  value={miscellaneousInput}
+                                  onChange={(e) => {
+                                    setMiscellaneousInput(e.target.value);
+                                    console.log(
+                                      "Miscellaneous Issue:",
+                                      e.target.value
+                                    );
+                                  }}
+                                  error={additionalMiscellaneousError}
+                                />
+                              </div>
+                              <div className="col-md-3">
+                                <Textfield
+                                  id="user-misc-remarks"
+                                  label={
+                                    <span
+                                      style={{
+                                        fontSize: "14px",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      Remarks
+                                    </span>
+                                  }
+                                  multiline
+                                  rows={3}
+                                  InputProps={{
+                                    style: {
+                                      borderRadius: "15px",
+                                    },
+                                  }}
+                                  style={{
+                                    flex: "1",
+                                    marginRight: "10px",
+                                    marginBottom: "15px",
+                                  }}
+                                  value={miscellaneousRemarks}
+                                  onChange={(e) => {
+                                    setmiscellaneousRemarks(e.target.value);
+                                    console.log("Remarks:", e.target.value);
+                                  }}
+                                />
+                              </div>
+                              <div className="col-md-3">
+                                <Dropdown
+                                  style={{
+                                    width: "180px",
+                                    marginRight: "10px",
+                                  }}
+                                  id={"modal-severity-dropdown"}
+                                  list={severityList}
+                                  label={
+                                    <span
+                                      style={{
+                                        fontSize: "14px",
+                                        fontWeight: "bold",
+                                      }}
+                                    >
+                                      Severity
+                                    </span>
+                                  }
+                                  value={miscellaneousSeverity}
+                                  onChange={(e) => {
+                                    setmiscellaneousSeverity(e.target.value);
+                                    console.log(e.target.value);
+                                  }}
+                                  error={additionalMiscellaneousSeverityError}
+                                />
+                              </div>
+                              <div className="col-md-2">
+                                <Button
+                                  //size="large"
+                                  id="miscellaneous-add"
+                                  variant="contained"
+                                  color="primary"
+                                  sx={{
+                                    height: "50px",
+                                    width: "80px",
+                                    borderRadius: "10px",
+                                    backgroundImage:
+                                      "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                                  }}
+                                  onClick={handleAdditionalMiscellaneous}
+                                >
+                                  Add
+                                </Button>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
 
-                    {/* <div
+                        {/* <div
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -2678,10 +2695,11 @@ export default function ApplicationUser({ sendUrllist }) {
                         </Button>
                       </div>
                     </div> */}
-                  </Paper>
-                </Container>
-              </center>
-              </>}
+                      </Paper>
+                    </Container>
+                  </center>
+                </>
+              )}
 
               {/* {test} */}
               <br />

@@ -1668,7 +1668,7 @@ export default function ApplicationUser({ sendUrllist }) {
   const colors = tokens(theme.palette.mode);
   /*************************************************** Component return ************************************** */
   return (
-    <div>
+    <div className="row">
       {tabsmoduleNames.length !== 0 && (
         <Fab
           size="large"
@@ -1676,15 +1676,18 @@ export default function ApplicationUser({ sendUrllist }) {
           color="secondary"
           aria-label="add"
           sx={{ position: "fixed", left: "90%", bottom: "5%" }}
+          className="mobileViewFloatBtn"
           onClick={handleClickOpen}
         >
+          <div style={{ display: "flex", alignItems: "center" }}>
           <AddIcon />
 
-          <p style={{ marginRight: "14px" }}>Review</p>
+            <Typography style={{ marginRight: "14px" }}>Review</Typography>
           <Badge
             badgeContent={overviewTableData.length}
             color="primary"
           ></Badge>
+          </div>
         </Fab>
       )}
       <Dialog open={open} onBackdropClick={handleCloseDialog}>
@@ -2215,12 +2218,20 @@ export default function ApplicationUser({ sendUrllist }) {
                 }}
                 // className="tab"
               >
+                <div className="row">
+                  <div className="col-md-12">
                 <Tabs
                   onChange={handleTabsChange}
                   value={value}
                   variant="scrollable"
                   textColor="secondary"
                   indicatorColor="secondary"
+                      className="mobileViewSection"
+                      sx={{
+                        "& .MuiTabs-flexContainer": {
+                          flexWrap: "wrap",
+                        },
+                      }}
                 >
                   {tabsmoduleNames.map((module, index) => (
                     <Tab
@@ -2231,6 +2242,8 @@ export default function ApplicationUser({ sendUrllist }) {
                     ></Tab>
                   ))}
                 </Tabs>
+                  </div>
+                </div>
               </Box>
 
               <center>
@@ -2387,7 +2400,7 @@ export default function ApplicationUser({ sendUrllist }) {
               <br />
 
               <center>
-                <Container>
+                <Container maxWidth="md">
                   <Paper
                     elevation={4}
                     style={{
@@ -2401,7 +2414,7 @@ export default function ApplicationUser({ sendUrllist }) {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          backgroundColor: "#B5C0D0",
+                          backgroundColor: colors.primary[400],
                           padding: "10px",
 
                           justifyContent: "center",
@@ -2429,7 +2442,126 @@ export default function ApplicationUser({ sendUrllist }) {
                       </div>
                       <br></br>
                     </center>
-                    <div
+                    <div className="row">
+                      <div className="col-md-12">
+                        <div
+                          className="row"
+                          style={{ alignItems: "center", padding: "0px 12px" }}
+                        >
+                          <div className="col-md-3">
+                            <Textfield
+                              id="user-misc-issue"
+                              label={
+                                <span
+                                  style={{
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Miscellaneous Issue
+                                </span>
+                              }
+                              multiline={true}
+                              rows={3}
+                              InputProps={{
+                                style: {
+                                  borderRadius: "7px",
+                                },
+                              }}
+                              style={{
+                                flex: "1",
+                                marginRight: "10px",
+                                marginBottom: "15px",
+                              }}
+                              value={miscellaneousInput}
+                              onChange={(e) => {
+                                setMiscellaneousInput(e.target.value);
+                                console.log(
+                                  "Miscellaneous Issue:",
+                                  e.target.value
+                                );
+                              }}
+                              error={additionalMiscellaneousError}
+                            />
+                          </div>
+                          <div className="col-md-3">
+                            <Textfield
+                              id="user-misc-remarks"
+                              label={
+                                <span
+                                  style={{
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Remarks
+                                </span>
+                              }
+                              multiline
+                              rows={3}
+                              InputProps={{
+                                style: {
+                                  borderRadius: "15px",
+                                },
+                              }}
+                              style={{
+                                flex: "1",
+                                marginRight: "10px",
+                                marginBottom: "15px",
+                              }}
+                              value={miscellaneousRemarks}
+                              onChange={(e) => {
+                                setmiscellaneousRemarks(e.target.value);
+                                console.log("Remarks:", e.target.value);
+                              }}
+                            />
+                          </div>
+                          <div className="col-md-3">
+                            <Dropdown
+                              style={{ width: "180px", marginRight: "10px" }}
+                              id={"modal-severity-dropdown"}
+                              list={severityList}
+                              label={
+                                <span
+                                  style={{
+                                    fontSize: "14px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  Severity
+                                </span>
+                              }
+                              value={miscellaneousSeverity}
+                              onChange={(e) => {
+                                setmiscellaneousSeverity(e.target.value);
+                                console.log(e.target.value);
+                              }}
+                              error={additionalMiscellaneousSeverityError}
+                            />
+                          </div>
+                          <div className="col-md-2">
+                            <Button
+                              //size="large"
+                              id="miscellaneous-add"
+                              variant="contained"
+                              color="primary"
+                              sx={{
+                                height: "50px",
+                                width: "80px",
+                                borderRadius: "10px",
+                                backgroundImage:
+                                  "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                              }}
+                              onClick={handleAdditionalMiscellaneous}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* <div
                       style={{
                         display: "flex",
                         justifyContent: "space-between",
@@ -2537,7 +2669,7 @@ export default function ApplicationUser({ sendUrllist }) {
                           Add
                         </Button>
                       </div>
-                    </div>
+                    </div> */}
                   </Paper>
                 </Container>
               </center>

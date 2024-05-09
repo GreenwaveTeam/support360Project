@@ -345,7 +345,7 @@ export default function CustomTable({
                     textAlign: "center",
                     fontSize: "15px",
                     fontWeight: "bold",
-                    backgroundColor: colors.primary[400],
+                    backgroundColor: colors.primary[900],
                   }}
                   colSpan={columns.length + 2}
                 >
@@ -403,7 +403,7 @@ export default function CustomTable({
                 {columns.map((column, index) => (
                   <TableCell
                     sx={{
-                      backgroundColor: colors.primary[400],
+                      backgroundColor: colors.grey[900],
                       fontWeight: "bold",
                       fontSize: "14px",
                     }}
@@ -417,7 +417,7 @@ export default function CustomTable({
                 <TableCell
                   align="center"
                   sx={{
-                    backgroundColor: colors.primary[400],
+                    backgroundColor: colors.grey[900],
                     fontWeight: "bold",
                     fontSize: "14px",
                   }}
@@ -427,7 +427,7 @@ export default function CustomTable({
                 <TableCell
                   align="center"
                   sx={{
-                    backgroundColor: colors.primary[400],
+                    backgroundColor: colors.grey[900],
                     fontWeight: "bold",
                     fontSize: "14px",
                   }}
@@ -550,7 +550,7 @@ export default function CustomTable({
                                           label={value}
                                           // color="primary"
                                           sx={{
-                                            background: "blue",
+                                            background: "#610c9f",
                                             color: "white",
                                           }}
                                         ></Chip>
@@ -560,7 +560,7 @@ export default function CustomTable({
                                           label={value}
                                           // color="success"
                                           sx={{
-                                            background: "green",
+                                            background: "#1b3c73",
                                             color: "white",
                                           }}
                                         ></Chip>

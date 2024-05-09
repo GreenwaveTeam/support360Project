@@ -67,7 +67,7 @@ import Slide from "@mui/material/Slide";
 import CloseIcon from "@mui/icons-material/Close";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 import dayjs from "dayjs";
-import LinearProgress from '@mui/material/LinearProgress';
+import LinearProgress from "@mui/material/LinearProgress";
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -395,7 +395,7 @@ export default function ApplicationUser({ sendUrllist }) {
     console.log(event);
     event.preventDefault();
     event.stopPropagation();
-    setMainData({})
+    setMainData({});
 
     console.log("Current Miscellaneous Issue => ", miscellaneousInput);
     saveCurrentTabModuleInformation(); //This is meant to save the information for the current modified information in the current Tab
@@ -1614,8 +1614,7 @@ export default function ApplicationUser({ sendUrllist }) {
     setOpen(true);
   };
 
-  const handleCloseDialog = (event,reason) => {
-
+  const handleCloseDialog = (event, reason) => {
     if (reason === "backdropClick") {
       setOpen(false);
     }
@@ -1697,8 +1696,9 @@ export default function ApplicationUser({ sendUrllist }) {
           </div>
         </Fab>
       )}
-      <Dialog open={open}
-       onClose={(event, reason) => handleCloseDialog(event, reason)}
+      <Dialog
+        open={open}
+        onClose={(event, reason) => handleCloseDialog(event, reason)}
       >
         <DialogTitle>
           <div className="IssueDialog">
@@ -2421,9 +2421,9 @@ export default function ApplicationUser({ sendUrllist }) {
                   <center>
                     <Container maxWidth="md">
                       <Paper
-                        elevation={4}
+                        elevation={2}
                         style={{
-                          borderRadius: "10px",
+                          borderRadius: 2,
                           boxShadow: 1,
                           maxHeight: "200px",
                         }}

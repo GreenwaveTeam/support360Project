@@ -150,19 +150,24 @@ const AdminPage = ({ sendUrllist }) => {
         {/* <Typography component="h1" variant="h5">
         Create Configuration for {userName}
       </Typography> */}
-        <Grid
-          container
-          //spacing={1}
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          rowGap={"1rem"}
-          margin={"1rem 0rem"}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            padding: "1rem 0",
+          }}
+          // container
+          // //spacing={1}
+          // direction="column"
+          // justifyContent="center"
+          // alignItems="center"
+          // rowGap={"1rem"}
+          // margin={"1rem 0rem"}
           //marginTop={"2rem"}
           //sx={{ background: colors.grey[900] }}
         >
           {divIsVisibleList.includes("application-button") && (
-            <Grid item>
+            <div>
               <Button
                 variant="contained"
                 color="primary"
@@ -175,10 +180,10 @@ const AdminPage = ({ sendUrllist }) => {
               >
                 Application
               </Button>
-            </Grid>
+            </div>
           )}
           {divIsVisibleList.includes("device-button") && (
-            <Grid item>
+            <div>
               <Button
                 variant="contained"
                 color="primary"
@@ -191,10 +196,10 @@ const AdminPage = ({ sendUrllist }) => {
               >
                 Device
               </Button>
-            </Grid>
+            </div>
           )}
           {divIsVisibleList.includes("device-configure-button") && (
-            <Grid item>
+            <div>
               <Button
                 variant="contained"
                 color="primary"
@@ -207,10 +212,10 @@ const AdminPage = ({ sendUrllist }) => {
               >
                 Device Configure
               </Button>
-            </Grid>
+            </div>
           )}
           {divIsVisibleList.includes("infrastructure-button") && (
-            <Grid item>
+            <div>
               <Button
                 variant="contained"
                 color="primary"
@@ -221,9 +226,9 @@ const AdminPage = ({ sendUrllist }) => {
               >
                 Infrastructure
               </Button>
-            </Grid>
+            </div>
           )}
-        </Grid>
+        </div>
       </Card>
     </Container>
   );

@@ -21,7 +21,7 @@ import { ColorModeContext, tokens } from "../../theme";
 import { useTheme } from "@mui/material";
 
 const AdminPage = ({ sendUrllist }) => {
-  // const { userID } = useParams();
+  // const { userId } = useParams();
   // const location = useLocation();
   const [userPlantID, setUserPlantID] = useState(
     localStorage.getItem("adminPlantID")
@@ -57,7 +57,7 @@ const AdminPage = ({ sendUrllist }) => {
   // };
 
   useEffect(() => {
-    // const { userName } = location.state || (" UserID : ", userID);
+    // const { userName } = location.state || (" UserID : ", userId);
     if (userPlantID) {
       setUserPlantID(userPlantID);
     }
@@ -139,7 +139,7 @@ const AdminPage = ({ sendUrllist }) => {
               //component="span"
               //variant="h4"
               sx={{ fontWeight: "bold" }}
-              label={userData.userID}
+              label={userData.userId}
               size="medium"
               color="info"
             />
@@ -150,24 +150,19 @@ const AdminPage = ({ sendUrllist }) => {
         {/* <Typography component="h1" variant="h5">
         Create Configuration for {userName}
       </Typography> */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-around",
-            padding: "1rem 0",
-          }}
-          // container
-          // //spacing={1}
-          // direction="column"
-          // justifyContent="center"
-          // alignItems="center"
-          // rowGap={"1rem"}
-          // margin={"1rem 0rem"}
+        <Grid
+          container
+          //spacing={1}
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+          rowGap={"1rem"}
+          margin={"1rem 0rem"}
           //marginTop={"2rem"}
           //sx={{ background: colors.grey[900] }}
         >
           {divIsVisibleList.includes("application-button") && (
-            <div>
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -180,10 +175,10 @@ const AdminPage = ({ sendUrllist }) => {
               >
                 Application
               </Button>
-            </div>
+            </Grid>
           )}
           {divIsVisibleList.includes("device-button") && (
-            <div>
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -196,10 +191,10 @@ const AdminPage = ({ sendUrllist }) => {
               >
                 Device
               </Button>
-            </div>
+            </Grid>
           )}
           {divIsVisibleList.includes("device-configure-button") && (
-            <div>
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -212,10 +207,10 @@ const AdminPage = ({ sendUrllist }) => {
               >
                 Device Configure
               </Button>
-            </div>
+            </Grid>
           )}
           {divIsVisibleList.includes("infrastructure-button") && (
-            <div>
+            <Grid item>
               <Button
                 variant="contained"
                 color="primary"
@@ -226,9 +221,9 @@ const AdminPage = ({ sendUrllist }) => {
               >
                 Infrastructure
               </Button>
-            </div>
+            </Grid>
           )}
-        </div>
+        </Grid>
       </Card>
     </Container>
   );

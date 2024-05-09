@@ -6,6 +6,9 @@
 .MuiBreadcrumbs-ol{
   padding-left: 0rem !important;
 }
+.MuiTablePagination-displayedRows{
+  margin-bottom:  0 !important;
+}
 
 .App-logo {
   height: 40vmin;

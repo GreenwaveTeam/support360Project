@@ -31,7 +31,7 @@ import { LinePlot } from "@mui/x-charts/LineChart";
 import { ChartsXAxis } from "@mui/x-charts/ChartsXAxis";
 import { ResponsiveChartContainer, axisClasses } from "@mui/x-charts";
 import "primeicons/primeicons.css";
-//import { MeterGroup } from "primereact/metergroup";
+import { MeterGroup } from "primereact/metergroup";
 
 //bootstrap
 import "bootstrap/dist/css/bootstrap.css";
@@ -84,6 +84,13 @@ function UserHome({ sendUrllist }) {
     }
     setShowTimeRemaining(false);
   };
+
+  const matergroupvalues = [
+    { label: "Apps", color: "#34d399", value: 16 },
+    { label: "Messages", color: "#fbbf24", value: 8 },
+    { label: "Media", color: "#60a5fa", value: 24 },
+    { label: "System", color: "#c084fc", value: 10 },
+  ];
 
   const [open, setOpen] = useState(false);
   const handleDrawerOpen = () => {
@@ -661,11 +668,11 @@ function UserHome({ sendUrllist }) {
                 </Card> */}
                 <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    {/* <div>
+                    <div>
                       <div className="card flex justify-content-center">
                         <MeterGroup values={matergroupvalues} />
                       </div>
-                    </div> */}
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -779,7 +786,7 @@ function UserHome({ sendUrllist }) {
                             component="div"
                             sx={{ marginBottom: "0.7rem" }}
                           >
-                            Replay Time (AVG)
+                            Reply Time (AVG)
                           </Typography>
                           <SparkLineChart
                             data={[3, 4, 2, 5, 4, 2, 4, 6]}
@@ -856,7 +863,7 @@ function UserHome({ sendUrllist }) {
                   component="div"
                   sx={{ marginBottom: "0.7rem" }}
                 >
-                  Replay Time (AVG)
+                  Reply Time (AVG)
                 </Typography>
                 <SparkLineChart
                   data={[3, 4, 2, 5, 4, 2, 4, 6, 5, 4, 2, 4, 6]}

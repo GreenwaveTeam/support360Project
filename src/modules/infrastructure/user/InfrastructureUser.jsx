@@ -91,7 +91,7 @@ export default function InfrastructureUser({ sendUrllist }) {
       canRepeatSameValue: true,
     },
     {
-      id: "priority",
+      id: "severity",
       label: " Severity ",
       type: "textbox",
       canRepeatSameValue: true,
@@ -111,7 +111,7 @@ export default function InfrastructureUser({ sendUrllist }) {
       canRepeatSameValue: false,
     },
     {
-      id: "priority",
+      id: "severity",
       label: "Severity",
       type: "chip",
       canRepeatSameValue: false,
@@ -338,7 +338,7 @@ export default function InfrastructureUser({ sendUrllist }) {
           ...tableData,
           {
             issue: selectedIssue,
-            priority: selectedPriority,
+            severity: selectedPriority,
             remarks: remarks,
           },
         ]);

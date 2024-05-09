@@ -764,7 +764,7 @@ function UserHome({ sendUrllist }) {
               <div class="row" style={{ marginTop: "1rem" }}>
                 <div class="col-md-12">
                   <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                       <Card>
                         <CardContent
                           sx={{
@@ -783,31 +783,6 @@ function UserHome({ sendUrllist }) {
                           </Typography>
                           <SparkLineChart
                             data={[3, 4, 2, 5, 4, 2, 4, 6]}
-                            height={75}
-                          />
-                        </CardContent>
-                      </Card>
-                    </div>
-
-                    <div class="col-md-6">
-                      <Card>
-                        <CardContent
-                          sx={{
-                            paddingBottom: "16px !important",
-                            display: "grid",
-                            justifyItems: "center",
-                          }}
-                        >
-                          <Typography
-                            gutterBottom
-                            variant="h5"
-                            component="div"
-                            sx={{ marginBottom: "0.7rem" }}
-                          >
-                            Resolve Time (AVG)
-                          </Typography>
-                          <SparkLineChart
-                            data={[1, 4, 2, 5, 7, 2, 4, 6]}
                             height={75}
                           />
                         </CardContent>
@@ -863,6 +838,56 @@ function UserHome({ sendUrllist }) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="row" style={{ marginTop: "1rem" }}>
+          <div class="col-md-6">
+            <Card>
+              <CardContent
+                sx={{
+                  paddingBottom: "16px !important",
+                  display: "grid",
+                  justifyItems: "center",
+                }}
+              >
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  sx={{ marginBottom: "0.7rem" }}
+                >
+                  Replay Time (AVG)
+                </Typography>
+                <SparkLineChart
+                  data={[3, 4, 2, 5, 4, 2, 4, 6, 5, 4, 2, 4, 6]}
+                  height={120}
+                />
+              </CardContent>
+            </Card>
+          </div>
+          <div class="col-md-6">
+            <Card>
+              <CardContent
+                sx={{
+                  paddingBottom: "16px !important",
+                  display: "grid",
+                  justifyItems: "center",
+                }}
+              >
+                <Typography
+                  gutterBottom
+                  variant="h5"
+                  component="div"
+                  sx={{ marginBottom: "0.7rem" }}
+                >
+                  Resolve Time (AVG)
+                </Typography>
+                <SparkLineChart
+                  data={[1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6]}
+                  height={120}
+                />
+              </CardContent>
+            </Card>
           </div>
         </div>
         {/* <div

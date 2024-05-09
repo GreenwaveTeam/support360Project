@@ -7,36 +7,28 @@ import {
   Box,
   Typography,
   Container,
-  Stack,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   IconButton,
   OutlinedInput,
   InputLabel,
   FormControl,
   InputAdornment,
-  Tooltip,
   Snackbar,
   Slide,
   FormHelperText,
   MenuItem,
   Select,
+  Tooltip,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
-import Dropdown from "../../components/dropdown/dropdown.component";
-import Datepicker from "../../components/datepicker/datepicker.component";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import dayjs from "dayjs";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { extendTokenExpiration } from "../helper/Support360Api";
 
-export default function AdminRegistration() {
-  const { adminID } = useParams();
+export default function AdminRegistration({ sendUrllist }) {
   const [formData, setFormData] = useState({
     adminID: "",
     name: "",
@@ -55,6 +47,22 @@ export default function AdminRegistration() {
     phoneNumber: false,
     role: false,
     homepage: false,
+    confirmPassword: false,
+    phoneNumberLength: false,
+    passwordNotMatch: false,
+  });
+
+  const [updateFormErrors, setUpdateFormErrors] = useState({
+    adminID: false,
+    name: false,
+    email: false,
+    password: false,
+    phoneNumber: false,
+    role: false,
+    homepage: false,
+    confirmPassword: false,
+    phoneNumberLength: false,
+    passwordNotMatch: false,
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -68,8 +76,6 @@ export default function AdminRegistration() {
 
   const [cnfpass, setCnfpass] = useState("");
   const [pass, setPass] = useState("");
-  const [showPasswordError, setShowPasswordError] = useState(false);
-  const [adminExist, setAdminExist] = useState(false);
   const navigate = useNavigate();
   const [isStatePresent, setIsStatePresent] = useState(false);
   const [roleList, setRoleList] = useState([]);
@@ -82,12 +88,11 @@ export default function AdminRegistration() {
   const [snackbarText, setSnackbarText] = useState("");
   const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
+  const [unchangedAdminID, setUnchangedAdminID] = useState("");
 
   const { state } = useLocation();
-  // const admin = state.admin || null;
 
   const checkstate = () => {
-    // console.log(typeof state.admin);
     if (state === null) {
       setIsStatePresent(false);
     } else {
@@ -107,74 +112,24 @@ export default function AdminRegistration() {
   };
 
   useEffect(() => {
-    // console.log("admin : ", state.admin);
     extendTokenExpiration();
     checkstate();
     fetchRoles();
+    sendUrllist(urllist);
   }, []);
 
-  const hashedPasswordChange = (e) => {
-    setPass(e.target.value);
-    setFormData({ ...formData, password: e.target.value });
-  };
-
-  const handleFormdataInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleRoleChange = (event) => {
-    const { value } = event.target;
-    setFormData({ ...formData, role: value });
-  };
-
-  const handlePhoneNumberChange = (event) => {
-    const { value } = event.target;
-    if (!isNaN(value) && value.length <= 10) {
-      setFormData({ ...formData, phoneNumber: value });
-    }
-  };
-
-  const updateHandleHomepageChange = (event) => {
-    const { value } = event.target;
-    setUpdateFormData({ ...updateFormData, homepage: value });
-  };
-
-  const updateHandleFormdataInputChange = (event) => {
-    const { name, value } = event.target;
-    setUpdateFormData({ ...updateFormData, [name]: value });
-  };
-
-  const updateHandleDesignationChange = (event) => {
-    const { value } = event.target;
-    setUpdateFormData({ ...updateFormData, designation: value });
-  };
-
-  const updateHandleRoleChange = (event) => {
-    const { value } = event.target;
-    setUpdateFormData({ ...updateFormData, role: value });
-  };
-
-  const updateHandlePhoneNumberChange = (event) => {
-    const { value } = event.target;
-    if (!isNaN(value) && value.length <= 10) {
-      setUpdateFormData({ ...updateFormData, phoneNumber: value });
-    }
-  };
+  const urllist = [{ pageName: "Admin Home Page", pagelink: "/admin/home" }];
 
   const confirmPassword = async (e) => {
     const passwordsMatch = pass === e;
     if (!passwordsMatch) {
-      setShowPasswordError(true);
       handleClick();
       setSnackbarText("Password does not match !");
       setsnackbarSeverity("error");
-    } else {
-      setShowPasswordError(false);
     }
   };
 
-  const handleClose = (event, reason) => {
+  const handleClose = (e, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -185,13 +140,72 @@ export default function AdminRegistration() {
     setPasswordErrorOpen(true);
   };
 
-  const handleHomepageChange = (event) => {
-    const { value } = event.target;
-    setFormData({ ...formData, homepage: value });
+  function removeSpaceAndLowerCase(str) {
+    return str.replace(/\s/g, "").toLowerCase();
+  }
+
+  function removeAllSpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z\s]/g, "");
+    var stringWithoutExtraSpaces = stringWithoutSpecialChars.replace(
+      /\s+/g,
+      " "
+    );
+    return stringWithoutExtraSpaces;
+  }
+
+  function removeOnlySpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9@.]/g, "");
+    var atIndex = stringWithoutSpecialChars.indexOf("@");
+    if (atIndex !== -1) {
+      var nextAtIndex = stringWithoutSpecialChars.indexOf("@", atIndex + 1);
+      if (nextAtIndex !== -1) {
+        stringWithoutSpecialChars = stringWithoutSpecialChars.slice(
+          0,
+          nextAtIndex
+        );
+      }
+    }
+    return stringWithoutSpecialChars;
+  }
+
+  function removeNumberAndSpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z@.]/g, "");
+    var atIndex = stringWithoutSpecialChars.indexOf("@");
+    if (atIndex !== -1) {
+      var nextAtIndex = stringWithoutSpecialChars.indexOf("@", atIndex + 1);
+      if (nextAtIndex !== -1) {
+        stringWithoutSpecialChars = stringWithoutSpecialChars.slice(
+          0,
+          nextAtIndex
+        );
+      }
+    }
+    return stringWithoutSpecialChars;
+  }
+
+  const fetchRoles = async () => {
+    try {
+      const response = await fetch("http://localhost:8081/role", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 403) {
+        console.log("error featching roles");
+        return;
+      }
+      const data = await response.json();
+      console.log("Roles : ", data);
+      setRoleList(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleUpdate = async (event) => {
-    event.preventDefault();
+  const handleUpdate = async (e) => {
+    e.preventDefault();
     for (const key in updateFormData) {
       if (updateFormData[key] === null || updateFormData[key] === "") {
         handleClick();
@@ -220,9 +234,6 @@ export default function AdminRegistration() {
       );
       if (response.ok) {
         console.log("Admin Updated successfully");
-        // navigate(`/abc/${formData.adminID}`, {
-        //   state: { adminName: formData.name },
-        // });
       } else {
         console.error("Failed to update admin");
       }
@@ -231,38 +242,25 @@ export default function AdminRegistration() {
     }
   };
 
-  const fetchRoles = async () => {
-    try {
-      const response = await fetch("http://localhost:8081/role", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status === 403) {
-        console.log("error featching roles");
-        return;
-      }
-      const data = await response.json();
-      console.log("Roles : ", data);
-      setRoleList(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const newFormErrors = {};
     Object.keys(formData).forEach((key) => {
       if (formData[key] === null || formData[key] === "") {
         newFormErrors[key] = true;
+      } else if (cnfpass === "") {
+        setFormErrors({ ...formErrors, confirmPassword: cnfpass === "" });
+      } else if (formData.phoneNumber.length !== 10) {
+        setFormErrors({ ...formErrors, phoneNumberLength: true });
+      } else if (pass !== cnfpass) {
+        setFormErrors({ ...formErrors, passwordNotMatch: true });
       } else {
         newFormErrors[key] = false;
       }
     });
     setFormErrors(newFormErrors);
+
+    console.log("newFormErrors : ", newFormErrors);
 
     for (const key in formData) {
       if (formData[key] === null || formData[key] === "") {
@@ -273,12 +271,29 @@ export default function AdminRegistration() {
         return;
       }
     }
-    if (cnfpass !== pass) {
+
+    if (cnfpass === "") {
       handleClick();
       setSnackbarText("Password does not match !");
       setsnackbarSeverity("error");
       return;
     }
+
+    if (pass !== cnfpass) {
+      handleClick();
+      setSnackbarText("Password does not match !");
+      setsnackbarSeverity("error");
+      return;
+    }
+
+    if (formData["phoneNumber"].length !== 10) {
+      handleClick();
+      setSnackbarText("Phone Number must be 10 digits");
+      setsnackbarSeverity("error");
+      console.log("Phone Number must be 10 digits");
+      return;
+    }
+
     console.log("formData : : ", formData);
     try {
       const response = await fetch("http://localhost:8081/auth/admin/signup", {
@@ -341,7 +356,26 @@ export default function AdminRegistration() {
                         label="Name"
                         autoFocus
                         value={updateFormData.name}
-                        onChange={updateHandleFormdataInputChange}
+                        // onChange={(e) =>
+                        //   setUpdateFormData({
+                        //     ...updateFormData,
+                        //     name: removeAllSpecialChar(e.target.value),
+                        //   })
+                        // }
+                        onChange={(e) => {
+                          setUpdateFormData({
+                            ...updateFormData,
+                            name: removeAllSpecialChar(e.target.value),
+                          });
+                          setUpdateFormErrors({
+                            ...updateFormErrors,
+                            name: e.target.value.trim() === "",
+                          });
+                        }}
+                        error={updateFormErrors.name}
+                        helperText={
+                          updateFormErrors.name && "Name must be filled"
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -353,11 +387,49 @@ export default function AdminRegistration() {
                         id="phoneNumber"
                         autoComplete="phoneNumber"
                         value={updateFormData.phoneNumber}
-                        onChange={updateHandlePhoneNumberChange}
+                        // onChange={(e) =>
+                        //   setUpdateFormData({
+                        //     ...updateFormData,
+                        //     phoneNumber: removeSpaceAndLowerCase(
+                        //       e.target.value
+                        //     ),
+                        //   })
+                        // }
+                        onChange={(e) => {
+                          const isValidPhoneNumber =
+                            !isNaN(e.target.value) &&
+                            e.target.value.length <= 10;
+                          const isPhoneNumberFilled =
+                            e.target.value.trim() === "";
+                          const isPhoneNumberLengthValid =
+                            e.target.value.length <= 9;
+                          setUpdateFormData({
+                            ...updateFormData,
+                            phoneNumber: isValidPhoneNumber
+                              ? e.target.value
+                              : updateFormData.phoneNumber,
+                          });
+                          setUpdateFormErrors({
+                            ...updateFormErrors,
+                            phoneNumber: isPhoneNumberFilled,
+                            phoneNumberLength: isPhoneNumberLengthValid,
+                          });
+                        }}
+                        error={
+                          updateFormErrors.phoneNumber ||
+                          updateFormErrors.phoneNumberLength
+                        }
+                        helperText={
+                          (updateFormErrors.phoneNumber &&
+                            "Phone Number must be filled") ||
+                          (updateFormErrors.phoneNumberLength &&
+                            "Phone Number must be 10 digits")
+                        }
                       />
                     </Grid>
                     <Grid item xs={6}>
                       <Textfield
+                        InputProps={{ readOnly: true }}
                         required
                         fullWidth
                         id="email"
@@ -366,7 +438,14 @@ export default function AdminRegistration() {
                         name="email"
                         autoComplete="email"
                         value={updateFormData.email}
-                        onChange={updateHandleFormdataInputChange}
+                        // onChange={(e) =>
+                        //   setUpdateFormData({
+                        //     ...updateFormData,
+                        //     email: removeNumberAndSpecialChar(
+                        //       removeSpaceAndLowerCase(e.target.value)
+                        //     ),
+                        //   })
+                        // }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -379,7 +458,14 @@ export default function AdminRegistration() {
                         id="adminID"
                         label="Admin ID"
                         value={updateFormData.adminID}
-                        onChange={updateHandleFormdataInputChange}
+                        // onChange={(e) =>
+                        //   setUpdateFormData({
+                        //     ...updateFormData,
+                        //     adminID: removeNumberAndSpecialChar(
+                        //       removeSpaceAndLowerCase(e.target.value)
+                        //     ),
+                        //   })
+                        // }
                       />
                     </Grid>
                     <Grid item xs={6}>
@@ -388,18 +474,8 @@ export default function AdminRegistration() {
                         id="role"
                         value={updateFormData.role}
                         label="Role"
-                        onChange={updateHandleRoleChange}
-                        list={["admin", "superadmin", "developer"]}
-                      /> */}
-                      <Dropdown
-                        fullWidth
-                        id="role"
-                        value={updateFormData.role}
-                        label="Role"
-                        // onChange={updateHandleRoleChange}
-                        // list={roleList}
-                        onChange={(event) => {
-                          const { value } = event.target;
+                        onChange={(e) => {
+                          const { value } = e.target;
                           for (let i of roleList) {
                             if (i === value) {
                               setUpdateFormData({
@@ -411,17 +487,88 @@ export default function AdminRegistration() {
                           }
                         }}
                         list={roleList.map((p) => p)}
-                      />
+                      /> */}
+                      <FormControl fullWidth error={updateFormErrors.role}>
+                        <InputLabel id="role-label">Role</InputLabel>
+                        <Select
+                          labelId="role-label"
+                          label="Role"
+                          id="role"
+                          value={updateFormData.role}
+                          onChange={(e) => {
+                            const selectedRole = e.target.value;
+                            setUpdateFormData({
+                              ...updateFormData,
+                              role: selectedRole,
+                            });
+                            if (selectedRole !== "") {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                role: false,
+                              });
+                            } else {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                role: true,
+                              });
+                            }
+                          }}
+                        >
+                          {roleList.map((role) => (
+                            <MenuItem key={role} value={role}>
+                              {role}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {updateFormErrors.role && (
+                          <FormHelperText>Role must be filled</FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                     <Grid item xs={6}>
-                      <Dropdown
+                      {/* <Dropdown
                         fullWidth
                         id="homepage"
                         value={updateFormData.homepage}
                         label="Homepage"
                         onChange={updateHandleHomepageChange}
                         list={["admin/home", "user/home"]}
-                      />
+                      /> */}
+                      <FormControl fullWidth error={updateFormErrors.homepage}>
+                        <InputLabel id="homepage-label">Homepage</InputLabel>
+                        <Select
+                          labelId="homepage-label"
+                          label="Homepage"
+                          id="homepage"
+                          value={updateFormData.homepage}
+                          onChange={(e) => {
+                            const selectedHomepage = e.target.value;
+                            setUpdateFormData({
+                              ...updateFormData,
+                              homepage: selectedHomepage,
+                            });
+                            if (selectedHomepage !== "") {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                homepage: false,
+                              });
+                            } else {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                homepage: true,
+                              });
+                            }
+                          }}
+                        >
+                          <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem>
+                        </Select>
+                        {updateFormErrors.homepage && (
+                          <FormHelperText>
+                            Homepage must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                   </Grid>
                   <Button
@@ -452,24 +599,57 @@ export default function AdminRegistration() {
                         label="Name"
                         autoFocus
                         value={formData.name}
-                        onChange={handleFormdataInputChange}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            name: removeAllSpecialChar(e.target.value),
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            name: e.target.value.trim() === "",
+                          });
+                        }}
                         error={formErrors.name}
                         helperText={formErrors.name && "Name must be filled"}
                       />
                     </Grid>
                     <Grid item xs={6}>
                       <Textfield
-                        autoComplete="adminID"
-                        name="adminID"
                         required
                         fullWidth
-                        id="adminID"
-                        label="Admin ID"
-                        value={formData.adminID}
-                        onChange={handleFormdataInputChange}
-                        error={formErrors.adminID}
+                        name="phoneNumber"
+                        label="Phone Number"
+                        id="phoneNumber"
+                        autoComplete="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={(e) => {
+                          const isValidPhoneNumber =
+                            !isNaN(e.target.value) &&
+                            e.target.value.length <= 10;
+                          const isPhoneNumberFilled =
+                            e.target.value.trim() === "";
+                          const isPhoneNumberLengthValid =
+                            e.target.value.length <= 9;
+                          setFormData({
+                            ...formData,
+                            phoneNumber: isValidPhoneNumber
+                              ? e.target.value
+                              : formData.phoneNumber,
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            phoneNumber: isPhoneNumberFilled,
+                            phoneNumberLength: isPhoneNumberLengthValid,
+                          });
+                        }}
+                        error={
+                          formErrors.phoneNumber || formErrors.phoneNumberLength
+                        }
                         helperText={
-                          formErrors.adminID && "AdminID must be filled"
+                          (formErrors.phoneNumber &&
+                            "Phone Number must be filled") ||
+                          (formErrors.phoneNumberLength &&
+                            "Phone Number must be 10 digits")
                         }
                       />
                     </Grid>
@@ -483,130 +663,197 @@ export default function AdminRegistration() {
                         name="email"
                         autoComplete="email"
                         value={formData.email}
-                        onChange={handleFormdataInputChange}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            email: removeNumberAndSpecialChar(
+                              removeSpaceAndLowerCase(e.target.value)
+                            ),
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            email: e.target.value.trim() === "",
+                          });
+                        }}
                         error={formErrors.email}
                         helperText={formErrors.email && "Email must be filled"}
                       />
                     </Grid>
                     <Grid item xs={6}>
+                      {/* <Textfield
+                        autoComplete="adminID"
+                        name="adminID"
+                        required
+                        fullWidth
+                        id="adminID"
+                        label="Admin ID"
+                        value={formData.adminID}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            adminID: removeOnlySpecialChar(
+                              removeSpaceAndLowerCase(e.target.value)
+                            ),
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            adminID: e.target.value.trim() === "",
+                          });
+                        }}
+                        error={formErrors.adminID}
+                        helperText={
+                          formErrors.adminID && "AdminID must be filled"
+                        }
+                      /> */}
+                      <FormControl fullWidth error={formErrors.adminID}>
+                        <InputLabel htmlFor="adminID">AdminID</InputLabel>
+                        <OutlinedInput
+                          autoComplete="adminID"
+                          name="adminID"
+                          required
+                          fullWidth
+                          id="adminID"
+                          label="AdminID"
+                          value={formData.adminID}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              adminID: removeOnlySpecialChar(e.target.value),
+                            });
+                            setUnchangedAdminID(e.target.value);
+                            setFormErrors({
+                              ...formErrors,
+                              adminID: e.target.value.trim() === "",
+                            });
+                          }}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <Tooltip title="Auto-fill AdminID with Email Address">
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      checked={
+                                        formData.adminID === formData.email
+                                      }
+                                      onChange={(e) => {
+                                        setFormData({
+                                          ...formData,
+                                          adminID:
+                                            formData.adminID === formData.email
+                                              ? unchangedAdminID
+                                              : formData.email,
+                                        });
+                                      }}
+                                      name="autoFillAdminID"
+                                      color="primary"
+                                    />
+                                  }
+                                />
+                              </Tooltip>
+                            </InputAdornment>
+                          }
+                        />
+                        {formErrors.adminID && (
+                          <FormHelperText>
+                            Admin ID must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <FormControl
+                        fullWidth
+                        error={
+                          formErrors.password || formErrors.passwordNotMatch
+                        }
+                      >
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <OutlinedInput
+                          label="Password"
+                          autoComplete="password"
+                          name="password"
+                          required
+                          fullWidth
+                          id="password"
+                          value={pass}
+                          onChange={(e) => {
+                            const password = e.target.value;
+                            setPass(password);
+                            setFormData({
+                              ...formData,
+                              password: password,
+                            });
+                            setFormErrors({
+                              ...formErrors,
+                              password: password.trim() === "",
+                              passwordNotMatch: password !== cnfpass,
+                            });
+                            console.log(
+                              "password !== cnfpass : ",
+                              password !== cnfpass
+                            );
+                          }}
+                          type={showPassword ? "text" : "password"}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                        />
+                        {formErrors.password && (
+                          <FormHelperText>
+                            Password must be filled
+                          </FormHelperText>
+                        )}
+                        {formErrors.passwordNotMatch && (
+                          <FormHelperText>
+                            Password does not match !
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
                       <Textfield
                         required
                         fullWidth
-                        name="phoneNumber"
-                        label="Phone Number"
-                        id="phoneNumber"
-                        autoComplete="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handlePhoneNumberChange}
-                        error={formErrors.phoneNumber}
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirmPassword"
+                        value={cnfpass}
+                        onBlur={(e) => confirmPassword(e.target.value)}
+                        onChange={(e) => {
+                          const confirmPass = e.target.value;
+                          setCnfpass(confirmPass);
+                          setFormErrors({
+                            ...formErrors,
+                            confirmPassword: e.target.value.trim() === "",
+                            passwordNotMatch: pass !== confirmPass,
+                          });
+                        }}
+                        error={
+                          formErrors.confirmPassword ||
+                          formErrors.passwordNotMatch
+                        }
                         helperText={
-                          formErrors.phoneNumber &&
-                          "Phone Number must be filled"
+                          (formErrors.confirmPassword &&
+                            "Confirm Password must be filled") ||
+                          (formErrors.passwordNotMatch &&
+                            "Password does not match !")
                         }
                       />
                     </Grid>
-                    {!adminExist && (
-                      <Grid item xs={6}>
-                        <FormControl fullWidth error={formErrors.password}>
-                          <InputLabel htmlFor="password">Password</InputLabel>
-                          <OutlinedInput
-                            label="Password"
-                            autoComplete="password"
-                            name="password"
-                            required
-                            fullWidth
-                            id="password"
-                            value={pass}
-                            onChange={hashedPasswordChange}
-                            type={showPassword ? "text" : "password"}
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onClick={handleClickShowPassword}
-                                  onMouseDown={handleMouseDownPassword}
-                                  edge="end"
-                                >
-                                  {showPassword ? (
-                                    <VisibilityOff />
-                                  ) : (
-                                    <Visibility />
-                                  )}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                          {formErrors.password && (
-                            <FormHelperText>
-                              Password must be filled
-                            </FormHelperText>
-                          )}
-                        </FormControl>
-                      </Grid>
-                    )}
-                    {!adminExist && (
-                      <Grid item xs={6}>
-                        <Textfield
-                          required
-                          fullWidth
-                          name="confirmPassword"
-                          label="Confirm Password"
-                          type="password"
-                          id="confirmPassword"
-                          value={cnfpass}
-                          onBlur={(e) => confirmPassword(e.target.value)}
-                          onChange={(e) => {
-                            const confirmPass = e.target.value;
-                            setCnfpass(confirmPass);
-                          }}
-                        />
-                        {/* {showPasswordError && (
-                          <Stack
-                            sx={{ display: "flex", justifyContent: "right" }}
-                            spacing={2}
-                          >
-                            <Alert variant="filled" severity="error">
-                              Password Does Not Match
-                            </Alert>
-                          </Stack>
-                        )} */}
-                      </Grid>
-                    )}
-                    {/* {showPasswordError && (
-                <Box
-                  sx={{
-                    position: "fixed",
-                    top: "10px",
-                    right: "10px",
-                    zIndex: 9999,
-                  }}
-                >
-                  <Alert variant="filled" severity="error">
-                    Password Does Not Match
-                  </Alert>
-                </Box>
-              )} */}
-                    {/* <Grid item xs={6}>
-                      <Dropdown
-                        fullWidth
-                        id="role"
-                        value={formData.role}
-                        label="Role"
-                        onChange={(event) => {
-                          const { value } = event.target;
-                          for (let i of roleList) {
-                            if (i === value) {
-                              setFormData({
-                                ...formData,
-                                role: value,
-                              });
-                              return;
-                            }
-                          }
-                        }}
-                        list={roleList.map((p) => p)}
-                      />
-                    </Grid> */}
                     <Grid item xs={6}>
                       <FormControl fullWidth error={formErrors.role}>
                         <InputLabel id="role-label">Role</InputLabel>
@@ -615,19 +862,28 @@ export default function AdminRegistration() {
                           label="Role"
                           id="role"
                           value={formData.role}
-                          onChange={(event) => {
-                            const { value } = event.target;
-                            for (let i of roleList) {
-                              if (i === value) {
-                                setFormData({
-                                  ...formData,
-                                  role: value,
-                                });
-                                return;
-                              }
+                          onChange={(e) => {
+                            const selectedRole = e.target.value;
+                            setFormData({
+                              ...formData,
+                              role: selectedRole,
+                            });
+                            if (selectedRole !== "") {
+                              setFormErrors({
+                                ...formErrors,
+                                role: false,
+                              });
+                            } else {
+                              setFormErrors({
+                                ...formErrors,
+                                role: true,
+                              });
                             }
                           }}
                         >
+                          <MenuItem value="">
+                            <h5>Select Role</h5>
+                          </MenuItem>
                           {roleList.map((role) => (
                             <MenuItem key={role} value={role}>
                               {role}
@@ -639,19 +895,6 @@ export default function AdminRegistration() {
                         )}
                       </FormControl>
                     </Grid>
-                    {/* <Grid item xs={6}>
-                      <Dropdown
-                        fullWidth
-                        id="homepage"
-                        value={formData.homepage}
-                        label="Homepage"
-                        onChange={(event) => {
-                          const { value } = event.target;
-                          setFormData({ ...formData, homepage: value });
-                        }}
-                        list={["admin/home", "user/home"]}
-                      />
-                    </Grid> */}
                     <Grid item xs={6}>
                       <FormControl fullWidth error={formErrors.homepage}>
                         <InputLabel id="homepage-label">Homepage</InputLabel>
@@ -660,8 +903,28 @@ export default function AdminRegistration() {
                           label="Homepage"
                           id="homepage"
                           value={formData.homepage}
-                          onChange={handleHomepageChange}
+                          onChange={(e) => {
+                            const selectedHomepage = e.target.value;
+                            setFormData({
+                              ...formData,
+                              homepage: selectedHomepage,
+                            });
+                            if (selectedHomepage !== "") {
+                              setFormErrors({
+                                ...formErrors,
+                                homepage: false,
+                              });
+                            } else {
+                              setFormErrors({
+                                ...formErrors,
+                                homepage: true,
+                              });
+                            }
+                          }}
                         >
+                          <MenuItem value="">
+                            <h5>Select Homepage</h5>
+                          </MenuItem>
                           <MenuItem value="admin/home">admin/home</MenuItem>
                           <MenuItem value="user/home">user/home</MenuItem>
                         </Select>

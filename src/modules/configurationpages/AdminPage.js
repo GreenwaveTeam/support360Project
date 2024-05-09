@@ -108,7 +108,10 @@ const AdminPage = ({ sendUrllist }) => {
 
   console.log("plantID : ", userPlantID);
 
-  const urllist = [{ pageName: "Admin Home Page", pagelink: "/admin/home" }];
+  const urllist = [
+    { pageName: "Admin Home", pagelink: "/admin/home" },
+    { pageName: "User Configure", pagelink: "/admin/configurePage" },
+  ];
 
   //For Theme
   const theme = useTheme();

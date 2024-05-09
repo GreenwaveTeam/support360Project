@@ -388,6 +388,7 @@ const DeviceIssue = ({ sendUrllist }) => {
             </Box>
             &nbsp;
             <Table
+              progressVisible={true}
               rows={issueList}
               setRows={setIssueList}
               columns={columns}

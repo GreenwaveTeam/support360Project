@@ -541,7 +541,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
       //   detail: "Please enter a node name.",
       // });
       setsnackbarSeverity("error");
-      setSnackbarText("Please enter a node name !");
+      setSnackbarText("Please enter a Asset name !");
       setSnackbarOpen(true);
       setCategoryError(true);
       setIsError(true);
@@ -572,7 +572,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
         // });
 
         setsnackbarSeverity("error");
-        setSnackbarText("Node name allready exist in this branch");
+        setSnackbarText("Asset name allready exist in this branch");
         setSnackbarOpen(true);
         setCategoryError(true);
         setIsError(true);
@@ -591,7 +591,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
         // );
         setsnackbarSeverity("error");
         setSnackbarText(
-          "A parent node cannot have more than one child node with the same name."
+          "A parent node cannot have more than one child Asset with the same name."
         );
         setSnackbarOpen(true);
         setCategoryError(true);
@@ -637,7 +637,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
       setVisible(false);
 
       setsnackbarSeverity();
-      setSnackbarText("Child node added Successfully");
+      setSnackbarText("Assest added Successfully");
       setSnackbarOpen(true);
       setCategoryError(true);
       // setIsError(true);
@@ -825,7 +825,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                 <>
                   <Textfield
                     className="textInput"
-                    label="Enter Parent Node Name"
+                    label="Enter Parent Asset Name"
                     variant="outlined"
                     fullWidth
                     value={rootNodeName}
@@ -909,7 +909,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
                 <div>
                   <Dialog
-                    header={`Create Child Node for : ${selectedNode.name}`}
+                    header={`Create Asset for : ${selectedNode.name}`}
                     open={visible}
                     style={{}}
                     fullWidth
@@ -919,7 +919,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                       id="alert-dialog-title"
                       sx={{ fontSize: "1rem", fontWeight: "600" }}
                     >
-                      {`Create Child Node for : ${selectedNode.name}`}
+                      {`Create Asset for : ${selectedNode.name}`}
                     </DialogTitle>
                     <Divider />
                     <br />
@@ -933,7 +933,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                         <Textfield
                           required
                           className="textInput"
-                          label="Enter Child Node"
+                          label="Asset Name"
                           variant="outlined"
                           fullWidth
                           value={childNodeName}
@@ -945,7 +945,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                         <Textfield
                           required
                           className="textInput"
-                          label="Enter Make"
+                          label="Make"
                           variant="outlined"
                           fullWidth
                           value={make}
@@ -956,7 +956,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                         <Textfield
                           required
                           className="textInput"
-                          label="Enter Model"
+                          label="Model"
                           variant="outlined"
                           fullWidth
                           value={model}
@@ -967,7 +967,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                         <Textfield
                           required
                           className="textInput"
-                          label="Enter Capacity"
+                          label="Capacity"
                           variant="outlined"
                           fullWidth
                           type="number"
@@ -979,7 +979,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                         <Textfield
                           required
                           className="textInput"
-                          label="Enter Description"
+                          label="Description"
                           variant="outlined"
                           fullWidth
                           multiline
@@ -1054,7 +1054,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                           variant="contained"
                           color="primary"
                           onClick={handleChildNodeAdd}
-                          buttontext={"Add Node"}
+                          buttontext={"Add Asset"}
                         ></CustomButton>
                       </Box>
                       <br />
@@ -1090,9 +1090,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             sx={{ fontSize: "0.8rem", fontWeight: "600" }}
                             label={
                               selectedNode
-                                ? `Selected Node: ${selectedNode.name}
+                                ? `Selected Asset: ${selectedNode.name}
                               `
-                                : "Select a node"
+                                : "Select a Asset"
                             }
                           />
 
@@ -1199,16 +1199,16 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 ></CustomButton> */}
                                   <FormControl fullWidth>
                                     <InputLabel htmlFor="EditNodeName">
-                                      Edit Node Name
+                                      Edit Name
                                     </InputLabel>
                                     <OutlinedInput
                                       autoFocus
-                                      autoComplete="Edit Node Name"
-                                      name="Edit Node Name"
+                                      autoComplete="Edit Name"
+                                      name="Edit Name"
                                       required
                                       fullWidth
                                       id="EditNodeName"
-                                      label="Edit Node Name"
+                                      label="Edit Name"
                                       value={editedName}
                                       onChange={(e) =>
                                         setEditedName(e.target.value)
@@ -1251,7 +1251,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     className="value-comp"
                                     onClick={() => handleEdit("Name")}
                                   >
-                                    {selectedNode.name}
+                                    {selectedNode.name === ""
+                                      ? "NA"
+                                      : selectedNode.name}
                                   </div>
                                 </>
                               )}
@@ -1302,16 +1304,16 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
                                   <FormControl fullWidth>
                                     <InputLabel htmlFor="EditNodeName">
-                                      Edit Node Name
+                                      Edit Make
                                     </InputLabel>
                                     <OutlinedInput
                                       autoFocus
-                                      autoComplete="Edit Node Name"
-                                      name="Edit Node Name"
+                                      autoComplete="Edit Make"
+                                      name="Edit Make"
                                       required
                                       fullWidth
                                       id="EditNodeName"
-                                      label="Edit Node Name"
+                                      label="Edit Make"
                                       value={editedMake}
                                       onChange={(e) =>
                                         setEditedMake(e.target.value)
@@ -1354,7 +1356,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     className="value-comp"
                                     onClick={() => handleEdit("Make")}
                                   >
-                                    {selectedNode.make}
+                                    {selectedNode.make === ""
+                                      ? "NA"
+                                      : selectedNode.make}
                                   </div>
                                 </>
                               )}
@@ -1404,16 +1408,16 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
                                   <FormControl fullWidth>
                                     <InputLabel htmlFor="EditNodeName">
-                                      Edit Node Name
+                                      Edit Model
                                     </InputLabel>
                                     <OutlinedInput
                                       autoFocus
-                                      autoComplete="Edit Node Name"
-                                      name="Edit Node Name"
+                                      autoComplete="Edit Model"
+                                      name="Edit Model"
                                       required
                                       fullWidth
                                       id="EditNodeName"
-                                      label="Edit Node Name"
+                                      label="Edit Model"
                                       value={editedModel}
                                       onChange={(e) =>
                                         setEditedModel(e.target.value)
@@ -1456,7 +1460,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     className="value-comp"
                                     onClick={() => handleEdit("Model")}
                                   >
-                                    {selectedNode.model}
+                                    {selectedNode.model === ""
+                                      ? "NA"
+                                      : selectedNode.model}
                                   </div>
                                 </>
                               )}
@@ -1509,16 +1515,16 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
                                   <FormControl fullWidth>
                                     <InputLabel htmlFor="EditNodeName">
-                                      Edit Node Name
+                                      Edit Capacity
                                     </InputLabel>
                                     <OutlinedInput
                                       autoFocus
-                                      autoComplete="Edit Node Name"
-                                      name="Edit Node Name"
+                                      autoComplete="Edit Capacity"
+                                      name="Edit Capacity"
                                       required
                                       fullWidth
                                       id="EditNodeName"
-                                      label="Edit Node Name"
+                                      label="Edit Capacity"
                                       value={editedCapacity}
                                       onChange={(e) =>
                                         setEditedCapacity(e.target.value)
@@ -1616,16 +1622,16 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
                                   <FormControl fullWidth>
                                     <InputLabel htmlFor="EditNodeName">
-                                      Edit Node Name
+                                      Edit Description
                                     </InputLabel>
                                     <OutlinedInput
                                       autoFocus
-                                      autoComplete="Edit Node Name"
-                                      name="Edit Node Name"
+                                      autoComplete="Edit Description"
+                                      name="Edit Description"
                                       required
                                       fullWidth
                                       id="EditNodeName"
-                                      label="Edit Node Name"
+                                      label="Edit Description"
                                       value={editedDescription}
                                       onChange={(e) =>
                                         setEditedDescription(e.target.value)
@@ -1670,7 +1676,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     className="value-comp"
                                     onClick={() => handleEdit("Description")}
                                   >
-                                    {selectedNode.description}
+                                    {selectedNode.description === ""
+                                      ? "NA"
+                                      : selectedNode.description}
                                   </div>
                                 </>
                               )}
@@ -1698,76 +1706,58 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             <div>
                               {isEditingSupportDate ? (
                                 <>
-                                  {/* <CustomDatePicker
-                                  label="Support End Date"
-                                  value={editedSupportDate}
-                                  onChange={(newDate) =>
-                                    setEditedSupportDate(newDate)
-                                  }
-                                />
-                                <CustomButton
-                                  variant="contained"
-                                  color="primary"
-                                  onClick={() => handleSaveName("SupportDate")}
-                                  buttontext={"Save"}
-                                ></CustomButton>
-                                <CustomButton
-                                  variant="contained"
-                                  color="secondary"
-                                  onClick={() =>
-                                    handleCancelNameEdit("SupportDate")
-                                  }
-                                  buttontext={"Cancel"}
-                                ></CustomButton> */}
-
                                   <FormControl fullWidth>
-                                    <InputLabel htmlFor="SupportEndDate">
-                                      Support End Date
-                                    </InputLabel>
-                                    <OutlinedInput
-                                      autoFocus
-                                      autoComplete="Support End Date"
-                                      name="Support End Date"
-                                      required
-                                      fullWidth
-                                      id="SupportEndDate"
-                                      label="Support End Date"
-                                      value={editedSupportDate}
-                                      onChange={(newDate) =>
-                                        setEditedSupportDate(newDate)
-                                      }
-                                      endAdornment={
-                                        <>
-                                          <Tooltip title="Save">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleSaveName("SupportDate")
-                                                }
-                                                edge="end"
-                                              >
-                                                <SaveOutlinedIcon color="success" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <div>
+                                        <CustomDatePicker
+                                          label="Edit Support End Date"
+                                          value={editedSupportDate}
+                                          onChange={(newDate) =>
+                                            setEditedSupportDate(newDate)
+                                          }
+                                        />
+                                      </div>
 
-                                          <Tooltip title="Cancel">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleCancelNameEdit(
-                                                    "SupportDate"
-                                                  )
-                                                }
-                                                edge="end"
-                                              >
-                                                <CancelOutlinedIcon color="error" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
-                                        </>
-                                      }
-                                    />
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("SupportDate")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit(
+                                                  "SupportDate"
+                                                )
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+                                      </div>
+                                    </div>
                                   </FormControl>
                                 </>
                               ) : (
@@ -1827,53 +1817,56 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                 ></CustomButton> */}
 
                                   <FormControl fullWidth>
-                                    <InputLabel htmlFor="WarrantyEndDate">
-                                      Warranty End Date
-                                    </InputLabel>
-                                    <OutlinedInput
-                                      autoFocus
-                                      autoComplete="Warranty End Date"
-                                      name="Warranty End Date"
-                                      required
-                                      fullWidth
-                                      id="WarrantyEndDate"
-                                      label="Warranty End Date"
-                                      value={editedWarrantyDate}
-                                      onChange={(newDate) =>
-                                        setEditedWarrantyDate(newDate)
-                                      }
-                                      endAdornment={
-                                        <>
-                                          <Tooltip title="Save">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleSaveName("WarrantyDate")
-                                                }
-                                                edge="end"
-                                              >
-                                                <SaveOutlinedIcon color="success" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                      }}
+                                    >
+                                      <div>
+                                        <CustomDatePicker
+                                          label="Edit Warranty End Date"
+                                          value={editedWarrantyDate}
+                                          onChange={(newDate) =>
+                                            setEditedWarrantyDate(newDate)
+                                          }
+                                        />
+                                      </div>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                        }}
+                                      >
+                                        <Tooltip title="Save">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleSaveName("WarrantyDate")
+                                              }
+                                              edge="end"
+                                            >
+                                              <SaveOutlinedIcon color="success" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
 
-                                          <Tooltip title="Cancel">
-                                            <InputAdornment position="end">
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleCancelNameEdit(
-                                                    "WarrantyDate"
-                                                  )
-                                                }
-                                                edge="end"
-                                              >
-                                                <CancelOutlinedIcon color="error" />
-                                              </IconButton>
-                                            </InputAdornment>
-                                          </Tooltip>
-                                        </>
-                                      }
-                                    />
+                                        <Tooltip title="Cancel">
+                                          <InputAdornment position="end">
+                                            <IconButton
+                                              onClick={() =>
+                                                handleCancelNameEdit(
+                                                  "WarrantyDate"
+                                                )
+                                              }
+                                              edge="end"
+                                            >
+                                              <CancelOutlinedIcon color="error" />
+                                            </IconButton>
+                                          </InputAdornment>
+                                        </Tooltip>
+                                      </div>
+                                    </div>
                                   </FormControl>
                                 </>
                               ) : (
@@ -1969,34 +1962,36 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     className="value-comp"
                                     onClick={() => handleEdit("Catagory")}
                                   >
-                                    {selectedNode.issue_category_name}
+                                    {selectedNode.issue_category_name === ""
+                                      ? "NA"
+                                      : selectedNode.issue_category_name}
                                   </div>
                                 </>
                               )}
                             </div>
                           </div>
-                          {selectedNode.image_file && (
-                            <div style={{ marginBottom: "10px" }}>
-                              <div>
-                                <p
-                                  style={{
-                                    fontWeight: "bold",
-                                    marginBottom: "5px",
-                                  }}
-                                >
-                                  Image:
-                                </p>
-                              </div>
 
-                              <div>
-                                {isEditingImageFile ? (
-                                  <>
-                                    <input
-                                      type="file"
-                                      accept="image/*"
-                                      onChange={handleEditImageChange}
-                                    />
-                                    {/* <CustomButton
+                          <div style={{ marginBottom: "10px" }}>
+                            <div>
+                              <p
+                                style={{
+                                  fontWeight: "bold",
+                                  marginBottom: "5px",
+                                }}
+                              >
+                                Image:
+                              </p>
+                            </div>
+
+                            <div>
+                              {isEditingImageFile ? (
+                                <>
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleEditImageChange}
+                                  />
+                                  {/* <CustomButton
                                     variant="contained"
                                     color="primary"
                                     onClick={() => handleSaveName("ImageFile")}
@@ -2010,62 +2005,61 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                     }
                                     buttontext={"Cancel"}
                                   ></CustomButton> */}
-                                    <Tooltip title="Save">
-                                      <IconButton
-                                        onClick={() =>
-                                          handleSaveName("ImageFile")
-                                        }
-                                        edge="end"
-                                      >
-                                        <SaveOutlinedIcon color="success" />
-                                      </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Cancel">
-                                      <IconButton
-                                        onClick={() =>
-                                          handleCancelNameEdit("ImageFile")
-                                        }
-                                        edge="end"
-                                      >
-                                        <CancelOutlinedIcon color="error" />
-                                      </IconButton>
-                                    </Tooltip>
-                                  </>
-                                ) : (
-                                  <>
-                                    <div
-                                      className="value-comp"
-                                      onClick={() => handleEdit("ImageFile")}
+                                  <Tooltip title="Save">
+                                    <IconButton
+                                      onClick={() =>
+                                        handleSaveName("ImageFile")
+                                      }
+                                      edge="end"
                                     >
-                                      <div>
-                                        <img
-                                          width="150"
-                                          height="120"
-                                          src={
-                                            selectedNode.image_file
-                                              ? `data:image/jpeg;base64,${selectedNode.image_file}`
-                                              : "path/to/placeholder/image.jpg"
+                                      <SaveOutlinedIcon color="success" />
+                                    </IconButton>
+                                  </Tooltip>
+                                  <Tooltip title="Cancel">
+                                    <IconButton
+                                      onClick={() =>
+                                        handleCancelNameEdit("ImageFile")
+                                      }
+                                      edge="end"
+                                    >
+                                      <CancelOutlinedIcon color="error" />
+                                    </IconButton>
+                                  </Tooltip>
+                                </>
+                              ) : (
+                                <>
+                                  <div
+                                    className="value-comp"
+                                    onClick={() => handleEdit("ImageFile")}
+                                  >
+                                    <div>
+                                      <img
+                                        width="150"
+                                        height="120"
+                                        src={
+                                          selectedNode.image_file
+                                            ? `data:image/jpeg;base64,${selectedNode.image_file}`
+                                            : "path/to/placeholder/image.jpg"
+                                        }
+                                        alt="NoImage"
+                                        style={{ borderRadius: "5px" }}
+                                        onError={(e) => {
+                                          e.target.onerror = null; // Prevent infinite loop
+                                          if (selectedNode.image_file) {
+                                            const base64String =
+                                              arrayBufferToBase64(
+                                                selectedNode.image_file
+                                              );
+                                            e.target.src = `data:image/jpeg;base64,${base64String}`;
                                           }
-                                          alt="NoImage"
-                                          style={{ borderRadius: "5px" }}
-                                          onError={(e) => {
-                                            e.target.onerror = null; // Prevent infinite loop
-                                            if (selectedNode.image_file) {
-                                              const base64String =
-                                                arrayBufferToBase64(
-                                                  selectedNode.image_file
-                                                );
-                                              e.target.src = `data:image/jpeg;base64,${base64String}`;
-                                            }
-                                          }}
-                                        />
-                                      </div>
+                                        }}
+                                      />
                                     </div>
-                                  </>
-                                )}
-                              </div>
+                                  </div>
+                                </>
+                              )}
                             </div>
-                          )}
+                          </div>
                         </div>
                       </Card>
                     </div>

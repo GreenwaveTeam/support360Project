@@ -600,6 +600,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                     style={{ borderRadius: 10, maxHeight: 440, maxWidth: 1200 }}
                     redirectIconActive={true}
                     isDeleteDialog={true}
+                    progressVisible={true}
                   ></CustomTable>
                 </div>
               )}

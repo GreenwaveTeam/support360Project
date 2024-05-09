@@ -20,6 +20,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  Box
 } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -37,6 +38,8 @@ import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import { useTheme } from "@mui/material";
 import { height } from "@mui/system";
+import LinearProgress from '@mui/material/LinearProgress';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export default function CustomTable({
   isDeleteDialog,
@@ -52,6 +55,7 @@ export default function CustomTable({
   tablename,
   style,
   redirectIconActive,
+  progressVisible,
 }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
   console.log("Columns::",columns)
@@ -393,7 +397,7 @@ export default function CustomTable({
                   </div>
                 </TableCell>
               </TableRow>
-            </TableHead> 
+            </TableHead>
             <TableHead>
               <TableRow>
                 {columns.map((column, index) => (
@@ -433,6 +437,11 @@ export default function CustomTable({
               </TableRow>
             </TableHead>
             <TableBody>
+            {progressVisible&&filteredrows?.length === 0 && (
+                <Box>
+                  <CircularProgress />
+                </Box>
+              )}
               {filteredrows &&
                 filteredrows
                   .slice(page * rowperpage, page * rowperpage + rowperpage)
@@ -518,16 +527,33 @@ export default function CustomTable({
                         </Button>
                         </Tooltip>} */}
 
-                                {editRowIndex !== index && column.id!=='severity'&&
+                                {editRowIndex !== index &&
+                                  column.id !== "severity" &&
                                   column.id !== redirectColumn && (
                                     <Typography>{value}</Typography>
                                   )}
-                                  {editRowIndex !== index && column.id==='severity'&&
+                                {editRowIndex !== index &&
+                                  column.id === "severity" &&
                                   column.id !== redirectColumn && (
                                     <>
-                                    {value==='Critical'&&<Chip label={value} color="warning"></Chip>}
-                                    {value==='Major'&&<Chip label={value} color="primary"></Chip>}
-                                    {value==='Minor'&&<Chip label={value} color="success"></Chip>}
+                                      {value === "Critical" && (
+                                        <Chip
+                                          label={value}
+                                          color="warning"
+                                        ></Chip>
+                                      )}
+                                      {value === "Major" && (
+                                        <Chip
+                                          label={value}
+                                          color="primary"
+                                        ></Chip>
+                                      )}
+                                      {value === "Minor" && (
+                                        <Chip
+                                          label={value}
+                                          color="success"
+                                        ></Chip>
+                                      )}
                                     </>
                                   )}
                                 {editRowIndex === index &&
@@ -554,7 +580,7 @@ export default function CustomTable({
                                       />
                                     </div>
                                   )}
-                                  {/* {editRowIndex === index &&
+                                {/* {editRowIndex === index &&
                                   column.type === "chip" && (
                                     <div>
                                       <Select
@@ -723,7 +749,7 @@ export default function CustomTable({
               rowsPerPage={rowperpage}
               page={page}
               count={rows.length}
-              labelRowsPerPage=''
+              labelRowsPerPage=""
               onPageChange={handlechangepage}
               onRowsPerPageChange={handleRowsPerPage}
             ></TablePagination>

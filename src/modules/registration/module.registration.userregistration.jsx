@@ -28,6 +28,7 @@ import {
   Select,
   MenuItem,
   FormHelperText,
+  Divider,
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
@@ -75,7 +76,6 @@ export default function UserRegistration({ sendUrllist }) {
     designation: false,
     email: false,
     password: false,
-    // confirmPassword: false,
     phoneNumber: false,
     plantID: false,
     plantName: false,
@@ -88,6 +88,9 @@ export default function UserRegistration({ sendUrllist }) {
     accountOwnerGW: false,
     role: false,
     homepage: false,
+    confirmPassword: false,
+    phoneNumberLength: false,
+    passwordNotMatch: false,
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -112,7 +115,7 @@ export default function UserRegistration({ sendUrllist }) {
   const [cnfpass, setCnfpass] = useState("");
   const [pass, setPass] = useState("");
   const [plantList, setPlantList] = useState([]);
-  const [userExist, setUserExist] = useState(false);
+  // const [userExist, setUserExist] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const navigate = useNavigate();
   const [isStatePresent, setIsStatePresent] = useState(false);
@@ -124,7 +127,7 @@ export default function UserRegistration({ sendUrllist }) {
 
   const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
 
-  const handleClose = (event, reason) => {
+  const handleClose = (e, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -175,78 +178,101 @@ export default function UserRegistration({ sendUrllist }) {
     // console.log("user : ", state.user);
     extendTokenExpiration();
     checkstate();
-    fetchData();
+    fetchPlantData();
     fetchRoles();
     sendUrllist(urllist);
   }, []);
 
   const urllist = [{ pageName: "Admin Home Page", pagelink: "/admin/home" }];
 
+  function removeSpaceAndLowerCase(str) {
+    return str.replace(/\s/g, "").toLowerCase();
+  }
+
+  function removeAllSpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z\s]/g, "");
+    var stringWithoutExtraSpaces = stringWithoutSpecialChars.replace(
+      /\s+/g,
+      " "
+    );
+    return stringWithoutExtraSpaces;
+  }
+
+  function removeOnlySpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9@.]/g, "");
+    var atIndex = stringWithoutSpecialChars.indexOf("@");
+    if (atIndex !== -1) {
+      var nextAtIndex = stringWithoutSpecialChars.indexOf("@", atIndex + 1);
+      if (nextAtIndex !== -1) {
+        stringWithoutSpecialChars = stringWithoutSpecialChars.slice(
+          0,
+          nextAtIndex
+        );
+      }
+    }
+    return stringWithoutSpecialChars;
+  }
+
+  function removeNumberAndSpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z@.]/g, "");
+    var atIndex = stringWithoutSpecialChars.indexOf("@");
+    if (atIndex !== -1) {
+      var nextAtIndex = stringWithoutSpecialChars.indexOf("@", atIndex + 1);
+      if (nextAtIndex !== -1) {
+        stringWithoutSpecialChars = stringWithoutSpecialChars.slice(
+          0,
+          nextAtIndex
+        );
+      }
+    }
+    return stringWithoutSpecialChars;
+  }
+
   const handleAddPlantClick = () => {
     setOpenDeleteDialog(true);
   };
 
-  const hashedPasswordChange = (e) => {
-    setPass(e.target.value);
-    setFormData({ ...formData, password: e.target.value });
-  };
-
-  const handleFormdataInputChange = (event) => {
-    const { name, value } = event.target;
+  const handleFormdataInputChange = (e) => {
+    const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handlenewPlantNameInputChange = (event) => {
-    const { name, value } = event.target;
+  const handlenewPlantNameInputChange = (e) => {
+    const { name, value } = e.target;
     setNewPlantName({ ...newPlantName, [name]: value });
     setFormData({ ...formData, [name]: value });
     setUpdateFormData({ ...updateFormData, [name]: value });
   };
 
-  const handleDesignationChange = (event) => {
-    const { value } = event.target;
+  const handleDesignationChange = (e) => {
+    const { value } = e.target;
     setFormData({ ...formData, designation: value });
   };
 
-  const handleRoleChange = (event) => {
-    const { value } = event.target;
-    setFormData({ ...formData, role: value });
-  };
-
-  const handleHomepageChange = (event) => {
-    const { value } = event.target;
-    setFormData({ ...formData, homepage: value });
-  };
-
-  const handlePhoneNumberChange = (event) => {
-    const { value } = event.target;
+  const handlePhoneNumberChange = (e) => {
+    const { value } = e.target;
     if (!isNaN(value) && value.length <= 10) {
       setFormData({ ...formData, phoneNumber: value });
     }
   };
 
-  const updateHandleFormdataInputChange = (event) => {
-    const { name, value } = event.target;
+  const updateHandleFormdataInputChange = (e) => {
+    const { name, value } = e.target;
     setUpdateFormData({ ...updateFormData, [name]: value });
   };
 
-  const updateHandleDesignationChange = (event) => {
-    const { value } = event.target;
+  const updateHandleDesignationChange = (e) => {
+    const { value } = e.target;
     setUpdateFormData({ ...updateFormData, designation: value });
   };
 
-  const updateHandleRoleChange = (event) => {
-    const { value } = event.target;
-    setUpdateFormData({ ...updateFormData, role: value });
-  };
-
-  const updateHandleHomepageChange = (event) => {
-    const { value } = event.target;
+  const updateHandleHomepageChange = (e) => {
+    const { value } = e.target;
     setUpdateFormData({ ...updateFormData, homepage: value });
   };
 
-  const updateHandlePhoneNumberChange = (event) => {
-    const { value } = event.target;
+  const updateHandlePhoneNumberChange = (e) => {
+    const { value } = e.target;
     if (!isNaN(value) && value.length <= 10) {
       setUpdateFormData({ ...updateFormData, phoneNumber: value });
     }
@@ -261,23 +287,15 @@ export default function UserRegistration({ sendUrllist }) {
     }
   };
 
-  const handleUserIDChange = (event) => {
-    setFormData({ ...formData, userID: event.target.value });
-    setUnchangedUserID(event.target.value);
-    setUpdateFormData({ ...updateFormData, userID: event.target.value });
+  const handleUserIDChange = (e) => {
+    setFormData({ ...formData, userID: e.target.value });
+    setUnchangedUserID(e.target.value);
+    setUpdateFormData({ ...updateFormData, userID: e.target.value });
   };
 
-  const handleEmailChange = (event) => {
-    setFormData({ ...formData, email: event.target.value });
-    setUpdateFormData({ ...updateFormData, email: event.target.value });
-  };
-
-  const handleCheckboxChange = () => {
-    setFormData({
-      ...formData,
-      userID:
-        formData.userID === formData.email ? unchangedUserID : formData.email,
-    });
+  const handleEmailChange = (e) => {
+    setFormData({ ...formData, email: e.target.value });
+    setUpdateFormData({ ...updateFormData, email: e.target.value });
   };
 
   const convertToInitials = (name) => {
@@ -291,7 +309,7 @@ export default function UserRegistration({ sendUrllist }) {
     return `${day}-${month}-${year}`;
   }
 
-  const fetchData = async () => {
+  const fetchPlantData = async () => {
     try {
       const response = await fetch("http://localhost:8081/plants/", {
         method: "GET",
@@ -351,18 +369,24 @@ export default function UserRegistration({ sendUrllist }) {
     } catch (error) {
       console.error("Error:", error);
     }
-    fetchData();
+    fetchPlantData();
   };
 
-  const handleAutocompleteChange = (event, newValue) => {
+  const handleAutocompleteChange = (e, newValue) => {
     if (newValue) {
       const selectedPlant = plantList.find(
         (plant) => plant.plantName === newValue
       );
+      console.log("selectedPlant : ", selectedPlant);
       setFormData({
         ...formData,
         plantID: selectedPlant ? selectedPlant.plantID : "",
         plantName: newValue,
+        address: selectedPlant ? selectedPlant.address : "",
+        customerName: selectedPlant ? selectedPlant.customerName : "",
+        division: selectedPlant ? selectedPlant.division : "",
+        supportStartDate: selectedPlant ? selectedPlant.supportEndDate : "",
+        supportEndDate: selectedPlant ? selectedPlant.supportStartDate : "",
       });
     } else {
       setFormData({
@@ -373,8 +397,8 @@ export default function UserRegistration({ sendUrllist }) {
     }
   };
 
-  const handleUpdate = async (event) => {
-    event.preventDefault();
+  const handleUpdate = async (e) => {
+    e.preventDefault();
     for (const key in updateFormData) {
       if (updateFormData[key] === null || updateFormData[key] === "") {
         handleClick();
@@ -420,8 +444,8 @@ export default function UserRegistration({ sendUrllist }) {
     }
   };
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
   //   console.log("formData : : ", formData);
   //   try {
   //     const response = await fetch("http://localhost:8081/auth/user/signup", {
@@ -444,12 +468,18 @@ export default function UserRegistration({ sendUrllist }) {
   //   }
   // };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const newFormErrors = {};
     Object.keys(formData).forEach((key) => {
       if (formData[key] === null || formData[key] === "") {
         newFormErrors[key] = true;
+      } else if (cnfpass === "") {
+        setFormErrors({ ...formErrors, confirmPassword: cnfpass === "" });
+      } else if (formData.phoneNumber.length !== 10) {
+        setFormErrors({ ...formErrors, phoneNumberLength: true });
+      } else if (pass !== cnfpass) {
+        setFormErrors({ ...formErrors, passwordNotMatch: true });
       } else {
         newFormErrors[key] = false;
       }
@@ -465,24 +495,29 @@ export default function UserRegistration({ sendUrllist }) {
         return;
       }
     }
-    // if (cnfpass === null || cnfpass === "") {
-    //   setFormErrors({ ...formErrors, confirmPassword: true });
-    // } else {
-    //   setFormErrors({ ...formErrors, confirmPassword: false });
-    // }
-    // if (cnfpass === null || cnfpass === "") {
-    //   handleClick();
-    //   setSnackbarText("Confirm Password must be filled");
-    //   setsnackbarSeverity("error");
-    //   console.log("Confirm Password must be filled");
-    //   return;
-    // }
-    if (cnfpass !== pass) {
+
+    if (formData["phoneNumber"].length !== 10) {
+      handleClick();
+      setSnackbarText("Phone Number must be 10 digits");
+      setsnackbarSeverity("error");
+      console.log("Phone Number must be 10 digits");
+      return;
+    }
+
+    if (cnfpass === "") {
       handleClick();
       setSnackbarText("Password does not match !");
       setsnackbarSeverity("error");
       return;
     }
+
+    if (pass !== cnfpass) {
+      handleClick();
+      setSnackbarText("Password does not match !");
+      setsnackbarSeverity("error");
+      return;
+    }
+
     if (formData.supportStartDate > formData.supportEndDate) {
       handleClick();
       setSnackbarText(
@@ -705,8 +740,8 @@ export default function UserRegistration({ sendUrllist }) {
                         id="plantName"
                         value={updateFormData.plantName}
                         label="Plant Name"
-                        onChange={(event) => {
-                          const { value } = event.target;
+                        onChange={(e) => {
+                          const { value } = e.target;
                           for (let i of plantList) {
                             if (i.plantName === value) {
                               setUpdateFormData({
@@ -844,8 +879,8 @@ export default function UserRegistration({ sendUrllist }) {
                         label="Role"
                         // onChange={updateHandleRoleChange}
                         // list={roleList}
-                        onChange={(event) => {
-                          const { value } = event.target;
+                        onChange={(e) => {
+                          const { value } = e.target;
                           for (let i of roleList) {
                             if (i === value) {
                               setUpdateFormData({
@@ -867,8 +902,8 @@ export default function UserRegistration({ sendUrllist }) {
                         label="Homepage"
                         onChange={updateHandleHomepageChange}
                         list={["admin/home", "user/home"]}
-                        // onChange={(event) => {
-                        //   const { value } = event.target;
+                        // onChange={(e) => {
+                        //   const { value } = e.target;
                         //   for (let i of roleList) {
                         //     if (i === value) {
                         //       setUpdateFormData({
@@ -917,7 +952,16 @@ export default function UserRegistration({ sendUrllist }) {
                         label="Name"
                         autoFocus
                         value={formData.name}
-                        onChange={handleFormdataInputChange}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            name: removeAllSpecialChar(e.target.value),
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            name: e.target.value.trim() === "",
+                          });
+                        }}
                         error={formErrors.name}
                         helperText={formErrors.name && "Name must be filled"}
                       />
@@ -970,16 +1014,25 @@ export default function UserRegistration({ sendUrllist }) {
                         name="email"
                         autoComplete="email"
                         value={formData.email}
-                        onChange={handleEmailChange}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            email: removeNumberAndSpecialChar(
+                              removeSpaceAndLowerCase(e.target.value)
+                            ),
+                          });
+                          setFormErrors({
+                            ...formErrors,
+                            email: e.target.value.trim() === "",
+                          });
+                        }}
                         error={formErrors.email}
-                        helperText={
-                          formErrors.email && "Email Address must be filled"
-                        }
+                        helperText={formErrors.email && "Email must be filled"}
                       />
                     </Grid>
                     <Grid item xs={6}>
                       <FormControl fullWidth error={formErrors.userID}>
-                        <InputLabel htmlFor="userID">userID</InputLabel>
+                        <InputLabel htmlFor="userID">UserID</InputLabel>
                         <OutlinedInput
                           autoComplete="userID"
                           name="userID"
@@ -988,7 +1041,17 @@ export default function UserRegistration({ sendUrllist }) {
                           id="userID"
                           label="User ID"
                           value={formData.userID}
-                          onChange={handleUserIDChange}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              userID: removeOnlySpecialChar(e.target.value),
+                            });
+                            setUnchangedUserID(e.target.value);
+                            setFormErrors({
+                              ...formErrors,
+                              userID: e.target.value.trim() === "",
+                            });
+                          }}
                           endAdornment={
                             <InputAdornment position="end">
                               <Tooltip title="Auto-fill UserID with Email Address">
@@ -998,7 +1061,15 @@ export default function UserRegistration({ sendUrllist }) {
                                       checked={
                                         formData.userID === formData.email
                                       }
-                                      onChange={handleCheckboxChange}
+                                      onChange={(e) => {
+                                        setFormData({
+                                          ...formData,
+                                          adminID:
+                                            formData.adminID === formData.email
+                                              ? unchangedUserID
+                                              : formData.email,
+                                        });
+                                      }}
                                       name="autoFillUserID"
                                       color="primary"
                                     />
@@ -1015,98 +1086,100 @@ export default function UserRegistration({ sendUrllist }) {
                         )}
                       </FormControl>
                     </Grid>
-                    {!userExist && (
-                      <Grid item xs={6}>
-                        <FormControl fullWidth error={formErrors.password}>
-                          <InputLabel htmlFor="password">Password</InputLabel>
-                          <OutlinedInput
-                            label="Password"
-                            autoComplete="password"
-                            name="password"
-                            required
-                            fullWidth
-                            id="password"
-                            value={pass}
-                            onChange={hashedPasswordChange}
-                            type={showPassword ? "text" : "password"}
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onClick={handleClickShowPassword}
-                                  onMouseDown={handleMouseDownPassword}
-                                  edge="end"
-                                >
-                                  {showPassword ? (
-                                    <VisibilityOff />
-                                  ) : (
-                                    <Visibility />
-                                  )}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                          {formErrors.password && (
-                            <FormHelperText>
-                              Password must be filled
-                            </FormHelperText>
-                          )}
-                        </FormControl>
-                      </Grid>
-                    )}
-                    {!userExist && (
-                      <Grid item xs={6}>
-                        <Textfield
+                    <Grid item xs={6}>
+                      <FormControl
+                        fullWidth
+                        error={
+                          formErrors.password || formErrors.passwordNotMatch
+                        }
+                      >
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <OutlinedInput
+                          label="Password"
+                          autoComplete="password"
+                          name="password"
                           required
                           fullWidth
-                          name="confirmPassword"
-                          label="Confirm Password"
-                          type="password"
-                          id="confirmPassword"
-                          value={cnfpass}
-                          onBlur={(e) => confirmPassword(e.target.value)}
+                          id="password"
+                          value={pass}
                           onChange={(e) => {
-                            const confirmPass = e.target.value;
-                            setCnfpass(confirmPass);
+                            const password = e.target.value;
+                            setPass(password);
+                            setFormData({
+                              ...formData,
+                              password: password,
+                            });
+                            setFormErrors({
+                              ...formErrors,
+                              password: password.trim() === "",
+                              passwordNotMatch: password !== cnfpass,
+                            });
+                            console.log(
+                              "password !== cnfpass : ",
+                              password !== cnfpass
+                            );
                           }}
-                          error={formErrors.confirmPassword}
-                          helperText={
-                            formErrors.confirmPassword &&
-                            "Confirm Password must be filled"
+                          type={showPassword ? "text" : "password"}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
                           }
                         />
-                        {/* {showPasswordError && (
-                              <Stack
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "right",
-                                }}
-                                spacing={2}
-                              >
-                                <Alert variant="filled" severity="error">
-                                  Password Does Not Match
-                                </Alert>
-                              </Stack>
-                              // handleClick();
-                              // setSnackbarText("User ID and password are required.");
-                              // setsnackbarSeverity("error");
-                            )} */}
-                      </Grid>
-                    )}
-                    {/* {showPasswordError && (
-                <Box
-                  sx={{
-                    position: "fixed",
-                    top: "10px",
-                    right: "10px",
-                    zIndex: 9999,
-                  }}
-                >
-                  <Alert variant="filled" severity="error">
-                    Password Does Not Match
-                  </Alert>
-                </Box>
-              )} */}
+                        {formErrors.password && (
+                          <FormHelperText>
+                            Password must be filled
+                          </FormHelperText>
+                        )}
+                        {formErrors.passwordNotMatch && (
+                          <FormHelperText>
+                            Password does not match !
+                          </FormHelperText>
+                        )}
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Textfield
+                        required
+                        fullWidth
+                        name="confirmPassword"
+                        label="Confirm Password"
+                        type="password"
+                        id="confirmPassword"
+                        value={cnfpass}
+                        onBlur={(e) => confirmPassword(e.target.value)}
+                        onChange={(e) => {
+                          const confirmPass = e.target.value;
+                          setCnfpass(confirmPass);
+                          setFormErrors({
+                            ...formErrors,
+                            confirmPassword: e.target.value.trim() === "",
+                            passwordNotMatch: pass !== confirmPass,
+                          });
+                        }}
+                        error={
+                          formErrors.confirmPassword ||
+                          formErrors.passwordNotMatch
+                        }
+                        helperText={
+                          (formErrors.confirmPassword &&
+                            "Confirm Password must be filled") ||
+                          (formErrors.passwordNotMatch &&
+                            "Password does not match !")
+                        }
+                      />
+                    </Grid>
                     <Grid item xs={6}>
                       <Textfield
                         required
@@ -1125,26 +1198,6 @@ export default function UserRegistration({ sendUrllist }) {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      {/* <Dropdown
-                        fullWidth={true}
-                        id="plantName"
-                        value={formData.plantName}
-                        label="Plant Name"
-                        onChange={(event) => {
-                          const { value } = event.target;
-                          for (let i of plantList) {
-                            if (i.plantName === value) {
-                              setFormData({
-                                ...formData,
-                                plantID: i.plantID,
-                                plantName: value,
-                              });
-                              return;
-                            }
-                          }
-                        }}
-                        list={plantList.map((p) => p.plantName)}
-                      /> */}
                       <Autocomplete
                         value={formData.plantName}
                         disablePortal
@@ -1336,31 +1389,6 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                       />
                     </Grid>
-                    {/* <Grid item xs={6}>
-                      <Dropdown
-                        fullWidth
-                        id="role"
-                        value={formData.role}
-                        label="Role"
-                        // onChange={handleRoleChange}
-                        // list={["ROLE_USER", "ROLE_SUPERVISOR"]}
-                        onChange={(event) => {
-                          const { value } = event.target;
-                          for (let i of roleList) {
-                            if (i === value) {
-                              setFormData({
-                                ...formData,
-                                role: value,
-                              });
-                              return;
-                            }
-                          }
-                        }}
-                        list={roleList.map((p) => p)}
-                        error={formErrors.role}
-                        helperText={formErrors.role && "Role must be filled"}
-                      />
-                    </Grid> */}
                     <Grid item xs={6}>
                       <FormControl fullWidth error={formErrors.role}>
                         <InputLabel id="role-label">Role</InputLabel>
@@ -1369,19 +1397,28 @@ export default function UserRegistration({ sendUrllist }) {
                           label="Role"
                           id="role"
                           value={formData.role}
-                          onChange={(event) => {
-                            const { value } = event.target;
-                            for (let i of roleList) {
-                              if (i === value) {
-                                setFormData({
-                                  ...formData,
-                                  role: value,
-                                });
-                                return;
-                              }
+                          onChange={(e) => {
+                            const selectedRole = e.target.value;
+                            setFormData({
+                              ...formData,
+                              role: selectedRole,
+                            });
+                            if (selectedRole !== "") {
+                              setFormErrors({
+                                ...formErrors,
+                                role: false,
+                              });
+                            } else {
+                              setFormErrors({
+                                ...formErrors,
+                                role: true,
+                              });
                             }
                           }}
                         >
+                          <MenuItem value="">
+                            <h5>Select Role</h5>
+                          </MenuItem>
                           {roleList.map((role) => (
                             <MenuItem key={role} value={role}>
                               {role}
@@ -1393,16 +1430,6 @@ export default function UserRegistration({ sendUrllist }) {
                         )}
                       </FormControl>
                     </Grid>
-                    {/* <Grid item xs={6}>
-                      <Dropdown
-                        fullWidth
-                        id="homepage"
-                        value={formData.homepage}
-                        label="Homepage"
-                        onChange={handleHomepageChange}
-                        list={["admin/home", "user/home"]}
-                      />
-                    </Grid> */}
                     <Grid item xs={6}>
                       <FormControl fullWidth error={formErrors.homepage}>
                         <InputLabel id="homepage-label">Homepage</InputLabel>
@@ -1411,8 +1438,28 @@ export default function UserRegistration({ sendUrllist }) {
                           label="Homepage"
                           id="homepage"
                           value={formData.homepage}
-                          onChange={handleHomepageChange}
+                          onChange={(e) => {
+                            const selectedHomepage = e.target.value;
+                            setFormData({
+                              ...formData,
+                              homepage: selectedHomepage,
+                            });
+                            if (selectedHomepage !== "") {
+                              setFormErrors({
+                                ...formErrors,
+                                homepage: false,
+                              });
+                            } else {
+                              setFormErrors({
+                                ...formErrors,
+                                homepage: true,
+                              });
+                            }
+                          }}
                         >
+                          <MenuItem value="">
+                            <h5>Select Homepage</h5>
+                          </MenuItem>
                           <MenuItem value="admin/home">admin/home</MenuItem>
                           <MenuItem value="user/home">user/home</MenuItem>
                         </Select>
@@ -1479,7 +1526,7 @@ export default function UserRegistration({ sendUrllist }) {
                   onClick={() => {
                     setOpenDeleteDialog(false);
                     postPlantName();
-                    fetchData();
+                    fetchPlantData();
                   }}
                   color="error"
                   autoFocus

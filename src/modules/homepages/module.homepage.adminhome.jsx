@@ -65,6 +65,7 @@ export default function AdminHome({ sendUrllist }) {
   const [filteredAdminRows, setFilteredAdminRows] = useState(adminList);
   const [openAdminDeleteDialog, setOpenAdminDeleteDialog] = useState(false);
   const [deleteAdminID, setDeleteAdminId] = useState("");
+  const [logedUser, setLogedUser] = useState([]);
 
   const navigate = useNavigate();
   const [switchLabel, setSwitchLabel] = useState("Toggle Admin");
@@ -107,11 +108,36 @@ export default function AdminHome({ sendUrllist }) {
 
   useEffect(() => {
     extendTokenExpiration();
+    fetchUser();
     fetchUserData();
     fetchAdminData();
     sendUrllist(urllist);
     fetchDivs();
   }, []);
+
+  const fetchUser = async () => {
+    console.log("expire : ", localStorage.getItem("expire"));
+    try {
+      const response = await fetch("http://localhost:8081/users/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status === 403) {
+        localStorage.clear();
+        navigate("/login");
+        return;
+      }
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      console.log("fetchUser email : ", data.email);
+      setLogedUser(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
 
   const fetchDivs = async () => {
     try {
@@ -740,13 +766,27 @@ export default function AdminHome({ sendUrllist }) {
                                   />
                                 </TableCell>
                                 <TableCell align="center">
-                                  <DeleteIcon
+                                  {/* <DeleteIcon
                                     color="error"
                                     style={{ cursor: "pointer" }}
                                     onClick={() =>
                                       handleAdminDelete(item.userID)
                                     }
-                                  />
+                                  /> */}
+                                  {item.email === logedUser.email ? (
+                                    <DeleteIcon
+                                      color="disabled"
+                                      style={{ cursor: "not-allowed" }}
+                                    />
+                                  ) : (
+                                    <DeleteIcon
+                                      color="error"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() =>
+                                        handleAdminDelete(item.userID)
+                                      }
+                                    />
+                                  )}
                                   <Dialog
                                     open={openAdminDeleteDialog}
                                     onClose={() =>
@@ -1150,14 +1190,26 @@ export default function AdminHome({ sendUrllist }) {
                                   />
                                 </TableCell>
                                 <TableCell align="center">
-                                  <DeleteIcon
+                                  {/* <DeleteIcon
                                     color="error"
                                     style={{ cursor: "pointer" }}
                                     // onClick={(e) => {
                                     //   deleteUserByUserID(item.userID);
                                     // }}
                                     onClick={(e) => handleDelete(item.userID)}
-                                  />
+                                  /> */}
+                                  {item.email === logedUser.email ? (
+                                    <DeleteIcon
+                                      color="disabled"
+                                      style={{ cursor: "not-allowed" }}
+                                    />
+                                  ) : (
+                                    <DeleteIcon
+                                      color="error"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => handleDelete(item.userID)}
+                                    />
+                                  )}
                                   <Dialog
                                     open={openDeleteDialog}
                                     onClose={() => setOpenDeleteDialog(false)}

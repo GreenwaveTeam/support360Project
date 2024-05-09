@@ -42,6 +42,7 @@ import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 import { extendTokenExpiration } from "../../helper/Support360Api";
+import { display } from "@mui/system";
 
 export default function ModuleConfigure({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
@@ -79,6 +80,10 @@ export default function ModuleConfigure({ sendUrllist }) {
   const [contextMenuPosition, setContextMenuPosition] = useState(null);
   const [selectedModuleForDelete, setSelectedModuleForDelete] = useState(null);
   const [deleteModuleDialog,setDeleteModuleDialog]=useState(false)
+  const [selectedModuleForUpdate, setSelectedModuleForUpdate] = useState(null);
+  const [updatedModuleName,setUpdateModuleName]=useState("")
+  const [updateModuleDialog,setUpdateModuleDialog]=useState(false)
+  const [openEditDialog,setOpenEditDialog]=useState(false)
 
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
@@ -106,6 +111,7 @@ export default function ModuleConfigure({ sendUrllist }) {
     event.preventDefault();
     setContextMenuPosition({ x: event.clientX, y: event.clientY });
     setSelectedModuleForDelete(module.modulename);
+    setSelectedModuleForUpdate(module.modulename)
   };
   const handleDeleteModule=async()=>{
     setDeleteModuleDialog(true);
@@ -145,6 +151,100 @@ export default function ModuleConfigure({ sendUrllist }) {
       setDialogMessage("Database error");
     }
   }
+  const handleUpdateModule=async()=>{
+    //setUpdateModuleDialog(true);
+    setOpenEditDialog(true)
+    setContextMenuPosition(null)
+  }
+  const handleModuleProceed=()=>{
+      setUpdateModuleDialog(true)
+  }
+  const handleUpdateModuleConfirm=async()=>{
+    console.log("Handle update module confirm")
+    try {
+      if (
+        data.modulelist !== null &&
+        data.modulelist.some(
+          (module) => module.modulename.toLowerCase().trim() === updatedModuleName.toLowerCase().trim()
+        )
+      ) {
+        console.log("Module name found");
+        setDialogPopup(true);
+        setsnackbarSeverity("error");
+        setDialogMessage("Module Name is already present");
+        setUpdateModuleDialog(false)
+        setUpdateModuleName("")
+        setOpenEditDialog(false)
+        setSelectedModuleForUpdate(null)
+        
+        return;
+      }
+      if (updatedModuleName.trim() === "") {
+        setDialogPopup(true);
+        setsnackbarSeverity("error");
+        setOpenEditDialog(false)
+        setDialogMessage("Blank string is not accepted");
+        setUpdateModuleDialog(false)
+        setUpdateModuleName("")
+        setSelectedModuleForUpdate(null)
+        return;
+      }
+      const regex = /[^A-Za-z0-9 _]/;
+      if (regex.test(updatedModuleName.trim())) {
+        setDialogPopup(true);
+        setOpenEditDialog(false)
+        setsnackbarSeverity("error");
+        setDialogMessage("Special Character is not allowed");
+        setUpdateModuleDialog(false)
+        setUpdateModuleName("")
+        setSelectedModuleForUpdate(null)
+        return;
+      }
+      ///admin/{plant_id}/{application}/{module}/{updatemodule}/updatemodulename
+      const response = await axios.put(
+        `http://localhost:8081/application/admin/${plantid}/${application_name}/${selectedModuleForUpdate}/${updatedModuleName}/updatemodulename`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
+      );
+      
+      // Optionally, update the UI or perform any additional actions after successful deletion
+       setData((prev) => ({
+        ...prev,
+        modulelist: prev.modulelist.map(module => {
+          if (module.modulename === selectedModuleForDelete) {
+            // Update the module name here
+            return { ...module, modulename: updatedModuleName };
+          }
+          return module;
+        })
+      }));
+      console.log("Update")
+      setValue("1")
+      setContextMenuPosition(null)
+      setUpdateModuleDialog(false)
+      setUpdateModuleName("")
+      setOpenEditDialog(false)
+      setSelectedModuleForUpdate(null)
+      console.log("handle update module")
+
+      //console.log("Category name=>" + categoryName);
+    } catch (error) {
+      // Handle errors, such as displaying an error message to the user
+
+      setsnackbarSeverity("error");
+      setDialogPopup(true);
+      setUpdateModuleDialog(false)
+      setUpdateModuleName("")
+      setOpenEditDialog(false)
+      setSelectedModuleForUpdate(null)
+      setDialogMessage("Database error");
+    }
+  }
+  
 
   const fetchUser = async () => {
     let role = "";
@@ -1067,7 +1167,7 @@ export default function ModuleConfigure({ sendUrllist }) {
                                             gutterBottom
                                             fontWeight={900}
                                           >
-                                            Current Snippet Name ➥ &nbsp;
+                                            Current Snippet Name  &nbsp;
                                             <span style={{ color: "red" }}>
                                               {categoryname}
                                             </span>
@@ -1157,6 +1257,7 @@ export default function ModuleConfigure({ sendUrllist }) {
               proceedButtonClick={handleDeleteAreaConfirm}
               cancelButtonText="Cancel"
             />
+            
             <Snackbar
               openPopup={dialogPopup}
               snackbarSeverity={snackbarSeverity}
@@ -1175,6 +1276,7 @@ export default function ModuleConfigure({ sendUrllist }) {
             >
               
               <MenuItem onClick={handleDeleteModule}>Delete Module</MenuItem>
+              <MenuItem onClick={handleUpdateModule}>Update Module</MenuItem>
             </Menu>
             <CustomDialog
               open={deleteModuleDialog}
@@ -1183,6 +1285,34 @@ export default function ModuleConfigure({ sendUrllist }) {
               proceedButtonClick={handleDeleteModuleConfirm}
               cancelButtonText="Cancel"
             />
+            <CustomDialog
+              open={updateModuleDialog}
+              setOpen={setUpdateModuleDialog}
+              proceedButtonText={"Update"}
+              proceedButtonClick={handleUpdateModuleConfirm}
+              cancelButtonText="Cancel"
+            />
+            <Dialog open={openEditDialog} >
+              <Container sx={{display:'flex',flexDirection:'column'}}>
+              &nbsp;
+            <TextField
+                label={"New Module Name"}
+                id="module"
+                 value={updatedModuleName}
+                onChange={(e) => {
+                  setUpdateModuleName(e.target.value);
+                }}
+                />
+                &nbsp;
+                <Button
+                variant="contained"
+                 onClick={handleModuleProceed}
+                >
+                  Update Module Name
+                </Button>
+                &nbsp;
+                </Container>
+            </Dialog>
           </Box>
         )}
     </div>

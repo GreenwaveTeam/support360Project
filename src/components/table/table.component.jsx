@@ -36,6 +36,7 @@ import CustomDialog from "../dialog/dialog.component";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import { useTheme } from "@mui/material";
+import { height } from "@mui/system";
 
 export default function CustomTable({
   isDeleteDialog,
@@ -308,6 +309,7 @@ export default function CustomTable({
     borderColor: "#f2f0f063", //colors.grey[800]
     borderRadius: "0.5rem",
     boxShadow: 0,
+    height:300
   };
 
   const oddRowColor = colors.grey[900]; // Light gray color for odd rows
@@ -391,7 +393,7 @@ export default function CustomTable({
                   </div>
                 </TableCell>
               </TableRow>
-            </TableHead>
+            </TableHead> 
             <TableHead>
               <TableRow>
                 {columns.map((column, index) => (
@@ -721,6 +723,7 @@ export default function CustomTable({
               rowsPerPage={rowperpage}
               page={page}
               count={rows.length}
+              labelRowsPerPage=''
               onPageChange={handlechangepage}
               onRowsPerPageChange={handleRowsPerPage}
             ></TablePagination>

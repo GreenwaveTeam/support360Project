@@ -29,6 +29,9 @@ import {
   Divider,
   Card,
   Container,
+  CardContent,
+  Typography,
+  Chip,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import AddIcon from "@mui/icons-material/Add";
@@ -409,88 +412,111 @@ export default function InfrastructureUser({ sendUrllist }) {
 
   return (
     <Container maxWidth="lg">
-      {divIsVisibleList &&
-        divIsVisibleList.includes("infrastructure-report") && (
-          <div id="infrastructure-report">
-            <div>
-              <center>
-                <FormControl
-                  variant="outlined"
-                  sx={{
-                    width: "200px",
-                    verticalAlign: 0,
-                    marginTop: "20px",
-                  }}
-                >
-                  <InputLabel id="infrastructureDropdownLabel">
-                    Select Infrastructure
-                  </InputLabel>
-                  <Select
-                    labelId="infrastructureDropdownLabel"
-                    id="infrastructureDropdown"
-                    value={selectedInfrastructure}
-                    onChange={handleInfrastructureChange}
-                    label="Select Infrastructure"
-                  >
-                    {infrastructures.map((infra, index) => (
-                      <MenuItem key={index} value={infra}>
-                        {infra}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </center>
-              <div>
-                <Dialog
-                  //header={`Report Issue for : ${selectedInfrastructure}`}
-                  open={visible}
-                  fullWidth
-                  //style={{ width: "50vw", height: "60vh" }}
-                  onClose={onHideDialog}
-                >
-                  <DialogTitle
-                    id="alert-dialog-title"
-                    sx={{ padding: "15px", fontWeight: "600" }}
-                  >
-                    {`Report Issue for : ${selectedInfrastructure}`}
-                  </DialogTitle>
-                  <Divider />
-                  <div style={{ padding: "5px 15px" }}>
-                    {selectedInfrastructure && (
-                      <TableContainer
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          columnGap: "1rem",
-                        }}
-                      >
-                        <FormControl
-                          variant="outlined"
-                          sx={{ width: "200px", verticalAlign: 0 }}
-                        >
-                          <InputLabel id="issuesDropdownLabel">
-                            Select Issue
-                          </InputLabel>
-                          <Select
-                            labelId="issuesDropdownLabel"
-                            id="issuesDropdown"
-                            value={selectedIssue}
-                            onChange={(e) => setSelectedIssue(e.target.value)}
-                            //   onChange={(e) => {
-                            //     setSelectedIssue(e.target.value);
-                            label="Select Issue"
-                          >
-                            {selectedIssues.map((issue, index) => (
-                              <MenuItem key={index} value={issue}>
-                                {issue}
-                              </MenuItem>
-                            ))}
-                            <MenuItem value="Other">Other</MenuItem>
-                          </Select>
-                        </FormControl>
+      <Card>
+        <CardContent sx={{ padding: "0" }}>
+          <div style={{ padding: "1.1rem  0.8rem  0.6rem  0.8rem " }}>
+            {/* <Chip
+              label={"Infrastructure"}
+              size="medium"
+              variant="outlined"
+              color="info"
+              fontSize="1rem"
+            /> */}
+            <Typography
+              sx={{ fontSize: 14, fontWeight: 600 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              Infrastructure
+            </Typography>
+          </div>
+          <Divider sx={{ opacity: "0.8" }} />
+          {divIsVisibleList &&
+            divIsVisibleList.includes("infrastructure-report") && (
+              <div id="infrastructure-report">
+                <div>
+                  <center>
+                    <FormControl
+                      variant="outlined"
+                      sx={{
+                        width: "200px",
+                        verticalAlign: 0,
+                        marginTop: "20px",
+                      }}
+                    >
+                      <InputLabel id="infrastructureDropdownLabel">
+                        Select Infrastructure
+                      </InputLabel>
 
-                        {/* <FormControl
+                      <Select
+                        labelId="infrastructureDropdownLabel"
+                        id="infrastructureDropdown"
+                        value={selectedInfrastructure}
+                        onChange={handleInfrastructureChange}
+                        label="Select Infrastructure"
+                      >
+                        {infrastructures.map((infra, index) => (
+                          <MenuItem key={index} value={infra}>
+                            {infra}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </center>
+                  <br />
+                  <div>
+                    <Dialog
+                      //header={`Report Issue for : ${selectedInfrastructure}`}
+                      open={visible}
+                      fullWidth
+                      //style={{ width: "50vw", height: "60vh" }}
+                      onClose={onHideDialog}
+                    >
+                      <DialogTitle
+                        id="alert-dialog-title"
+                        sx={{ padding: "15px", fontWeight: "600" }}
+                      >
+                        {`Report Issue for : ${selectedInfrastructure}`}
+                      </DialogTitle>
+                      <Divider />
+                      <div style={{ padding: "5px 15px" }}>
+                        {selectedInfrastructure && (
+                          <TableContainer
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              columnGap: "1rem",
+                            }}
+                          >
+                            <FormControl
+                              variant="outlined"
+                              sx={{ width: "200px", verticalAlign: 0 }}
+                            >
+                              <InputLabel id="issuesDropdownLabel">
+                                Select Issue
+                              </InputLabel>
+                              <Select
+                                labelId="issuesDropdownLabel"
+                                id="issuesDropdown"
+                                value={selectedIssue}
+                                onChange={(e) =>
+                                  setSelectedIssue(e.target.value)
+                                }
+                                //   onChange={(e) => {
+                                //     setSelectedIssue(e.target.value);
+                                label="Select Issue"
+                              >
+                                {selectedIssues.map((issue, index) => (
+                                  <MenuItem key={index} value={issue}>
+                                    {issue}
+                                  </MenuItem>
+                                ))}
+                                <MenuItem value="Other">Other</MenuItem>
+                              </Select>
+                            </FormControl>
+
+                            {/* <FormControl
                         variant="outlined"
                         sx={{ width: "200px", verticalAlign: 0 }}
                       >
@@ -505,203 +531,210 @@ export default function InfrastructureUser({ sendUrllist }) {
                           <MenuItem value="Critical">Critical</MenuItem>
                         </Select>
                       </FormControl> */}
-                        <FormControl variant="outlined" sx={{ width: "200px" }}>
-                          <Dropdown
-                            label={"Severity"}
-                            //select
-                            //formstyle={{ width: "50%" }}
-                            value={selectedPriority}
-                            list={["Critical", "Major", "Minor"]}
-                            onChange={handleSelectPriority}
-                          />
-                        </FormControl>
-                        <FormControl
-                          variant="outlined"
-                          sx={{ width: "200px", verticalAlign: 0 }}
-                        >
-                          <TextField
-                            label="Remarks"
-                            variant="outlined"
-                            value={remarks}
-                            onChange={handleRemarksChange}
-                            style={{ margin: "10px 0" }}
-                          />
-                        </FormControl>
-                        {/* <IconButton
+                            <FormControl
+                              variant="outlined"
+                              sx={{ width: "200px" }}
+                            >
+                              <Dropdown
+                                label={"Severity"}
+                                //select
+                                //formstyle={{ width: "50%" }}
+                                value={selectedPriority}
+                                list={["Critical", "Major", "Minor"]}
+                                onChange={handleSelectPriority}
+                              />
+                            </FormControl>
+                            <FormControl
+                              variant="outlined"
+                              sx={{ width: "200px", verticalAlign: 0 }}
+                            >
+                              <TextField
+                                label="Remarks"
+                                variant="outlined"
+                                value={remarks}
+                                onChange={handleRemarksChange}
+                                style={{ margin: "10px 0" }}
+                              />
+                            </FormControl>
+                            {/* <IconButton
                         color="primary"
                         aria-label="add"
                         onClick={() => handleAddItem()}
                       >
                         <AddIcon />
                       </IconButton> */}
-                      </TableContainer>
-                    )}
-                    <Button
-                      variant="contained"
-                      onClick={() => handleAddItem()}
-                      style={{
-                        backgroundImage:
-                          "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
-                        width: "30%",
-                        margin: "auto",
-                        display: "flex",
-                      }}
-                    >
-                      Add Category
-                      <AddIcon
-                        fontSize="medium"
-                        sx={{ paddingLeft: "0.2rem" }}
-                      />
-                    </Button>
-                    <br />
+                          </TableContainer>
+                        )}
+                        <Button
+                          variant="contained"
+                          onClick={() => handleAddItem()}
+                          style={{
+                            backgroundImage:
+                              "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                            width: "30%",
+                            margin: "auto",
+                            display: "flex",
+                          }}
+                        >
+                          Add Category
+                          <AddIcon
+                            fontSize="medium"
+                            sx={{ paddingLeft: "0.2rem" }}
+                          />
+                        </Button>
+                        <br />
 
-                    {showAlert && (
-                      <Alert
-                        severity="error"
-                        onClose={() => setShowAlert(false)}
-                      >
-                        {alertMessage}
-                      </Alert>
-                    )}
+                        {showAlert && (
+                          <Alert
+                            severity="error"
+                            onClose={() => setShowAlert(false)}
+                          >
+                            {alertMessage}
+                          </Alert>
+                        )}
 
-                    {tableData.length > 0 && (
-                      // <TableContainer>
-                      //   <Table>
-                      //     <TableHead>
-                      //       <TableRow>
-                      //         <TableCell>Issues</TableCell>
-                      //         <TableCell>Priority</TableCell>
-                      //         <TableCell>Remarks</TableCell>
-                      //         <TableCell>Actions</TableCell>
-                      //       </TableRow>
-                      //     </TableHead>
-                      //     <TableBody>
-                      //       {tableData.map((item, index) => (
-                      //         <TableRow key={index}>
-                      //           <TableCell>{item.issue}</TableCell>
-                      //           <TableCell>{item.priority}</TableCell>
-                      //           <TableCell>{item.remarks}</TableCell>
-                      //           <TableCell>
-                      //             <IconButton
-                      //               color="secondary"
-                      //               aria-label="delete"
-                      //               onClick={() => handleDeleteItem(item.issue)}
-                      //             >
-                      //               <DeleteIcon />
-                      //             </IconButton>
-                      //           </TableCell>
-                      //         </TableRow>
-                      //       ))}
-                      //     </TableBody>
-                      //   </Table>
-                      // </TableContainer>
-                      <CustomTable
-                        rows={tableData}
-                        columns={columns}
-                        setRows={setTableData}
-                        deleteFromDatabase={handleDeleteItem}
-                        editActive={false}
-                        tablename={"Added Issues"}
-                        redirectIconActive={false}
-                        isDeleteDialog={false}
-                      ></CustomTable>
-                    )}
-                    <br />
+                        {tableData.length > 0 && (
+                          // <TableContainer>
+                          //   <Table>
+                          //     <TableHead>
+                          //       <TableRow>
+                          //         <TableCell>Issues</TableCell>
+                          //         <TableCell>Priority</TableCell>
+                          //         <TableCell>Remarks</TableCell>
+                          //         <TableCell>Actions</TableCell>
+                          //       </TableRow>
+                          //     </TableHead>
+                          //     <TableBody>
+                          //       {tableData.map((item, index) => (
+                          //         <TableRow key={index}>
+                          //           <TableCell>{item.issue}</TableCell>
+                          //           <TableCell>{item.priority}</TableCell>
+                          //           <TableCell>{item.remarks}</TableCell>
+                          //           <TableCell>
+                          //             <IconButton
+                          //               color="secondary"
+                          //               aria-label="delete"
+                          //               onClick={() => handleDeleteItem(item.issue)}
+                          //             >
+                          //               <DeleteIcon />
+                          //             </IconButton>
+                          //           </TableCell>
+                          //         </TableRow>
+                          //       ))}
+                          //     </TableBody>
+                          //   </Table>
+                          // </TableContainer>
+                          <CustomTable
+                            rows={tableData}
+                            columns={columns}
+                            setRows={setTableData}
+                            deleteFromDatabase={handleDeleteItem}
+                            editActive={false}
+                            tablename={"Added Issues"}
+                            redirectIconActive={false}
+                            isDeleteDialog={false}
+                          ></CustomTable>
+                        )}
+                        <br />
+                      </div>
+                    </Dialog>
                   </div>
-                </Dialog>
-              </div>
-            </div>
-            {infraIssueDetails.length > 0 && (
-              <TableContainer>
-                <center>
-                  <br></br>
-                  <Card
-                    sx={{ boxShadow: 2, padding: "7px", margin: "0px 2px" }}
-                    style={{}}
-                  >
-                    <div
-                      align="center"
-                      style={{
-                        padding: "5px",
-                        flex: 1,
-                        overflow: "auto",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "bold",
-                          flex: 1,
-                        }}
+                </div>
+                {infraIssueDetails.length > 0 && (
+                  <TableContainer>
+                    <center>
+                      <br></br>
+                      <Card
+                        sx={{ boxShadow: 2, padding: "7px", margin: "0px 2px" }}
+                        style={{}}
                       >
-                        Issues Overview
-                      </span>
-                      <span
-                        style={{
-                          color: "#610C9F",
-                          fontSize: "14px",
-                          fontWeight: "bold",
-                        }}
-                      ></span>
-                      <ExpandMore
-                        expand={expanded}
-                        onClick={handleExpandClick}
-                        aria-expanded={expanded}
-                        aria-label="show more"
-                      >
-                        <ExpandMoreIcon />
-                        &nbsp;
-                      </ExpandMore>
-                      <Badge
-                        badgeContent={infraIssueDetails.length}
-                        color="info"
-                        sx={{ marginLeft: "8px" }}
-                      >
-                        {/* <NotificationsActiveIcon color="secondary" /> */}
-                      </Badge>
-                      &nbsp;
-                    </div>
+                        <div
+                          align="center"
+                          style={{
+                            padding: "5px",
+                            flex: 1,
+                            overflow: "auto",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              flex: 1,
+                            }}
+                          >
+                            Issues Overview
+                          </span>
+                          <span
+                            style={{
+                              color: "#610C9F",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                            }}
+                          ></span>
+                          <ExpandMore
+                            expand={expanded}
+                            onClick={handleExpandClick}
+                            aria-expanded={expanded}
+                            aria-label="show more"
+                          >
+                            <ExpandMoreIcon />
+                            &nbsp;
+                          </ExpandMore>
+                          <Badge
+                            badgeContent={infraIssueDetails.length}
+                            color="info"
+                            sx={{ marginLeft: "8px" }}
+                          >
+                            {/* <NotificationsActiveIcon color="secondary" /> */}
+                          </Badge>
+                          &nbsp;
+                        </div>
 
-                    <Collapse in={expanded} timeout="auto" unmountOnExit>
-                      <CustomTable
-                        rows={infraIssueDetails}
-                        columns={overviewTableColumns}
-                        setRows={setInfraIssueDetails}
-                        tablename={"Summary"}
-                        deleteFromDatabase={handleDeleteItemFromReviewTableTest}
-                        style={{
-                          borderRadius: 1,
-                          // maxHeight: 440,
-                          // maxWidth: 1200,
-                        }}
-                        isDeleteDialog={false}
-                      ></CustomTable>
-                      <br />
-                      <Button
-                        className="button"
-                        variant="contained"
-                        color="secondary" // Use secondary color for delete button
-                        onClick={() => handleSubmitPost(infraTicketJSON)}
-                      >
-                        <SaveIcon
-                          fontSize="small"
-                          sx={{ marginRight: "0.3rem" }}
-                        />
-                        Submit
-                      </Button>
-                    </Collapse>
-                  </Card>
-                  <br></br>
-                </center>
-              </TableContainer>
+                        <Collapse in={expanded} timeout="auto" unmountOnExit>
+                          <CustomTable
+                            rows={infraIssueDetails}
+                            columns={overviewTableColumns}
+                            setRows={setInfraIssueDetails}
+                            tablename={"Summary"}
+                            deleteFromDatabase={
+                              handleDeleteItemFromReviewTableTest
+                            }
+                            style={{
+                              borderRadius: 1,
+                              // maxHeight: 440,
+                              // maxWidth: 1200,
+                            }}
+                            isDeleteDialog={false}
+                          ></CustomTable>
+                          <br />
+                          <Button
+                            className="button"
+                            variant="contained"
+                            color="secondary" // Use secondary color for delete button
+                            onClick={() => handleSubmitPost(infraTicketJSON)}
+                          >
+                            <SaveIcon
+                              fontSize="small"
+                              sx={{ marginRight: "0.3rem" }}
+                            />
+                            Submit
+                          </Button>
+                        </Collapse>
+                      </Card>
+                      <br></br>
+                    </center>
+                  </TableContainer>
+                )}
+                <TicketDialog
+                  ticketDialogOpen={ticketOpen}
+                  setTicketDialogOpen={setTicketOpen}
+                  ticketNumber={ticketNumber}
+                ></TicketDialog>
+              </div>
             )}
-            <TicketDialog
-              ticketDialogOpen={ticketOpen}
-              setTicketDialogOpen={setTicketOpen}
-              ticketNumber={ticketNumber}
-            ></TicketDialog>
-          </div>
-        )}
+        </CardContent>
+      </Card>
     </Container>
   );
 }

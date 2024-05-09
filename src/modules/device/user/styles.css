@@ -61,7 +61,7 @@
  
   .split-screen {
     display: flex;
-    height: 100vh;
+    height: 82vh !important;
   }
   
   .left-panel {

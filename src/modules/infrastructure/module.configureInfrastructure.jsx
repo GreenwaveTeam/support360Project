@@ -56,9 +56,11 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   const currentPageLocation = useLocation().pathname;
   const { userData, setUserData } = useUserContext();
 
+  const  [booleanProgressVisible,setBooleanProgressVisible]=useState(false)
+
   /******************************* useEffect()********************************/
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     //fetchDivsForCurrentPage();
     fetchUser();
     extendTokenExpiration();

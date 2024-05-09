@@ -436,11 +436,11 @@ export default function CustomTable({
                 </TableCell>
               </TableRow>
             </TableHead>
-            {progressVisible&&filteredrows?.length === 0 && (
+            {/* {progressVisible&&filteredrows?.length === 0 && (
                 <>
                   <CircularProgress />
                 </>
-              )}
+              )} */}
             <TableBody>
            
               {filteredrows &&

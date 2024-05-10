@@ -306,8 +306,11 @@ export default function ApplicationUser({ sendUrllist }) {
       // "miscellaneous_issues": miscellaneousInput,
       // "remarks": remarksInput,
       ticket_number: ticketNumber,
-      status: "pending",
+      status: "open",
       //The case may arise when the issues are blank for the current selection  then only  add it the finaluserInput
+      //Two more fields added
+      userName:currentUserData.name,
+      userEmailId:currentUserData.email,
 
       issuesList: updatedfinalUserInput,
     };
@@ -438,6 +441,7 @@ export default function ApplicationUser({ sendUrllist }) {
       console.log("fetchUser data : ", data);
       // setFormData(data.role);
       role = data.role;
+      setCurrentUserData(data);
 
       console.log("Role Test : ", role);
       fetchDivs(role);

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Box,
   Container,
@@ -10,6 +10,15 @@ import {
   CardContent,
   Avatar,
   Chip,
+  TableCell,
+  TableRow,
+  TableBody,
+  TableHead,
+  Table,
+  TableContainer,
+  Paper,
+  TablePagination,
+  useTheme,
 } from "@mui/material";
 import { Button } from "primereact/button";
 import { Knob } from "primereact/knob";
@@ -35,6 +44,7 @@ import { MeterGroup } from "primereact/metergroup";
 
 //bootstrap
 import "bootstrap/dist/css/bootstrap.css";
+import { ColorModeContext, tokens } from "../../theme";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -81,6 +91,31 @@ function UserHome({ sendUrllist }) {
     []
   );
 
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
+
+  const tableStyle = {
+    color: "blue",
+    border: "1px solid",
+    borderColor: colors.grey[800],
+    borderRadius: "0.7rem",
+  };
+
+  const [pendingTicketData, setPendingTicketData] = useState([]);
+  const [allTicketData, setAllTicketData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 5));
+    setPage(0);
+  };
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -115,6 +150,8 @@ function UserHome({ sendUrllist }) {
     fetchDivs();
     monthwiseticketraised();
     monthAndCatagoryWiseTicketRaised();
+    getPendingTickets();
+    getAllTickets();
     // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
 
@@ -311,6 +348,46 @@ function UserHome({ sendUrllist }) {
       }
       console.log("catagory Numbers List:", numbersList);
       setMonthAndCatagoryWiseTicket(outputList);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const getPendingTickets = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8081/users/user/pendingTickets",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("PendingTicketData : ", data);
+      setPendingTicketData(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const getAllTickets = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8081/users/user/allTickets",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("allTicketData : ", data);
+      setAllTicketData(data);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -924,6 +1001,76 @@ function UserHome({ sendUrllist }) {
             </Card>
           </div>
         </div>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <TableContainer sx={tableStyle}>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: colors.primary[400] }}>
+                    <TableCell align="center">Category</TableCell>
+                    <TableCell align="center">Time</TableCell>
+                    <TableCell align="center">ID</TableCell>
+                    <TableCell align="center">Description</TableCell>
+                    <TableCell align="center">Status</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {pendingTicketData.map((ticket, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{ticket.category}</TableCell>
+                      <TableCell align="center">{ticket.time}</TableCell>
+                      <TableCell align="center">{ticket.id}</TableCell>
+                      <TableCell align="center">{ticket.description}</TableCell>
+                      <TableCell align="center">{ticket.status}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={pendingTicketData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TableContainer sx={tableStyle}>
+              <Table>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: colors.primary[400] }}>
+                    <TableCell align="center">Category</TableCell>
+                    <TableCell align="center">Time</TableCell>
+                    <TableCell align="center">ID</TableCell>
+                    <TableCell align="center">Severity</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {allTicketData.map((ticket, index) => (
+                    <TableRow key={index}>
+                      <TableCell align="center">{ticket.category}</TableCell>
+                      <TableCell align="center">{ticket.time}</TableCell>
+                      <TableCell align="center">{ticket.id}</TableCell>
+                      <TableCell align="center">{ticket.severity}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={allTicketData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Grid>
+        </Grid>
         {/* <div
           style={{
             display: "flex",

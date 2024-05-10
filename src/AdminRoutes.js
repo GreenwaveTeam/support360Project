@@ -33,7 +33,8 @@ import RoleConfiguration from "./modules/roleconfiguration/module.roleConfigurat
 import RolePageConfiguration from "./modules/roleconfiguration/module.rolePageConfiguration";
 import AdminPage from "./modules/configurationpages/AdminPage";
 import PlantPage from "./modules/configurationpages/PlantPage";
-import AllocateTicket from "./AllocateTicket";
+import AllocateTicket from "./modules/ticketdetails/module.allocateTicket";
+
 
 function AdminRoutes() {
   const [urllist, setUrllist] = useState([]);

@@ -149,6 +149,8 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const { userData, setUserData } = useUserContext();
 
+  const [currentUserData,setCurrentUserData]= useState({})
+
   /**************************************    useEffect()   ******************************* */
   useEffect(() => {
     extendTokenExpiration();
@@ -1173,6 +1175,7 @@ export default function ApplicationUser({ sendUrllist }) {
       finalObj.width = 0.0;
       finalObj.selected_coordinates_acronym = "Miscellaneous";
       finalObj.issues = miscellaneous_issue_List_current_module;
+
       //element.issuesList=[...element.issuesList,...finalObj]
       //Modified
       // if(finalObj.issues.length>0)
@@ -1784,7 +1787,7 @@ export default function ApplicationUser({ sendUrllist }) {
         </DialogTitle>
         <Divider textAlign="left"></Divider>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
+          {/* <DialogContentText id="alert-dialog-slide-description"> */}
             <div>
               {tabsmoduleNames.length !== 0 && (
                 <div>
@@ -1950,7 +1953,7 @@ export default function ApplicationUser({ sendUrllist }) {
                 </Button>
               </div>
             </div> */}
-          </DialogContentText>
+          {/* </DialogContentText> */}
         </DialogContent>
       </Dialog>
       <AnimatedPage>

@@ -41,11 +41,13 @@ import { useTheme } from "@mui/material";
 import Badge from "@mui/material/Badge";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+
 //Icon
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 //import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import TimelapseIcon from "@mui/icons-material/Timelapse";
 import { Box } from "@mui/system";
 
 import gwlogo from "../../../../src/resources/images/gwlogo.png";
@@ -391,7 +393,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                 >
                   {convertToInitials(userName)}
                 </Avatar>
-                <Box sx={{ boxShadow: 0 }}>
+                <Paper elevation={1} sx={{ boxShadow: 0 }}>
                   <Menu
                     id="basic-menu"
                     anchorEl={anchorEl}
@@ -412,6 +414,16 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                     <MenuItem onClick={ChangePasswordClickOpen}>
                       <>
+                        <TimelapseIcon
+                          sx={{ marginRight: "0.4rem" }}
+                          fontSize="small"
+                        />
+                      </>
+                      {"100"} Support Days Left
+                    </MenuItem>
+                    <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
+                    <MenuItem onClick={ChangePasswordClickOpen}>
+                      <>
                         <ManageAccountsIcon
                           sx={{ marginRight: "0.4rem" }}
                           fontSize="small"
@@ -419,7 +431,6 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                       </>
                       Change Password
                     </MenuItem>
-
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                     <MenuItem
                       onClick={() => {
@@ -436,7 +447,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                       Logout
                     </MenuItem>
                   </Menu>
-                </Box>
+                </Paper>
               </div>
 
               {/* <IconButton>

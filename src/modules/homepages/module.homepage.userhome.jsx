@@ -20,7 +20,11 @@ import {
   TablePagination,
   useTheme,
   Divider,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
+import ToggleOnIcon from "@mui/icons-material/ToggleOn";
+import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import { Button } from "primereact/button";
 import { Knob } from "primereact/knob";
 import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
@@ -93,6 +97,37 @@ function UserHome({ sendUrllist }) {
   const [monthAndCatagoryWiseTicket, setMonthAndCatagoryWiseTicket] = useState(
     []
   );
+  const [applicationIssuesCurrentMonth, setApplicationIssuesCurrentMonth] =
+    useState(0);
+  const [
+    criticalApplicationIssuesCurrentMonth,
+    setCriticalApplicationIssuesCurrentMonth,
+  ] = useState(0);
+  const [
+    nonCriticalApplicationIssuesCurrentMonth,
+    setNonCriticalApplicationIssuesCurrentMonth,
+  ] = useState(0);
+  const [deviceIssuesCurrentMonth, setDeviceIssuesCurrentMonth] = useState(0);
+  const [
+    criticalDeviceIssuesCurrentMonth,
+    setCriticalDeviceIssuesCurrentMonth,
+  ] = useState(0);
+  const [
+    nonCriticalDeviceIssuesCurrentMonth,
+    setNonCriticalDeviceIssuesCurrentMonth,
+  ] = useState(0);
+  const [
+    infrastructureIssuesCurrentMonth,
+    setInfrastructureIssuesCurrentMonth,
+  ] = useState(0);
+  const [
+    criticalInfrastructureIssuesCurrentMonth,
+    setCriticalInfrastructureIssuesCurrentMonth,
+  ] = useState(0);
+  const [
+    nonCriticalInfrastructureIssuesCurrentMonth,
+    setNonCriticalInfrastructureIssuesCurrentMonth,
+  ] = useState(0);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -105,10 +140,17 @@ function UserHome({ sendUrllist }) {
     borderRadius: "0.7rem",
   };
 
-  const [pendingTicketData, setPendingTicketData] = useState([]);
+  const [pendingTickets, setPendingTickets] = useState([]);
+  const [openTickets, setOpenTickets] = useState([]);
+  const [resolvedTickets, setResolvedTickets] = useState([]);
   const [allTicketData, setAllTicketData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [viewMode, setViewMode] = useState("pending");
+
+  const handleToggleView = () => {
+    setViewMode((prevMode) => (prevMode === "pending" ? "open" : "pending"));
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -127,9 +169,39 @@ function UserHome({ sendUrllist }) {
   };
 
   const matergroupvalues = [
-    { label: "Device", color: "#34d399", value: 50 },
-    { label: "Application", color: "#fbbf24", value: 30 },
-    { label: "Infrastructure", color: "#60a5fa", value: 20 },
+    {
+      label: "Device",
+      color: "#34d399",
+      value: Math.ceil(
+        (deviceIssuesCurrentMonth /
+          (deviceIssuesCurrentMonth +
+            applicationIssuesCurrentMonth +
+            infrastructureIssuesCurrentMonth)) *
+          100
+      ),
+    },
+    {
+      label: "Application",
+      color: "#fbbf24",
+      value: Math.ceil(
+        (applicationIssuesCurrentMonth /
+          (deviceIssuesCurrentMonth +
+            applicationIssuesCurrentMonth +
+            infrastructureIssuesCurrentMonth)) *
+          100
+      ),
+    },
+    {
+      label: "Infrastructure",
+      color: "#60a5fa",
+      value: Math.ceil(
+        (infrastructureIssuesCurrentMonth /
+          (deviceIssuesCurrentMonth +
+            applicationIssuesCurrentMonth +
+            infrastructureIssuesCurrentMonth)) *
+          100
+      ),
+    },
   ];
 
   const [open, setOpen] = useState(false);
@@ -351,6 +423,51 @@ function UserHome({ sendUrllist }) {
       }
       console.log("catagory Numbers List:", numbersList);
       setMonthAndCatagoryWiseTicket(outputList);
+
+      const currentDate = new Date();
+      const currentMonthYear =
+        currentDate.toLocaleString("default", { month: "long" }) +
+        " " +
+        currentDate.getFullYear();
+      console.log("currentMonthYear : ", currentMonthYear);
+      let applicationIssuesCurrentMonth;
+      data.forEach((item) => {
+        if (Object.keys(item)[0] === currentMonthYear) {
+          // applicationIssuesCurrentMonth = item[currentMonthYear]["Application_Issues"];
+          console.log(
+            "item[currentMonthYear][Application_Issues] : ",
+            item[currentMonthYear]["Application_Issues"]
+          );
+          setApplicationIssuesCurrentMonth(
+            item[currentMonthYear]["Application_Issues"]
+          );
+          setCriticalApplicationIssuesCurrentMonth(
+            item[currentMonthYear]["Critical_Application_Issues"]
+          );
+          setNonCriticalApplicationIssuesCurrentMonth(
+            item[currentMonthYear]["Application_Issues"] -
+              item[currentMonthYear]["Critical_Application_Issues"]
+          );
+          setDeviceIssuesCurrentMonth(item[currentMonthYear]["Device_Issues"]);
+          setCriticalDeviceIssuesCurrentMonth(
+            item[currentMonthYear]["Critical_Device_Issues"]
+          );
+          setNonCriticalDeviceIssuesCurrentMonth(
+            item[currentMonthYear]["Device_Issues"] -
+              item[currentMonthYear]["Critical_Device_Issues"]
+          );
+          setInfrastructureIssuesCurrentMonth(
+            item[currentMonthYear]["Infrastructure_Issues"]
+          );
+          setCriticalInfrastructureIssuesCurrentMonth(
+            item[currentMonthYear]["Critical_Infrastructure_Issues"]
+          );
+          setNonCriticalInfrastructureIssuesCurrentMonth(
+            item[currentMonthYear]["Infrastructure_Issues"] -
+              item[currentMonthYear]["Critical_Infrastructure_Issues"]
+          );
+        }
+      });
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -370,7 +487,21 @@ function UserHome({ sendUrllist }) {
       );
       const data = await response.json();
       console.log("PendingTicketData : ", data);
-      setPendingTicketData(data);
+      console.log(
+        "setPendingTickets : ",
+        data.filter((ticket) => ticket.status === "pending")
+      );
+      console.log(
+        "setResolvedTickets : ",
+        data.filter((ticket) => ticket.status === "resolved")
+      );
+      console.log(
+        "setOpenTickets : ",
+        data.filter((ticket) => ticket.status === "open")
+      );
+      setPendingTickets(data.filter((ticket) => ticket.status === "pending"));
+      setResolvedTickets(data.filter((ticket) => ticket.status === "resolved"));
+      setOpenTickets(data.filter((ticket) => ticket.status === "open"));
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -662,7 +793,9 @@ function UserHome({ sendUrllist }) {
                           <Typography
                             sx={{ fontWeight: 600, fontSize: "1.7rem" }}
                           >
-                            <CounterAnimation targetValue={14} />
+                            <CounterAnimation
+                              targetValue={deviceIssuesCurrentMonth}
+                            />
                           </Typography>
                         </div>
                         <div
@@ -688,7 +821,7 @@ function UserHome({ sendUrllist }) {
                           <div className="col-md-12">
                             <Button
                               style={{ borderRadius: "50%" }}
-                              icon="pi pi-thumbs-up-fill                              "
+                              icon="pi pi-thumbs-up-fill"
                               rounded
                               //outlined
                               severity="success"
@@ -701,8 +834,14 @@ function UserHome({ sendUrllist }) {
                             <div
                               style={{ display: "flex", columnGap: "0.5rem" }}
                             >
-                              <Badge value="9" severity="warning"></Badge>
-                              <Badge value="6" severity="info"></Badge>
+                              <Badge
+                                value={criticalDeviceIssuesCurrentMonth}
+                                severity="warning"
+                              ></Badge>
+                              <Badge
+                                value={nonCriticalDeviceIssuesCurrentMonth}
+                                severity="info"
+                              ></Badge>
                             </div>
                           </div>
                         </div>
@@ -777,7 +916,9 @@ function UserHome({ sendUrllist }) {
                         }}
                       >
                         <div className="row">
-                          <CounterAnimation targetValue={20} />
+                          <CounterAnimation
+                            targetValue={applicationIssuesCurrentMonth}
+                          />
                         </div>
                         <div
                           className="row"
@@ -802,7 +943,7 @@ function UserHome({ sendUrllist }) {
                           <div className="col-md-12">
                             <Button
                               style={{ borderRadius: "50%" }}
-                              icon="pi pi-thumbs-up-fill                              "
+                              icon="pi pi-thumbs-up-fill"
                               rounded
                               //outlined
                               severity="success"
@@ -815,8 +956,14 @@ function UserHome({ sendUrllist }) {
                             <div
                               style={{ display: "flex", columnGap: "0.5rem" }}
                             >
-                              <Badge value="9" severity="warning"></Badge>
-                              <Badge value="6" severity="info"></Badge>
+                              <Badge
+                                value={criticalApplicationIssuesCurrentMonth}
+                                severity="warning"
+                              ></Badge>
+                              <Badge
+                                value={nonCriticalApplicationIssuesCurrentMonth}
+                                severity="info"
+                              ></Badge>
                             </div>
                           </div>
                         </div>
@@ -848,7 +995,9 @@ function UserHome({ sendUrllist }) {
                           <Typography
                             sx={{ fontWeight: 600, fontSize: "1.7rem" }}
                           >
-                            <CounterAnimation targetValue={16} />
+                            <CounterAnimation
+                              targetValue={infrastructureIssuesCurrentMonth}
+                            />
                           </Typography>
                         </div>
                         <div
@@ -874,7 +1023,7 @@ function UserHome({ sendUrllist }) {
                           <div className="col-md-12">
                             <Button
                               style={{ borderRadius: "50%" }}
-                              icon="pi pi-thumbs-up-fill                              "
+                              icon="pi pi-thumbs-up-fill"
                               rounded
                               //outlined
                               severity="success"
@@ -887,8 +1036,16 @@ function UserHome({ sendUrllist }) {
                             <div
                               style={{ display: "flex", columnGap: "0.5rem" }}
                             >
-                              <Badge value="9" severity="warning"></Badge>
-                              <Badge value="6" severity="info"></Badge>
+                              <Badge
+                                value={criticalInfrastructureIssuesCurrentMonth}
+                                severity="warning"
+                              ></Badge>
+                              <Badge
+                                value={
+                                  nonCriticalInfrastructureIssuesCurrentMonth
+                                }
+                                severity="info"
+                              ></Badge>
                             </div>
                           </div>
                         </div>
@@ -911,7 +1068,7 @@ function UserHome({ sendUrllist }) {
                   <CardContent sx={{ padding: "12px 8px 2px 8px !important" }}> */}
 
                 <div>
-                  <MeterGroup values={matergroupvalues} max={200} />
+                  <MeterGroup values={matergroupvalues} max={100} />
                 </div>
 
                 {/* </CardContent>
@@ -1002,7 +1159,208 @@ function UserHome({ sendUrllist }) {
             </div>
           </div>
           <div class="col-md-5">
-            <div className="row">
+            {viewMode === "pending" ? (
+              <div className="row">
+                <div className="col-md-12">
+                  <Card className="dashboard-rightSide-Table">
+                    <CardContent sx={{ padding: "0" }}>
+                      <div
+                        style={{
+                          padding: "0.8rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          height: "3rem",
+                        }}
+                      >
+                        <Typography
+                          sx={{ mb: 0, fontWeight: 600 }}
+                          gutterBottom
+                          variant="h5"
+                          component="div"
+                        >
+                          Pending Tickets
+                        </Typography>
+                        <IconButton onClick={handleToggleView}>
+                          {viewMode === "pending" ? (
+                            <Tooltip title="Show Open Tickets">
+                              <ToggleOffIcon />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title="Show Pending Tickets">
+                              <ToggleOnIcon />
+                            </Tooltip>
+                          )}
+                        </IconButton>
+                        <div>
+                          <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={pendingTickets.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            labelRowsPerPage=""
+                            onPageChange={(e, newPage) => setPage(newPage)}
+                            onRowsPerPageChange={(e) => {
+                              setRowsPerPage(parseInt(e.target.value, 10));
+                              setPage(0);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <Divider sx={{ opacity: "0.8" }} />
+                      <Grid container spacing={0}>
+                        <Grid item xs={12}>
+                          <TableContainer sx={{ overflow: "auto" }}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell align="center">Category</TableCell>
+                                  <TableCell align="center">Time</TableCell>
+                                  <TableCell align="center">ID</TableCell>
+                                  <TableCell align="center">
+                                    Description
+                                  </TableCell>
+                                  {/* <TableCell align="center">Status</TableCell> */}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {(rowsPerPage > 0
+                                  ? pendingTickets.slice(
+                                      page * rowsPerPage,
+                                      page * rowsPerPage + rowsPerPage
+                                    )
+                                  : pendingTickets
+                                ).map((ticket, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell align="center">
+                                      {ticket.category}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      {ticket.time}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      {ticket.id}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      {ticket.description}
+                                    </TableCell>
+                                    {/* <TableCell align="center">
+                                    {ticket.status}
+                                  </TableCell> */}
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            ) : (
+              <div className="row">
+                <div className="col-md-12">
+                  <Card className="dashboard-rightSide-Table">
+                    <CardContent sx={{ padding: "0" }}>
+                      <div
+                        style={{
+                          padding: "0.8rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          height: "3rem",
+                        }}
+                      >
+                        <Typography
+                          sx={{ mb: 0, fontWeight: 600 }}
+                          gutterBottom
+                          variant="h5"
+                          component="div"
+                        >
+                          Open Tickets
+                        </Typography>
+                        <IconButton onClick={handleToggleView}>
+                          {viewMode === "open" ? (
+                            <Tooltip title="Show Pending Tickets">
+                              <ToggleOnIcon />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title="Show Open Tickets">
+                              <ToggleOffIcon />
+                            </Tooltip>
+                          )}
+                        </IconButton>
+                        <div>
+                          <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={openTickets.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            labelRowsPerPage=""
+                            onPageChange={(e, newPage) => setPage(newPage)}
+                            onRowsPerPageChange={(e) => {
+                              setRowsPerPage(parseInt(e.target.value, 10));
+                              setPage(0);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <Divider sx={{ opacity: "0.8" }} />
+                      <Grid container spacing={0}>
+                        <Grid item xs={12}>
+                          <TableContainer sx={{ overflow: "auto" }}>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell align="center">Category</TableCell>
+                                  <TableCell align="center">Time</TableCell>
+                                  <TableCell align="center">ID</TableCell>
+                                  <TableCell align="center">
+                                    Description
+                                  </TableCell>
+                                  {/* <TableCell align="center">Status</TableCell> */}
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {(rowsPerPage > 0
+                                  ? openTickets.slice(
+                                      page * rowsPerPage,
+                                      page * rowsPerPage + rowsPerPage
+                                    )
+                                  : openTickets
+                                ).map((ticket, index) => (
+                                  <TableRow key={index}>
+                                    <TableCell align="center">
+                                      {ticket.category}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      {ticket.time}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      {ticket.id}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                      {ticket.description}
+                                    </TableCell>
+                                    {/* <TableCell align="center">
+                                    {ticket.status}
+                                  </TableCell> */}
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+            <div className="row" style={{ marginTop: "1rem" }}>
               <div className="col-md-12">
                 <Card className="dashboard-rightSide-Table">
                   <CardContent sx={{ padding: "0" }}>
@@ -1021,13 +1379,13 @@ function UserHome({ sendUrllist }) {
                         variant="h5"
                         component="div"
                       >
-                        Open Ticket
+                        Resolved Tickets
                       </Typography>
                       <div>
                         <TablePagination
-                          rowsPerPageOptions={[5, 10, 25]} // Choose your desired options
+                          rowsPerPageOptions={[5, 10, 25]}
                           component="div"
-                          count={pendingTicketData.length}
+                          count={resolvedTickets.length}
                           rowsPerPage={rowsPerPage}
                           page={page}
                           labelRowsPerPage=""
@@ -1052,16 +1410,16 @@ function UserHome({ sendUrllist }) {
                                 <TableCell align="center">
                                   Description
                                 </TableCell>
-                                <TableCell align="center">Status</TableCell>
+                                {/* <TableCell align="center">Status</TableCell> */}
                               </TableRow>
                             </TableHead>
                             <TableBody>
                               {(rowsPerPage > 0
-                                ? pendingTicketData.slice(
+                                ? resolvedTickets.slice(
                                     page * rowsPerPage,
                                     page * rowsPerPage + rowsPerPage
                                   )
-                                : pendingTicketData
+                                : resolvedTickets
                               ).map((ticket, index) => (
                                 <TableRow key={index}>
                                   <TableCell align="center">
@@ -1076,9 +1434,9 @@ function UserHome({ sendUrllist }) {
                                   <TableCell align="center">
                                     {ticket.description}
                                   </TableCell>
-                                  <TableCell align="center">
+                                  {/* <TableCell align="center">
                                     {ticket.status}
-                                  </TableCell>
+                                  </TableCell> */}
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -1090,7 +1448,7 @@ function UserHome({ sendUrllist }) {
                 </Card>
               </div>
             </div>
-            <div className="row" style={{ marginTop: "1rem" }}>
+            {/* <div className="row" style={{ marginTop: "1rem" }}>
               <div className="col-md-12">
                 <Card>
                   <CardContent sx={{ padding: "0" }}>
@@ -1153,7 +1511,7 @@ function UserHome({ sendUrllist }) {
                   </CardContent>
                 </Card>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

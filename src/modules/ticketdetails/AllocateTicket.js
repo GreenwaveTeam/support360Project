@@ -21,12 +21,12 @@ export const fetchUser = async () => {
   };
 
 
-  export const getAllOpenTicketDetails = async (plantID,userEmail) => {
+  export const getAllOpenTicketDetails = async () => {
     // let role = "";
     try {
         console.log(`userhome Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
-        const response = await axios.get(`http://localhost:8081/ticket/${plantID}/${userEmail}`, {
+        const response = await axios.get(`http://localhost:8081/ticket`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "application/json",

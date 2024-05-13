@@ -56,6 +56,7 @@ export default function CustomTable({
   style,
   redirectIconActive,
   progressVisible,
+  isNotDeletable
 }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
   console.log("Columns::", columns);
@@ -432,7 +433,7 @@ export default function CustomTable({
                     fontSize: "14px",
                   }}
                 >
-                  Delete
+                 {!isNotDeletable && <div>Delete</div>}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -528,7 +529,7 @@ export default function CustomTable({
                         </Tooltip>} */}
 
                                 {editRowIndex !== index &&
-                                  column.id !== "severity" &&
+                                  column.id !== "severity" && column.type!=='button'&&
                                   column.id !== redirectColumn && (
                                     <Typography>{value}</Typography>
                                   )}
@@ -567,6 +568,7 @@ export default function CustomTable({
                                       )}
                                     </>
                                   )}
+                                  
                                 {editRowIndex === index &&
                                   column.type === "textbox" && (
                                     <div>
@@ -673,6 +675,14 @@ export default function CustomTable({
                                       />
                                     </div>
                                   )}
+                                  {
+                                  column.type === "button" && (
+                                    <div> 
+                                      <Button  variant="contained"
+                                        onClick={()=>column.function(row)}
+                                      >{column.buttonlabel}</Button>
+                                    </div>
+                                  )}
                               </div>
                             </TableCell>
                           );
@@ -720,6 +730,7 @@ export default function CustomTable({
                           </div>
                         </TableCell>
                         <TableCell sx={{ width: "10%" }} align="right">
+                          {!isNotDeletable &&
                           <div
                             style={{
                               display: "flex",
@@ -740,6 +751,7 @@ export default function CustomTable({
                               </Button>
                             </Tooltip>
                           </div>
+                        }
                         </TableCell>
                       </TableRow>
                     );

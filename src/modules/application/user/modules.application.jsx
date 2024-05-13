@@ -17,7 +17,9 @@ import {
   Divider,
   FormControl,
   IconButton,
+  InputAdornment,
   InputLabel,
+  ListSubheader,
   MenuItem,
   Paper,
   Select,
@@ -26,6 +28,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  TextField,
   Tooltip,
 } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -68,6 +71,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 import dayjs from "dayjs";
 import LinearProgress from "@mui/material/LinearProgress";
+import { useMemo } from "react";
+import SearchIcon from "@mui/icons-material/Search";
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -1679,6 +1684,26 @@ export default function ApplicationUser({ sendUrllist }) {
   ];
   //const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  //for Search Dropdown
+  const [searchText, setSearchText] = useState("");
+  // const [lastSetValue,setLastSetValue]=useState("");
+
+  const displayedOptions = useMemo(
+      () => {
+      const searchTextLowerCase = searchText.toLowerCase();
+      // console.log('Current Search Text : ',searchTextLowerCase)
+      return issuesDropdown.filter(
+          option => 
+          option.toLowerCase().includes(searchTextLowerCase)
+      );
+      },
+      [searchText, issuesDropdown]
+  );
+
+  const isOptionInRange = displayedOptions.some(
+      option => option === userIssue
+    );
   /*************************************************** Component return ************************************** */
   return (
     <div className="row">
@@ -1792,61 +1817,61 @@ export default function ApplicationUser({ sendUrllist }) {
         <Divider textAlign="left"></Divider>
         <DialogContent>
           {/* <DialogContentText id="alert-dialog-slide-description"> */}
-            <div>
-              {tabsmoduleNames.length !== 0 && (
-                <div>
-                  <CustomTable
-                    rows={overviewTableData}
-                    columns={overviewTableColumns}
-                    setRows={setOverviewTableData}
-                    deleteFromDatabase={handleOverviewDeleteClick}
-                    style={{
-                      borderRadius: 10,
-                      maxHeight: 440,
-                      maxWidth: 1200,
-                    }}
-                    isDeleteDialog={false}
-                  ></CustomTable>
-                  <br />
-                  {/* </Collapse> */}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {tabsmoduleNames.length !== 0 && (
-                      <CustomButton
-                        size={"large"}
-                        id={"final-submit"}
-                        variant={"contained"}
-                        color={"success"}
-                        onClick={handleFinalReportClick}
-                        style={classes.btn}
-                        buttontext={
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            Raise a Ticket
-                            <ArrowRightIcon fontSize="small" />
-                          </div>
-                        }
-                      ></CustomButton>
-                    )}
-                    &nbsp;
-                    {progressVisible && (
-                      <CircularProgress color="info" thickness={5} size={20} />
-                    )}
-                  </div>
+          <div>
+            {tabsmoduleNames.length !== 0 && (
+              <div>
+                <CustomTable
+                  rows={overviewTableData}
+                  columns={overviewTableColumns}
+                  setRows={setOverviewTableData}
+                  deleteFromDatabase={handleOverviewDeleteClick}
+                  style={{
+                    borderRadius: 10,
+                    maxHeight: 440,
+                    maxWidth: 1200,
+                  }}
+                  isDeleteDialog={false}
+                ></CustomTable>
+                <br />
+                {/* </Collapse> */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  {tabsmoduleNames.length !== 0 && (
+                    <CustomButton
+                      size={"large"}
+                      id={"final-submit"}
+                      variant={"contained"}
+                      color={"success"}
+                      onClick={handleFinalReportClick}
+                      style={classes.btn}
+                      buttontext={
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          Raise a Ticket
+                          <ArrowRightIcon fontSize="small" />
+                        </div>
+                      }
+                    ></CustomButton>
+                  )}
+                  &nbsp;
+                  {progressVisible && (
+                    <CircularProgress color="info" thickness={5} size={20} />
+                  )}
                 </div>
-              )}
-            </div>
-            {/* <div
+              </div>
+            )}
+          </div>
+          {/* <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -2748,99 +2773,80 @@ export default function ApplicationUser({ sendUrllist }) {
                   }}
                 >
                   <FormControl style={{ minWidth: 200, maxWidth: 200 }}>
-                    <InputLabel>{"Issue Name"}</InputLabel>
+                    <InputLabel id="search-select-label">
+                      {"Issue Name"}
+                    </InputLabel>
                     <Select
-                      MenuProps={MenuProps}
-                      //style= {style}
-                      //id={id}
-                      // style={{
-                      //   whiteSpace: "nowrap",
-                      //   overflow: "scroll",
-                      //   textOverflow: "ellipsis",
-                      //   maxWidth: "100%",color:'red'}}
-                      value={userIssue}
-                      label="Issue Name"
+                      required
+                      // MenuProps={{ MenuProps }}
+                      labelId="search-select-label"
+                      id="search-select"
+                      // disabled={disabled}
+                      // value={selectedOption}
+                      value={isOptionInRange ? userIssue : ""} // because within the range of values if that particular value is not present , warning will occur
+                      label={"Issue Name"}
                       onChange={handleModalDropdown}
+                      onClose={() => setSearchText("")}
                       error={issuedropdownError}
-                      //className={value}
-                      //error={showerror}
-                      onClose={() => {
-                        setIssuesDropdown(originalIssuesDropdown);
+                      // This prevents rendering empty string in Select's value
+                      // if search text would exclude currently selected option.
+                      renderValue={(selected) => {
+                        const selectedItem = displayedOptions.find(
+                          (option) => option.userValue === selected
+                        );
+                        if (selectedItem) {
+                          return (
+                            // <span>
+                            //   <span style={{ fontWeight: "bold" }}>{selectedItem.userName}</span>{" "}
+                            //   {selectedItem.userValue}
+                            // </span>
+                            { selectedItem }
+                          );
+                        } else {
+                          return selected;
+                        }
                       }}
                     >
-                      {/* <input
-                          type="text"
-                          placeholder="Search..."
-                          onClick={(e) => e.stopPropagation()}
-                          // Add any other input field properties as needed
-                          style={{
-                            width: "90%", // Adjust width as desired
-                            // Add border
-                            // alignItems:'center',
-                            // justifyContent:'center',
-                            // padding: "10px",
-                          
+                      {/* TextField is put into ListSubheader so that it doesn't
+                act as a selectable item in the menu
+                i.e. we can click the TextField without triggering any selection.*/}
+                      <ListSubheader>
+                        <TextField
+                          fullWidth
+                          size="small"
+                          // Autofocus on textfield
+                          autoFocus
+                          placeholder="Type to search..."
+                          //   fullWidth
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <SearchIcon />
+                              </InputAdornment>
+                            ),
                           }}
-             
-                        /> */}
-                      {/* This  has to be made from scratch because it has Search component */}
-                      <Textfield
-                        id={"user-issues-dropdown"}
-                        onChange={(e) => handleDropdownSearch(e)}
-                        // onChange={(e) =>{e.stopPropagation();
-                        //   e.preventDefault();}}
-                        // onClick= {(event)=>{event.stopPropagation()
-                        //   event.preventDefault();
-                        // }}
-                        onKeyDown={(e) => {
-                          e.stopPropagation();
-                        }}
-                        onKeyUp={(e) => {
-                          e.stopPropagation();
-                        }}
-                        // onSelect={(e)=>{
-                        //   e.stopPropagation()
-                        //   e.preventDefault()
-                        //   }}
-
-                        // onFocus={(e)=>{
-                        //   e.stopPropagation()
-                        //   e.preventDefault()
-                        //   }}
-                        variant={"outlined"}
-                        size={"small"}
-                        value={searchDropdownValue}
-                        //placeholder='Search'
-                        label={
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            <SearchOutlinedIcon
-                              style={{ marginRight: "5px" }}
-                            />
-                            <span style={{ fontSize: "12px" }}>Search...</span>
-                          </div>
-                        }
-                        //value={search}
-                        style={{
-                          marginLeft: "12px",
-                          // Set the background color to white
-                        }}
-                      />
-
-                      <br />
-                      {issuesDropdown.map((item, index) => (
-                        <MenuItem
-                          key={item}
-                          value={item}
-                          style={{ whiteSpace: "normal" }}
-                        >
-                          <div style={{}}>{item}</div>
-                        </MenuItem>
-                      ))}
+                          onChange={(e) => {
+                            // selectedOption='';
+                            setSearchText(e.target.value);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key !== "Escape") {
+                              // Prevents autoselecting item while typing (default Select behaviour)
+                              e.stopPropagation();
+                            }
+                          }}
+                        />
+                      </ListSubheader>
+                      {displayedOptions.length > 0 &&
+                        displayedOptions.map((itm, index) => (
+                          <MenuItem key={index} value={itm}>
+                            {/* <span style={{ fontWeight: "bold" }}>
+                                {itm.userName}
+                                </span>
+                                {" " + itm.userValue} */}
+                            {itm}
+                          </MenuItem>
+                        ))}
                     </Select>
                   </FormControl>
                   &nbsp;&nbsp;

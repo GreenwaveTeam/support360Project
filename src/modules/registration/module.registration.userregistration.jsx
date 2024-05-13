@@ -93,6 +93,7 @@ export default function UserRegistration({ sendUrllist }) {
     confirmPassword: false,
     phoneNumberLength: false,
     passwordNotMatch: false,
+    weakPassword: false,
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -222,6 +223,12 @@ export default function UserRegistration({ sendUrllist }) {
           { pageName: "Admin Home", pagelink: "/admin/home" },
           { pageName: "User Update", pagelink: "/admin/userregistration" },
         ];
+
+  const validatePassword = (password) => {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+    return passwordRegex.test(password);
+  };
 
   function convertToTitleCase(str) {
     let words = str.split(/(?=[A-Z])/);
@@ -445,6 +452,7 @@ export default function UserRegistration({ sendUrllist }) {
         setSnackbarText(`${convertToTitleCase(key)} must be filled`);
         setsnackbarSeverity("error");
         console.log(`${convertToTitleCase(key)} must be filled`);
+        setUpdateFormErrors({ ...updateFormErrors, [key]: true });
         return;
       }
     }
@@ -535,8 +543,19 @@ export default function UserRegistration({ sendUrllist }) {
         setSnackbarText(`${convertToTitleCase(key)} must be filled`);
         setsnackbarSeverity("error");
         console.log(`${convertToTitleCase(key)} must be filled`);
+        setFormErrors({ ...formErrors, [key]: true });
         return;
       }
+    }
+
+    if (!validatePassword(pass)) {
+      handleClick();
+      setSnackbarText(
+        "Password must contain at least 6 characters, including uppercase, lowercase, numeric, and special characters"
+      );
+      setsnackbarSeverity("error");
+      setFormErrors({ ...formErrors, weakPassword: true });
+      return;
     }
 
     if (formData["phoneNumber"].length !== 10) {
@@ -544,6 +563,7 @@ export default function UserRegistration({ sendUrllist }) {
       setSnackbarText("Phone Number must be 10 digits");
       setsnackbarSeverity("error");
       console.log("Phone Number must be 10 digits");
+      setFormErrors({ ...formErrors, phoneNumberLength: true });
       return;
     }
 
@@ -551,6 +571,7 @@ export default function UserRegistration({ sendUrllist }) {
       handleClick();
       setSnackbarText("Password does not match !");
       setsnackbarSeverity("error");
+      setFormErrors({ ...formErrors, confirmPassword: true });
       return;
     }
 
@@ -558,6 +579,7 @@ export default function UserRegistration({ sendUrllist }) {
       handleClick();
       setSnackbarText("Password does not match !");
       setsnackbarSeverity("error");
+      setFormErrors({ ...formErrors, passwordNotMatch: true });
       return;
     }
 
@@ -1414,7 +1436,9 @@ export default function UserRegistration({ sendUrllist }) {
                       <FormControl
                         fullWidth
                         error={
-                          formErrors.password || formErrors.passwordNotMatch
+                          formErrors.password ||
+                          formErrors.passwordNotMatch ||
+                          formErrors.weakPassword
                         }
                       >
                         <InputLabel htmlFor="password">Password</InputLabel>
@@ -1429,6 +1453,7 @@ export default function UserRegistration({ sendUrllist }) {
                           onChange={(e) => {
                             const password = e.target.value;
                             setPass(password);
+                            const isPasswordValid = validatePassword(password);
                             setFormData({
                               ...formData,
                               password: password,
@@ -1437,6 +1462,7 @@ export default function UserRegistration({ sendUrllist }) {
                               ...formErrors,
                               password: password.trim() === "",
                               passwordNotMatch: password !== cnfpass,
+                              weakPassword: !isPasswordValid,
                             });
                             console.log(
                               "password !== cnfpass : ",
@@ -1464,6 +1490,13 @@ export default function UserRegistration({ sendUrllist }) {
                         {formErrors.password && (
                           <FormHelperText>
                             Password must be filled
+                          </FormHelperText>
+                        )}
+                        {formErrors.weakPassword && (
+                          <FormHelperText>
+                            Password must contain at least 6 characters,
+                            including uppercase, lowercase, numeric, and special
+                            characters
                           </FormHelperText>
                         )}
                         {formErrors.passwordNotMatch && (

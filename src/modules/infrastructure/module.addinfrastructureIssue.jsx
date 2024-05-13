@@ -702,6 +702,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
 
   const urllist = [
     { pageName: "Home", pagelink: "/admin/home" },
+    { pageName: "User Configure", pagelink: "/admin/configurePage" },
     {
       pageName: "Configure Infrastructure",
       pagelink: "/admin/InfrastructureConfigure",

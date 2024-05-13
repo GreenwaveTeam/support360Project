@@ -32,6 +32,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   const location = useLocation();
   const urllist = [
     { pageName: "Home", pagelink: "/admin/home" },
+    { pageName: "User Configure", pagelink: "/admin/configurePage" },
     {
       pageName: "Configure Infrastructure",
       pagelink: "/admin/InfrastructureConfigure",

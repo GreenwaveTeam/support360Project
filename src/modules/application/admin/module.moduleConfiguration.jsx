@@ -963,6 +963,11 @@ export default function ModuleConfigure({ sendUrllist }) {
                     }}
                   >
                     <Box>
+                    <TextField
+                        label={"Filter Module"}
+                        id="filter"
+                        onChange={handleFilterChange}
+                      />
                       <TabList
                         onChange={handleChange}
                         // sx={{ backgroundColor: "red" }}

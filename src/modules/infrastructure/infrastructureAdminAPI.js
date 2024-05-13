@@ -95,3 +95,109 @@ export const updateInfraNameDB = async (
     return false;
   }
 };
+
+
+export const fetchUser = async () => {
+  let role = "";
+  try {
+    const response = await fetch("http://localhost:8081/users/user", {
+      method: "GET",
+      headers: {
+        // Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    const data = await response.json();
+    console.log("fetchUser data : ", data);
+    // setFormData(data.role);
+    role = data.role;
+
+    console.log("Role Test : ", role);
+    return data;
+    // fetchDivsForCurrentPage(role);
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+};
+
+
+export const getAllInfrastructure=async(userData)=>
+  {
+    console.log('getAllInfrastructure() called ')
+    let plantID = "";
+    try {
+      if (userData.plantID) {
+        plantID = userData.plantID;
+      } else {
+        throw new Error("PlantID not found ! ");
+      }
+      const response = await fetch(
+        `http://localhost:8081/infrastructure/admin/${plantID}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!response.ok) {
+        console.log("Response => " + response.status);
+        throw new Error("HTTP error " + response.status);
+      }
+      const data = await response.json();
+      console.log('Infrastructure Data from DB :  ',data)
+      return data;
+      //setProgressVisible(false);
+      // setsnackbarSeverity("success")
+      // setSnackbarText("Data refereshed successfully !")
+      // setOpen(true)
+    } catch (error) {
+      //setProgressVisible(false);
+      // setsnackbarSeverity("error");
+      // setSnackbarText(error.toString());
+      // setOpen(true);
+      console.log("Error fetching data from database !",error);
+      return null;
+      // navigate("/notfound");
+    }
+  };
+
+  export const deleteInfrastructureFromDb=async(userData,infra_name)=>
+    {
+      console.log('deleteInfrastructureFromDb() called')
+      let plantID = "";
+      try {
+        if (userData.plantID) {
+          plantID = userData.plantID;
+        } else {
+          throw new Error("PlantID not found ! ");
+        }
+        const response = await fetch(
+          `http://localhost:8081/infrastructure/admin`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              infrastructureName: infra_name,
+              plantID: plantID,
+            }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return true;
+
+      }
+      catch (error) {
+        console.log('Error in deleting ',error)
+        return false;
+      }
+    }
+
+

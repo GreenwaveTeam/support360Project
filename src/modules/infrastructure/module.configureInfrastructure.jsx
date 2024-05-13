@@ -16,7 +16,7 @@ import CustomTable from "../../components/table/table.component";
 import Textfield from "../../components/textfield/textfield.component";
 import { useUserContext } from "../contexts/UserContext";
 import { extendTokenExpiration } from "../helper/Support360Api";
-import { fetchDivs, updateInfraNameDB } from "./infrastructureAdminAPI";
+import { deleteInfrastructureFromDb, fetchDivs, fetchUser, getAllInfrastructure, updateInfraNameDB } from "./infrastructureAdminAPI";
 
 export default function ConfigureInfrastructure({ sendUrllist }) {
   // const [search, setSearch] = useState("");
@@ -63,7 +63,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
   useEffect(() => {
     //fetchDivsForCurrentPage();
-    fetchUser();
+    fetchUserAndRole();
     extendTokenExpiration();
     fetchInfraFromDb();
     // fetchDivsForCurrentPage(userData);
@@ -151,28 +151,38 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
   /**************************************************   API    **************************************************** */
 
-  const fetchUser = async () => {
-    let role = "";
-    try {
-      const response = await fetch("http://localhost:8081/users/user", {
-        method: "GET",
-        headers: {
-          // Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const data = await response.json();
-      console.log("fetchUser data : ", data);
-      // setFormData(data.role);
-      role = data.role;
 
-      console.log("Role Test : ", role);
-      fetchDivsForCurrentPage(role);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
+  const fetchUserAndRole=async()=>
+    {
+      console.log('fetchUserAndRole() called')
+      const user= await fetchUser();
+      if(user)
+        {
+          fetchDivsForCurrentPage(user.role)
+        }
     }
-  };
+  // const fetchUser = async () => {
+  //   let role = "";
+  //   try {
+  //     const response = await fetch("http://localhost:8081/users/user", {
+  //       method: "GET",
+  //       headers: {
+  //         // Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     console.log("fetchUser data : ", data);
+  //     // setFormData(data.role);
+  //     role = data.role;
+
+  //     console.log("Role Test : ", role);
+  //     fetchDivsForCurrentPage(role);
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
 
   const fetchDivsForCurrentPage = async (role) => {
     console.log("fetchDivsForCurrentPage() called ! ");
@@ -181,6 +191,8 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     console.log("Response for divs : ", divs);
     if (divs) {
       setDivIsVisibleList(divs);
+      if(divs.length===0)
+        navigate('/*')
       return;
     }
     console.log("Components not found ! ");
@@ -232,31 +244,32 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   // };
 
   const deletefromDB = async (infra_name) => {
-    let plantID = "";
-    try {
-      if (userData.plantID) {
-        plantID = userData.plantID;
-      } else {
-        throw new Error("PlantID not found ! ");
-      }
-      const response = await fetch(
-        `http://localhost:8081/infrastructure/admin`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            infrastructureName: infra_name,
-            plantID: plantID,
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      if (response.ok) {
+    // let plantID = "";
+    // try {
+    //   if (userData.plantID) {
+    //     plantID = userData.plantID;
+    //   } else {
+    //     throw new Error("PlantID not found ! ");
+    //   }
+    //   const response = await fetch(
+    //     `http://localhost:8081/infrastructure/admin`,
+    //     {
+    //       method: "DELETE",
+    //       headers: {
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         infrastructureName: infra_name,
+    //         plantID: plantID,
+    //       }),
+    //     }
+    //   );
+    //   if (!response.ok) {
+    //     throw new Error(`HTTP error! status: ${response.status}`);
+    //   }
+    const success=await deleteInfrastructureFromDb(userData,infra_name)
+      if (success) {
         const rowCopy = [...infraList];
         const filterArray = rowCopy.filter(
           (item) => item.categoryname !== infra_name
@@ -267,7 +280,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
         setSnackbarText("Data deleted successfully ! ");
         setOpen(true);
       }
-    } catch (error) {
+     else {
       setsnackbarSeverity("error");
       setSnackbarText("Database error ! ");
       setOpen(true);
@@ -292,20 +305,22 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
       } else {
         throw new Error("PlantID not found ! ");
       }
-      const response = await fetch(
-        `http://localhost:8081/infrastructure/admin/${plantID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        console.log("Response => " + response.status);
-        throw new Error("HTTP error " + response.status);
-      }
-      const data = await response.json();
+      // const response = await fetch(
+      //   `http://localhost:8081/infrastructure/admin/${plantID}`,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      //       "Content-Type": "application/json",
+      //     },
+      //   }
+      // );
+      // if (!response.ok) {
+      //   console.log("Response => " + response.status);
+      //   throw new Error("HTTP error " + response.status);
+      // }
+      // const data = await response.json();
+      const data = await getAllInfrastructure(userData);
+      console.log("Data from DB => ", data);
       let infrastructure = [];
       if (data.infraDetails) {
         console.log("infraDetails from Db => ", data.infraDetails);

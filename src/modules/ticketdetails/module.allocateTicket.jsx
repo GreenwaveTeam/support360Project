@@ -48,8 +48,14 @@ export default function AllocateTicket() {
   };
 
   React.useEffect(() => {
-    console.log("UseEffect called");
-    fetchAllTicketsDetails();
+    const interval = setInterval(() => {
+      console.log("UseEffect called");
+      fetchAllTicketsDetails();
+    }, 3000);
+
+    return () => {
+      clearInterval(interval); 
+    };
   }, []);
 
   const handleChange = (event, newValue) => {

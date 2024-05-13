@@ -73,6 +73,7 @@ import dayjs from "dayjs";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useMemo } from "react";
 import SearchIcon from "@mui/icons-material/Search";
+import { fetchApplicationNames, fetchCurrentDivs, fetchCurrentUser, fetchTabData, fetchTabNames, postDatainDB } from "./ApplicationUserApi";
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -171,11 +172,12 @@ export default function ApplicationUser({ sendUrllist }) {
       plantID = userData.plantID;
       console.log("Current plantID : ", plantID);
       console.log("useEffect() for fetching data for first time....");
-      fetchApplicationNames(plantID);
+      fetchCurrentApplicationNames(plantID);
       //fetchDivs();
       fetchUser();
       setTicketNumber(generateRandomNumber());
     } else {
+      console.log('Error in fetching plantId ! ')
       setSnackbarSeverity("error");
       setSnackbarText("Error in fetching details !");
       setMainAlert(true);
@@ -401,7 +403,7 @@ export default function ApplicationUser({ sendUrllist }) {
     }
   };
 
-  const handleTabsChange = (event, newValue) => {
+  const handleTabsChange =async (event, newValue) => {
     console.log(event);
     event.preventDefault();
     event.stopPropagation();
@@ -421,7 +423,8 @@ export default function ApplicationUser({ sendUrllist }) {
     setmiscellaneousRemarks("");
     setmiscellaneousSeverity("");
     //Now feed with new data
-    fetchTabData(newValue, dropdownValue);
+    const moduleData=await fetchTabData(newValue, dropdownValue,userData);
+    setMainData(moduleData)
 
     checkAndRestoreFromSuperInformationofAllModules(newValue, dropdownValue); // This method is reserved for restoring the previous user I/P based on the current selected module  i.e you only need to set the final userInput because on each div click check is already made in the finalUserInput list
 
@@ -432,218 +435,274 @@ export default function ApplicationUser({ sendUrllist }) {
   /* ********************** API ************************** */
 
   const fetchUser = async () => {
-    let role = "";
-    try {
-      const response = await fetch("http://localhost:8081/users/user", {
-        method: "GET",
-        headers: {
-          // Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const data = await response.json();
-      console.log("fetchUser data : ", data);
-      // setFormData(data.role);
-      role = data.role;
-      setCurrentUserData(data);
+    // let role = "";
+    // try {
+    //   const response = await fetch("http://localhost:8081/users/user", {
+    //     method: "GET",
+    //     headers: {
+    //       // Authorization: `Bearer ${token}`,
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //     },
+    //   });
+    //   const data = await response.json();
+    //   console.log("fetchUser data : ", data);
+    //   // setFormData(data.role);
+    //   role = data.role;
+    //   setCurrentUserData(data);
 
-      console.log("Role Test : ", role);
-      fetchDivs(role);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
-  const fetchDivs = async (role) => {
-    //let role = "";
-    try {
-      console.log("fetchDivs() called");
-      console.log("Current Page Location: ", currentPageLocation);
-      // console.log("Currently passed Data : ",location.state)
-      // if (userData.role) {
-      //   role = userData.role;
-      // } else {
-      //   throw new Error("UserRole not found ! ");
-      // }
-      const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+    //   console.log("Role Test : ", role);
+    //   fetchDivs(role);
+    // } catch (error) {
+    //   console.error("Error fetching user list:", error);
+    // }
+
+    const userData = await fetchCurrentUser();
+    if (userData) {
+      setCurrentUserData(userData);
+      console.log("userData : ", userData);
+      let role =userData.role;
+      const currentDivs= await fetchCurrentDivs(role,currentPageLocation)
+      if(currentDivs)
         {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+          console.log("currentDivs : ", currentDivs);
+             if (currentDivs.length === 0) {
+                navigate("/*");
+              }
+        setDivIsVisibleList(currentDivs.components);
+      }
+    }
+  };
+  // const fetchDivs = async (role) => {
+  //   //let role = "";
+  //   try {
+  //     console.log("fetchDivs() called");
+  //     console.log("Current Page Location: ", currentPageLocation);
+  //     // console.log("Currently passed Data : ",location.state)
+  //     // if (userData.role) {
+  //     //   role = userData.role;
+  //     // } else {
+  //     //   throw new Error("UserRole not found ! ");
+  //     // }
+  //     const response = await fetch(
+  //       `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (response.ok) {
-        console.log("Current Response : ", data);
-        console.log("Current Divs : ", data.components);
-        setDivIsVisibleList(data.components);
-      }
-    } catch (error) {
-      console.log("Error in getting divs name :", error);
-      if (fetchDivs.length === 0) {
-        navigate("/*");
-      }
-      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
-      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
-      // setOpen(true); // Assuming setOpen is defined elsewhere
-      // setSearch("");
-      // setEditRowIndex(null);
-      // setEditValue("");
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       console.log("Current Response : ", data);
+  //       console.log("Current Divs : ", data.components);
+  //       setDivIsVisibleList(data.components);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error in getting divs name :", error);
+  //     if (fetchDivs.length === 0) {
+  //       navigate("/*");
+  //     }
+  //     // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+  //     // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+  //     // setOpen(true); // Assuming setOpen is defined elsewhere
+  //     // setSearch("");
+  //     // setEditRowIndex(null);
+  //     // setEditValue("");
+  //   }
+  // };
+
+  const fetchCurrentApplicationNames = async (PlantID) => {
+    console.log("fetchCurrentApplicationNames() called");
+    const data = await fetchApplicationNames(PlantID);
+    if (data === 403) {
+      navigate("/*");
+      return;
+    } else if (data) {
+      data.unshift("Select an application");
+      setAppDropdown(data);
+      setDropdownValue("Select an application");
+    } else {
+      console.log("Application name not found ! ");
     }
   };
 
-  const fetchApplicationNames = async (plantID) => {
-    const list = process.env.REACT_APP_ADMINPAGELIST;
-    console.log("env : ", list);
-    console.log("list");
-    console.log("Current user : ", userData);
-    try {
-      const response = await fetch(
-        `http://localhost:8081/application/user/${plantID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        if (response.status === 403) {
-          navigate("/*");
-        }
-        throw new Error("Failed to fetch data");
-      }
-      const data = await response.json();
-      if (data) {
-        console.log("Data from Database : ", data);
-        data.unshift("Select an application");
-        setAppDropdown(data);
-        setDropdownValue("Select an application");
-      }
-    } catch (error) {
-      console.log("Error fetching data ", error);
-    }
-    setTabsModuleNames([]);
-  };
+  // const fetchApplicationNames = async (plantID) => {
+  //   const currentIP = process.env.REACT_APP_SERVERIP;
+  //   console.log("env : ", currentIP);
+  //   console.log("Current user : ", userData);
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:8081/application/user/${plantID}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     if (!response.ok) {
+  //       if (response.status === 403) {
+  //         navigate("/*");
+  //       }
+  //       throw new Error("Failed to fetch data");
+  //     }
+  //     const data = await response.json();
+  //     if (data) {
+  //       console.log("Data from Database : ", data);
+  //       data.unshift("Select an application");
+  //       setAppDropdown(data);
+  //       setDropdownValue("Select an application");
+  //     }
+  //   } catch (error) {
+  //     console.log("Error fetching data ", error);
+  //   }
+  //   setTabsModuleNames([]);
+  // };
 
   const fetchTabs = async (dropdownvalue) => {
     if (dropdownvalue === "Select an application") {
       setTabsModuleNames([]);
       return;
     }
-    console.log("fetchTabsData() called ! ");
-    try {
-      console.log("Current Dropdown selection : ", dropdownvalue);
-      let plantID = "";
-      if (userData.plantID) {
-        plantID = userData.plantID;
-      } else {
-        throw new Error("PlantID not found ! ");
-      }
-      const response = await fetch(
-        `http://localhost:8081/application/user/${plantID}/${dropdownvalue}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const data = await response.json();
-      if (data) {
-        console.log("Data from Database : ", data);
-        setTabsModuleNames(data);
-        setValue(data[0]);
-        //further a function will be called to set the image data here
-        fetchTabData(data[0], dropdownvalue);
-      }
-    } catch (error) {
-      console.log("Error fetching data ", error);
+
+    const tabData= await fetchTabNames(dropdownvalue,userData)
+    if (tabData) {
+      console.log("Data from Database : ", tabData);
+      setTabsModuleNames(tabData);
+      setValue(tabData[0]);
+      //further a function will be called to set the image data here
+      console.log('UserData : ',userData)
+      const moduleData=await fetchTabData(tabData[0], dropdownvalue,userData);
+      console.log('Current Module Data :  ',moduleData)
+      if(moduleData)
+        setMainData(moduleData);
+    }
+    else
+    {
       setTabsModuleNames([]);
       navigate("/notfound");
     }
-  };
+  } 
 
-  const fetchTabData = async (module, application) => {
-    console.log("fetchTabData() called");
-    console.log("Tab Value : ", module);
-    console.log("Current Application : ", application);
-    let plantID = "";
 
-    try {
-      if (userData.plantID) {
-        plantID = userData.plantID;
-      } else {
-        throw new Error("PlantID not found ! ");
-      }
-      if (application === "" || module === "") {
-        throw new Error("Module or Application Names are blank ");
-      }
-      console.log(
-        "Current API call : ",
-        `http://localhost:8081/application/user/${plantID}/${application}/${module}`
-      );
-      const API = `http://localhost:8081/application/user/${plantID}/${application}/${module}`;
-      const response = await fetch(API, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      const data = await response.json();
-      if (data) {
-        setMainData(data);
-        console.log("Current Tab Data : ", data);
-        // const issuesList=data.issuesList;
-      }
-    } catch (error) {
-      console.log("error occurred");
-    }
-  };
+  // const fetchTabs = async (dropdownvalue) => {
+  //   if (dropdownvalue === "Select an application") {
+  //     setTabsModuleNames([]);
+  //     return;
+  //   }
+  //   console.log("fetchTabsData() called ! ");
+  //   try {
+  //     console.log("Current Dropdown selection : ", dropdownvalue);
+  //     let plantID = "";
+  //     if (userData.plantID) {
+  //       plantID = userData.plantID;
+  //     } else {
+  //       throw new Error("PlantID not found ! ");
+  //     }
+  //     const response = await fetch(
+  //       `http://localhost:8081/application/user/${plantID}/${dropdownvalue}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch data");
+  //     }
+  //     const data = await response.json();
+  //     if (data) {
+  //       console.log("Data from Database : ", data);
+  //       setTabsModuleNames(data);
+  //       setValue(data[0]);
+  //       //further a function will be called to set the image data here
+  //       fetchTabData(data[0], dropdownvalue);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error fetching data ", error);
+  //     setTabsModuleNames([]);
+  //     navigate("/notfound");
+  //   }
+  // };
 
-  const postDatainDB = async (json_data) => {
-    console.log("postDatainDB() called");
-    console.log("current JSON_data is => ", JSON.stringify(json_data));
-    try {
-      const response = await fetch(`http://localhost:8081/application/user`, {
-        method: "POST",
+  // const fetchTabData = async (module, application) => {
+  //   console.log("fetchTabData() called");
+  //   console.log("Tab Value : ", module);
+  //   console.log("Current Application : ", application);
+  //   let plantID = "";
 
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
+  //   try {
+  //     if (userData.plantID) {
+  //       plantID = userData.plantID;
+  //     } else {
+  //       throw new Error("PlantID not found ! ");
+  //     }
+  //     if (application === "" || module === "") {
+  //       throw new Error("Module or Application Names are blank ");
+  //     }
+  //     console.log(
+  //       "Current API call : ",
+  //       `http://localhost:8081/application/user/${plantID}/${application}/${module}`
+  //     );
+  //     const API = `http://localhost:8081/application/user/${plantID}/${application}/${module}`;
+  //     const response = await fetch(API, {
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch data");
+  //     }
+  //     const data = await response.json();
+  //     if (data) {
+  //       setMainData(data);
+  //       console.log("Current Tab Data : ", data);
+  //       // const issuesList=data.issuesList;
+  //     }
+  //   } catch (error) {
+  //     console.log("error occurred");
+  //   }
+  // };
 
-        body: JSON.stringify(json_data),
-      });
-      if (response.ok) {
-        console.log("Data has been updated successfully ! ");
-        return true;
-      }
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-    } catch (error) {
-      console.log("Error in posting Data to the database : ", error);
-      setSnackbarSeverity("error");
-      setSnackbarText("Error in Database  Connection ");
-      setMainAlert(true);
-      return false;
-      // return 0;
-    }
-  };
+  // const postDatainDB = async (json_data) => {
+  //   console.log("postDatainDB() called");
+  //   console.log("current JSON_data is => ", JSON.stringify(json_data));
+  //   try {
+  //     const response = await fetch(`http://localhost:8081/application/user`, {
+  //       method: "POST",
+
+  //       headers: {
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         "Content-Type": "application/json",
+  //       },
+
+  //       body: JSON.stringify(json_data),
+  //     });
+  //     if (response.ok) {
+  //       console.log("Data has been updated successfully ! ");
+  //       return true;
+  //     }
+  //     if (!response.ok) {
+  //       throw new Error("Failed to fetch data");
+  //     }
+  //   } catch (error) {
+  //     console.log("Error in posting Data to the database : ", error);
+  //     setSnackbarSeverity("error");
+  //     setSnackbarText("Error in Database  Connection ");
+  //     setMainAlert(true);
+  //     return false;
+  //     // return 0;
+  //   }
+  // };
 
   /* ******************************************************************** */
 
@@ -1220,17 +1279,20 @@ export default function ApplicationUser({ sendUrllist }) {
     }
 
     let json_Count = 0;
-    for (const json_data of final_Json) {
-      try {
-        const posted = await postDatainDB(json_data);
-        if (!posted) {
-          break;
+    try {
+      const results = await Promise.all(final_Json.map(async json_data => {
+        const success = await postDatainDB(json_data);
+        if (success) {
+          json_Count++;
         }
-        json_Count++;
-      } catch (error) {
-        console.error("Error posting data:", error.message);
-      }
+      }));
+    
+      // The rest of your code
+    } catch (error) {
+      console.error("Error:", error.message);
     }
+    
+    
     //   )
     console.log("Number of JSON posted => ", json_Count);
 
@@ -1254,7 +1316,7 @@ export default function ApplicationUser({ sendUrllist }) {
     setSeverityError(false);
     setIssueDropDownError(false);
     setprogressVisible(false);
-    if (json_Count > 0) {
+    if (json_Count === final_Json.length) {
       const ticket = "Ticket raised successfully ! Ticket No - " + ticketNumber;
       setSnackbarSeverity("success");
       setSnackbarText(ticket);
@@ -1849,6 +1911,7 @@ export default function ApplicationUser({ sendUrllist }) {
                       color={"success"}
                       onClick={handleFinalReportClick}
                       style={classes.btn}
+                      disabled={progressVisible}
                       buttontext={
                         <div
                           style={{

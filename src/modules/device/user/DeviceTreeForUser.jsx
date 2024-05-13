@@ -64,8 +64,13 @@ import { extendTokenExpiration } from "../../helper/Support360Api";
 import Fab from "@mui/material/Fab";
 import CustomButton from "../../../components/button/button.component";
 import { ArrowRightIcon } from "@mui/x-date-pickers";
+import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
 
 export default function UserDeviceTree({ sendUrllist }) {
+  const [snackbarText, setSnackbarText] = useState("Data saved !");
+  const [snackbarSeverity, setsnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const [open, setOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState(null);
   const [data, setData] = useState(null);
@@ -93,6 +98,10 @@ export default function UserDeviceTree({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
   const [visibleConfirm, setVisibleConfirm] = useState(false);
   const [ticketOpen, setTicketOpen] = useState(false);
+  const [plantID, setPlantId] = useState();
+  const [userName, setUserName] = useState();
+  const [userEmailId, setUserEmailId] = useState();
+
   const toast = useRef(null);
 
   const handleDrawerOpen = () => {
@@ -103,7 +112,9 @@ export default function UserDeviceTree({ sendUrllist }) {
   };
   const currentPageLocation = useLocation().pathname;
   const deviceTicketJSON = {
-    plantId: "plant101",
+    plantId: plantID,
+    userName: userName,
+    userEmailId: userEmailId,
     ticketNo: ticketNumber,
     status: "open",
     deviceIssueDetails: deviceIssueDetails,
@@ -142,22 +153,23 @@ export default function UserDeviceTree({ sendUrllist }) {
     // fetchDivs();
   }, []);
 
+  useEffect(() => {
+    console.log("Final Data : ", deviceTicketJSON);
+  }, [deviceTicketJSON]);
   //Dialog
- 
+
   const [reviewOpen, setReviewOpen] = React.useState(false);
- 
+
   const handleClickOpen = () => {
-   setReviewOpen(true);
+    setReviewOpen(true);
   };
 
-  const handleCloseDialog = (event,reason) => {
-
+  const handleCloseDialog = (event, reason) => {
     if (reason === "backdropClick") {
-     setReviewOpen(false);
+      setReviewOpen(false);
     }
     // setOpen(false);
   };
-
 
   const fetchUser = async () => {
     let role = "";
@@ -173,6 +185,9 @@ export default function UserDeviceTree({ sendUrllist }) {
       const data = await response.json();
       console.log("fetchUser data : ", data);
       // setFormData(data.role);
+      setPlantId(data.plantID);
+      setUserName(data.name);
+      setUserEmailId(data.email);
       role = data.role;
 
       console.log("Role Test : ", role);
@@ -407,12 +422,21 @@ export default function UserDeviceTree({ sendUrllist }) {
       }
     } else {
       if (!selectedIssue) {
-        setAlertMessage("Please select an issue");
-        setShowAlert(true);
+        // setAlertMessage("Please select an issue");
+        // setShowAlert(true);
+
+        setsnackbarSeverity("error");
+        setSnackbarText("Please select an issue !");
+        setSnackbarOpen(true);
+        return;
       }
       if (!selectedPriority) {
-        setAlertMessage("Please select an severity");
-        setShowAlert(true);
+        // setAlertMessage("Please select an severity");
+        // setShowAlert(true);
+        setsnackbarSeverity("error");
+        setSnackbarText("Please select an Severity !");
+        setSnackbarOpen(true);
+        return;
       }
     }
   };
@@ -515,7 +539,7 @@ export default function UserDeviceTree({ sendUrllist }) {
   const colors = tokens(theme.palette.mode);
   return (
     <Container maxWidth="lg">
-       <>
+      <>
         {
           <Fab
             size="large"
@@ -539,54 +563,49 @@ export default function UserDeviceTree({ sendUrllist }) {
         }
       </>
 
-
       <Card sx={{ boxShadow: 2, borderRadius: 2 }}>
         {divIsVisibleList && divIsVisibleList.includes("device-report") && (
           <div id="device-report">
-
-
-
-
-<Dialog
-                  open={reviewOpen}
-                  onClose={(event, reason) => handleCloseDialog(event, reason)}
-                >
-                  <DialogTitle>
-                    <div className="IssueDialog">
-                      { (
-                        <div>
-                          <div
+            <Dialog
+              open={reviewOpen}
+              onClose={(event, reason) => handleCloseDialog(event, reason)}
+            >
+              <DialogTitle>
+                <div className="IssueDialog">
+                  {
+                    <div>
+                      <div
+                        style={{
+                          overflowY: "auto",
+                        }}
+                      >
+                        <div
+                          align="center"
+                          style={{
+                            flex: 1,
+                            overflow: "auto",
+                          }}
+                        >
+                          <span
                             style={{
-                              overflowY: "auto",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                              flex: 1,
                             }}
                           >
-                            <div
-                              align="center"
-                              style={{
-                                flex: 1,
-                                overflow: "auto",
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontSize: "14px",
-                                  fontWeight: "bold",
-                                  flex: 1,
-                                }}
-                              >
-                                Issues Overview
-                              </span>
-                              <span
-                                style={{
-                                  color: "#610C9F",
-                                  fontSize: "14px",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {/* [{dropdownValue}]{" "} */}
-                              </span>
-                            </div>
-                            {/* <div
+                            Issues Overview
+                          </span>
+                          <span
+                            style={{
+                              color: "#610C9F",
+                              fontSize: "14px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {/* [{dropdownValue}]{" "} */}
+                          </span>
+                        </div>
+                        {/* <div
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -625,22 +644,22 @@ export default function UserDeviceTree({ sendUrllist }) {
                         />
                       )}
                     </div> */}
-                          </div>
-                          {/* <Collapse in={expanded} timeout="auto" unmountOnExit> */}
+                      </div>
+                      {/* <Collapse in={expanded} timeout="auto" unmountOnExit> */}
 
-                          {/* </Collapse> */}
-                        </div>
-                      )}
+                      {/* </Collapse> */}
                     </div>
-                  </DialogTitle>
-                  <Divider textAlign="left"></Divider>
+                  }
+                </div>
+              </DialogTitle>
+              <Divider textAlign="left"></Divider>
 
-                  <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                      <div>
-                        {
-                          <div>
-                            <CustomTable
+              <DialogContent>
+                {/* <DialogContentText id="alert-dialog-slide-description"> */}
+                <div>
+                  {
+                    <div>
+                      <CustomTable
                         rows={deviceIssueDetails}
                         columns={overviewTableColumns}
                         setRows={setDeviceIssueDetails}
@@ -653,16 +672,16 @@ export default function UserDeviceTree({ sendUrllist }) {
                         }}
                         isDeleteDialog={false}
                       ></CustomTable>
-                            <br />
-                            {/* </Collapse> */}
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              {/* <Button
+                      <br />
+                      {/* </Collapse> */}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {/* <Button
                             // className="button"
                             variant="contained"
                             color="success" // Use secondary color for delete button
@@ -676,32 +695,32 @@ export default function UserDeviceTree({ sendUrllist }) {
                             Raise a Ticket
                           </Button> */}
 
-                              <CustomButton
-                                size={"large"}
-                                id={"final-submit"}
-                                variant={"contained"}
-                                color={"success"}
-                                onClick={() => handleSubmitPost(deviceTicketJSON)}
-                                // style={classes.btn}
-                                disabled={deviceIssueDetails.length === 0}
-                                buttontext={
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    Raise a Ticket
-                                    <ArrowRightIcon fontSize="small" />
-                                  </div>
-                                }
-                              ></CustomButton>
+                        <CustomButton
+                          size={"large"}
+                          id={"final-submit"}
+                          variant={"contained"}
+                          color={"success"}
+                          onClick={() => handleSubmitPost(deviceTicketJSON)}
+                          // style={classes.btn}
+                          disabled={deviceIssueDetails.length === 0}
+                          buttontext={
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              Raise a Ticket
+                              <ArrowRightIcon fontSize="small" />
                             </div>
-                          </div>
-                        }
+                          }
+                        ></CustomButton>
                       </div>
-                      {/* <div
+                    </div>
+                  }
+                </div>
+                {/* <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -812,25 +831,14 @@ export default function UserDeviceTree({ sendUrllist }) {
                 </Button>
               </div>
             </div> */}
-                    </DialogContentText>
-                  </DialogContent>
-                </Dialog>
+                {/* </DialogContentText> */}
+              </DialogContent>
+            </Dialog>
 
-
-
-
-
-
-
-
-
-
-
-            
             {/* {deviceIssueDetails.length > 0 && (
               <TableContainer>
                 <center> */}
-                  {/* <Table>
+            {/* <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell>
@@ -903,7 +911,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                   </TableBody>
                 </Table> */}
 
-                  {/* <br></br>
+            {/* <br></br>
                   <Card
                     sx={{ boxShadow: 1, padding: "7px", margin: "0px 2px" }}
                     style={{}}
@@ -946,8 +954,8 @@ export default function UserDeviceTree({ sendUrllist }) {
                         color="info"
                         sx={{ marginLeft: "8px" }}
                       > */}
-                        {/* <NotificationsActiveIcon color="secondary" /> */}
-                      {/* </Badge>
+            {/* <NotificationsActiveIcon color="secondary" /> */}
+            {/* </Badge>
                       &nbsp;
                     </div>
 
@@ -973,15 +981,15 @@ export default function UserDeviceTree({ sendUrllist }) {
                         onClick={() => handleSubmitPost(deviceTicketJSON)}
                       >
                         <SaveIcon */}
-                          {/* fontSize="small"
+            {/* fontSize="small"
                           sx={{ marginRight: "0.3rem" }}
                         />
                         Submit
                       </Button>
                     </Collapse>
                   </Card> */}
-                  {/* <br></br> */}
-                  {/* <Button
+            {/* <br></br> */}
+            {/* <Button
                   className="button"
                   variant="contained"
                   color="secondary" // Use secondary color for delete button
@@ -989,30 +997,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                 >
                   Submit
                 </Button> */}
-                {/* </center>
+            {/* </center>
               </TableContainer>
             )} */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             <Card
               borderRadius={2}
@@ -1122,7 +1109,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                               <div>No issues found</div>
                             )}
 
-                            {selectedIssue === "Other" && (
+                            {/* {selectedIssue === "Other" && (
                               <TextField
                                 sx={{ width: "200px" }}
                                 label="miscellaneous issue"
@@ -1132,7 +1119,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                                 margin="dense"
                                 fullWidth
                               />
-                            )}
+                            )} */}
                             {/* <FormControl variant="outlined" sx={{ width: "200px" }}>
                           <InputLabel>Select Priority</InputLabel>
                           <Select
@@ -1352,7 +1339,9 @@ export default function UserDeviceTree({ sendUrllist }) {
 
                                     <div>
                                       <div className="value-comp">
-                                        {selectedNode.name}
+                                        {selectedNode.name === ""
+                                          ? "NA"
+                                          : selectedNode.name}
                                       </div>
                                     </div>
                                   </div>
@@ -1370,7 +1359,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     </div>
                                     <div>
                                       <div className="value-comp">
-                                        {selectedNode.make}
+                                        {selectedNode.make === ""
+                                          ? "NA"
+                                          : selectedNode.make}
                                       </div>
                                     </div>
                                   </div>
@@ -1387,7 +1378,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     </div>
                                     <div>
                                       <div className="value-comp">
-                                        {selectedNode.model}
+                                        {selectedNode.model === ""
+                                          ? "NA"
+                                          : selectedNode.model}
                                       </div>
                                     </div>
                                   </div>
@@ -1404,7 +1397,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     </div>
                                     <div>
                                       <div className="value-comp">
-                                        {selectedNode.capacity}
+                                        {selectedNode.capacity === ""
+                                          ? "NA"
+                                          : selectedNode.capacity}
                                       </div>
                                     </div>
                                   </div>
@@ -1421,7 +1416,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     </div>
                                     <div>
                                       <div className="value-comp">
-                                        {selectedNode.description}
+                                        {selectedNode.description === ""
+                                          ? "NA"
+                                          : selectedNode.description}
                                       </div>
                                     </div>
                                   </div>
@@ -1438,7 +1435,10 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     </div>
                                     <div>
                                       <div className="value-comp">
-                                        {selectedNode.warranty_support_end_date}
+                                        {selectedNode.warranty_support_end_date ===
+                                        ""
+                                          ? "NA"
+                                          : selectedNode.warranty_support_end_date}
                                       </div>
                                     </div>
                                   </div>
@@ -1455,7 +1455,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     </div>
                                     <div>
                                       <div className="value-comp">
-                                        {selectedNode.warranty_end_date}
+                                        {selectedNode.warranty_end_date === ""
+                                          ? "NA"
+                                          : selectedNode.warranty_end_date}
                                       </div>
                                     </div>
                                   </div>
@@ -1478,7 +1480,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                                     </div>
                                     <div>
                                       <div className="value-comp">
-                                        {selectedNode.issue_category_name}
+                                        {selectedNode.issue_category_name === ""
+                                          ? "NA"
+                                          : selectedNode.issue_category_name}
                                       </div>
                                     </div>
                                   </div>
@@ -1550,6 +1554,12 @@ export default function UserDeviceTree({ sendUrllist }) {
           </div>
         )}
       </Card>
+      <SnackbarComponent
+        openPopup={snackbarOpen}
+        setOpenPopup={setSnackbarOpen}
+        dialogMessage={snackbarText}
+        snackbarSeverity={snackbarSeverity}
+      ></SnackbarComponent>
     </Container>
   );
 }

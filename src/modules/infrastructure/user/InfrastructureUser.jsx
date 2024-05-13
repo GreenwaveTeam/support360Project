@@ -73,35 +73,41 @@ export default function InfrastructureUser({ sendUrllist }) {
   const [snackbarText, setSnackbarText] = useState("Data saved !");
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
- 
+
   const [expanded, setExpanded] = useState(false);
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
   const [ticketOpen, setTicketOpen] = useState(false);
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const { userData, setUserData } = useUserContext();
   const currentPageLocation = useLocation().pathname;
+
+  const [plantID, setPlantId] = useState();
+  const [userName, setUserName] = useState();
+  const [userEmailId, setUserEmailId] = useState();
+
+  const [currentUserData, setCurrentUserData] = useState();
+
   console.log("userData ==>> ", userData);
 
+  //Dialog
 
-   //Dialog
- 
-   const [reviewOpen, setReviewOpen] = React.useState(false);
- 
-   const handleClickOpen = () => {
+  const [reviewOpen, setReviewOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
     setReviewOpen(true);
-   };
- 
-   const handleCloseDialog = (event,reason) => {
- 
-     if (reason === "backdropClick") {
-      setReviewOpen(false);
-     }
-     // setOpen(false);
-   };
+  };
 
+  const handleCloseDialog = (event, reason) => {
+    if (reason === "backdropClick") {
+      setReviewOpen(false);
+    }
+    // setOpen(false);
+  };
 
   const infraTicketJSON = {
-    plantId: "plant101",
+    plantId: plantID,
+    userName: userName,
+    userEmailId: userEmailId,
     ticketNo: ticketNumber,
     status: "open",
     infraIssueDetails: infraIssueDetails,
@@ -179,6 +185,10 @@ export default function InfrastructureUser({ sendUrllist }) {
       const data = await response.json();
       console.log("fetchUser data : ", data);
       // setFormData(data.role);
+      setCurrentUserData(data);
+      setPlantId(data.plantID);
+      setUserName(data.name);
+      setUserEmailId(data.email);
       role = data.role;
 
       console.log("Role Test : ", role);
@@ -282,7 +292,7 @@ export default function InfrastructureUser({ sendUrllist }) {
   }, [selectedInfrastructure]); // Fetch issues when selectedInfrastructure changes
 
   const handleSubmitPost = async (dataLocal) => {
-   
+    console.log("cureent Data ", dataLocal);
     try {
       const response = await fetch(
         "http://localhost:8081/infrastructure/user/saveInfraTicket",
@@ -300,7 +310,7 @@ export default function InfrastructureUser({ sendUrllist }) {
         // setPostDataStatus("Data successfully posted!");
         console.log("post completed");
         setTicketOpen(true);
-        setReviewOpen(false)
+        setReviewOpen(false);
       } else {
         console.log("Error posting data. Please try again.");
       }
@@ -639,7 +649,7 @@ export default function InfrastructureUser({ sendUrllist }) {
                             display: "flex",
                           }}
                         >
-                          Add Issue 
+                          Add Issue
                           <AddIcon
                             fontSize="medium"
                             sx={{ paddingLeft: "0.2rem" }}
@@ -880,35 +890,35 @@ export default function InfrastructureUser({ sendUrllist }) {
                   <Divider textAlign="left"></Divider>
 
                   <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                      <div>
-                        {
-                          <div>
-                            <CustomTable
-                              rows={infraIssueDetails}
-                              columns={overviewTableColumns}
-                              setRows={setInfraIssueDetails}
-                              tablename={"Issues Overview"}
-                              deleteFromDatabase={
-                                handleDeleteItemFromReviewTableTest
-                              }
-                              style={{
-                                borderRadius: 1,
-                                // maxHeight: 440,
-                                // maxWidth: 1200,
-                              }}
-                              isDeleteDialog={false}
-                            ></CustomTable>
-                            <br />
-                            {/* </Collapse> */}
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              {/* <Button
+                    {/* <DialogContentText id="alert-dialog-slide-description"> */}
+                    <div>
+                      {
+                        <div>
+                          <CustomTable
+                            rows={infraIssueDetails}
+                            columns={overviewTableColumns}
+                            setRows={setInfraIssueDetails}
+                            tablename={"Issues Overview"}
+                            deleteFromDatabase={
+                              handleDeleteItemFromReviewTableTest
+                            }
+                            style={{
+                              borderRadius: 1,
+                              // maxHeight: 440,
+                              // maxWidth: 1200,
+                            }}
+                            isDeleteDialog={false}
+                          ></CustomTable>
+                          <br />
+                          {/* </Collapse> */}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {/* <Button
                             // className="button"
                             variant="contained"
                             color="success" // Use secondary color for delete button
@@ -922,32 +932,32 @@ export default function InfrastructureUser({ sendUrllist }) {
                             Raise a Ticket
                           </Button> */}
 
-                              <CustomButton
-                                size={"large"}
-                                id={"final-submit"}
-                                variant={"contained"}
-                                color={"success"}
-                                onClick={() => handleSubmitPost(infraTicketJSON)}
-                                // style={classes.btn}
-                                disabled={infraIssueDetails.length === 0}
-                                buttontext={
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    Raise a Ticket
-                                    <ArrowRightIcon fontSize="small" />
-                                  </div>
-                                }
-                              ></CustomButton>
-                            </div>
+                            <CustomButton
+                              size={"large"}
+                              id={"final-submit"}
+                              variant={"contained"}
+                              color={"success"}
+                              onClick={() => handleSubmitPost(infraTicketJSON)}
+                              // style={classes.btn}
+                              disabled={infraIssueDetails.length === 0}
+                              buttontext={
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  Raise a Ticket
+                                  <ArrowRightIcon fontSize="small" />
+                                </div>
+                              }
+                            ></CustomButton>
                           </div>
-                        }
-                      </div>
-                      {/* <div
+                        </div>
+                      }
+                    </div>
+                    {/* <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
@@ -1058,7 +1068,7 @@ export default function InfrastructureUser({ sendUrllist }) {
                 </Button>
               </div>
             </div> */}
-                    </DialogContentText>
+                    {/* </DialogContentText> */}
                   </DialogContent>
                 </Dialog>
 
@@ -1072,11 +1082,11 @@ export default function InfrastructureUser({ sendUrllist }) {
         </CardContent>
       </Card>
       <SnackbarComponent
-            openPopup={snackbarOpen}
-            setOpenPopup={setSnackbarOpen}
-            dialogMessage={snackbarText}
-            snackbarSeverity={snackbarSeverity}
-          ></SnackbarComponent>
+        openPopup={snackbarOpen}
+        setOpenPopup={setSnackbarOpen}
+        dialogMessage={snackbarText}
+        snackbarSeverity={snackbarSeverity}
+      ></SnackbarComponent>
     </Container>
   );
 }

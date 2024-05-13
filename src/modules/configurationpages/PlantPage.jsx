@@ -336,9 +336,9 @@ export default function PlantPage({ sendUrllist }) {
               <Textfield
                 required
                 fullWidth={true}
-                name="customerName"
-                label="Customer Name"
-                id="customerName"
+                name="customer"
+                label="Customer"
+                id="customer"
                 value={newPlant.customerName}
                 onChange={(e) => {
                   setNewPlant({ ...newPlant, customerName: e.target.value });

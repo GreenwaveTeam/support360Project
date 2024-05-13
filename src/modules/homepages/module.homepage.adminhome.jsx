@@ -401,8 +401,15 @@ export default function AdminHome({ sendUrllist }) {
       setFilteredUserRows(userList);
     } else {
       const updatedUserRows = [...userList];
-      const filteredUserRows = updatedUserRows.filter((user) =>
-        user.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
+      const filteredUserRows = updatedUserRows.filter(
+        (user) =>
+          user.name
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase()) ||
+          user.email
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase()) ||
+          user.userId.toLowerCase().includes(currentSearch.trim().toLowerCase())
       );
       console.log("Filtered Rows => ", filteredUserRows);
       setFilteredUserRows(filteredUserRows);
@@ -418,8 +425,17 @@ export default function AdminHome({ sendUrllist }) {
       setFilteredAdminRows(adminList);
     } else {
       const updatedAdminRows = [...adminList];
-      const filteredAdminRows = updatedAdminRows.filter((admin) =>
-        admin.name.toLowerCase().includes(currentSearch.trim().toLowerCase())
+      const filteredAdminRows = updatedAdminRows.filter(
+        (admin) =>
+          admin.name
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase()) ||
+          admin.email
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase()) ||
+          admin.userId
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase())
       );
       console.log("Filtered Rows => ", filteredAdminRows);
       setFilteredAdminRows(filteredAdminRows);
@@ -960,19 +976,12 @@ export default function AdminHome({ sendUrllist }) {
                                       handleAdminDelete(item.userId)
                                     }
                                   /> */}
-                                {item.email === logedUser.email ? (
-                                  <LockResetOutlinedIcon
-                                    color="disabled"
-                                    style={{ cursor: "not-allowed" }}
-                                  />
-                                ) : (
-                                  <LockResetOutlinedIcon
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() =>
-                                      handleAdminPasswordReset(item.userId)
-                                    }
-                                  />
-                                )}
+                                <LockResetOutlinedIcon
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() =>
+                                    handleAdminPasswordReset(item.userId)
+                                  }
+                                />
                                 <Dialog
                                   open={openAdminResetPasswordDialog}
                                   onClose={() =>
@@ -1439,19 +1448,12 @@ export default function AdminHome({ sendUrllist }) {
                                 </Dialog>
                               </TableCell>
                               <TableCell align="center">
-                                {item.email === logedUser.email ? (
-                                  <LockResetOutlinedIcon
-                                    color="disabled"
-                                    style={{ cursor: "not-allowed" }}
-                                  />
-                                ) : (
-                                  <LockResetOutlinedIcon
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() =>
-                                      handleUserPasswordReset(item.userId)
-                                    }
-                                  />
-                                )}
+                                <LockResetOutlinedIcon
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() =>
+                                    handleUserPasswordReset(item.userId)
+                                  }
+                                />
                                 <Dialog
                                   open={openUserResetPasswordDialog}
                                   onClose={() =>

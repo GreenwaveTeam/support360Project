@@ -318,8 +318,15 @@ export default function UserRegistration({ sendUrllist }) {
 
   const convertToInitials = (name) => {
     const parts = name.split(" ");
-    const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
-    return initials;
+    if (parts.length >= 2) {
+      return (
+        parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
+      );
+    } else if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    } else {
+      return "";
+    }
   };
 
   function convertDateFormat(dateString) {
@@ -1091,10 +1098,10 @@ export default function UserRegistration({ sendUrllist }) {
                         }}
                         required
                         fullWidth
-                        name="customerName"
-                        label="Customer Name"
-                        id="customerName"
-                        autoComplete="customerName"
+                        name="customer"
+                        label="Customer"
+                        id="customer"
+                        autoComplete="customer"
                         value={updateFormData.customerName}
                         // onChange={(e) => {
                         //   setupdateFormData({
@@ -1390,7 +1397,9 @@ export default function UserRegistration({ sendUrllist }) {
                           onChange={(e) => {
                             setFormData({
                               ...formData,
-                              userId: removeOnlySpecialChar(e.target.value),
+                              userId: removeOnlySpecialChar(
+                                e.target.value.toLocaleLowerCase()
+                              ),
                             });
                             setUnchangedUserID(e.target.value);
                             setFormErrors({
@@ -2014,10 +2023,10 @@ export default function UserRegistration({ sendUrllist }) {
                         }}
                         required
                         fullWidth
-                        name="customerName"
-                        label="Customer Name"
-                        id="customerName"
-                        autoComplete="customerName"
+                        name="customer"
+                        label="Customer"
+                        id="customer"
+                        autoComplete="customer"
                         value={formData.customerName}
                         // onChange={(e) => {
                         //   setFormData({
@@ -2159,9 +2168,9 @@ export default function UserRegistration({ sendUrllist }) {
                     <Textfield
                       required
                       fullWidth={true}
-                      name="customerName"
-                      label="Customer Name"
-                      id="customerName"
+                      name="customer"
+                      label="Customer"
+                      id="customer"
                       value={newPlantName.customerName}
                       onChange={handlenewPlantNameInputChange}
                     />

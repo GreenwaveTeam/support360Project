@@ -236,6 +236,19 @@ export default function AdminRegistration({ sendUrllist }) {
     }
   };
 
+  const convertToInitials = (name) => {
+    const parts = name.split(" ");
+    if (parts.length >= 2) {
+      return (
+        parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
+      );
+    } else if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    } else {
+      return "";
+    }
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     for (const key in updateFormData) {
@@ -384,17 +397,30 @@ export default function AdminRegistration({ sendUrllist }) {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <HowToRegTwoToneIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Admin Registration Page
-          </Typography>
-
           {isStatePresent ? (
             // update form starts here...
-
             <>
+              <Avatar
+                sx={{
+                  backgroundImage:
+                    "linear-gradient(to right, #ed6ea0 0%, #ec8c69 100%);",
+                  width: "45px !important",
+                  height: "45px !important",
+                }}
+              >
+                {convertToInitials(updateFormData.name)}
+              </Avatar>
+              <br></br>
+              <Typography component="h1" variant="h5">
+                Update for :{"  "}
+                <Typography
+                  component="span"
+                  variant="h4"
+                  sx={{ fontWeight: "bold" }}
+                >
+                  {updateFormData.adminId}
+                </Typography>
+              </Typography>
               <form>
                 <Box noValidate sx={{ mt: 3 }}>
                   <Grid container spacing={2}>
@@ -650,6 +676,11 @@ export default function AdminRegistration({ sendUrllist }) {
             // registration form starts here...
 
             <>
+              <Avatar>{convertToInitials(formData.name)}</Avatar>
+              <br></br>
+              <Typography component="h1" variant="h5">
+                User Registration Page
+              </Typography>
               <form>
                 <Box noValidate sx={{ mt: 3 }}>
                   <Grid container spacing={2}>
@@ -805,7 +836,9 @@ export default function AdminRegistration({ sendUrllist }) {
                           onChange={(e) => {
                             setFormData({
                               ...formData,
-                              adminId: removeOnlySpecialChar(e.target.value),
+                              adminId: removeOnlySpecialChar(
+                                e.target.value.toLocaleLowerCase()
+                              ),
                             });
                             setUnchangedAdminID(e.target.value);
                             setFormErrors({

@@ -140,11 +140,18 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     }
   };
 
-  function convertToInitials(name) {
+  const convertToInitials = (name) => {
     const parts = name.split(" ");
-    const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
-    return initials;
-  }
+    if (parts.length >= 2) {
+      return (
+        parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
+      );
+    } else if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    } else {
+      return "";
+    }
+  };
 
   const fetchUser = async () => {
     console.log(`userhome Bearer ${localStorage.getItem("token")}`);

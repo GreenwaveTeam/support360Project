@@ -11,7 +11,7 @@ export default function Dropdown({
   fullWidth,
   style,
   error,
-  helperText,
+  helpertext,
 }) {
   return (
     <>
@@ -25,7 +25,7 @@ export default function Dropdown({
           onChange={onChange}
           className={value}
           error={error}
-          helperText={helperText}
+          helpertext={helpertext}
         >
           {list.map((item, index) => (
             <MenuItem key={index} value={item} className={item}>

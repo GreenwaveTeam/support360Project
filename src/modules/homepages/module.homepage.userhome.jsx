@@ -19,6 +19,7 @@ import {
   Paper,
   TablePagination,
   useTheme,
+  Divider,
 } from "@mui/material";
 import { Button } from "primereact/button";
 import { Knob } from "primereact/knob";
@@ -41,10 +42,12 @@ import { ChartsXAxis } from "@mui/x-charts/ChartsXAxis";
 import { ResponsiveChartContainer, axisClasses } from "@mui/x-charts";
 import "primeicons/primeicons.css";
 import { MeterGroup } from "primereact/metergroup";
-
+import { Badge } from "primereact/badge";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 //bootstrap
 import "bootstrap/dist/css/bootstrap.css";
 import { ColorModeContext, tokens } from "../../theme";
+import CounterAnimation from "./CounterAnimation";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -271,7 +274,7 @@ function UserHome({ sendUrllist }) {
       },
     ],
     //width: 500,
-    height: 264,
+    height: 250,
   };
 
   const monthwiseticketraised = async () => {
@@ -551,7 +554,20 @@ function UserHome({ sendUrllist }) {
 
   //
   const [type, setType] = React.useState("bar");
+  //
+  const [count, setCount] = useState(0);
 
+  const ApplicationValue = 10;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (count < ApplicationValue) {
+        setCount(count + 1);
+      } else {
+        clearInterval(interval);
+      }
+    }, 0.0005); // Adjust the interval duration for speed
+    return () => clearInterval(interval);
+  }, [count]);
   return (
     <Box>
       <Container maxWidth="">
@@ -620,7 +636,7 @@ function UserHome({ sendUrllist }) {
           </div>
         </div> */}
         <div class="row">
-          <div class="col-md-8">
+          <div class="col-md-7">
             <div class="row">
               <div class="col-md-4">
                 <Card
@@ -633,6 +649,67 @@ function UserHome({ sendUrllist }) {
                 >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
+                      <div
+                        className="col-md-6"
+                        style={{
+                          paddingLeft: "2rem",
+                          display: "grid",
+                          alignItems: "center",
+                          justifyItems: "center",
+                        }}
+                      >
+                        <div className="row">
+                          <Typography
+                            sx={{ fontWeight: 600, fontSize: "1.7rem" }}
+                          >
+                            <CounterAnimation targetValue={14} />
+                          </Typography>
+                        </div>
+                        <div
+                          className="row"
+                          style={{
+                            fontSize: "0.9rem",
+                            fontWeight: 600,
+                          }}
+                        >
+                          Device
+                        </div>
+                      </div>
+                      <div
+                        className="col-md-6"
+                        style={{
+                          display: "grid",
+                          justifyItems: "center",
+                          alignItems: "center",
+                          rowGap: "0.6rem",
+                        }}
+                      >
+                        <div className="row">
+                          <div className="col-md-12">
+                            <Button
+                              style={{ borderRadius: "50%" }}
+                              icon="pi pi-thumbs-up-fill                              "
+                              rounded
+                              //outlined
+                              severity="success"
+                              aria-label="Cancel"
+                            />
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-12">
+                            <div
+                              style={{ display: "flex", columnGap: "0.5rem" }}
+                            >
+                              <Badge value="9" severity="warning"></Badge>
+                              <Badge value="6" severity="info"></Badge>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* <div className="row">
                       <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
                         <div className="row">
                           <div class="col-md-12">
@@ -643,6 +720,12 @@ function UserHome({ sendUrllist }) {
                             >
                               Device
                             </Typography>
+                            <Chip
+                              //variant="outlined"
+                              label="10"
+                              color="error"
+                              size="small"
+                            />
                           </div>
                         </div>
                         <div className="row">
@@ -670,7 +753,7 @@ function UserHome({ sendUrllist }) {
                           aria-label="Cancel"
                         />
                       </div>
-                    </div>
+                    </div> */}
                   </CardContent>
                 </Card>
               </div>
@@ -684,42 +767,59 @@ function UserHome({ sendUrllist }) {
                 >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
-                      <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
-                        <div className="row">
-                          <div class="col-md-12">
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                            >
-                              Application
-                            </Typography>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div class="col-md-12">
-                            <Avatar color="info">
-                              {ticketData.pending_tickets}
-                            </Avatar>
-                          </div>
-                        </div>
-                      </div>
                       <div
-                        class="col-md-5"
+                        className="col-md-6"
                         style={{
+                          paddingLeft: "2rem",
                           display: "grid",
                           alignItems: "center",
                           justifyItems: "center",
                         }}
                       >
-                        <Button
-                          style={{ borderRadius: "50%" }}
-                          icon="pi pi-star-fill"
-                          rounded
-                          //outlined
-                          severity="success"
-                          aria-label="Cancel"
-                        />
+                        <div className="row">
+                          <CounterAnimation targetValue={20} />
+                        </div>
+                        <div
+                          className="row"
+                          style={{
+                            fontSize: "0.9rem",
+                            fontWeight: 600,
+                          }}
+                        >
+                          Application
+                        </div>
+                      </div>
+                      <div
+                        className="col-md-6"
+                        style={{
+                          display: "grid",
+                          justifyItems: "center",
+                          alignItems: "center",
+                          rowGap: "0.6rem",
+                        }}
+                      >
+                        <div className="row">
+                          <div className="col-md-12">
+                            <Button
+                              style={{ borderRadius: "50%" }}
+                              icon="pi pi-thumbs-up-fill                              "
+                              rounded
+                              //outlined
+                              severity="success"
+                              aria-label="Cancel"
+                            />
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-12">
+                            <div
+                              style={{ display: "flex", columnGap: "0.5rem" }}
+                            >
+                              <Badge value="9" severity="warning"></Badge>
+                              <Badge value="6" severity="info"></Badge>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -735,42 +835,63 @@ function UserHome({ sendUrllist }) {
                 >
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <div className="row">
-                      <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
-                        <div className="row">
-                          <div class="col-md-12">
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                            >
-                              Infrastructure
-                            </Typography>
-                          </div>
-                        </div>
-                        <div className="row">
-                          <div class="col-md-12">
-                            <Avatar color="info">
-                              {ticketData.resolved_tickets}
-                            </Avatar>
-                          </div>
-                        </div>
-                      </div>
                       <div
-                        class="col-md-5"
+                        className="col-md-6"
                         style={{
+                          paddingLeft: "2rem",
                           display: "grid",
                           alignItems: "center",
                           justifyItems: "center",
                         }}
                       >
-                        <Button
-                          style={{ borderRadius: "50%" }}
-                          icon="pi pi-star-fill"
-                          rounded
-                          //outlined
-                          severity="warning"
-                          aria-label="Cancel"
-                        />
+                        <div className="row">
+                          <Typography
+                            sx={{ fontWeight: 600, fontSize: "1.7rem" }}
+                          >
+                            <CounterAnimation targetValue={16} />
+                          </Typography>
+                        </div>
+                        <div
+                          className="row"
+                          style={{
+                            fontSize: "0.9rem",
+                            fontWeight: 600,
+                          }}
+                        >
+                          Infrastructure
+                        </div>
+                      </div>
+                      <div
+                        className="col-md-6"
+                        style={{
+                          display: "grid",
+                          justifyItems: "center",
+                          alignItems: "center",
+                          rowGap: "0.6rem",
+                        }}
+                      >
+                        <div className="row">
+                          <div className="col-md-12">
+                            <Button
+                              style={{ borderRadius: "50%" }}
+                              icon="pi pi-thumbs-up-fill                              "
+                              rounded
+                              //outlined
+                              severity="success"
+                              aria-label="Cancel"
+                            />
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-12">
+                            <div
+                              style={{ display: "flex", columnGap: "0.5rem" }}
+                            >
+                              <Badge value="9" severity="warning"></Badge>
+                              <Badge value="6" severity="info"></Badge>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </CardContent>
@@ -786,15 +907,15 @@ function UserHome({ sendUrllist }) {
                     </Typography>
                   </CardContent>
                 </Card> */}
-                <Card>
-                  <CardContent sx={{ padding: "16px 8px 5px 8px !important" }}>
-                    <div>
-                      <div>
-                        <MeterGroup values={matergroupvalues} max={200} />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* <Card>
+                  <CardContent sx={{ padding: "12px 8px 2px 8px !important" }}> */}
+
+                <div>
+                  <MeterGroup values={matergroupvalues} max={200} />
+                </div>
+
+                {/* </CardContent>
+                </Card> */}
               </div>
             </div>
             <div class="row" style={{ marginTop: "1rem" }}>
@@ -832,176 +953,211 @@ function UserHome({ sendUrllist }) {
                 </Card>
               </div>
             </div>
-          </div>
-          <div class="col-md-4">
-            <div class="col-md-12">
-              <div class="row">
-                <div class="col-md-6">
-                  <Card>
-                    <CardContent
-                      sx={{
-                        paddingBottom: "16px !important",
-                        display: "grid",
-                        justifyItems: "center",
-                      }}
-                    >
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="div"
-                        sx={{ marginBottom: "0.7rem" }}
-                      >
-                        Last Ticket Raised
-                      </Typography>
-                      <Chip
-                        variant="outlined"
-                        color="info"
-                        label={ticketData.last_ticket_raised}
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
-                <div class="col-md-6">
-                  <Card>
-                    <CardContent
-                      sx={{
-                        paddingBottom: "16px !important",
-                        display: "grid",
-                        justifyItems: "center",
-                      }}
-                    >
-                      <Typography
-                        gutterBottom
-                        variant="h5"
-                        component="div"
-                        sx={{ marginBottom: "0.7rem" }}
-                      >
-                        Support Till Date
-                      </Typography>
-                      <Chip
-                        variant="outlined"
-                        color="info"
-                        label={formData.supportEndDate}
-                      />
-                    </CardContent>
-                  </Card>
-                </div>
+            <div class="row" style={{ marginTop: "1rem" }}>
+              <div class="col-md-6">
+                <Card>
+                  <CardContent
+                    sx={{
+                      paddingBottom: "16px !important",
+                      display: "grid",
+                      justifyItems: "center",
+                    }}
+                  >
+                    <Chip
+                      variant="outlined"
+                      component="div"
+                      color="info"
+                      label="Response Time (AVG)"
+                    />
+
+                    <SparkLineChart
+                      data={[3, 4, 2, 5, 4, 2, 4, 0, 5, 4, 2, 4, 6]}
+                      height={35}
+                    />
+                  </CardContent>
+                </Card>
               </div>
-
-              <div class="row" style={{ marginTop: "1rem" }}>
-                <div class="col-md-12">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <Card>
-                        <CardContent sx={{ paddingBottom: "16px !important" }}>
-                          <div className="row">
-                            <div className="col-md-8">
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="div"
+              <div class="col-md-6">
+                <Card>
+                  <CardContent
+                    sx={{
+                      paddingBottom: "16px !important",
+                      display: "grid",
+                      justifyItems: "center",
+                    }}
+                  >
+                    <Chip
+                      variant="outlined"
+                      component="div"
+                      color="info"
+                      label="Resolved Time (AVG)"
+                    />
+                    <SparkLineChart
+                      data={[1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6]}
+                      height={35}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-5">
+            <div className="row">
+              <div className="col-md-12">
+                <Card className="dashboard-rightSide-Table">
+                  <CardContent sx={{ padding: "0" }}>
+                    <div
+                      style={{
+                        padding: "0.8rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        height: "3rem",
+                      }}
+                    >
+                      <Typography
+                        sx={{ mb: 0, fontWeight: 600 }}
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                      >
+                        Open Ticket
+                      </Typography>
+                      <div>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10, 25]} // Choose your desired options
+                          component="div"
+                          count={pendingTicketData.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          labelRowsPerPage=""
+                          onPageChange={(e, newPage) => setPage(newPage)}
+                          onRowsPerPageChange={(e) => {
+                            setRowsPerPage(parseInt(e.target.value, 10));
+                            setPage(0);
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <Divider sx={{ opacity: "0.8" }} />
+                    <Grid container spacing={0}>
+                      <Grid item xs={12}>
+                        <TableContainer sx={{ overflow: "auto" }}>
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell align="center">Category</TableCell>
+                                <TableCell align="center">Time</TableCell>
+                                <TableCell align="center">ID</TableCell>
+                                <TableCell align="center">
+                                  Description
+                                </TableCell>
+                                <TableCell align="center">Status</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {(rowsPerPage > 0
+                                ? pendingTicketData.slice(
+                                    page * rowsPerPage,
+                                    page * rowsPerPage + rowsPerPage
+                                  )
+                                : pendingTicketData
+                              ).map((ticket, index) => (
+                                <TableRow key={index}>
+                                  <TableCell align="center">
+                                    {ticket.category}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {ticket.time}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {ticket.id}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {ticket.description}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {ticket.status}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            <div className="row" style={{ marginTop: "1rem" }}>
+              <div className="col-md-12">
+                <Card>
+                  <CardContent sx={{ padding: "0" }}>
+                    <div style={{ padding: "0.8rem" }}>
+                      <Typography
+                        sx={{ mb: 0, fontWeight: 600 }}
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                      >
+                        Pending Ticket
+                      </Typography>
+                    </div>
+                    <Divider sx={{ opacity: "0.8" }} />
+                    <Grid container spacing={1}>
+                      <Grid item xs={12}>
+                        <TableContainer sx={tableStyle}>
+                          <Table>
+                            <TableHead>
+                              <TableRow
+                                sx={{ backgroundColor: colors.primary[400] }}
                               >
-                                License Information
-                              </Typography>
-                            </div>
-                            <div className="col-md-4">
-                              <Chip label={`Total ${daysDifference} Days`} />
-                            </div>
-                          </div>
-                          <div
-                            style={{
-                              display: "grid",
-                              justifyItems: "center",
-                            }}
-                          >
-                            <Knob
-                              value={parseInt(daysDifferenceTillNow)}
-                              strokeWidth={5}
-                              // min={parseInt(daysDifference)}
-                              valueColor="#48d1cc"
-                              rangeColor="#708090"
-                              //valueColor="#708090"
-                              minLength={parseInt(daysDifference)}
-                            />
-
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                            >
-                              {daysDifferenceTillNow} Days Left of{" "}
-                              {daysDifference} Days
-                            </Typography>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                  <div class="row" style={{ marginTop: "1rem" }}>
-                    <div class="col-md-12">
-                      <Card>
-                        <CardContent
-                          sx={{ paddingBottom: "16px !important" }}
-                        ></CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                </div>
+                                <TableCell align="center">Category</TableCell>
+                                <TableCell align="center">Time</TableCell>
+                                <TableCell align="center">ID</TableCell>
+                                <TableCell align="center">Severity</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {allTicketData.map((ticket, index) => (
+                                <TableRow key={index}>
+                                  <TableCell align="center">
+                                    {ticket.category}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {ticket.time}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {ticket.id}
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    {ticket.severity}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                        <TablePagination
+                          rowsPerPageOptions={[5, 10, 25]}
+                          component="div"
+                          count={allTicketData.length}
+                          rowsPerPage={rowsPerPage}
+                          page={page}
+                          onPageChange={handleChangePage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
         </div>
-        <div class="row" style={{ marginTop: "1rem" }}>
-          <div class="col-md-6">
-            <Card>
-              <CardContent
-                sx={{
-                  paddingBottom: "16px !important",
-                  display: "grid",
-                  justifyItems: "center",
-                }}
-              >
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{ marginBottom: "0.7rem" }}
-                >
-                  Reply Time (AVG)
-                </Typography>
-                <SparkLineChart
-                  data={[3, 4, 2, 5, 4, 2, 4, 6, 5, 4, 2, 4, 6]}
-                  height={120}
-                />
-              </CardContent>
-            </Card>
-          </div>
-          <div class="col-md-6">
-            <Card>
-              <CardContent
-                sx={{
-                  paddingBottom: "16px !important",
-                  display: "grid",
-                  justifyItems: "center",
-                }}
-              >
-                <Typography
-                  gutterBottom
-                  variant="h5"
-                  component="div"
-                  sx={{ marginBottom: "0.7rem" }}
-                >
-                  Resolve Time (AVG)
-                </Typography>
-                <SparkLineChart
-                  data={[1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6]}
-                  height={120}
-                />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        <Grid container spacing={2}>
+
+        {/* <Grid container spacing={2}>
           <Grid item xs={6}>
             <TableContainer sx={tableStyle}>
               <Table>
@@ -1070,7 +1226,7 @@ function UserHome({ sendUrllist }) {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Grid>
-        </Grid>
+        </Grid> */}
         {/* <div
           style={{
             display: "flex",

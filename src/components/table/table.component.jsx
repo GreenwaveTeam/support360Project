@@ -56,7 +56,7 @@ export default function CustomTable({
   style,
   redirectIconActive,
   progressVisible,
-  isNotDeletable
+  isNotDeletable,
 }) {
   const [editRowIndex, setEditRowIndex] = useState(null);
   console.log("Columns::", columns);
@@ -433,7 +433,7 @@ export default function CustomTable({
                     fontSize: "14px",
                   }}
                 >
-                 {!isNotDeletable && <div>Delete</div>}
+                  {!isNotDeletable && <div>Delete</div>}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -443,6 +443,7 @@ export default function CustomTable({
                 </>
               )} */}
             <TableBody>
+              {/* {filteredrows.status} */}
               {filteredrows &&
                 filteredrows
                   .slice(page * rowperpage, page * rowperpage + rowperpage)
@@ -529,7 +530,8 @@ export default function CustomTable({
                         </Tooltip>} */}
 
                                 {editRowIndex !== index &&
-                                  column.id !== "severity" && column.type!=='button'&&
+                                  column.id !== "severity" &&
+                                  column.type !== "button" &&
                                   column.id !== redirectColumn && (
                                     <Typography>{value}</Typography>
                                   )}
@@ -568,7 +570,7 @@ export default function CustomTable({
                                       )}
                                     </>
                                   )}
-                                  
+
                                 {editRowIndex === index &&
                                   column.type === "textbox" && (
                                     <div>
@@ -675,14 +677,17 @@ export default function CustomTable({
                                       />
                                     </div>
                                   )}
-                                  {
-                                  column.type === "button" && (
-                                    <div> 
-                                      <Button  variant="contained"
-                                        onClick={()=>column.function(row)}
-                                      >{column.buttonlabel}</Button>
-                                    </div>
-                                  )}
+                                {column.type === "button" && (
+                                  <div>
+                                    <Button
+                                      disabled={column.isButtonDisable(row)}
+                                      variant="contained"
+                                      onClick={() => column.function(row)}
+                                    >
+                                      {column.buttonlabel}
+                                    </Button>
+                                  </div>
+                                )}
                               </div>
                             </TableCell>
                           );
@@ -730,28 +735,31 @@ export default function CustomTable({
                           </div>
                         </TableCell>
                         <TableCell sx={{ width: "10%" }} align="right">
-                          {!isNotDeletable &&
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <Tooltip TransitionComponent={Fade} title="Delete">
-                              <Button
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleDeleteClick(row);
-                                }}
+                          {!isNotDeletable && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <Tooltip
+                                TransitionComponent={Fade}
+                                title="Delete"
                               >
-                                <DeleteIcon
-                                  align="right"
-                                  sx={{ color: "#FE2E2E" }}
-                                />
-                              </Button>
-                            </Tooltip>
-                          </div>
-                        }
+                                <Button
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleDeleteClick(row);
+                                  }}
+                                >
+                                  <DeleteIcon
+                                    align="right"
+                                    sx={{ color: "#FE2E2E" }}
+                                  />
+                                </Button>
+                              </Tooltip>
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
                     );

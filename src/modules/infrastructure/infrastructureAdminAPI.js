@@ -1,3 +1,5 @@
+/***********************  Configure Infrastructure  ************************* */
+
 export const fetchDivs = async (
   userData,
   location,
@@ -199,5 +201,180 @@ export const getAllInfrastructure=async(userData)=>
         return false;
       }
     }
+
+
+    /***********************  Add Infrastructure  ************************* */
+    export const fecthCurrentInfrastructureDetails = async(plantId,inf) => 
+    {
+      console.log("fecthCurrentInfrastructureDetails() called ! ");
+      try {
+        console.log("fetchDBdata() called ");
+        console.log("plant ID => ", plantId);
+        console.log("infrastructure => ", inf);
+        const response = await fetch(
+          `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        return null;
+      }
+    };
+
+   export const deleteCurrentInfrastructure=async(plantID,inf,issue)=>
+      {
+        console.log('deleteCurrentInfrastructure() called')
+        try {
+          // const plantID = plantId.toString();
+          // const currentIP=`http://192.168.7.18:8082/infrastructure/admin/${plantId}/${inf}/${issue}`
+          // console.log('IP => ',currentIP);
+          const response = await fetch(
+            `http://localhost:8081/infrastructure/admin/issue`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                plantID: plantID,
+                infrastructureName: inf,
+                issue: issue,
+              }),
+            }
+          );
+
+          if (response.ok) {
+            console.log("Data deleted successfully from DB");
+    
+            // const updatedRows = rows.filter((row) => row.issue_name !== issue);
+            //here database operatiion will be performed
+            // setRows(updatedRows);
+            // setFilteredRows(updatedRows);
+            // setSnackbarText("Deleted successfully !");
+            // setsnackbarSeverity("success");
+            // setOpen(true);
+            return true;
+          }
+          if (!response.ok) {
+            throw new Error("Failed to delete data");
+          }
+        }
+        catch (error) {
+          // setsnackbarSeverity("error");
+          // setSnackbarText("Database Error !");
+          // setOpen(true);
+          return false;
+        }
+      }
+
+      export const saveCurrentModifiedData=async(json_data)=>
+        {
+          console.log('saveCurrentModifiedData() called')
+          try{
+          const response = await fetch(
+            `http://localhost:8081/infrastructure/admin/issues`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(json_data),
+            }
+          );
+          if (response.ok) {
+            console.log("Data has been updated successfully ! ");
+            // foundRow.issue_name = editedValue;
+            // foundRow.severity = editedSeverity;
+            // // newdata.edited = true;
+            // setRows(new_rows);
+            // setFilteredRows(new_rows);
+            // console.log("Final array  => ", new_rows);
+            // setSearch("");
+            // setOpen(true);
+    
+            // Resetting man !!
+            // setEditRowIndex(null);
+            // setEditValue("");
+            return true;
+          }
+          if (!response.ok) {
+            throw new Error("Failed to fetch data");
+          }
+        } catch (error) {
+          // setSearch("");
+    
+          // // Resetting man !!
+          // setEditRowIndex(null);
+          // setEditValue("");
+          // setSnackbarText("Database Error !");
+          // setsnackbarSeverity("error");
+          // setOpen(true);
+          // console.log("Current row values  are : ", filteredRows);
+          return false;
+        }
+        }
+
+
+        export const saveNewInfrastructure=async(json_data)=>
+          {
+            console.log('saveInfrastructureDetails() called ')
+            try{
+            const response = await fetch(
+              `http://localhost:8081/infrastructure/admin`,
+              {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("token")}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(json_data),
+              }
+            );
+            if (response.ok) {
+              console.log("Data has been successfully saved !");
+              // const updatedRows = [
+              //   {
+              //     issue_name: addIssue.trim(),
+              //     severity: addSeverity,
+              //   },
+              //   ...rows,
+              // ];
+              // //updatedRows.push( { issueName: addIssue.trim() }) //remember rows are object here ...
+              // setRows(updatedRows);
+              // setFilteredRows(updatedRows);
+              // setAddIssue("");
+              // setOpen(true);
+              // setAddSeverity("");
+              // setAddissueError(false);
+              // setAddissueError(false);
+              return true;
+            }
+            else {
+              throw new Error("Failed to fetch data");
+            }
+          } catch (error) {
+            // setSnackbarText("Database Error !");
+            // setsnackbarSeverity("error");
+            // setOpen(true);
+            // setAddIssue("");
+            // setAddSeverity("");
+            console.log('Error saving Data ',error)
+            return false;
+          }
+          }
+
+
 
 

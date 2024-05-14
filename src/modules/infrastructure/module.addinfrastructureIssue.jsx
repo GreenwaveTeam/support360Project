@@ -21,6 +21,7 @@ import Textfield from "../../components/textfield/textfield.component";
 import { useLayoutEffect } from "react";
 import { useUserContext } from "../contexts/UserContext";
 import { extendTokenExpiration } from "../helper/Support360Api";
+import { deleteCurrentInfrastructure, fecthCurrentInfrastructureDetails, fetchDivs, fetchUser, saveCurrentModifiedData, saveNewInfrastructure } from "./infrastructureAdminAPI";
 
 export default function AddInfrastructureIssue({ sendUrllist }) {
   //********************* Data ********************
@@ -93,7 +94,9 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
 
     fetchDBdata(plantId, inf);
     // fetchDivs();
-    fetchUser();
+    // fetchUser();
+    fetchUserAndRole();
+
     sendUrllist(urllist);
 
     const handleOnBeforeUnload = (event) => {
@@ -130,76 +133,102 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
   }, []); //useEffect ends here
 
   // ***************************************************  API  **************************************************
-  const fetchUser = async () => {
-    let role = "";
-    try {
-      const response = await fetch("http://localhost:8081/users/user", {
-        method: "GET",
-        headers: {
-          // Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const data = await response.json();
-      console.log("fetchUser data : ", data);
-      // setFormData(data.role);
-      role = data.role;
+  // const fetchUser = async () => {
+  //   let role = "";
+  //   try {
+  //     const response = await fetch("http://localhost:8081/users/user", {
+  //       method: "GET",
+  //       headers: {
+  //         // Authorization: `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     console.log("fetchUser data : ", data);
+  //     // setFormData(data.role);
+  //     role = data.role;
 
-      console.log("Role Test : ", role);
-      fetchDivs(role);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
-  const fetchDivs = async (role) => {
-    try {
-      console.log("fetchDivs() called");
-      console.log("Current Page Location: ", currentPageLocation);
-      console.log("Current userData : ", userData);
-      // let role = "";
-      // if (userData.role) {
-      //   role = userData.role;
-      // } else {
-      //   throw new Error("UserRole not found ! ");
-      // }
+  //     console.log("Role Test : ", role);
+  //     fetchDivs(role);
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
+  // const fetchDivs = async (role) => {
+  //   try {
+  //     console.log("fetchDivs() called");
+  //     console.log("Current Page Location: ", currentPageLocation);
+  //     console.log("Current userData : ", userData);
+  //     // let role = "";
+  //     // if (userData.role) {
+  //     //   role = userData.role;
+  //     // } else {
+  //     //   throw new Error("UserRole not found ! ");
+  //     // }
 
-      const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+  //     const response = await fetch(
+  //       `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       console.log("Current Response : ", data);
+  //       console.log("Current Divs : ", data.components);
+  //       setDivIsVisibleList(data.components);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error in getting divs name :", error);
+  //     if (fetchDivs.length === 0) {
+  //       navigate("/*");
+  //     }
+  //     // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+  //     // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+  //     // setOpen(true); // Assuming setOpen is defined elsewhere
+  //     // setSearch("");
+  //     // setEditRowIndex(null);
+  //     // setEditValue("");
+  //   }
+  // };
+
+  const fetchUserAndRole=async()=>
+    {
+      console.log('fetchUserAndRole() called')
+      const user= await fetchUser();
+      if(user)
         {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
+          fetchDivsForCurrentPage(user.role)
         }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (response.ok) {
-        console.log("Current Response : ", data);
-        console.log("Current Divs : ", data.components);
-        setDivIsVisibleList(data.components);
-      }
-    } catch (error) {
-      console.log("Error in getting divs name :", error);
-      if (fetchDivs.length === 0) {
-        navigate("/*");
-      }
-      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
-      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
-      // setOpen(true); // Assuming setOpen is defined elsewhere
-      // setSearch("");
-      // setEditRowIndex(null);
-      // setEditValue("");
     }
-  };
+
+    const fetchDivsForCurrentPage = async (role) => {
+      console.log("fetchDivsForCurrentPage() called ! ");
+      //fetchDivs(userData,location,currentPageLocation);
+      const divs = await fetchDivs(userData, location, currentPageLocation, role);
+      console.log("Response for divs : ", divs);
+      if (divs) {
+        setDivIsVisibleList(divs);
+        if(divs.length===0)
+          navigate('/*')
+        return;
+      }
+      console.log("Components not found ! ");
+      navigate("/*");
+    };
 
   //Database functions  for CRUD operations
-  //Note the plantID is harcoded currently
+
+
   const fetchDBdata = async (plantId, inf) => {
     console.log("fetchDBdata() called ");
     console.log("plantID => ", plantId);
@@ -209,19 +238,19 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         console.log("fetchDBdata() called ");
         console.log("plant ID => ", plantId);
         console.log("infrastructure => ", inf);
-        const response = await fetch(
-          `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await response.json();
+        // const response = await fetch(
+        //   `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`,
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //       "Content-Type": "application/json",
+        //     },
+        //   }
+        // );
+        // if (!response.ok) {
+        //   throw new Error("Failed to fetch data");
+        // }
+        const data = await fecthCurrentInfrastructureDetails(plantId,inf);
         if (data.infraDetails) {
           console.log("issues are => ", data.infraDetails[0].issues);
           setRows(data.infraDetails[0].issues);
@@ -246,26 +275,28 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
       "Current Bearer Token => ",
       `Bearer ${localStorage.getItem("token")}`
     );
-    try {
-      const plantID = plantId.toString();
-      // const currentIP=`http://192.168.7.18:8082/infrastructure/admin/${plantId}/${inf}/${issue}`
-      // console.log('IP => ',currentIP);
-      const response = await fetch(
-        `http://localhost:8081/infrastructure/admin/issue`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            plantID: plantID,
-            infrastructureName: inf,
-            issue: issue,
-          }),
-        }
-      );
-      if (response.ok) {
+    // try {
+    //   const plantID = plantId.toString();
+    //   // const currentIP=`http://192.168.7.18:8082/infrastructure/admin/${plantId}/${inf}/${issue}`
+    //   // console.log('IP => ',currentIP);
+    //   const response = await fetch(
+    //     `http://localhost:8081/infrastructure/admin/issue`,
+    //     {
+    //       method: "DELETE",
+    //       headers: {
+    //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         plantID: plantID,
+    //         infrastructureName: inf,
+    //         issue: issue,
+    //       }),
+    //     }
+    //   );
+    const success=await deleteCurrentInfrastructure(plantId,inf,issue)
+    try{
+      if (success) {
         console.log("Data deleted successfully from DB");
 
         const updatedRows = rows.filter((row) => row.issue_name !== issue);
@@ -277,7 +308,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         setOpen(true);
         return true;
       }
-      if (!response.ok) {
+     else {
         throw new Error("Failed to delete data");
       }
     } catch (error) {
@@ -308,18 +339,21 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         new_issue: editedValue.trim(),
         new_severity: editedSeverity,
       };
-      const response = await fetch(
-        `http://localhost:8081/infrastructure/admin/issues`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(json_data),
-        }
-      );
-      if (response.ok) {
+
+      // const response = await fetch(
+      //   `http://localhost:8081/infrastructure/admin/issues`,
+      //   {
+      //     method: "PUT",
+      //     headers: {
+      //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(json_data),
+      //   }
+      // );
+
+      const success=await saveCurrentModifiedData(json_data)
+      if (success) {
         console.log("Data has been updated successfully ! ");
         foundRow.issue_name = editedValue;
         foundRow.severity = editedSeverity;
@@ -335,7 +369,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         setEditValue("");
         return true;
       }
-      if (!response.ok) {
+      else {
         throw new Error("Failed to fetch data");
       }
     } catch (error) {
@@ -372,18 +406,19 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
       };
       console.log("Json-Data => ", JSON.stringify(json_data));
 
-      const response = await fetch(
-        `http://localhost:8081/infrastructure/admin`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(json_data),
-        }
-      );
-      if (response.ok) {
+      // const response = await fetch(
+      //   `http://localhost:8081/infrastructure/admin`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(json_data),
+      //   }
+      // );
+      const success= await saveNewInfrastructure(json_data)
+      if (success) {
         console.log("Data has been successfully saved !");
         const updatedRows = [
           {
@@ -401,10 +436,11 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         // setAddissueError(false);
         // setAddissueError(false);
       }
-      if (!response.ok) {
+      else {
         throw new Error("Failed to fetch data");
       }
     } catch (error) {
+      console.log('Error saving Data ',error)
       setSnackbarText("Database Error !");
       setsnackbarSeverity("error");
       setOpen(true);

@@ -415,6 +415,7 @@ export default function CustomTable({
                     {column.label}
                   </TableCell>
                 ))}
+                {editActive && 
                 <TableCell
                   align="center"
                   sx={{
@@ -423,8 +424,10 @@ export default function CustomTable({
                     fontSize: "14px",
                   }}
                 >
-                  {editActive && <div>Edit</div>}
+                  <div>Edit</div>
                 </TableCell>
+                }
+                {!isNotDeletable &&
                 <TableCell
                   align="center"
                   sx={{
@@ -433,8 +436,9 @@ export default function CustomTable({
                     fontSize: "14px",
                   }}
                 >
-                  {!isNotDeletable && <div>Delete</div>}
+                   <div>Delete</div>
                 </TableCell>
+              }
               </TableRow>
             </TableHead>
             {/* {progressVisible&&filteredrows?.length === 0 && (
@@ -692,6 +696,7 @@ export default function CustomTable({
                             </TableCell>
                           );
                         })}
+                        {editActive &&
                         <TableCell sx={{ width: "10%" }} align="right">
                           <div
                             style={{
@@ -699,7 +704,7 @@ export default function CustomTable({
                               justifyContent: "center",
                             }}
                           >
-                            {editRowIndex !== index && editActive && (
+                            {editRowIndex !== index &&  (
                               <Tooltip TransitionComponent={Fade} title="Edit">
                                 <Button
                                   onClick={() => handleEditClick(index, row)}
@@ -734,8 +739,10 @@ export default function CustomTable({
                             )}
                           </div>
                         </TableCell>
+                      }
+                      {!isNotDeletable && (
                         <TableCell sx={{ width: "10%" }} align="right">
-                          {!isNotDeletable && (
+                          
                             <div
                               style={{
                                 display: "flex",
@@ -759,8 +766,9 @@ export default function CustomTable({
                                 </Button>
                               </Tooltip>
                             </div>
-                          )}
+                          
                         </TableCell>
+                        )}
                       </TableRow>
                     );
                   })}

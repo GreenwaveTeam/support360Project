@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+const DB_IP=process.env.REACT_APP_SERVERIP;
 
 
 export const fetchApplicationNames = async (plantID) => {
@@ -7,7 +7,7 @@ export const fetchApplicationNames = async (plantID) => {
     // console.log("Current user : ", userData);
     try {
       const response = await fetch(
-        `http://localhost:8081/application/user/${plantID}`,
+        `http://${DB_IP}/application/user/${plantID}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -47,7 +47,7 @@ export const fetchApplicationNames = async (plantID) => {
               throw new Error("PlantID not found ! ");
             }
             const response = await fetch(
-              `http://localhost:8081/application/user/${plantID}/${dropdownvalue}`,
+              `http://${DB_IP}/application/user/${plantID}/${dropdownvalue}`,
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -92,7 +92,7 @@ export const fetchApplicationNames = async (plantID) => {
               }
               console.log(
                 "Current API call : ",
-                `http://localhost:8081/application/user/${plantID}/${application}/${module}`
+                `http://${DB_IP}/application/user/${plantID}/${application}/${module}`
               );
               const API = `http://localhost:8081/application/user/${plantID}/${application}/${module}`;
               const response = await fetch(API, {
@@ -122,7 +122,7 @@ export const fetchApplicationNames = async (plantID) => {
           export const fetchCurrentUser = async () => {
             // let role = "";
             try {
-              const response = await fetch("http://localhost:8081/users/user", {
+              const response = await fetch(`http://${DB_IP}:8081/users/user`, {
                 method: "GET",
                 headers: {
                   // Authorization: `Bearer ${token}`,
@@ -157,7 +157,7 @@ export const fetchApplicationNames = async (plantID) => {
               //   throw new Error("UserRole not found ! ");
               // }
               const response = await fetch(
-                `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+                `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
                 {
                   method: "GET",
                   headers: {
@@ -197,7 +197,7 @@ export const fetchApplicationNames = async (plantID) => {
             console.log("postDatainDB() called");
             console.log("current JSON_data is => ", JSON.stringify(json_data));
             try {
-              const response = await fetch(`http://localhost:8081/application/user`, {
+              const response = await fetch(`http://${DB_IP}/application/user`, {
                 method: "POST",
         
                 headers: {

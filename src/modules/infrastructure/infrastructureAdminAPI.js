@@ -1,5 +1,5 @@
 /***********************  Configure Infrastructure  ************************* */
-
+const DB_IP=process.env.REACT_APP_SERVERIP;
 export const fetchDivs = async (
   userData,
   location,
@@ -11,6 +11,7 @@ export const fetchDivs = async (
     console.log("Current Page Location: ", currentPageLocation);
     console.log("Currently passed Data : ", location.state);
     console.log("Current UserData in fetchDivs() : ", userData);
+    console.log('IP from env : ',DB_IP)
     // let role = "";
     // if (userData.role) {
     //   role = userData.role;
@@ -22,7 +23,7 @@ export const fetchDivs = async (
       `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`
     );
     const response = await fetch(
-      `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+      `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
       {
         method: "GET",
         headers: {
@@ -68,7 +69,7 @@ export const updateInfraNameDB = async (
     } else {
       throw new Error("PlantID not found ! ");
     }
-    const response = await fetch(`http://localhost:8081/infrastructure/admin`, {
+    const response = await fetch(`http://${DB_IP}/infrastructure/admin`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -102,7 +103,7 @@ export const updateInfraNameDB = async (
 export const fetchUser = async () => {
   let role = "";
   try {
-    const response = await fetch("http://localhost:8081/users/user", {
+    const response = await fetch(`http://${DB_IP}/users/user`, {
       method: "GET",
       headers: {
         // Authorization: `Bearer ${token}`,
@@ -135,7 +136,7 @@ export const getAllInfrastructure=async(userData)=>
         throw new Error("PlantID not found ! ");
       }
       const response = await fetch(
-        `http://localhost:8081/infrastructure/admin/${plantID}`,
+        `http://${DB_IP}/infrastructure/admin/${plantID}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -176,7 +177,7 @@ export const getAllInfrastructure=async(userData)=>
           throw new Error("PlantID not found ! ");
         }
         const response = await fetch(
-          `http://localhost:8081/infrastructure/admin`,
+          `http://${DB_IP}/infrastructure/admin`,
           {
             method: "DELETE",
             headers: {
@@ -212,7 +213,7 @@ export const getAllInfrastructure=async(userData)=>
         console.log("plant ID => ", plantId);
         console.log("infrastructure => ", inf);
         const response = await fetch(
-          `http://localhost:8081/infrastructure/admin/${plantId}/${inf}/issues`,
+          `http://${DB_IP}/infrastructure/admin/${plantId}/${inf}/issues`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -239,7 +240,7 @@ export const getAllInfrastructure=async(userData)=>
           // const currentIP=`http://192.168.7.18:8082/infrastructure/admin/${plantId}/${inf}/${issue}`
           // console.log('IP => ',currentIP);
           const response = await fetch(
-            `http://localhost:8081/infrastructure/admin/issue`,
+            `http://${DB_IP}/infrastructure/admin/issue`,
             {
               method: "DELETE",
               headers: {
@@ -283,7 +284,7 @@ export const getAllInfrastructure=async(userData)=>
           console.log('saveCurrentModifiedData() called')
           try{
           const response = await fetch(
-            `http://localhost:8081/infrastructure/admin/issues`,
+            `http://${DB_IP}/infrastructure/admin/issues`,
             {
               method: "PUT",
               headers: {
@@ -332,7 +333,7 @@ export const getAllInfrastructure=async(userData)=>
             console.log('saveInfrastructureDetails() called ')
             try{
             const response = await fetch(
-              `http://localhost:8081/infrastructure/admin`,
+              `http://${DB_IP}/infrastructure/admin`,
               {
                 method: "POST",
                 headers: {

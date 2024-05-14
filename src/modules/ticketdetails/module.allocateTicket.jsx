@@ -23,11 +23,25 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import DataTableByCatagory from "./DataTableByCatagory";
+import CustomTableTest from "../../components/table/CustomTableTest";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
+import {
+  createActivity,
+  createJobDetails,
+  createTask,
+  saveJobDetails,
+} from "./Utility";
+import dayjs from "dayjs";
 
 export default function AllocateTicket() {
+  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [snackbarText, setSnackbarText] = React.useState("");
+  const [snackbarSeverity, setsnackbarSeverity] = React.useState("");
+
   const [value, setValue] = React.useState("1");
   const [allTickets, setAllTickets] = React.useState({});
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -35,6 +49,7 @@ export default function AllocateTicket() {
   const [dialogOpenAssign, setDialogOpenAssign] = React.useState(false);
   const [admins, setAdmins] = React.useState([]);
   const [selectedAdmin, setSelecteAdmin] = React.useState("");
+  const [userData, setUserData] = React.useState("");
   //   const application=1;
   //   const device=-2;
   //   const infrastructure=3;
@@ -130,39 +145,89 @@ export default function AllocateTicket() {
     setDialogOpen(false);
     setSelectedRow(null);
   };
+  // const fetchAllTicketsDetails = async () => {
+  //   console.log("fetchAllTicketsDetails() called ");
+
+  //   const response = await getAllOpenTicketDetails();
+  //   setAdmins(await fetchAdminList());
+  //   console.log(response);
+  //   let applicationTicketArray = [];
+  //   let deviceTicketArray = [];
+  //   let infrastructureTicketArray = [];
+
+  //   if (response) {
+  //     response.forEach((element) => {
+  //       element?.ticketNo.charAt(0).toLowerCase() === "a"
+  //         ? applicationTicketArray.push(element)
+  //         : element?.ticketNo.charAt(0).toLowerCase() === "d"
+  //         ? deviceTicketArray.push(element)
+  //         : infrastructureTicketArray.push(element);
+  //     });
+  //   }
+
+  //   console.log("Application Tickets : ", applicationTicketArray);
+  //   console.log("Device Tickets : ", deviceTicketArray);
+  //   console.log("Infrastructure Tickets : ", infrastructureTicketArray);
+  //   let finalTicket = {
+  //     application: applicationTicketArray,
+  //     device: deviceTicketArray,
+  //     infrastructure: infrastructureTicketArray,
+  //   };
+  //   console.log("Final Ticket : ", finalTicket);
+  //   setAllTickets(finalTicket);
+  // };
+
   const fetchAllTicketsDetails = async () => {
-    console.log("fetchAllTicketsDetails() called ");
+    try {
+      console.log("fetchAllTicketsDetails() called");
 
-    const response = await getAllOpenTicketDetails();
-    setAdmins(await fetchAdminList());
-    console.log(response);
-    let applicationTicketArray = [];
-    let deviceTicketArray = [];
-    let infrastructureTicketArray = [];
+      // Fetch open ticket details and admin list concurrently
+      const [response, adminList] = await Promise.all([
+        getAllOpenTicketDetails(),
+        fetchAdminList(),
+      ]);
 
-    if (response) {
-      response.forEach((element) => {
-        element?.ticketNo.charAt(0).toLowerCase() === "a"
-          ? applicationTicketArray.push(element)
-          : element?.ticketNo.charAt(0).toLowerCase() === "d"
-          ? deviceTicketArray.push(element)
-          : infrastructureTicketArray.push(element);
+      setAdmins(adminList);
+      console.log(response);
+
+      // Initialize arrays for different ticket categories
+      const applicationTicketArray = [];
+      const deviceTicketArray = [];
+      const infrastructureTicketArray = [];
+
+      // Categorize tickets based on their ticket number prefix
+      response?.forEach((element) => {
+        if (element?.ticketNo.charAt(0).toLowerCase() === "a") {
+          applicationTicketArray.push(element);
+        } else if (element?.ticketNo.charAt(0).toLowerCase() === "d") {
+          deviceTicketArray.push(element);
+        } else {
+          infrastructureTicketArray.push(element);
+        }
       });
-    }
 
-    console.log("Application Tickets : ", applicationTicketArray);
-    console.log("Device Tickets : ", deviceTicketArray);
-    console.log("Infrastructure Tickets : ", infrastructureTicketArray);
-    let finalTicket = {
-      application: applicationTicketArray,
-      device: deviceTicketArray,
-      infrastructure: infrastructureTicketArray,
-    };
-    console.log("Final Ticket : ", finalTicket);
-    setAllTickets(finalTicket);
+      // Log categorized tickets
+      console.log("Application Tickets:", applicationTicketArray);
+      console.log("Device Tickets:", deviceTicketArray);
+      console.log("Infrastructure Tickets:", infrastructureTicketArray);
+
+      // Create final tickets object
+      const finalTicket = {
+        application: applicationTicketArray,
+        device: deviceTicketArray,
+        infrastructure: infrastructureTicketArray,
+      };
+
+      // Log final tickets object and update state
+      console.log("Final Ticket:", finalTicket);
+      setAllTickets(finalTicket);
+    } catch (error) {
+      console.error("Error fetching ticket details:", error);
+    }
   };
 
   React.useEffect(() => {
+    setUserData(fetchUser);
     fetchAllTicketsDetails();
   }, []);
 
@@ -170,7 +235,7 @@ export default function AllocateTicket() {
     const interval = setInterval(() => {
       console.log("UseEffect called");
       fetchAllTicketsDetails();
-    }, 1500);
+    }, 1500000);
 
     return () => {
       clearInterval(interval);
@@ -183,14 +248,84 @@ export default function AllocateTicket() {
   const handleChangeAdmin = (event) => {
     setSelecteAdmin(event.target.value);
   };
-  const handleSubmit = (plantId, ticketNo) => {
+  const handleSubmit = async (plantId, ticketNo) => {
     // Handle submit logic here
-    console.log("palnt id and ticke ", plantId, ticketNo);
-    console.log("Selected User:", selectedAdmin);
-    updateStatus(plantId, ticketNo);
-    setDialogOpenAssign(false);
-    setSelectedRow(null);
-    setSelecteAdmin();
+    if (selectedAdmin) {
+      console.log("palnt id and ticke ", plantId, ticketNo);
+      console.log("Selected User:", selectedAdmin);
+      updateStatus(plantId, ticketNo);
+      setDialogOpenAssign(false);
+      setSelectedRow(null);
+      setSelecteAdmin();
+    } else {
+      setSnackbarText("Select an Admin");
+      setsnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+
+    const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
+    const activity = [
+      createActivity(
+        "A202405141317511751",
+        "Ticket Resolve",
+        false,
+        false,
+        0,
+        true,
+        null,
+        null,
+        null,
+        true,
+        false,
+        0,
+        0,
+        false,
+        false,
+        10,
+        false,
+        false,
+        "SupportTicket",
+        false,
+        false,
+        0,
+        null,
+        0,
+        2,
+        "T202405141316501650"
+      ),
+    ];
+
+    const task = createTask(
+      null,
+      ticketNo,
+      "T202405141316501650",
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      activity
+    );
+
+    const job = createJobDetails(
+      task,
+      jobId,
+      null,
+      userData.email,
+      userData.email,
+      dayjs().format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+      dayjs().format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+      null,
+      null,
+      null,
+      "device",
+      null
+    );
+
+    const success = await saveJobDetails(job);
+    console.log("Succces ", success);
   };
 
   return (
@@ -247,7 +382,7 @@ export default function AllocateTicket() {
                 rows={allTickets.application}
                 isNotDeletable={true}
                 setRows={setAllTickets}
-                tablename={"DATA TABLE"}
+                tablename={"Application Tickets"}
               ></CustomTable>
             )}
           </TabPanel>
@@ -259,7 +394,7 @@ export default function AllocateTicket() {
                 rows={allTickets.device}
                 isNotDeletable={true}
                 setRows={setAllTickets}
-                tablename={"DATA TABLE"}
+                tablename={"Device Tickets"}
               ></CustomTable>
             )}
           </TabPanel>
@@ -271,7 +406,7 @@ export default function AllocateTicket() {
                 rows={allTickets.infrastructure}
                 isNotDeletable={true}
                 setRows={setAllTickets}
-                tablename={"DATA TABLE"}
+                tablename={"Infrastructure Tickets"}
               ></CustomTable>
             )}
           </TabPanel>
@@ -280,7 +415,7 @@ export default function AllocateTicket() {
       <div>
         <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
           <div>
-            <DialogTitle>Details</DialogTitle>
+            {/* <DialogTitle>Details</DialogTitle> */}
             <DialogContent>
               {selectedRow && (
                 <div>
@@ -324,12 +459,18 @@ export default function AllocateTicket() {
                   handleSubmit(selectedRow.plantId, selectedRow.ticketNo)
                 }
               >
-                Submit
+                Allocate
               </Button>
             )}
           </DialogContent>
         </Dialog>
       </div>
+      <SnackbarComponent
+        openPopup={snackbarOpen}
+        setOpenPopup={setSnackbarOpen}
+        dialogMessage={snackbarText}
+        snackbarSeverity={snackbarSeverity}
+      ></SnackbarComponent>
     </>
   );
 }

@@ -276,7 +276,7 @@ export default function DataTableByCatagory({ plantId, ticketNo }) {
     const interval = setInterval(() => {
       console.log("UseEffect called");
       fetchData();
-    }, 1500);
+    }, 1500000);
 
     return () => {
       clearInterval(interval);
@@ -293,7 +293,7 @@ export default function DataTableByCatagory({ plantId, ticketNo }) {
               rows={ticketDetails}
               setRows={setTicketDetails}
               isNotDeletable={true}
-              tablename={"DETAILS"}
+              tablename={"Ticket Details"}
             ></CustomTable>
           </div>
         )}
@@ -304,7 +304,7 @@ export default function DataTableByCatagory({ plantId, ticketNo }) {
               rows={ticketDetails}
               setRows={setTicketDetails}
               isNotDeletable={true}
-              tablename={"DETAILS"}
+              tablename={"Ticket Details"}
             ></CustomTable>
           </div>
         )}
@@ -315,7 +315,7 @@ export default function DataTableByCatagory({ plantId, ticketNo }) {
               rows={ticketDetails}
               setRows={setTicketDetails}
               isNotDeletable={true}
-              tablename={"DETAILS"}
+              tablename={"Ticket Details"}
             ></CustomTable>
           </div>
         )}

@@ -236,6 +236,11 @@ export default function RichObjectTreeView({ sendUrllist }) {
       if (response.ok) {
         console.log("Current Response : ", data);
         console.log("Current Divs : ", data.components);
+        if (data.components.length === 0) {
+          navigate("/*");
+          return;
+        }
+
         setDivIsVisibleList(data.components);
       }
     } catch (error) {

@@ -1,0 +1,116 @@
+import axios from "axios";
+
+export function createActivity(activityId, activityName, actvityBtnDisableOnCompletion, actvityBtnDisbleForActvtOrder, actvtCount, assetAvailable, assetAvlReasons, assetIDList, assetNameList, available, booleanForActivityStatus, buffer, completedActivity, disable, disableForAction, duration, enforce, groupOrDept, logbook, notBelongToApprover, notBelongToPerformer, pendingActivity, performerAvlReasons, rejectedActivity, sequence, taskId) {
+    return {
+        activityId: activityId || "",
+        activityName: activityName || "",
+        actvityBtnDisableOnCompletion: actvityBtnDisableOnCompletion || false,
+        actvityBtnDisbleForActvtOrder: actvityBtnDisbleForActvtOrder || false,
+        actvtCount: actvtCount || 0,
+        assetAvailable: assetAvailable || false,
+        assetAvlReasons: assetAvlReasons || [],
+        assetIDList: assetIDList || [],
+        assetNameList: assetNameList || [],
+        available: available || false,
+        booleanForActivityStatus: booleanForActivityStatus || false,
+        buffer: buffer || 0,
+        completedActivity: completedActivity || 0,
+        disable: disable || false,
+        disableForAction: disableForAction || false,
+        duration: duration || 0,
+        enforce: enforce || false,
+        groupOrDept: groupOrDept || false,
+        logbook: logbook || "",
+        notBelongToApprover: notBelongToApprover || false,
+        notBelongToPerformer: notBelongToPerformer || false,
+        pendingActivity: pendingActivity || 0,
+        performerAvlReasons: performerAvlReasons || [],
+        rejectedActivity: rejectedActivity || 0,
+        sequence: sequence || 0,
+        taskId: taskId || ""
+    };
+}
+
+export function createJobDetails(
+    task,
+    //jobName,
+    jobID,
+    instrument,
+    assigner,
+    approver,
+    scheduledJobStartTime,
+    scheduledJobEndTime,
+    actualJobStartTime,
+    actualJobEndTime,
+    priority,
+    groupId,
+    weekdays,jobStatus
+  ) {
+    return {
+      task: task || null,
+     // jobName:jobName||null, //This will be populated with the JobName
+      jobID: jobID || null,
+      instrument: instrument || null,
+      assigner: assigner || null,
+      approver: approver || null,
+      scheduledJobStartTime: scheduledJobStartTime || null,
+      scheduledJobEndTime: scheduledJobEndTime || null,
+      actualJobStartTime: actualJobStartTime || null,
+      actualJobEndTime: actualJobEndTime || null,
+      priority: priority || null,
+      groupId: groupId || null,
+      weekdays: weekdays || null,//remember in the pojo itself the weekdays is set to 5
+      jobStatus:'Not Started'//By default every new job create will have a default status of Not Started
+    };
+  }
+ 
+ export function createTask(
+    creationTime,
+    taskName,
+    taskId,
+    status,
+    reviewer,
+    remarks,
+    description,
+    creator,
+    hourMinutes,
+    activityList
+  ) {
+    return {
+      creationTime: creationTime || null,
+      taskName: taskName || null,//This will be the taskname that will be selected by the user in Select Task
+      taskId: taskId || null,
+      status: status || null,
+      reviewer: reviewer || null,
+      remarks: remarks || null,
+      description: description || null,
+      creator: creator || null,
+      hourMinutes: hourMinutes || null,
+      activityList: activityList || [],
+    };
+  }
+
+  export const saveJobDetails = async (job) => {
+    console.log("Job Details : ",job)
+    try {
+      const response = await axios.put(`http://localhost:8084/tasks/${job.task.taskId}/${job.jobID}/activities/activity`,
+        job,
+        {
+            headers: {
+                // Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+        }
+      );
+   
+      if (response.status === 200) {
+        return "SuccesFully posted";
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error("Error occurred while saving job details:", error);
+      return false;
+    }
+  };

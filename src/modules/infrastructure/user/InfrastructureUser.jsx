@@ -245,6 +245,7 @@ export default function InfrastructureUser({ sendUrllist }) {
 
   useEffect(() => {
     console.log(`Bearer ${localStorage.getItem("token")}`);
+    console.log("User Data plant : ", userData.plantID);
     // Fetch data from the API
     fetch(`http://localhost:8081/infrastructure/admin/${userData.plantID}`, {
       method: "GET",

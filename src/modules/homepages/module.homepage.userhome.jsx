@@ -129,6 +129,36 @@ function UserHome({ sendUrllist }) {
     setNonCriticalInfrastructureIssuesCurrentMonth,
   ] = useState(0);
 
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("catagory");
+
+  function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = comparator(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+  }
+
+  const getComparator = (order, orderBy) => {
+    return order === "desc"
+      ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
+      : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+  };
+
+  const handleSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  // const sortedTickets = stableSort(
+  //   viewMode === 'pending' ? pendingTickets : openTickets,
+  //   getComparator(order, orderBy)
+  // );
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -1221,7 +1251,7 @@ function UserHome({ sendUrllist }) {
                                   <TableCell align="center">
                                     Description
                                   </TableCell>
-                                  {/* <TableCell align="center">Status</TableCell> */}
+                                  <TableCell align="center">Severity</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -1245,9 +1275,9 @@ function UserHome({ sendUrllist }) {
                                     <TableCell align="center">
                                       {ticket.description}
                                     </TableCell>
-                                    {/* <TableCell align="center">
-                                    {ticket.status}
-                                  </TableCell> */}
+                                    <TableCell align="center">
+                                      {ticket.severity}
+                                    </TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>
@@ -1321,7 +1351,7 @@ function UserHome({ sendUrllist }) {
                                   <TableCell align="center">
                                     Description
                                   </TableCell>
-                                  {/* <TableCell align="center">Status</TableCell> */}
+                                  <TableCell align="center">Severity</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -1345,9 +1375,9 @@ function UserHome({ sendUrllist }) {
                                     <TableCell align="center">
                                       {ticket.description}
                                     </TableCell>
-                                    {/* <TableCell align="center">
-                                    {ticket.status}
-                                  </TableCell> */}
+                                    <TableCell align="center">
+                                      {ticket.severity}
+                                    </TableCell>
                                   </TableRow>
                                 ))}
                               </TableBody>

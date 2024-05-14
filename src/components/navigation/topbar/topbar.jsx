@@ -53,6 +53,7 @@ import { Box } from "@mui/system";
 import gwlogo from "../../../../src/resources/images/gwlogo.png";
 import Textfield from "../../textfield/textfield.component";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useUserContext } from "../../../modules/contexts/UserContext";
 
 const drawerWidth = 240;
 
@@ -79,6 +80,11 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+  };
+
+  const { setUserData } = useUserContext();
+  const handleLogout = () => {
+    logout(setUserData);
   };
 
   const [user, setUser] = useState();
@@ -441,7 +447,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                     <MenuItem
                       onClick={() => {
-                        logout();
+                        handleLogout();
                         navigate("/login");
                       }}
                     >

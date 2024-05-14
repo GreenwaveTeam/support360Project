@@ -27,10 +27,11 @@ export const login = async (username, password) => {
   }
 };
 
-export const logout = () => {
+export const logout = (setUserData) => {
   localStorage.clear();
   // const navigate = useNavigate();
   // navigate("/login");
+  setUserData({});
 };
 
 export const isAuthenticated = () => {

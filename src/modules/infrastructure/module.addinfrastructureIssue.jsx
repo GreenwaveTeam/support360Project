@@ -85,7 +85,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
 
   /**********************************************useEffect Hook***********************************************/
-  useLayoutEffect(() => {
+  useEffect(() => {
     console.log("useEffect() called");
     console.log("plantId", plantId);
     console.log("Infrastructure : ", inf);

@@ -126,7 +126,6 @@ export default function AdminHome({ sendUrllist }) {
     fetchUserData();
     fetchAdminData();
     sendUrllist(urllist);
-    fetchDivs();
   }, []);
 
   const fetchUser = async () => {
@@ -148,12 +147,16 @@ export default function AdminHome({ sendUrllist }) {
       console.log("fetchUser data : ", data);
       console.log("fetchUser email : ", data.email);
       setLogedUser(data);
+
+      let role = data.role;
+      console.log("Role Test : ", role);
+      fetchDivs(role);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
   };
 
-  const fetchDivs = async () => {
+  const fetchDivs = async (role) => {
     try {
       console.log("fetchDivs() called");
       console.log("Current Page Location: ", currentPageLocation);
@@ -161,7 +164,7 @@ export default function AdminHome({ sendUrllist }) {
       console.log("Current UserData in fetchDivs() : ", userData);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -172,6 +175,7 @@ export default function AdminHome({ sendUrllist }) {
       );
 
       if (!response.ok) {
+        navigate("/*");
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
@@ -179,6 +183,10 @@ export default function AdminHome({ sendUrllist }) {
         console.log("Current Response : ", data);
         console.log("Current Divs : ", data.components);
         setDivIsVisibleList(data.components);
+        console.log("data.components.length : ", data.components.length);
+        if (data.components.length === 0) {
+          navigate("/*");
+        }
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
@@ -539,12 +547,30 @@ export default function AdminHome({ sendUrllist }) {
                     mb: 1,
                     backgroundImage:
                       "linear-gradient(to top, #0bd360 0%, #3cba92 100%);",
+                    marginRight: "8px",
                   }}
                   onClick={() => {
                     navigate("/admin/plantConfigure");
                   }}
                 >
                   Plant Configure
+                </Button>
+              </div>
+              <div style={{ height: "inherit" }}>
+                <Button
+                  variant="contained"
+                  startIcon={<WarehouseOutlinedIcon />}
+                  sx={{
+                    mt: 1.2,
+                    mb: 1,
+                    backgroundImage:
+                      "linear-gradient(to top, #0bd360 0%, #3cba92 100%);",
+                  }}
+                  onClick={() => {
+                    navigate("/admin/allocateTicket");
+                  }}
+                >
+                  Ticket Allocate
                 </Button>
               </div>
             </div>

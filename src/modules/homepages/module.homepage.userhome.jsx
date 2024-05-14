@@ -252,7 +252,6 @@ function UserHome({ sendUrllist }) {
     fetchUser();
     fetchTicketDetails();
     sendUrllist(urllist);
-    fetchDivs();
     monthwiseticketraised();
     monthAndCatagoryWiseTicketRaised();
     getPendingTickets();
@@ -336,10 +335,10 @@ function UserHome({ sendUrllist }) {
         console.log("Current Response : ", data);
         console.log("Current Divs : ", data.components);
         setDivIsVisibleList(data.components);
-      }
-      console.log("data.components.length : ", data.components.length);
-      if (data.components.length === 0) {
-        navigate("/*");
+        console.log("data.components.length : ", data.components.length);
+        if (data.components.length === 0) {
+          navigate("/*");
+        }
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
@@ -598,7 +597,6 @@ function UserHome({ sendUrllist }) {
       const response = await fetch("http://localhost:8081/users/user", {
         method: "GET",
         headers: {
-          // Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

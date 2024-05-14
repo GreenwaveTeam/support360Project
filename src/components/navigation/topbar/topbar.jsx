@@ -110,6 +110,37 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
   const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
 
+  const [daysDifference, setDaysDifference] = useState(null);
+  const [daysDifferenceTillNow, setDaysDifferenceTillNow] = useState(null);
+
+  const differenceInDays = async (startDate, endDate) => {
+    // const startDate = formData.supportStartDate;
+    // const endDate = formData.supportEndDate;
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    const differenceInMilliseconds =
+      endDateObj.getTime() - startDateObj.getTime();
+    const differenceInDay = Math.floor(
+      differenceInMilliseconds / (1000 * 60 * 60 * 24)
+    );
+    setDaysDifference(differenceInDay);
+    console.log("DaysDifference : ", differenceInDay);
+  };
+
+  const differenceInDaysTillNow = async (startDate, endDate) => {
+    console.log("differenceInDaysTillNow  startDate : ", startDate);
+    console.log("differenceInDaysTillNow  endDate : ", endDate);
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    const differenceInMilliseconds =
+      endDateObj.getTime() - startDateObj.getTime();
+    const differenceInDay = Math.floor(
+      differenceInMilliseconds / (1000 * 60 * 60 * 24)
+    );
+    setDaysDifferenceTillNow(differenceInDay);
+    console.log("DaysDifferenceTillNow : ", differenceInDay);
+  };
+
   const handleMouseDownPassword = (e) => {
     e.preventDefault();
   };
@@ -179,6 +210,8 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       console.log("fetchUser data : ", data);
       setUser(data);
       setUserName(data.name);
+      differenceInDays(data.supportStartDate, data.supportEndDate);
+      differenceInDaysTillNow(new Date(), data.supportEndDate);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -320,6 +353,33 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     }
   };
 
+  const checkOldPassword = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8081/admins/admin/changePassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      if (!response.ok) {
+        //   setNewPassword();
+        // } else {
+        const text = await response.text();
+        handleClickSnackbar();
+        setSnackbarText(text);
+        setsnackbarSeverity("error");
+        return;
+      }
+    } catch (error) {
+      console.error("Error : ", error);
+    }
+  };
+
   return (
     <>
       <AppBar
@@ -432,7 +492,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                           fontSize="small"
                         />
                       </>
-                      {"100"} Support Days Left
+                      {daysDifferenceTillNow} Support Days Left
                     </MenuItem>
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                     <MenuItem onClick={ChangePasswordClickOpen}>
@@ -506,6 +566,9 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                   fullWidth
                   id="oldPassword"
                   value={formData.oldPassword}
+                  onBlur={(e) => {
+                    checkOldPassword();
+                  }}
                   onChange={(e) => {
                     const oldPassword = e.target.value;
                     // setOldPass(oldPassword);

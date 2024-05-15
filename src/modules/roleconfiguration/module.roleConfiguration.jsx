@@ -33,6 +33,7 @@ export default function RoleConfiguration({ sendUrllist }) {
   const [dialogMessage, setDialogMessage] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
   const [open, setOpen] = useState(false);
+  const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
     { pageName: "Role", pagelink: "/admin/role" },
@@ -61,7 +62,7 @@ export default function RoleConfiguration({ sendUrllist }) {
       try {
         console.log(`user/home Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
-        const response = await axios.get(`http://localhost:8081/role`, {
+        const response = await axios.get(`http://${DB_IP}/role`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -103,7 +104,7 @@ export default function RoleConfiguration({ sendUrllist }) {
     console.log("Delete=>" + JSON.stringify(requestBody));
     try {
       const response = await axios.delete(
-        "http://localhost:8081/role/currentrole",
+        `http://${DB_IP}/role/currentrole`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

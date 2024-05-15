@@ -84,7 +84,7 @@ export default function ModuleConfigure({ sendUrllist }) {
   const [updatedModuleName,setUpdateModuleName]=useState("")
   const [updateModuleDialog,setUpdateModuleDialog]=useState(false)
   const [openEditDialog,setOpenEditDialog]=useState(false)
-
+  const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
@@ -120,7 +120,7 @@ export default function ModuleConfigure({ sendUrllist }) {
   const handleDeleteModuleConfirm=async()=>{
     try {
       const response = await axios.delete(
-        `http://localhost:8081/application/admin/${plantid}/${application_name}/${selectedModuleForDelete}`,
+        `http://${DB_IP}/application/admin/${plantid}/${application_name}/${selectedModuleForDelete}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -202,7 +202,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       }
       ///admin/{plant_id}/{application}/{module}/{updatemodule}/updatemodulename
       const response = await axios.put(
-        `http://localhost:8081/application/admin/${plantid}/${application_name}/${selectedModuleForUpdate}/${updatedModuleName}/updatemodulename`,
+        `http://${DB_IP}/application/admin/${plantid}/${application_name}/${selectedModuleForUpdate}/${updatedModuleName}/updatemodulename`,
         {},
         {
           headers: {
@@ -249,7 +249,7 @@ export default function ModuleConfigure({ sendUrllist }) {
   const fetchUser = async () => {
     let role = "";
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -274,7 +274,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure/Modules`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure/Modules`,
         {
           method: "GET",
           headers: {
@@ -316,7 +316,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       console.log("Application name====>" + application_name);
       try {
         const response = await axios.get(
-          `http://localhost:8081/application/admin/${plantid}/${application_name}`,
+          `http://${DB_IP}/application/admin/${plantid}/${application_name}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -445,7 +445,7 @@ export default function ModuleConfigure({ sendUrllist }) {
 
     try {
       const response = await axios.delete(
-        "http://localhost:8081/application/admin/plant_id/application/module/category",
+        `http://${DB_IP}/application/admin/plant_id/application/module/category`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -541,7 +541,7 @@ export default function ModuleConfigure({ sendUrllist }) {
         console.log("Bearer token:" + localStorage.getItem("token"));
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
-          "http://localhost:8081/application/admin/plant_id/application_name/moduleName",
+          `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
           requestData,
           {
             headers: {
@@ -606,7 +606,7 @@ export default function ModuleConfigure({ sendUrllist }) {
     try {
       console.log("Bearer token:=>" + localStorage.getItem("token"));
       await axios.delete(
-        "http://localhost:8081/application/admin/plant/application/modulename/category/issue",
+        `http://${DB_IP}/application/admin/plant/application/modulename/category/issue`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -653,7 +653,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       };
       console.log("Bearer===>" + localStorage.getItem("token"));
       const response = await axios.delete(
-        "http://localhost:8081/application/admin/plant/application/modulename/category/issue",
+        `http://${DB_IP}/application/admin/plant/application/modulename/category/issue`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -699,7 +699,7 @@ export default function ModuleConfigure({ sendUrllist }) {
         console.log("Request data===>" + requestData);
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
-          "http://localhost:8081/application/admin/plant_id/application_name/moduleName",
+          `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
           requestData,
           {
             headers: {

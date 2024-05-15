@@ -75,7 +75,7 @@ const Application = ({ sendUrllist }) => {
   const [deleteArea, setDeleteArea] = useState(null);
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
-
+  const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
@@ -90,7 +90,7 @@ const Application = ({ sendUrllist }) => {
   const fetchUser = async () => {
     let role = "";
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -116,7 +116,7 @@ const Application = ({ sendUrllist }) => {
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure/Module`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure/Module`,
         {
           method: "GET",
           headers: {
@@ -194,7 +194,7 @@ const Application = ({ sendUrllist }) => {
       };
       console.log("Rowdata=====>" + JSON.stringify(rowData));
       await axios.delete(
-        "http://localhost:8081/application/admin/plant/application/modulename/category/issue",
+        `http://${DB_IP}/application/admin/plant/application/modulename/category/issue`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -243,7 +243,7 @@ const Application = ({ sendUrllist }) => {
 
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
-          "http://localhost:8081/application/admin/plant_id/application_name/moduleName",
+          `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
           requestData,
           {
             headers: {
@@ -281,7 +281,7 @@ const Application = ({ sendUrllist }) => {
       console.log("Handle delete==>", requestBody);
 
       await axios.delete(
-        "http://localhost:8081/application/admin/plant/application/modulename/category/issue",
+        `http://${DB_IP}/application/admin/plant/application/modulename/category/issue`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -388,7 +388,7 @@ const Application = ({ sendUrllist }) => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:8081/application/admin/plant_id/application/module/category`,
+        `http://${DB_IP}/application/admin/plant_id/application/module/category`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -607,7 +607,7 @@ const Application = ({ sendUrllist }) => {
       try {
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
-          "http://localhost:8081/application/admin/plant_id/application_name/moduleName",
+          `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
           requestData,
           {
             headers: {
@@ -713,7 +713,7 @@ const Application = ({ sendUrllist }) => {
       //Send formData to the new API endpoint
       try {
         const response = await fetch(
-          "http://localhost:8081/application/admin/plant_id/application_name/moduleName",
+          `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
           {
             method: "POST",
             headers: {

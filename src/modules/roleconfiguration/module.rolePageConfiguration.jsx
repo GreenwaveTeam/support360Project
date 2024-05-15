@@ -54,7 +54,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
   // //     ]
   // //   };
   //  // const jsonData=packagedata;
-
+  const DB_IP = process.env.REACT_APP_SERVERIP;
   const [jsonData, setJsonData] = useState([]);
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
@@ -66,7 +66,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
       try {
         console.log(`user/home Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
-        const response = await axios.get(`http://localhost:8081/role/pages`, {
+        const response = await axios.get(`http://${DB_IP}/role/pages`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
       try {
         console.log(`user/home Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
-        const response = await axios.get(`http://localhost:8081/role/${role}`, {
+        const response = await axios.get(`http://${DB_IP}/role/${role}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -177,7 +177,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
         console.log(`user/home Bearer ${localStorage.getItem("token")}`);
         console.log("Role" + role);
         // Make the API call to fetch data
-        const response = await axios.get(`http://localhost:8081/role/${role}`, {
+        const response = await axios.get(`http://${DB_IP}/role/${role}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
@@ -237,7 +237,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
     };
     console.log("Delete=>" + JSON.stringify(requestBody));
     try {
-      const response = await axios.delete("http://localhost:8081/role", {
+      const response = await axios.delete(`http://${DB_IP}/role`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -291,7 +291,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
       console.log("Request=>" + JSON.stringify(requestData));
       console.log("Bearer=>" + localStorage.getItem("token"));
       const response = await axios.post(
-        `http://localhost:8081/role`,
+        `http://${DB_IP}/role`,
         requestData,
         {
           headers: {

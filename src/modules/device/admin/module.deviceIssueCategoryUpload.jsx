@@ -44,6 +44,7 @@ const DeviceCategory = ({ sendUrllist }) => {
   const currentPageLocation = useLocation().pathname;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
+    { pageName: "User Configure", pagelink: "/admin/configurePage" },
     {
       pageName: "Device Issue Category",
       pagelink: "/admin/Device/CategoryConfigure",

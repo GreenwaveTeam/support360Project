@@ -53,6 +53,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
 
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
+    { pageName: "User Configure", pagelink: "/admin/configurePage" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
   ];
 
@@ -62,7 +63,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
   const fetchUser = async () => {
     let role = "";
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -88,10 +89,10 @@ export default function ModuleConfiguration({ sendUrllist }) {
       console.log("Current Page Location: ", currentPageLocation);
       console.log(
         "url Role ",
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`
       );
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`,
         {
           method: "GET",
           headers: {
@@ -129,7 +130,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
       console.log("Ischjscnjqnck");
       try {
         const response = await axios.get(
-          `http://localhost:8081/application/admin/${plantid}`,
+          `http://${DB_IP}/application/admin/${plantid}`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -163,7 +164,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
       };
       console.log("Request body=>" + JSON.stringify(requestBody));
       await axios.delete(
-        `http://localhost:8081/application/admin/plantid/applicationname`,
+        `http://${DB_IP}/application/admin/plantid/applicationname`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -192,7 +193,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
     try {
       // Send requestBody as request body in the PUT request
       const response = await axios.put(
-        `http://localhost:8081/application/admin/${plantid}/${prev.application_name}`,
+        `http://${DB_IP}/application/admin/${plantid}/${prev.application_name}`,
         rowData,
         {
           headers: {

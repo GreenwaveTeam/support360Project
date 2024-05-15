@@ -78,6 +78,7 @@ const Application = ({ sendUrllist }) => {
   const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
+    { pageName: "User Configure", pagelink: "/admin/configurePage" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
   ];
 

@@ -49,6 +49,7 @@ import { Visibility } from "@mui/icons-material";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 
+const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function RichObjectTreeView({ sendUrllist }) {
   const toast = useRef(null);
   const [snackbarText, setSnackbarText] = useState("Data saved !");
@@ -123,7 +124,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/device/admin/getTree/${userData.plantID}`,
+          `http://${DB_IP}/device/admin/getTree/${userData.plantID}`,
           {
             method: "GET",
             headers: {
@@ -153,7 +154,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/device/admin/${userData.plantID}/categories`,
+          `http://${DB_IP}/device/admin/${userData.plantID}/categories`,
           {
             method: "GET",
             headers: {
@@ -194,7 +195,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
   const fetchUser = async () => {
     let role = "";
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -219,7 +220,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -713,7 +714,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     console.log("data for post ", dataLocal);
     try {
       const response = await fetch(
-        `http://localhost:8081/device/admin/saveTree/${userData.plantID}`,
+        `http://${DB_IP}/device/admin/saveTree/${userData.plantID}`,
         {
           method: "POST",
           headers: {
@@ -740,7 +741,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     console.log("handle Delete call");
     try {
       const response = await fetch(
-        `http://localhost:8081/device/admin/delete/${userData.plantID}`,
+        `http://${DB_IP}/device/admin/delete/${userData.plantID}`,
         {
           method: "DELETE",
           headers: {
@@ -815,6 +816,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
   };
   const urllist = [
     { pageName: "Home", pagelink: "/admin/home" },
+    { pageName: "User Configure", pagelink: "/admin/configurePage" },
     {
       pageName: "Configure Device",
       pagelink: "/admin/DeviceConfigure",

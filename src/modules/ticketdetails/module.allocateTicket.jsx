@@ -1,3 +1,4 @@
+// 5a72b5a21245ea165112a0615a678ace71d6a368
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
@@ -98,40 +99,41 @@ export default function AllocateTicket() {
       type: "textbox",
       canRepeatSameValue: false,
     },
-    [
-      {
-        buttonlabel: "View Details",
-        type: "button",
-        id: "viewDetails",
-        label: "view Details",
-        isButtonDisable: (row) => {
-          // console.log("view Row : ", row);
-          return false;
+    {
+      buttons: [
+        {
+          buttonlabel: "View Details",
+          isButtonDisable: (row) => {
+            // console.log("view Row : ", row);
+            return false;
+          },
+          function: (row) => {
+            console.log("Obj : ", row);
+            setSelectedRow(row);
+            setDialogOpen(true);
+          },
         },
-        function: (row) => {
-          console.log("Obj : ", row);
-          setSelectedRow(row);
-          setDialogOpen(true);
-        },
-      },
-    ],
-    [
-      {
-        buttonlabel: "Assign",
-        type: "button",
-        id: "Assign",
-        label: "Assign Ticket",
-        isButtonDisable: (row) => {
-          //console.log("Assign Row : ", row);
-          if (row.status === "pending") return true;
-          else return false;
-        },
-        function: (row) => {
-          setSelectedRow(row);
-          setDialogOpenAssign(true);
-        },
-      },
-    ],
+      ],
+
+      type: "button",
+      id: "viewDetails",
+      label: "view Details",
+    },
+    // {
+    //   buttonlabel: "Assign",
+    //   type: "button",
+    //   id: "Assign",
+    //   label: "Assign Ticket",
+    //   isButtonDisable: (row) => {
+    //     //console.log("Assign Row : ", row);
+    //     if (row.status === "pending") return true;
+    //     else return false;
+    //   },
+    //   function: (row) => {
+    //     setSelectedRow(row);
+    //     setDialogOpenAssign(true);
+    //   },
+    // },
   ];
 
   const handleAdminIdChange = (event) => {

@@ -178,7 +178,7 @@ function UserHome({ sendUrllist }) {
   const [resolvedTickets, setResolvedTickets] = useState([]);
   const [allTicketData, setAllTicketData] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(7);
   const [viewMode, setViewMode] = useState("pending");
 
   const handleToggleView = () => {

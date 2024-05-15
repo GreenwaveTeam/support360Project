@@ -28,6 +28,7 @@ import {
   Chip,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
+
 import Textfield from "../../components/textfield/textfield.component";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
@@ -54,6 +55,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { width } from "@mui/system";
 import { extendTokenExpiration } from "../helper/Support360Api";
 import LocationCityIcon from "@mui/icons-material/LocationCity";
+import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 
 export default function AdminHome({ sendUrllist }) {
   const [userList, setUserList] = useState([]);
@@ -547,7 +549,8 @@ export default function AdminHome({ sendUrllist }) {
                     mt: 1.2,
                     mb: 1,
 
-                    background: "#7e57c2",
+                    backgroundImage:
+                      "linear-gradient(to top, #7e57c2 0%, #7e57c2 100%);",
                     marginRight: "8px",
                   }}
                   onClick={() => {
@@ -560,11 +563,12 @@ export default function AdminHome({ sendUrllist }) {
               <div style={{ height: "inherit" }}>
                 <Button
                   variant="contained"
-                  startIcon={<WarehouseOutlinedIcon />}
+                  startIcon={<PermContactCalendarIcon />}
                   sx={{
                     mt: 1.2,
                     mb: 1,
-                    background: "#f56133",
+                    backgroundImage:
+                      "linear-gradient(to top, #f56133 0%, #f56133 100%);",
                   }}
                   onClick={() => {
                     navigate("/admin/allocateTicket");
@@ -854,6 +858,7 @@ export default function AdminHome({ sendUrllist }) {
                               sx={{
                                 fontWeight: "bold",
                                 fontSize: "14px",
+                                width: "2rem",
                               }}
                               align="center"
                             >
@@ -920,19 +925,23 @@ export default function AdminHome({ sendUrllist }) {
                             {item.userId}
                           </TableCell> */}
                               <TableCell align="center">
-                                <EditIcon
-                                  color="primary"
-                                  style={{
-                                    cursor: "pointer",
-                                    color: "#42a5f5",
-                                  }}
-                                  onClick={() => {
-                                    console.log("item : ", item);
-                                    navigate("/admin/adminregistration", {
-                                      state: { admin: item },
-                                    });
-                                  }}
-                                />
+                                <IconButton
+                                  sx={{ border: "2px solid #90cbfc" }}
+                                >
+                                  <EditIcon
+                                    color="primary"
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#42a5f5",
+                                    }}
+                                    onClick={() => {
+                                      console.log("item : ", item);
+                                      navigate("/admin/adminregistration", {
+                                        state: { admin: item },
+                                      });
+                                    }}
+                                  />
+                                </IconButton>
                               </TableCell>
                               <TableCell align="center">
                                 {/* <DeleteIcon
@@ -943,18 +952,26 @@ export default function AdminHome({ sendUrllist }) {
                                     }
                                   /> */}
                                 {item.email === logedUser.email ? (
-                                  <DeleteIcon
-                                    color="disabled"
-                                    style={{ cursor: "not-allowed" }}
-                                  />
+                                  <IconButton
+                                    sx={{ border: "2px solid #ccc6c6" }}
+                                  >
+                                    <DeleteIcon
+                                      color="#747474"
+                                      style={{ cursor: "not-allowed" }}
+                                    />
+                                  </IconButton>
                                 ) : (
-                                  <DeleteIcon
-                                    color="error"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() =>
-                                      handleAdminDelete(item.userId)
-                                    }
-                                  />
+                                  <IconButton
+                                    sx={{ border: "2px solid #f88989" }}
+                                  >
+                                    <DeleteIcon
+                                      color="error"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() =>
+                                        handleAdminDelete(item.userId)
+                                      }
+                                    />
+                                  </IconButton>
                                 )}
                                 <Dialog
                                   open={openAdminDeleteDialog}
@@ -1003,12 +1020,19 @@ export default function AdminHome({ sendUrllist }) {
                                       handleAdminDelete(item.userId)
                                     }
                                   /> */}
-                                <LockResetOutlinedIcon
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() =>
-                                    handleAdminPasswordReset(item.userId)
-                                  }
-                                />
+                                <IconButton
+                                  sx={{ border: "2px solid #bdbdbd" }}
+                                >
+                                  <LockResetOutlinedIcon
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#000000",
+                                    }}
+                                    onClick={() =>
+                                      handleAdminPasswordReset(item.userId)
+                                    }
+                                  />
+                                </IconButton>
                                 <Dialog
                                   open={openAdminResetPasswordDialog}
                                   onClose={() =>
@@ -1375,11 +1399,9 @@ export default function AdminHome({ sendUrllist }) {
                               <TableCell align="center">{item.email}</TableCell>
                               <TableCell align="center">
                                 <Chip
-                                  variant="outlined"
+                                  variant="filled"
                                   label={item.plantName}
                                   sx={{
-                                    color: getColor(index),
-                                    borderColor: getColor(index),
                                     fontWeight: 600,
                                   }}
                                 />
@@ -1392,10 +1414,6 @@ export default function AdminHome({ sendUrllist }) {
                                   fontSize: "14px",
                                 }}
                                 onClick={() => {
-                                  // localStorage.setItem(
-                                  //   "adminPlantID",
-                                  //   item.plantID
-                                  // );
                                   navigate("/admin/configurePage");
                                   setUserData({
                                     ...userData,
@@ -1408,7 +1426,15 @@ export default function AdminHome({ sendUrllist }) {
                                 align="center"
                               >
                                 <Tooltip title="Configure ➚ ">
-                                  {item.userId}
+                                  <Chip
+                                    variant="outlined"
+                                    label={item.userId}
+                                    sx={{
+                                      color: getColor(index),
+                                      borderColor: getColor(index),
+                                      fontWeight: 600,
+                                    }}
+                                  />
                                 </Tooltip>
                               </TableCell>
                               {/* </Link> */}
@@ -1416,18 +1442,22 @@ export default function AdminHome({ sendUrllist }) {
                                 {/* <Link
                             style={{ textDecoration: "none", color: "inherit" }}
                           > */}
-                                <EditIcon
-                                  style={{
-                                    cursor: "pointer",
-                                    color: "#42a5f5",
-                                  }}
-                                  onClick={() => {
-                                    console.log("item : ", item);
-                                    navigate("/admin/userregistration", {
-                                      state: { user: item },
-                                    });
-                                  }}
-                                />
+                                <IconButton
+                                  sx={{ border: "2px solid #90cbfc" }}
+                                >
+                                  <EditIcon
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#42a5f5",
+                                    }}
+                                    onClick={() => {
+                                      console.log("item : ", item);
+                                      navigate("/admin/userregistration", {
+                                        state: { user: item },
+                                      });
+                                    }}
+                                  />
+                                </IconButton>
                               </TableCell>
                               <TableCell align="center">
                                 {/* <DeleteIcon
@@ -1439,16 +1469,24 @@ export default function AdminHome({ sendUrllist }) {
                                     onClick={(e) => handleDelete(item.userId)}
                                   /> */}
                                 {item.email === logedUser.email ? (
-                                  <DeleteIcon
-                                    color="disabled"
-                                    style={{ cursor: "not-allowed" }}
-                                  />
+                                  <IconButton
+                                    sx={{ border: "2px solid #ccc6c6" }}
+                                  >
+                                    <DeleteIcon
+                                      color="#747474"
+                                      style={{ cursor: "not-allowed" }}
+                                    />
+                                  </IconButton>
                                 ) : (
-                                  <DeleteIcon
-                                    color="error"
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => handleDelete(item.userId)}
-                                  />
+                                  <IconButton
+                                    sx={{ border: "2px solid #f88989" }}
+                                  >
+                                    <DeleteIcon
+                                      color="error"
+                                      style={{ cursor: "pointer" }}
+                                      onClick={() => handleDelete(item.userId)}
+                                    />
+                                  </IconButton>
                                 )}
                                 <Dialog
                                   open={openDeleteDialog}
@@ -1486,12 +1524,16 @@ export default function AdminHome({ sendUrllist }) {
                                 </Dialog>
                               </TableCell>
                               <TableCell align="center">
-                                <LockResetOutlinedIcon
-                                  style={{ cursor: "pointer" }}
-                                  onClick={() =>
-                                    handleUserPasswordReset(item.userId)
-                                  }
-                                />
+                                <IconButton
+                                  sx={{ border: "2px solid #bdbdbd" }}
+                                >
+                                  <LockResetOutlinedIcon
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() =>
+                                      handleUserPasswordReset(item.userId)
+                                    }
+                                  />
+                                </IconButton>
                                 <Dialog
                                   open={openUserResetPasswordDialog}
                                   onClose={() =>

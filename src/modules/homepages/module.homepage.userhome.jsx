@@ -22,6 +22,8 @@ import {
   Divider,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogContent,
 } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
@@ -53,6 +55,9 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import "bootstrap/dist/css/bootstrap.css";
 import { ColorModeContext, tokens } from "../../theme";
 import CounterAnimation from "./CounterAnimation";
+import { getAllOpenTicketDetails } from "../ticketdetails/AllocateTicket";
+import DataTableByCatagory from "../ticketdetails/DataTableByCatagory";
+import CustomTable from "../../components/table/table.component";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -174,12 +179,15 @@ function UserHome({ sendUrllist }) {
   };
 
   const [pendingTickets, setPendingTickets] = useState([]);
+
   const [openTickets, setOpenTickets] = useState([]);
   const [resolvedTickets, setResolvedTickets] = useState([]);
   const [allTicketData, setAllTicketData] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(7);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [viewMode, setViewMode] = useState("pending");
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleToggleView = () => {
     setViewMode((prevMode) => (prevMode === "pending" ? "open" : "pending"));
@@ -195,10 +203,12 @@ function UserHome({ sendUrllist }) {
   };
 
   const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setShowTimeRemaining(false);
+    // if (reason === "clickaway") {
+    //   return;
+    // }
+    // setShowTimeRemaining(false);
+    setDialogOpen(false);
+    setSelectedRow(null);
   };
 
   const matergroupvalues = [
@@ -250,6 +260,7 @@ function UserHome({ sendUrllist }) {
   const currentPageLocation = useLocation().pathname;
 
   useEffect(() => {
+    // setPendingTickets(await Promise.all(getAllOpenTicketDetails()));
     extendTokenExpiration();
     // setToken(`${localStorage.getItem("token")}`);
     fetchUser();
@@ -257,8 +268,9 @@ function UserHome({ sendUrllist }) {
     sendUrllist(urllist);
     monthwiseticketraised();
     monthAndCatagoryWiseTicketRaised();
-    getPendingTickets();
+    // getPendingTickets();
     getAllTickets();
+    // showAlert();
     // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
 
@@ -307,8 +319,11 @@ function UserHome({ sendUrllist }) {
   //   }
   // };
 
-  const showAlert = () => {
-    alert(`Time remaining until token expiry: ${timeRemaining}`);
+  const showAlert = async (plantId) => {
+    // alert(`Time remaining until token expiry: ${timeRemaining}`);
+    const details = await getAllOpenTicketDetails();
+    console.log("formData.plantID : ", plantId);
+    setPendingTickets(details.filter((ticket) => ticket.plantId === plantId));
   };
 
   const fetchDivs = async (role) => {
@@ -372,6 +387,52 @@ function UserHome({ sendUrllist }) {
   //     console.error("Error fetching user list:", error);
   //   }
   // };
+
+  const Columns = [
+    {
+      id: "ticketNo",
+      label: "Ticket No",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "ticket_raising_time",
+      label: "Raisingime",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "type",
+      label: "type",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "status",
+      label: "status",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      buttons: [
+        {
+          buttonlabel: "View Details",
+          isButtonDisable: (row) => {
+            // console.log("view Row : ", row);
+            return false;
+          },
+          function: (row) => {
+            console.log("Obj : ", row);
+            setSelectedRow(row);
+            setDialogOpen(true);
+          },
+        },
+      ],
+      type: "button",
+      id: "viewDetails",
+      label: "view Details",
+    },
+  ];
 
   const chartSetting = {
     yAxis: [
@@ -507,40 +568,40 @@ function UserHome({ sendUrllist }) {
     }
   };
 
-  const getPendingTickets = async () => {
-    try {
-      const response = await fetch(
-        `http://${DB_IP}/users/user/pendingTickets`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      const data = await response.json();
-      console.log("PendingTicketData : ", data);
-      console.log(
-        "setPendingTickets : ",
-        data.filter((ticket) => ticket.status === "pending")
-      );
-      console.log(
-        "setResolvedTickets : ",
-        data.filter((ticket) => ticket.status === "resolved")
-      );
-      console.log(
-        "setOpenTickets : ",
-        data.filter((ticket) => ticket.status === "open")
-      );
-      // setPendingTickets(data.filter((ticket) => ticket.status === "pending"));
-      // setResolvedTickets(data.filter((ticket) => ticket.status === "resolved"));
-      // setOpenTickets(data.filter((ticket) => ticket.status === "open"));
-      setPendingTickets(data.filter((ticket) => ticket.status !== "closed"));
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
+  // const getPendingTickets = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `http://${DB_IP}/users/user/pendingTickets`,
+  //       {
+  //         method: "GET",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+  //     const data = await response.json();
+  //     console.log("PendingTicketData : ", data);
+  //     console.log(
+  //       "setPendingTickets : ",
+  //       data.filter((ticket) => ticket.status === "pending")
+  //     );
+  //     console.log(
+  //       "setResolvedTickets : ",
+  //       data.filter((ticket) => ticket.status === "resolved")
+  //     );
+  //     console.log(
+  //       "setOpenTickets : ",
+  //       data.filter((ticket) => ticket.status === "open")
+  //     );
+  //     // setPendingTickets(data.filter((ticket) => ticket.status === "pending"));
+  //     // setResolvedTickets(data.filter((ticket) => ticket.status === "resolved"));
+  //     // setOpenTickets(data.filter((ticket) => ticket.status === "open"));
+  //     setPendingTickets(data.filter((ticket) => ticket.status !== "closed"));
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
 
   const getAllTickets = async () => {
     try {
@@ -637,6 +698,8 @@ function UserHome({ sendUrllist }) {
       let role = data.role;
       console.log("Role Test : ", role);
       fetchDivs(role);
+
+      showAlert(data.plantID);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -731,9 +794,10 @@ function UserHome({ sendUrllist }) {
   return (
     <>
       {divIsVisibleList && divIsVisibleList.includes("user-home") && (
-        <Box>
-          <Container maxWidth="">
-            {/* <div class="row" style={{ marginBottom: "1rem" }}>
+        <>
+          <Box>
+            <Container maxWidth="">
+              {/* <div class="row" style={{ marginBottom: "1rem" }}>
           <div class="col-md-8">
             <div class="row">
               <div class="col-md-12">
@@ -797,92 +861,94 @@ function UserHome({ sendUrllist }) {
             </div>
           </div>
         </div> */}
-            <div class="row">
-              <div class="col-md-7">
-                <div class="row">
-                  <div class="col-md-4">
-                    <Card
-                      onClick={(e) => {
-                        navigate("/user/ReportDevice", {
-                          state: { plantID: formData.plantID },
-                        });
-                      }}
-                      sx={{ borderRadius: 1 }}
-                    >
-                      <CardContent sx={{ paddingBottom: "16px !important" }}>
-                        <div className="row">
-                          <div
-                            className="col-md-6"
-                            style={{
-                              paddingLeft: "2rem",
-                              display: "grid",
-                              alignItems: "center",
-                              justifyItems: "center",
-                            }}
-                          >
-                            <div className="row">
-                              <Typography
-                                sx={{ fontWeight: 600, fontSize: "1.7rem" }}
-                              >
-                                <CounterAnimation
-                                  targetValue={deviceIssuesCurrentMonth}
-                                />
-                              </Typography>
-                            </div>
+              <div class="row">
+                <div class="col-md-7">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <Card
+                        onClick={(e) => {
+                          navigate("/user/ReportDevice", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                        sx={{ borderRadius: 1 }}
+                      >
+                        <CardContent sx={{ paddingBottom: "16px !important" }}>
+                          <div className="row">
                             <div
-                              className="row"
+                              className="col-md-6"
                               style={{
-                                fontSize: "0.9rem",
-                                fontWeight: 600,
+                                paddingLeft: "2rem",
+                                display: "grid",
+                                alignItems: "center",
+                                justifyItems: "center",
                               }}
                             >
-                              Device
-                            </div>
-                          </div>
-                          <div
-                            className="col-md-6"
-                            style={{
-                              display: "grid",
-                              justifyItems: "center",
-                              alignItems: "center",
-                              rowGap: "0.6rem",
-                            }}
-                          >
-                            <div className="row">
-                              <div className="col-md-12">
-                                <Button
-                                  style={{ borderRadius: "50%" }}
-                                  icon="pi pi-thumbs-up-fill"
-                                  rounded
-                                  //outlined
-                                  severity="success"
-                                  aria-label="Cancel"
-                                />
+                              <div className="row">
+                                <Typography
+                                  sx={{ fontWeight: 600, fontSize: "1.7rem" }}
+                                >
+                                  <CounterAnimation
+                                    targetValue={deviceIssuesCurrentMonth}
+                                  />
+                                </Typography>
+                              </div>
+                              <div
+                                className="row"
+                                style={{
+                                  fontSize: "0.9rem",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Device
                               </div>
                             </div>
-                            <div className="row">
-                              <div className="col-md-12">
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    columnGap: "0.5rem",
-                                  }}
-                                >
-                                  <Badge
-                                    value={criticalDeviceIssuesCurrentMonth}
-                                    severity="warning"
-                                  ></Badge>
-                                  <Badge
-                                    value={nonCriticalDeviceIssuesCurrentMonth}
-                                    severity="info"
-                                  ></Badge>
+                            <div
+                              className="col-md-6"
+                              style={{
+                                display: "grid",
+                                justifyItems: "center",
+                                alignItems: "center",
+                                rowGap: "0.6rem",
+                              }}
+                            >
+                              <div className="row">
+                                <div className="col-md-12">
+                                  <Button
+                                    style={{ borderRadius: "50%" }}
+                                    icon="pi pi-thumbs-up-fill"
+                                    rounded
+                                    //outlined
+                                    severity="success"
+                                    aria-label="Cancel"
+                                  />
+                                </div>
+                              </div>
+                              <div className="row">
+                                <div className="col-md-12">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      columnGap: "0.5rem",
+                                    }}
+                                  >
+                                    <Badge
+                                      value={criticalDeviceIssuesCurrentMonth}
+                                      severity="warning"
+                                    ></Badge>
+                                    <Badge
+                                      value={
+                                        nonCriticalDeviceIssuesCurrentMonth
+                                      }
+                                      severity="info"
+                                    ></Badge>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
 
-                        {/* <div className="row">
+                          {/* <div className="row">
                       <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
                         <div className="row">
                           <div class="col-md-12">
@@ -927,534 +993,557 @@ function UserHome({ sendUrllist }) {
                         />
                       </div>
                     </div> */}
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div class="col-md-4">
-                    <Card
-                      onClick={(e) => {
-                        navigate("/user/ReportApplication", {
-                          state: { plantID: formData.plantID },
-                        });
-                      }}
-                    >
-                      <CardContent sx={{ paddingBottom: "16px !important" }}>
-                        <div className="row">
-                          <div
-                            className="col-md-6"
-                            style={{
-                              paddingLeft: "2rem",
-                              display: "grid",
-                              alignItems: "center",
-                              justifyItems: "center",
-                            }}
-                          >
-                            <div className="row">
-                              <CounterAnimation
-                                targetValue={applicationIssuesCurrentMonth}
-                              />
-                            </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                    <div class="col-md-4">
+                      <Card
+                        onClick={(e) => {
+                          navigate("/user/ReportApplication", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                      >
+                        <CardContent sx={{ paddingBottom: "16px !important" }}>
+                          <div className="row">
                             <div
-                              className="row"
+                              className="col-md-6"
                               style={{
-                                fontSize: "0.9rem",
-                                fontWeight: 600,
+                                paddingLeft: "2rem",
+                                display: "grid",
+                                alignItems: "center",
+                                justifyItems: "center",
                               }}
                             >
-                              Application
-                            </div>
-                          </div>
-                          <div
-                            className="col-md-6"
-                            style={{
-                              display: "grid",
-                              justifyItems: "center",
-                              alignItems: "center",
-                              rowGap: "0.6rem",
-                            }}
-                          >
-                            <div className="row">
-                              <div className="col-md-12">
-                                <Button
-                                  style={{ borderRadius: "50%" }}
-                                  icon="pi pi-thumbs-up-fill"
-                                  rounded
-                                  //outlined
-                                  severity="success"
-                                  aria-label="Cancel"
-                                />
-                              </div>
-                            </div>
-                            <div className="row">
-                              <div className="col-md-12">
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    columnGap: "0.5rem",
-                                  }}
-                                >
-                                  <Badge
-                                    value={
-                                      criticalApplicationIssuesCurrentMonth
-                                    }
-                                    severity="warning"
-                                  ></Badge>
-                                  <Badge
-                                    value={
-                                      nonCriticalApplicationIssuesCurrentMonth
-                                    }
-                                    severity="info"
-                                  ></Badge>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div class="col-md-4">
-                    <Card
-                      onClick={(e) => {
-                        navigate("/user/ReportInfrastructure", {
-                          state: { plantID: formData.plantID },
-                        });
-                      }}
-                    >
-                      <CardContent sx={{ paddingBottom: "16px !important" }}>
-                        <div className="row">
-                          <div
-                            className="col-md-6"
-                            style={{
-                              paddingLeft: "2rem",
-                              display: "grid",
-                              alignItems: "center",
-                              justifyItems: "center",
-                            }}
-                          >
-                            <div className="row">
-                              <Typography
-                                sx={{ fontWeight: 600, fontSize: "1.7rem" }}
-                              >
+                              <div className="row">
                                 <CounterAnimation
-                                  targetValue={infrastructureIssuesCurrentMonth}
-                                />
-                              </Typography>
-                            </div>
-                            <div
-                              className="row"
-                              style={{
-                                fontSize: "0.9rem",
-                                fontWeight: 600,
-                              }}
-                            >
-                              Infrastructure
-                            </div>
-                          </div>
-                          <div
-                            className="col-md-6"
-                            style={{
-                              display: "grid",
-                              justifyItems: "center",
-                              alignItems: "center",
-                              rowGap: "0.6rem",
-                            }}
-                          >
-                            <div className="row">
-                              <div className="col-md-12">
-                                <Button
-                                  style={{ borderRadius: "50%" }}
-                                  icon="pi pi-thumbs-up-fill"
-                                  rounded
-                                  //outlined
-                                  severity="success"
-                                  aria-label="Cancel"
+                                  targetValue={applicationIssuesCurrentMonth}
                                 />
                               </div>
+                              <div
+                                className="row"
+                                style={{
+                                  fontSize: "0.9rem",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Application
+                              </div>
                             </div>
-                            <div className="row">
-                              <div className="col-md-12">
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    columnGap: "0.5rem",
-                                  }}
-                                >
-                                  <Badge
-                                    value={
-                                      criticalInfrastructureIssuesCurrentMonth
-                                    }
-                                    severity="warning"
-                                  ></Badge>
-                                  <Badge
-                                    value={
-                                      nonCriticalInfrastructureIssuesCurrentMonth
-                                    }
-                                    severity="info"
-                                  ></Badge>
+                            <div
+                              className="col-md-6"
+                              style={{
+                                display: "grid",
+                                justifyItems: "center",
+                                alignItems: "center",
+                                rowGap: "0.6rem",
+                              }}
+                            >
+                              <div className="row">
+                                <div className="col-md-12">
+                                  <Button
+                                    style={{ borderRadius: "50%" }}
+                                    icon="pi pi-thumbs-up-fill"
+                                    rounded
+                                    //outlined
+                                    severity="success"
+                                    aria-label="Cancel"
+                                  />
+                                </div>
+                              </div>
+                              <div className="row">
+                                <div className="col-md-12">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      columnGap: "0.5rem",
+                                    }}
+                                  >
+                                    <Badge
+                                      value={
+                                        criticalApplicationIssuesCurrentMonth
+                                      }
+                                      severity="warning"
+                                    ></Badge>
+                                    <Badge
+                                      value={
+                                        nonCriticalApplicationIssuesCurrentMonth
+                                      }
+                                      severity="info"
+                                    ></Badge>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                        </CardContent>
+                      </Card>
+                    </div>
+                    <div class="col-md-4">
+                      <Card
+                        onClick={(e) => {
+                          navigate("/user/ReportInfrastructure", {
+                            state: { plantID: formData.plantID },
+                          });
+                        }}
+                      >
+                        <CardContent sx={{ paddingBottom: "16px !important" }}>
+                          <div className="row">
+                            <div
+                              className="col-md-6"
+                              style={{
+                                paddingLeft: "2rem",
+                                display: "grid",
+                                alignItems: "center",
+                                justifyItems: "center",
+                              }}
+                            >
+                              <div className="row">
+                                <Typography
+                                  sx={{ fontWeight: 600, fontSize: "1.7rem" }}
+                                >
+                                  <CounterAnimation
+                                    targetValue={
+                                      infrastructureIssuesCurrentMonth
+                                    }
+                                  />
+                                </Typography>
+                              </div>
+                              <div
+                                className="row"
+                                style={{
+                                  fontSize: "0.9rem",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                Infrastructure
+                              </div>
+                            </div>
+                            <div
+                              className="col-md-6"
+                              style={{
+                                display: "grid",
+                                justifyItems: "center",
+                                alignItems: "center",
+                                rowGap: "0.6rem",
+                              }}
+                            >
+                              <div className="row">
+                                <div className="col-md-12">
+                                  <Button
+                                    style={{ borderRadius: "50%" }}
+                                    icon="pi pi-thumbs-up-fill"
+                                    rounded
+                                    //outlined
+                                    severity="success"
+                                    aria-label="Cancel"
+                                  />
+                                </div>
+                              </div>
+                              <div className="row">
+                                <div className="col-md-12">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      columnGap: "0.5rem",
+                                    }}
+                                  >
+                                    <Badge
+                                      value={
+                                        criticalInfrastructureIssuesCurrentMonth
+                                      }
+                                      severity="warning"
+                                    ></Badge>
+                                    <Badge
+                                      value={
+                                        nonCriticalInfrastructureIssuesCurrentMonth
+                                      }
+                                      severity="info"
+                                    ></Badge>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
-                </div>
-                <div class="row" style={{ marginTop: "1rem" }}>
-                  <div class="col-md-12">
-                    {/* <Card>
+                  <div class="row" style={{ marginTop: "1rem" }}>
+                    <div class="col-md-12">
+                      {/* <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <Typography gutterBottom variant="h5" component="div">
                       Last Ticket Raised
                     </Typography>
                   </CardContent>
                 </Card> */}
-                    {/* <Card>
+                      {/* <Card>
                   <CardContent sx={{ padding: "12px 8px 2px 8px !important" }}> */}
 
-                    <div>
-                      <MeterGroup values={matergroupvalues} max={100} />
-                    </div>
+                      <div>
+                        <MeterGroup values={matergroupvalues} max={100} />
+                      </div>
 
-                    {/* </CardContent>
+                      {/* </CardContent>
                 </Card> */}
+                    </div>
                   </div>
-                </div>
-                <div class="row" style={{ marginTop: "1rem" }}>
-                  <div class="col-md-12">
-                    {/* <Card>
+                  <div class="row" style={{ marginTop: "1rem" }}>
+                    <div class="col-md-12">
+                      {/* <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <Typography gutterBottom variant="h5" component="div">
                       Last Ticket Raised
                     </Typography>
                   </CardContent>
                 </Card> */}
-                    <Card>
-                      <CardContent sx={{ paddingBottom: "16px !important" }}>
-                        {/* <ResponsiveChartContainer> */}
+                      <Card>
+                        <CardContent sx={{ paddingBottom: "16px !important" }}>
+                          {/* <ResponsiveChartContainer> */}
 
-                        <BarChart
-                          dataset={monthWiseTicket}
-                          xAxis={[{ scaleType: "band", dataKey: "month" }]}
-                          series={[
-                            { dataKey: "Issue_Count", label: "Issue Count" },
-                            {
-                              dataKey: "Pending_Issues",
-                              label: "Pending Issues",
-                            },
-                            {
-                              dataKey: "Resolved_Issues",
-                              label: "Resolved Issues",
-                            },
-                          ]}
-                          {...chartSetting}
-                        />
+                          <BarChart
+                            dataset={monthWiseTicket}
+                            xAxis={[{ scaleType: "band", dataKey: "month" }]}
+                            series={[
+                              { dataKey: "Issue_Count", label: "Issue Count" },
+                              {
+                                dataKey: "Pending_Issues",
+                                label: "Pending Issues",
+                              },
+                              {
+                                dataKey: "Resolved_Issues",
+                                label: "Resolved Issues",
+                              },
+                            ]}
+                            {...chartSetting}
+                          />
 
-                        {/* </ResponsiveChartContainer> */}
-                      </CardContent>
-                    </Card>
+                          {/* </ResponsiveChartContainer> */}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                  <div class="row" style={{ marginTop: "1rem" }}>
+                    <div class="col-md-6">
+                      <Card>
+                        <CardContent
+                          sx={{
+                            paddingBottom: "16px !important",
+                            display: "grid",
+                            justifyItems: "center",
+                          }}
+                        >
+                          <Chip
+                            variant="outlined"
+                            component="div"
+                            color="info"
+                            label="Response Time (AVG)"
+                          />
+
+                          <SparkLineChart
+                            data={[3, 4, 2, 5, 4, 2, 4, 0, 5, 4, 2, 4, 6]}
+                            height={35}
+                          />
+                        </CardContent>
+                      </Card>
+                    </div>
+                    <div class="col-md-6">
+                      <Card>
+                        <CardContent
+                          sx={{
+                            paddingBottom: "16px !important",
+                            display: "grid",
+                            justifyItems: "center",
+                          }}
+                        >
+                          <Chip
+                            variant="outlined"
+                            component="div"
+                            color="info"
+                            label="Resolved Time (AVG)"
+                          />
+                          <SparkLineChart
+                            data={[
+                              1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6,
+                            ]}
+                            height={35}
+                          />
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 </div>
-                <div class="row" style={{ marginTop: "1rem" }}>
-                  <div class="col-md-6">
-                    <Card>
-                      <CardContent
-                        sx={{
-                          paddingBottom: "16px !important",
-                          display: "grid",
-                          justifyItems: "center",
-                        }}
-                      >
-                        <Chip
-                          variant="outlined"
-                          component="div"
-                          color="info"
-                          label="Response Time (AVG)"
-                        />
-
-                        <SparkLineChart
-                          data={[3, 4, 2, 5, 4, 2, 4, 0, 5, 4, 2, 4, 6]}
-                          height={35}
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div class="col-md-6">
-                    <Card>
-                      <CardContent
-                        sx={{
-                          paddingBottom: "16px !important",
-                          display: "grid",
-                          justifyItems: "center",
-                        }}
-                      >
-                        <Chip
-                          variant="outlined"
-                          component="div"
-                          color="info"
-                          label="Resolved Time (AVG)"
-                        />
-                        <SparkLineChart
-                          data={[
-                            1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6,
-                          ]}
-                          height={35}
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-5">
-                {viewMode === "pending" ? (
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Card className="dashboard-rightSide-Table">
-                        <CardContent sx={{ padding: "0" }}>
-                          <div
-                            style={{
-                              padding: "0.8rem",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              height: "3rem",
-                            }}
-                          >
-                            <Typography
-                              sx={{ mb: 0, fontWeight: 600 }}
-                              gutterBottom
-                              variant="h5"
-                              component="div"
+                <div class="col-md-5">
+                  {viewMode === "pending" ? (
+                    <div className="row">
+                      <div className="col-md-12">
+                        <Card className="dashboard-rightSide-Table">
+                          <CardContent sx={{ padding: "0" }}>
+                            {/*<div
+                              style={{
+                                padding: "0.8rem",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                height: "3rem",
+                              }}
                             >
-                              All Tickets
-                            </Typography>
-                            <IconButton onClick={handleToggleView}>
-                              {viewMode === "pending" ? (
-                                <Tooltip title="Show Open Tickets">
-                                  <ToggleOffIcon />
-                                </Tooltip>
-                              ) : (
-                                <Tooltip title="Show Pending Tickets">
-                                  <ToggleOnIcon />
-                                </Tooltip>
-                              )}
-                            </IconButton>
-                            <div>
-                              <TablePagination
-                                rowsPerPageOptions={[5, 10, 25]}
+                              <Typography
+                                sx={{ mb: 0, fontWeight: 600 }}
+                                gutterBottom
+                                variant="h5"
                                 component="div"
-                                count={pendingTickets.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                labelRowsPerPage=""
-                                onPageChange={(e, newPage) => setPage(newPage)}
-                                onRowsPerPageChange={(e) => {
-                                  setRowsPerPage(parseInt(e.target.value, 10));
-                                  setPage(0);
-                                }}
-                              />
+                              >
+                                All Tickets
+                              </Typography>
+                              <IconButton onClick={handleToggleView}>
+                                {viewMode === "pending" ? (
+                                  <Tooltip title="Show Open Tickets">
+                                    <ToggleOffIcon />
+                                  </Tooltip>
+                                ) : (
+                                  <Tooltip title="Show Pending Tickets">
+                                    <ToggleOnIcon />
+                                  </Tooltip>
+                                )}
+                              </IconButton>
+                              {pendingTickets && (
+                                <div>
+                                  <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25]}
+                                    component="div"
+                                    count={pendingTickets.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    labelRowsPerPage=""
+                                    onPageChange={(e, newPage) =>
+                                      setPage(newPage)
+                                    }
+                                    onRowsPerPageChange={(e) => {
+                                      setRowsPerPage(
+                                        parseInt(e.target.value, 10)
+                                      );
+                                      setPage(0);
+                                    }}
+                                  />
+                                </div>
+                              )}
                             </div>
-                          </div>
-                          <Divider sx={{ opacity: "0.8" }} />
-                          <Grid container spacing={0}>
-                            <Grid item xs={12}>
-                              <TableContainer sx={{ overflow: "auto" }}>
-                                <Table>
-                                  <TableHead>
-                                    <TableRow>
-                                      <TableCell align="center">
-                                        Status
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        Category
-                                      </TableCell>
-                                      <TableCell align="center">Time</TableCell>
-                                      <TableCell align="center">ID</TableCell>
-                                      <TableCell align="center">
-                                        Description
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        Severity
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        Confirm
-                                      </TableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody>
-                                    {(rowsPerPage > 0
-                                      ? pendingTickets.slice(
-                                          page * rowsPerPage,
-                                          page * rowsPerPage + rowsPerPage
-                                        )
-                                      : pendingTickets
-                                    ).map((ticket, index) => (
-                                      <TableRow key={index}>
-                                        <TableCell align="center">
-                                          <Chip
-                                            variant="outlined"
-                                            component="div"
-                                            style={{
-                                              borderColor:
-                                                ticket.status === "pending"
-                                                  ? "red"
-                                                  : ticket.status === "open"
-                                                  ? "green"
-                                                  : "blue",
-                                              color:
-                                                ticket.status === "pending"
-                                                  ? "red"
-                                                  : ticket.status === "open"
-                                                  ? "green"
-                                                  : "blue",
-                                            }}
-                                            label={ticket.status}
-                                          />
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.category}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.time}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.id}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.description}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.severity}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.status === "resolved" && (
-                                            <IconButton>
-                                              <CheckCircleOutlineIcon
-                                                onClick={() =>
-                                                  console.log("hello")
-                                                }
+                            <Divider sx={{ opacity: "0.8" }} />
+                            {pendingTickets && (
+                              <Grid container spacing={0}>
+                                <Grid item xs={12}>
+                                  <TableContainer sx={{ overflow: "auto" }}>
+                                    <Table>
+                                      <TableHead>
+                                        <TableRow>
+                                          <TableCell align="center">
+                                            Status
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            Category
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            Time
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            ID
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            Description
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            Severity
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            Confirm
+                                          </TableCell>
+                                        </TableRow>
+                                      </TableHead>
+                                      <TableBody>
+                                        {(rowsPerPage > 0
+                                          ? pendingTickets.slice(
+                                              page * rowsPerPage,
+                                              page * rowsPerPage + rowsPerPage
+                                            )
+                                          : pendingTickets
+                                        ).map((ticket, index) => (
+                                          <TableRow key={index}>
+                                            <TableCell align="center">
+                                              <Chip
+                                                variant="outlined"
+                                                component="div"
+                                                style={{
+                                                  borderColor:
+                                                    ticket.status === "pending"
+                                                      ? "red"
+                                                      : ticket.status === "open"
+                                                      ? "green"
+                                                      : "blue",
+                                                  color:
+                                                    ticket.status === "pending"
+                                                      ? "red"
+                                                      : ticket.status === "open"
+                                                      ? "green"
+                                                      : "blue",
+                                                }}
+                                                label={ticket.status}
                                               />
-                                            </IconButton>
-                                          )}
-                                        </TableCell>
-                                      </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </TableContainer>
-                            </Grid>
-                          </Grid>
-                        </CardContent>
-                      </Card>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                              {ticket.type}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                              {ticket.ticket_raising_time}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                              {ticket.ticketNo}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                              {ticket.status === "resolved" && (
+                                                <IconButton>
+                                                  <CheckCircleOutlineIcon
+                                                    onClick={() =>
+                                                      console.log("hello")
+                                                    }
+                                                  />
+                                                </IconButton>
+                                              )}
+                                            </TableCell>
+                                          </TableRow>
+                                        ))}
+                                      </TableBody>
+                                    </Table>
+                                  </TableContainer>
+                                </Grid>
+                              </Grid>
+                            )}*/}
+                            {pendingTickets && (
+                              <CustomTable
+                                columns={Columns}
+                                rows={pendingTickets}
+                                isNotDeletable={true}
+                                setRows={setPendingTickets}
+                                tablename={"Application Tickets"}
+                              ></CustomTable>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Card className="dashboard-rightSide-Table">
-                        <CardContent sx={{ padding: "0" }}>
-                          <div
-                            style={{
-                              padding: "0.8rem",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              height: "3rem",
-                            }}
-                          >
-                            <Typography
-                              sx={{ mb: 0, fontWeight: 600 }}
-                              gutterBottom
-                              variant="h5"
-                              component="div"
+                  ) : (
+                    <div className="row">
+                      <div className="col-md-12">
+                        <Card className="dashboard-rightSide-Table">
+                          <CardContent sx={{ padding: "0" }}>
+                            <div
+                              style={{
+                                padding: "0.8rem",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                height: "3rem",
+                              }}
                             >
-                              Open Tickets
-                            </Typography>
-                            <IconButton onClick={handleToggleView}>
-                              {viewMode === "open" ? (
-                                <Tooltip title="Show Pending Tickets">
-                                  <ToggleOnIcon />
-                                </Tooltip>
-                              ) : (
-                                <Tooltip title="Show Open Tickets">
-                                  <ToggleOffIcon />
-                                </Tooltip>
-                              )}
-                            </IconButton>
-                            <div>
-                              <TablePagination
-                                rowsPerPageOptions={[5, 10, 25]}
+                              <Typography
+                                sx={{ mb: 0, fontWeight: 600 }}
+                                gutterBottom
+                                variant="h5"
                                 component="div"
-                                count={openTickets.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                labelRowsPerPage=""
-                                onPageChange={(e, newPage) => setPage(newPage)}
-                                onRowsPerPageChange={(e) => {
-                                  setRowsPerPage(parseInt(e.target.value, 10));
-                                  setPage(0);
-                                }}
-                              />
+                              >
+                                Open Tickets
+                              </Typography>
+                              <IconButton onClick={handleToggleView}>
+                                {viewMode === "open" ? (
+                                  <Tooltip title="Show Pending Tickets">
+                                    <ToggleOnIcon />
+                                  </Tooltip>
+                                ) : (
+                                  <Tooltip title="Show Open Tickets">
+                                    <ToggleOffIcon />
+                                  </Tooltip>
+                                )}
+                              </IconButton>
+                              <div>
+                                <TablePagination
+                                  rowsPerPageOptions={[5, 10, 25]}
+                                  component="div"
+                                  count={openTickets.length}
+                                  rowsPerPage={rowsPerPage}
+                                  page={page}
+                                  labelRowsPerPage=""
+                                  onPageChange={(e, newPage) =>
+                                    setPage(newPage)
+                                  }
+                                  onRowsPerPageChange={(e) => {
+                                    setRowsPerPage(
+                                      parseInt(e.target.value, 10)
+                                    );
+                                    setPage(0);
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                          <Divider sx={{ opacity: "0.8" }} />
-                          <Grid container spacing={0}>
-                            <Grid item xs={12}>
-                              <TableContainer sx={{ overflow: "auto" }}>
-                                <Table>
-                                  <TableHead>
-                                    <TableRow>
-                                      <TableCell align="center">
-                                        Category
-                                      </TableCell>
-                                      <TableCell align="center">Time</TableCell>
-                                      <TableCell align="center">ID</TableCell>
-                                      <TableCell align="center">
-                                        Description
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        Severity
-                                      </TableCell>
-                                    </TableRow>
-                                  </TableHead>
-                                  <TableBody>
-                                    {(rowsPerPage > 0
-                                      ? openTickets.slice(
-                                          page * rowsPerPage,
-                                          page * rowsPerPage + rowsPerPage
-                                        )
-                                      : openTickets
-                                    ).map((ticket, index) => (
-                                      <TableRow key={index}>
+                            <Divider sx={{ opacity: "0.8" }} />
+                            <Grid container spacing={0}>
+                              <Grid item xs={12}>
+                                <TableContainer sx={{ overflow: "auto" }}>
+                                  <Table>
+                                    <TableHead>
+                                      <TableRow>
                                         <TableCell align="center">
-                                          {ticket.category}
+                                          Category
                                         </TableCell>
                                         <TableCell align="center">
-                                          {ticket.time}
+                                          Time
+                                        </TableCell>
+                                        <TableCell align="center">ID</TableCell>
+                                        <TableCell align="center">
+                                          Description
                                         </TableCell>
                                         <TableCell align="center">
-                                          {ticket.id}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.description}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.severity}
+                                          Severity
                                         </TableCell>
                                       </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
-                              </TableContainer>
+                                    </TableHead>
+                                    <TableBody>
+                                      {(rowsPerPage > 0
+                                        ? openTickets.slice(
+                                            page * rowsPerPage,
+                                            page * rowsPerPage + rowsPerPage
+                                          )
+                                        : openTickets
+                                      ).map((ticket, index) => (
+                                        <TableRow key={index}>
+                                          <TableCell align="center">
+                                            {ticket.category}
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            {ticket.time}
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            {ticket.id}
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            {ticket.description}
+                                          </TableCell>
+                                          <TableCell align="center">
+                                            {ticket.severity}
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </TableContainer>
+                              </Grid>
                             </Grid>
-                          </Grid>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {/* <div className="row" style={{ marginTop: "1rem" }}>
+                  )}
+                  {/* <div className="row" style={{ marginTop: "1rem" }}>
               <div className="col-md-12">
                 <Card>
                   <CardContent sx={{ padding: "0" }}>
@@ -1518,10 +1607,10 @@ function UserHome({ sendUrllist }) {
                 </Card>
               </div>
             </div> */}
+                </div>
               </div>
-            </div>
 
-            {/* <Grid container spacing={2}>
+              {/* <Grid container spacing={2}>
           <Grid item xs={6}>
             <TableContainer sx={tableStyle}>
               <Table>
@@ -1591,7 +1680,7 @@ function UserHome({ sendUrllist }) {
             />
           </Grid>
         </Grid> */}
-            {/* <div
+              {/* <div
           style={{
             display: "flex",
             justifyContent: "center",
@@ -1671,8 +1760,26 @@ function UserHome({ sendUrllist }) {
             </Button>
           </div>
         </div> */}
-          </Container>
-        </Box>
+            </Container>
+          </Box>
+          <div>
+            <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
+              <div>
+                {/* <DialogTitle>Details</DialogTitle> */}
+                <DialogContent>
+                  {selectedRow && (
+                    <div>
+                      <DataTableByCatagory
+                        plantId={selectedRow.plantId}
+                        ticketNo={selectedRow.ticketNo}
+                      ></DataTableByCatagory>
+                    </div>
+                  )}
+                </DialogContent>
+              </div>
+            </Dialog>
+          </div>
+        </>
       )}
     </>
   );

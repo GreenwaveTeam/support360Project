@@ -417,9 +417,15 @@ function UserHome({ sendUrllist }) {
       buttons: [
         {
           buttonlabel: "View Details",
-          isButtonDisable: (row) => {
+          isButtonDisabled: (row) => {
             // console.log("view Row : ", row);
             return false;
+          },
+          isButtonRendered: (row) => {
+            //console.log("Assign Row : ", row);
+            // if (row.status === "open")
+            return true;
+            // else return false;
           },
           function: (row) => {
             console.log("Obj : ", row);

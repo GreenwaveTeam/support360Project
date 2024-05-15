@@ -20,6 +20,7 @@ import NotFound from "../../../components/notfound/notfound.component";
 import { useUserContext } from "../../contexts/UserContext";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 
+const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function ModuleConfiguration({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
 

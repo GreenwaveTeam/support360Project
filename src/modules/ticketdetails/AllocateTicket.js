@@ -126,4 +126,36 @@ export const fetchUser = async () => {
       }
     };
 
+    const username = "user123";
+const password = "pass123";
+const encoded = btoa(username + ":" + password);
+
+    export const getSelectedOptionTask = async (selected_asset) => {
+      try {
+        console.log("getSelectedOptionTask() called ", selected_asset);
+    
+        const response = await axios.get(
+          `http://localhost:8086/usergroup/jobAssetGroup/${selected_asset} `,
+          {
+            headers: {
+              Authorization: "Basic " + encoded,
+            },
+          }
+        );
+        //console.log("Current Response for Task Dropdown : ",response)
+        //The current response is giving all the groups information not to the selected option so i am filtering the data and returning that response
+        console.log("Response Data : ",response.data," Selected Option : ",selected_asset)
+        // let selectedOptionData=response.data.filter((element)=>element.assetGroup===selected_asset)
+        // console.log("Final Selected Option Data : ",selectedOptionData)
+        // return selectedOptionData;
+        return response.data;
+      } catch (error) {
+        console.error("Error for fetching the task dropdown value : ", error);
+        // return null;
+      }
+    };
+
+
+
+
     

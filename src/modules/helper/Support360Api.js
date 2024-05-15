@@ -117,6 +117,30 @@ export const registerUser = async (formData) => {
   }
 };
 
+export const fetchPagesByRole = async (role) => {
+  console.log("role : ", role);
+  try {
+    const response = await fetch(`http://localhost:8081/role/${role}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status === 403) {
+      console.log("error featching roles");
+      return;
+    }
+    const data = await response.json();
+    console.log("fetchPagesByRole : ", data);
+    const pagenameList = data.pagedetails.map((detail) => detail.pagename);
+    console.log("pagenameList : ", pagenameList);
+    return pagenameList;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const updateAdmin = async (updateFormData) => {
   try {
     console.log(

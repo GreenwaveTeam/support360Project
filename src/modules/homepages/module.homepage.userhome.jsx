@@ -55,9 +55,14 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import "bootstrap/dist/css/bootstrap.css";
 import { ColorModeContext, tokens } from "../../theme";
 import CounterAnimation from "./CounterAnimation";
-import { getAllOpenTicketDetails } from "../ticketdetails/AllocateTicket";
+import {
+  getAllOpenTicketDetails,
+  updateStatus,
+} from "../ticketdetails/AllocateTicket";
 import DataTableByCatagory from "../ticketdetails/DataTableByCatagory";
 import CustomTable from "../../components/table/table.component";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -135,6 +140,8 @@ function UserHome({ sendUrllist }) {
     setNonCriticalInfrastructureIssuesCurrentMonth,
   ] = useState(0);
 
+  const [catagoryWiseTrend, setCatagoryWiseTrend] = useState([]);
+
   const DB_IP = process.env.REACT_APP_SERVERIP;
 
   const [order, setOrder] = useState("asc");
@@ -178,19 +185,19 @@ function UserHome({ sendUrllist }) {
     borderRadius: "0.7rem",
   };
 
-  const [pendingTickets, setPendingTickets] = useState([]);
-
+  const [allTickets, setAllTickets] = useState([]);
+  const [closedTickets, setClosedTickets] = useState([]);
   const [openTickets, setOpenTickets] = useState([]);
   const [resolvedTickets, setResolvedTickets] = useState([]);
   const [allTicketData, setAllTicketData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [viewMode, setViewMode] = useState("pending");
+  const [viewMode, setViewMode] = useState("all");
   const [selectedRow, setSelectedRow] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleToggleView = () => {
-    setViewMode((prevMode) => (prevMode === "pending" ? "open" : "pending"));
+    setViewMode((prevMode) => (prevMode === "all" ? "open" : "all"));
   };
 
   const handleChangePage = (event, newPage) => {
@@ -268,8 +275,9 @@ function UserHome({ sendUrllist }) {
     sendUrllist(urllist);
     monthwiseticketraised();
     monthAndCatagoryWiseTicketRaised();
+    fetchCatagoryWiseTrend();
     // getPendingTickets();
-    getAllTickets();
+    // getAllTickets();
     // showAlert();
     // setTokenExpiry(localStorage.getItem("expire"));
   }, []);
@@ -323,7 +331,12 @@ function UserHome({ sendUrllist }) {
     // alert(`Time remaining until token expiry: ${timeRemaining}`);
     const details = await getAllOpenTicketDetails();
     console.log("formData.plantID : ", plantId);
-    setPendingTickets(details.filter((ticket) => ticket.plantId === plantId));
+    setAllTickets(details.filter((ticket) => ticket.plantId === plantId));
+    setClosedTickets(
+      details.filter(
+        (ticket) => ticket.plantId === plantId && ticket.status === "closed"
+      )
+    );
   };
 
   const fetchDivs = async (role) => {
@@ -403,7 +416,88 @@ function UserHome({ sendUrllist }) {
     },
     {
       id: "type",
-      label: "type",
+      label: "Catagory",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "status",
+      label: "status",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      buttons: [
+        {
+          buttonlabel: "View Details",
+          isButtonDisabled: (row) => {
+            // console.log("view Row : ", row);
+            return false;
+          },
+          isButtonRendered: (row) => {
+            //console.log("Assign Row : ", row);
+            // if (row.status === "open")
+            return true;
+            // else return false;
+          },
+          function: (row) => {
+            console.log("Obj : ", row);
+            setSelectedRow(row);
+            setDialogOpen(true);
+          },
+        },
+      ],
+      type: "button",
+      id: "viewDetails",
+      label: "view Details",
+    },
+    {
+      buttons: [
+        {
+          buttonlabel: "Confirm",
+          isButtonDisabled: (row) => {
+            // console.log("view Row : ", row);
+            if (row.status === "resolved") {
+              return false;
+            }
+            return true;
+          },
+          isButtonRendered: (row) => {
+            //console.log("Assign Row : ", row);
+            // if (row.status === "open")
+            return true;
+            // else return false;
+          },
+          function: (row) => {
+            console.log("Obj : ", row);
+            // setSelectedRow(row);
+            // setDialogOpen(true);
+            updateStatus(row.plantId, row.ticketNo);
+          },
+        },
+      ],
+      type: "button",
+      id: "confirm",
+      label: "Confirm",
+    },
+  ];
+
+  const ClosedTicketColumns = [
+    {
+      id: "ticketNo",
+      label: "Ticket No",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "ticket_raising_time",
+      label: "Raisingime",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "type",
+      label: "Catagory",
       type: "textbox",
       canRepeatSameValue: false,
     },
@@ -609,45 +703,45 @@ function UserHome({ sendUrllist }) {
   //   }
   // };
 
-  const getAllTickets = async () => {
-    try {
-      const response = await fetch(`http://${DB_IP}/users/user/allTickets`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const data = await response.json();
-      console.log("allTicketData : ", data);
-      setAllTicketData(data);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
+  // const getAllTickets = async () => {
+  //   try {
+  //     const response = await fetch(`http://${DB_IP}/users/user/allTickets`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     console.log("allTicketData : ", data);
+  //     setAllTicketData(data);
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
 
-  const fetchComponents = async () => {
-    try {
-      const response = await fetch(`http://${DB_IP}/role/{role}/{pagename}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (response.status === 403) {
-        localStorage.clear();
-        navigate("/login");
-        return;
-      }
-      const data = await response.json();
-      console.log("fetchUser data : ", data);
-      // localStorage.setItem("userPlantID", data.plantID);
-      // setUserData(data.plantID);
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
+  // const fetchComponents = async () => {
+  //   try {
+  //     const response = await fetch(`http://${DB_IP}/role/{role}/{pagename}`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
+  //     if (response.status === 403) {
+  //       localStorage.clear();
+  //       navigate("/login");
+  //       return;
+  //     }
+  //     const data = await response.json();
+  //     console.log("fetchUser data : ", data);
+  //     // localStorage.setItem("userPlantID", data.plantID);
+  //     // setUserData(data.plantID);
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
 
   const list = [
     "support-till-date",
@@ -779,7 +873,29 @@ function UserHome({ sendUrllist }) {
     console.log("DaysDifferenceTillNow : ", differenceInDay);
   };
 
-  const urllist = [{ pageName: "User Home Page", pagelink: "/user/home" }];
+  const fetchCatagoryWiseTrend = async () => {
+    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+    try {
+      const response = await fetch(
+        `http://${DB_IP}/users/user/catagoryWiseTrend`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            // Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("catagoryWiseTrend data : ", data);
+      setCatagoryWiseTrend(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const urllist = [{ pageName: "Home", pagelink: "/user/home" }];
 
   //
   const [type, setType] = React.useState("bar");
@@ -922,10 +1038,21 @@ function UserHome({ sendUrllist }) {
                                 <div className="col-md-12">
                                   <Button
                                     style={{ borderRadius: "50%" }}
-                                    icon="pi pi-thumbs-up-fill"
+                                    icon={
+                                      catagoryWiseTrend[0].device_difference >
+                                      0 ? (
+                                        <TrendingDownIcon />
+                                      ) : (
+                                        <TrendingUpIcon />
+                                      )
+                                    }
                                     rounded
                                     //outlined
-                                    severity="success"
+                                    severity={
+                                      catagoryWiseTrend[0].device_difference > 0
+                                        ? "danger"
+                                        : "success"
+                                    }
                                     aria-label="Cancel"
                                   />
                                 </div>
@@ -1049,10 +1176,22 @@ function UserHome({ sendUrllist }) {
                                 <div className="col-md-12">
                                   <Button
                                     style={{ borderRadius: "50%" }}
-                                    icon="pi pi-thumbs-up-fill"
+                                    icon={
+                                      catagoryWiseTrend[0]
+                                        .application_difference > 0 ? (
+                                        <TrendingDownIcon />
+                                      ) : (
+                                        <TrendingUpIcon />
+                                      )
+                                    }
                                     rounded
                                     //outlined
-                                    severity="success"
+                                    severity={
+                                      catagoryWiseTrend[0]
+                                        .application_difference > 0
+                                        ? "danger"
+                                        : "success"
+                                    }
                                     aria-label="Cancel"
                                   />
                                 </div>
@@ -1138,10 +1277,28 @@ function UserHome({ sendUrllist }) {
                                 <div className="col-md-12">
                                   <Button
                                     style={{ borderRadius: "50%" }}
-                                    icon="pi pi-thumbs-up-fill"
+                                    // icon={
+                                    //   catagoryWiseTrend[0]
+                                    //     .infrastructure_difference > 0
+                                    //     ? "pi pi-thumbs-down-fill"
+                                    //     : "pi pi-thumbs-up-fill"
+                                    // }
+                                    icon={
+                                      catagoryWiseTrend[0]
+                                        .infrastructure_difference > 0 ? (
+                                        <TrendingDownIcon />
+                                      ) : (
+                                        <TrendingUpIcon />
+                                      )
+                                    }
                                     rounded
                                     //outlined
-                                    severity="success"
+                                    severity={
+                                      catagoryWiseTrend[0]
+                                        .infrastructure_difference > 0
+                                        ? "danger"
+                                        : "success"
+                                    }
                                     aria-label="Cancel"
                                   />
                                 </div>
@@ -1281,7 +1438,16 @@ function UserHome({ sendUrllist }) {
                   </div>
                 </div>
                 <div class="col-md-5">
-                  {viewMode === "pending" ? (
+                  <Button
+                    onClick={() => {
+                      handleToggleView();
+                    }}
+                  >
+                    {viewMode === "all"
+                      ? "Show Ticket History"
+                      : "Show All Tickets"}
+                  </Button>
+                  {viewMode === "all" ? (
                     <div className="row">
                       <div className="col-md-12">
                         <Card className="dashboard-rightSide-Table">
@@ -1425,13 +1591,13 @@ function UserHome({ sendUrllist }) {
                                 </Grid>
                               </Grid>
                             )}*/}
-                            {pendingTickets && (
+                            {allTickets && (
                               <CustomTable
                                 columns={Columns}
-                                rows={pendingTickets}
+                                rows={allTickets}
                                 isNotDeletable={true}
-                                setRows={setPendingTickets}
-                                tablename={"Application Tickets"}
+                                setRows={setAllTickets}
+                                tablename={"All Tickets"}
                               ></CustomTable>
                             )}
                           </CardContent>
@@ -1443,7 +1609,7 @@ function UserHome({ sendUrllist }) {
                       <div className="col-md-12">
                         <Card className="dashboard-rightSide-Table">
                           <CardContent sx={{ padding: "0" }}>
-                            <div
+                            {/* <div
                               style={{
                                 padding: "0.8rem",
                                 display: "flex",
@@ -1543,7 +1709,16 @@ function UserHome({ sendUrllist }) {
                                   </Table>
                                 </TableContainer>
                               </Grid>
-                            </Grid>
+                            </Grid> */}
+                            {closedTickets && (
+                              <CustomTable
+                                columns={ClosedTicketColumns}
+                                rows={closedTickets}
+                                isNotDeletable={true}
+                                setRows={setClosedTickets}
+                                tablename={"Ticket History"}
+                              ></CustomTable>
+                            )}
                           </CardContent>
                         </Card>
                       </div>

@@ -37,7 +37,10 @@ import dayjs from "dayjs";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import SaveSharpIcon from "@mui/icons-material/SaveSharp";
-import { extendTokenExpiration } from "../helper/Support360Api";
+import {
+  extendTokenExpiration,
+  fetchPagesByRole,
+} from "../helper/Support360Api";
 
 export default function UserRegistration({ sendUrllist }) {
   const [newPlantName, setNewPlantName] = useState({
@@ -149,6 +152,8 @@ export default function UserRegistration({ sendUrllist }) {
   const [isStatePresent, setIsStatePresent] = useState(false);
   const [unchangedUserID, setUnchangedUserID] = useState("");
   const [roleList, setRoleList] = useState([]);
+  const [homePageNames, setHomePageNames] = useState([]);
+  const [updateHomePageNames, setUpdateHomePageNames] = useState([]);
 
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
@@ -210,7 +215,21 @@ export default function UserRegistration({ sendUrllist }) {
     fetchPlantData();
     fetchRoles();
     sendUrllist(urllist);
-  }, []);
+    const fetchData = async () => {
+      if (formData.role) {
+        const pages = await fetchPagesByRole(formData.role);
+        setHomePageNames(pages);
+      }
+    };
+    fetchData();
+  }, [formData.role]);
+
+  const fetchUpdateData = async (selectedRole) => {
+    console.log("fetchUpdateData called");
+    const pages = await fetchPagesByRole(selectedRole);
+    console.log("updateFormData.role : ", selectedRole);
+    setUpdateHomePageNames(pages);
+  };
 
   const urllist =
     state === null
@@ -937,13 +956,11 @@ export default function UserRegistration({ sendUrllist }) {
                       />
                     </Grid>
                     <Grid item xs={6}>
-                      <Dropdown
+                      {/* <Dropdown
                         fullWidth
                         id="role"
                         value={updateFormData.role}
                         label="Role"
-                        // onChange={updateHandleRoleChange}
-                        // list={roleList}
                         onChange={(e) => {
                           const { value } = e.target;
                           for (let i of roleList) {
@@ -957,29 +974,94 @@ export default function UserRegistration({ sendUrllist }) {
                           }
                         }}
                         list={roleList.map((p) => p)}
-                      />
+                      /> */}
+                      <FormControl fullWidth error={updateFormErrors.role}>
+                        <InputLabel id="role-label">Role</InputLabel>
+                        <Select
+                          labelId="role-label"
+                          label="Role"
+                          id="role"
+                          value={updateFormData.role}
+                          onChange={(e) => {
+                            const selectedRole = e.target.value;
+                            setUpdateFormData({
+                              ...updateFormData,
+                              role: selectedRole,
+                            });
+                            if (selectedRole !== "") {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                role: false,
+                              });
+                            } else {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                role: true,
+                              });
+                            }
+                            fetchUpdateData(selectedRole);
+                          }}
+                        >
+                          {roleList.map((role) => (
+                            <MenuItem key={role} value={role}>
+                              {role}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {updateFormErrors.role && (
+                          <FormHelperText>Role must be filled</FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                     <Grid item xs={6}>
-                      <Dropdown
+                      {/* <Dropdown
                         fullWidth
                         id="homepage"
                         value={updateFormData.homepage}
                         label="Homepage"
                         onChange={updateHandleHomepageChange}
                         list={["admin/home", "user/home"]}
-                        // onChange={(e) => {
-                        //   const { value } = e.target;
-                        //   for (let i of roleList) {
-                        //     if (i === value) {
-                        //       setUpdateFormData({
-                        //         ...updateFormData,
-                        //         role: value,
-                        //       });
-                        //       return;
-                        //     }
-                        //   }
-                        // }}
-                      />
+                      /> */}
+                      <FormControl fullWidth error={updateFormErrors.homepage}>
+                        <InputLabel id="homepage-label">Homepage</InputLabel>
+                        <Select
+                          labelId="homepage-label"
+                          label="Homepage"
+                          id="homepage"
+                          value={updateFormData.homepage}
+                          onChange={(e) => {
+                            const selectedHomepage = e.target.value;
+                            setUpdateFormData({
+                              ...updateFormData,
+                              homepage: selectedHomepage,
+                            });
+                            if (selectedHomepage !== "") {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                homepage: false,
+                              });
+                            } else {
+                              setUpdateFormErrors({
+                                ...updateFormErrors,
+                                homepage: true,
+                              });
+                            }
+                          }}
+                        >
+                          {/* <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem> */}
+                          {updateHomePageNames.map((page) => (
+                            <MenuItem key={page} value={page}>
+                              {page}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {updateFormErrors.homepage && (
+                          <FormHelperText>
+                            Homepage must be filled
+                          </FormHelperText>
+                        )}
+                      </FormControl>
                     </Grid>
                     <Grid item xs={6}>
                       <Autocomplete
@@ -1737,8 +1819,13 @@ export default function UserRegistration({ sendUrllist }) {
                           <MenuItem value="">
                             <h5>Select Homepage</h5>
                           </MenuItem>
-                          <MenuItem value="admin/home">admin/home</MenuItem>
-                          <MenuItem value="user/home">user/home</MenuItem>
+                          {/* <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem> */}
+                          {homePageNames.map((page) => (
+                            <MenuItem key={page} value={page}>
+                              {page}
+                            </MenuItem>
+                          ))}
                         </Select>
                         {formErrors.homepage && (
                           <FormHelperText>

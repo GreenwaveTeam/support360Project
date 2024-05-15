@@ -1444,17 +1444,17 @@ export default function AdminHome({ sendUrllist }) {
                           > */}
                                 <IconButton
                                   sx={{ border: "2px solid #90cbfc" }}
+                                  onClick={() => {
+                                    console.log("item : ", item);
+                                    navigate("/admin/userregistration", {
+                                      state: { user: item },
+                                    });
+                                  }}
                                 >
                                   <EditIcon
                                     style={{
                                       cursor: "pointer",
                                       color: "#42a5f5",
-                                    }}
-                                    onClick={() => {
-                                      console.log("item : ", item);
-                                      navigate("/admin/userregistration", {
-                                        state: { user: item },
-                                      });
                                     }}
                                   />
                                 </IconButton>

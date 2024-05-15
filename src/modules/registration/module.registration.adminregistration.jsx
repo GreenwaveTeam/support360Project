@@ -22,11 +22,13 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import HowToRegTwoToneIcon from "@mui/icons-material/HowToRegTwoTone";
 import Textfield from "../../components/textfield/textfield.component";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { extendTokenExpiration } from "../helper/Support360Api";
+import {
+  extendTokenExpiration,
+  fetchPagesByRole,
+} from "../helper/Support360Api";
 
 export default function AdminRegistration({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -74,7 +76,8 @@ export default function AdminRegistration({ sendUrllist }) {
     role: "",
     homepage: "",
   });
-
+  const [homePageNames, setHomePageNames] = useState([]);
+  const [updateHomePageNames, setUpdateHomePageNames] = useState([]);
   const [cnfpass, setCnfpass] = useState("");
   const [pass, setPass] = useState("");
   const navigate = useNavigate();
@@ -118,7 +121,21 @@ export default function AdminRegistration({ sendUrllist }) {
     checkstate();
     fetchRoles();
     sendUrllist(urllist);
-  }, []);
+    const fetchData = async () => {
+      if (formData.role) {
+        const pages = await fetchPagesByRole(formData.role);
+        setHomePageNames(pages);
+      }
+    };
+    fetchData();
+  }, [formData.role]);
+
+  const fetchUpdateData = async (selectedRole) => {
+    console.log("fetchUpdateData called");
+    const pages = await fetchPagesByRole(selectedRole);
+    console.log("updateFormData.role : ", selectedRole);
+    setUpdateHomePageNames(pages);
+  };
 
   const urllist =
     state === null
@@ -602,6 +619,7 @@ export default function AdminRegistration({ sendUrllist }) {
                                 role: true,
                               });
                             }
+                            fetchUpdateData(selectedRole);
                           }}
                         >
                           {roleList.map((role) => (
@@ -650,8 +668,13 @@ export default function AdminRegistration({ sendUrllist }) {
                             }
                           }}
                         >
-                          <MenuItem value="admin/home">admin/home</MenuItem>
-                          <MenuItem value="user/home">user/home</MenuItem>
+                          {/* <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem> */}
+                          {updateHomePageNames.map((page) => (
+                            <MenuItem key={page} value={page}>
+                              {page}
+                            </MenuItem>
+                          ))}
                         </Select>
                         {updateFormErrors.homepage && (
                           <FormHelperText>
@@ -1057,8 +1080,13 @@ export default function AdminRegistration({ sendUrllist }) {
                           <MenuItem value="">
                             <h5>Select Homepage</h5>
                           </MenuItem>
-                          <MenuItem value="admin/home">admin/home</MenuItem>
-                          <MenuItem value="user/home">user/home</MenuItem>
+                          {/* <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem> */}
+                          {homePageNames.map((page) => (
+                            <MenuItem key={page} value={page}>
+                              {page}
+                            </MenuItem>
+                          ))}
                         </Select>
                         {formErrors.homepage && (
                           <FormHelperText>

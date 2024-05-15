@@ -98,36 +98,40 @@ export default function AllocateTicket() {
       type: "textbox",
       canRepeatSameValue: false,
     },
-    {
-      buttonlabel: "View Details",
-      type: "button",
-      id: "viewDetails",
-      label: "view Details",
-      isButtonDisable: (row) => {
-        // console.log("view Row : ", row);
-        return false;
+    [
+      {
+        buttonlabel: "View Details",
+        type: "button",
+        id: "viewDetails",
+        label: "view Details",
+        isButtonDisable: (row) => {
+          // console.log("view Row : ", row);
+          return false;
+        },
+        function: (row) => {
+          console.log("Obj : ", row);
+          setSelectedRow(row);
+          setDialogOpen(true);
+        },
       },
-      function: (row) => {
-        console.log("Obj : ", row);
-        setSelectedRow(row);
-        setDialogOpen(true);
+    ],
+    [
+      {
+        buttonlabel: "Assign",
+        type: "button",
+        id: "Assign",
+        label: "Assign Ticket",
+        isButtonDisable: (row) => {
+          //console.log("Assign Row : ", row);
+          if (row.status === "pending") return true;
+          else return false;
+        },
+        function: (row) => {
+          setSelectedRow(row);
+          setDialogOpenAssign(true);
+        },
       },
-    },
-    {
-      buttonlabel: "Assign",
-      type: "button",
-      id: "Assign",
-      label: "Assign Ticket",
-      isButtonDisable: (row) => {
-        //console.log("Assign Row : ", row);
-        if (row.status === "pending") return true;
-        else return false;
-      },
-      function: (row) => {
-        setSelectedRow(row);
-        setDialogOpenAssign(true);
-      },
-    },
+    ],
   ];
 
   const handleAdminIdChange = (event) => {
@@ -258,7 +262,7 @@ export default function AllocateTicket() {
       // updateStatus(plantId, ticketNo);
       setDialogOpenAssign(false);
       setSelectedRow(null);
-      setSelecteAdmin('');
+      setSelecteAdmin("");
     } else {
       setSnackbarText("Select an Admin");
       setsnackbarSeverity("error");
@@ -266,18 +270,23 @@ export default function AllocateTicket() {
       return;
     }
 
-      const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
+    const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
 
-      const allAssetData= await getSelectedOptionTask('Green Plant');
-      const currentAsset_Activity=allAssetData.filter((item)=>item.taskId==='T202405141316501650')//Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented
-      console.log('Current Activity : ', currentAsset_Activity)
-      let current_starttime=dayjs().add(1,'day');
+    const allAssetData = await getSelectedOptionTask("Green Plant");
+    const currentAsset_Activity = allAssetData.filter(
+      (item) => item.taskId === "T202405141316501650"
+    ); //Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented
+    console.log("Current Activity : ", currentAsset_Activity);
+    let current_starttime = dayjs().add(1, "day");
 
-      const finalActivityList = currentAsset_Activity[0].activityList.map(obj => {
+    const finalActivityList = currentAsset_Activity[0].activityList.map(
+      (obj) => {
         // Apply the function constructor to create a new Activity object
-        const startTime = current_starttime.format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-        const endTIme = current_starttime.add(obj.duration,'minute').format('YYYY-MM-DDTHH:mm:ss.SSSZ');
-        current_starttime=current_starttime.add(obj.duration,'minute');
+        const startTime = current_starttime.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+        const endTIme = current_starttime
+          .add(obj.duration, "minute")
+          .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+        current_starttime = current_starttime.add(obj.duration, "minute");
 
         //const duration = endTime.diff(startTime, 'millisecond');
         return createActivity(
@@ -294,14 +303,14 @@ export default function AllocateTicket() {
           obj.performer || "",
           obj.approver || "",
           // obj.scheduledActivityStartTime || null,
-          // obj.scheduledActivityEndTime || null,        
+          // obj.scheduledActivityEndTime || null,
           startTime,
           endTIme,
           obj.actualActivityStartTime || null,
           obj.actualActivityEndTime || null,
           obj.notBelongToPerformer || false,
           obj.notBelongToApprover || false,
-           obj.actvityStatus || "Not Started",
+          obj.actvityStatus || "Not Started",
           // "Not Started",
           obj.isActvityBtnDisableOnCompletion || false,
           obj.isActvityBtnDisbleForActvtOrder || false,
@@ -338,100 +347,98 @@ export default function AllocateTicket() {
           obj.selectedAssetList || null,
           obj.selectedAssetIdsList || null
         );
-    });
-   
+      }
+    );
 
+    //   const demoActivity = createActivity(
+    //     "A202405141329292929",  // activityId
+    //     "COMPLETE",  // activityName
+    //     false,  // actvityBtnDisableOnCompletion
+    //     false,  // actvityBtnDisbleForActvtOrder
+    //     0,  // actvtCount
+    //     true,  // assetAvailable
+    //     [],  // assetAvlReasons
+    //     ['A08042024112657985', 'A08042024112657985', 'A08042024112657985', 'A08042024112657985'],  // assetIDList
+    //     ['Weighing Scale', 'Weighing Scale', 'Weighing Scale', 'Weighing Scale'],  // assetNameList
+    //     true,  // available
+    //     false,  // booleanForActivityStatus
+    //     0,  // buffer
+    //     0,  // completedActivity
+    //     false,  // disable
+    //     false,  // disableForAction
+    //     20,  // duration
+    //     false,  // enforce
+    //     true,  // groupOrDept
+    //     "72053 Vivel BW Mint Cucumber",  // logbook
+    //     false,  // notBelongToApprover
+    //     false,  // notBelongToPerformer
+    //     0,  // pendingActivity
+    //     [],  // performerAvlReasons
+    //     0,  // rejectedActivity
+    //     1,  // sequence
+    //     "T20240408115606566",  // taskId
+    //     null,  // actAbrv
+    //     null,  // actFile
+    //     null,  // actualActivityEndTime
+    //     null,  // actualActivityStartTime
+    //     null,  // actualActvtEnd
+    //     null,  // actualActvtyStrt
+    //     "Not Started",  // actvityStatus
+    //     "avrajit.roy@greenwave.co.in",  // approver
+    //     "",  // assetId
+    //     "",  // assetName
+    //     null,  // date
+    //     null,  // delayDueToBuffer
+    //     null,  // getGroupOrDeptWisePerformer
+    //     "Administrator",  // groupOrDeptName
+    //     false,  // isActvityBtnDisableOnCompletion
+    //     false,  // isActvityBtnDisbleForActvtOrder
+    //     null,  // jobId
+    //     "",  // performer
+    //     "Department",  // performerType
+    //     null,  // remarks
+    //     null,  // reviewerActivityStartTime
+    //     null,  // reviewerActivityStopTime
+    //     "2024-05-15T00:20:00.000+05:30",  // scheduledActivityEndTime
+    //     "2024-05-15T00:00:00.000+05:30",  // scheduledActivityStartTime
+    //     null,  // selectedAssetIdsList
+    //     null,  // selectedAssetList
+    //     null,  // xPos
+    //     null   // yPos
+    // );
 
-  //   const demoActivity = createActivity(
-  //     "A202405141329292929",  // activityId
-  //     "COMPLETE",  // activityName
-  //     false,  // actvityBtnDisableOnCompletion
-  //     false,  // actvityBtnDisbleForActvtOrder
-  //     0,  // actvtCount
-  //     true,  // assetAvailable
-  //     [],  // assetAvlReasons
-  //     ['A08042024112657985', 'A08042024112657985', 'A08042024112657985', 'A08042024112657985'],  // assetIDList
-  //     ['Weighing Scale', 'Weighing Scale', 'Weighing Scale', 'Weighing Scale'],  // assetNameList
-  //     true,  // available
-  //     false,  // booleanForActivityStatus
-  //     0,  // buffer
-  //     0,  // completedActivity
-  //     false,  // disable
-  //     false,  // disableForAction
-  //     20,  // duration
-  //     false,  // enforce
-  //     true,  // groupOrDept
-  //     "72053 Vivel BW Mint Cucumber",  // logbook
-  //     false,  // notBelongToApprover
-  //     false,  // notBelongToPerformer
-  //     0,  // pendingActivity
-  //     [],  // performerAvlReasons
-  //     0,  // rejectedActivity
-  //     1,  // sequence
-  //     "T20240408115606566",  // taskId
-  //     null,  // actAbrv
-  //     null,  // actFile
-  //     null,  // actualActivityEndTime
-  //     null,  // actualActivityStartTime
-  //     null,  // actualActvtEnd
-  //     null,  // actualActvtyStrt
-  //     "Not Started",  // actvityStatus
-  //     "avrajit.roy@greenwave.co.in",  // approver
-  //     "",  // assetId
-  //     "",  // assetName
-  //     null,  // date
-  //     null,  // delayDueToBuffer
-  //     null,  // getGroupOrDeptWisePerformer
-  //     "Administrator",  // groupOrDeptName
-  //     false,  // isActvityBtnDisableOnCompletion
-  //     false,  // isActvityBtnDisbleForActvtOrder
-  //     null,  // jobId
-  //     "",  // performer
-  //     "Department",  // performerType
-  //     null,  // remarks
-  //     null,  // reviewerActivityStartTime
-  //     null,  // reviewerActivityStopTime
-  //     "2024-05-15T00:20:00.000+05:30",  // scheduledActivityEndTime
-  //     "2024-05-15T00:00:00.000+05:30",  // scheduledActivityStartTime
-  //     null,  // selectedAssetIdsList
-  //     null,  // selectedAssetList
-  //     null,  // xPos
-  //     null   // yPos
-  // );
-  
-  // console.log(demoActivity);
-  
-  
-  //   const activity = [
-  //     createActivity(
-  //       "A202405141317511751",
-  //       "Ticket Resolve",
-  //       false,
-  //       false,
-  //       0,
-  //       true,
-  //       null,
-  //       null,
-  //       null,
-  //       true,
-  //       false,
-  //       0,
-  //       0,
-  //       false,
-  //       false,
-  //       10,
-  //       false,
-  //       false,
-  //       "SupportTicket",
-  //       false,
-  //       false,
-  //       0,
-  //       null,
-  //       0,
-  //       2,
-  //       "T202405141316501650"
-  //     ),
-  //   ];
+    // console.log(demoActivity);
+
+    //   const activity = [
+    //     createActivity(
+    //       "A202405141317511751",
+    //       "Ticket Resolve",
+    //       false,
+    //       false,
+    //       0,
+    //       true,
+    //       null,
+    //       null,
+    //       null,
+    //       true,
+    //       false,
+    //       0,
+    //       0,
+    //       false,
+    //       false,
+    //       10,
+    //       false,
+    //       false,
+    //       "SupportTicket",
+    //       false,
+    //       false,
+    //       0,
+    //       null,
+    //       0,
+    //       2,
+    //       "T202405141316501650"
+    //     ),
+    //   ];
 
     const task = createTask(
       null,
@@ -444,7 +451,7 @@ export default function AllocateTicket() {
       null,
       null,
       // activity,
-      finalActivityList,
+      finalActivityList
     );
 
     const job = createJobDetails(
@@ -453,8 +460,8 @@ export default function AllocateTicket() {
       null,
       userData.email,
       userData.email,
-      dayjs().add(1,'day').format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-      dayjs().add(1,'day').format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+      dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+      dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
       null,
       null,
       null,
@@ -462,8 +469,8 @@ export default function AllocateTicket() {
       null
     );
 
-     const success = await saveJobDetails(job);
-     console.log("Succces ", success);
+    const success = await saveJobDetails(job);
+    console.log("Succces ", success);
   };
 
   return (

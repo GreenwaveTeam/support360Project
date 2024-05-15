@@ -30,7 +30,6 @@ import {
   Typography,
 } from "@mui/material";
 import DataTableByCatagory from "./DataTableByCatagory";
-import CustomTableTest from "../../components/table/CustomTableTest";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 import {
   createActivity,
@@ -53,6 +52,8 @@ export default function AllocateTicket() {
   const [admins, setAdmins] = React.useState([]);
   const [selectedAdmin, setSelecteAdmin] = React.useState("");
   const [userData, setUserData] = React.useState("");
+  // const [tikcetStatus, setTicketStatus] = React.useState("");
+
   //   const application=1;
   //   const device=-2;
   //   const infrastructure=3;
@@ -71,40 +72,41 @@ export default function AllocateTicket() {
     },
     {
       id: "ticket_raising_time",
-      label: "ticket_raising_time",
+      label: "Raising Time",
       type: "textbox",
       canRepeatSameValue: false,
     },
-    {
-      id: "type",
-      label: "type",
-      type: "textbox",
-      canRepeatSameValue: false,
-    },
+
     {
       id: "user",
-      label: "user",
+      label: "Raised By",
       type: "textbox",
       canRepeatSameValue: false,
     },
     {
       id: "useremail",
-      label: "useremail",
+      label: "User Email",
       type: "textbox",
       canRepeatSameValue: false,
     },
     {
       id: "status",
-      label: "status",
+      label: "Status",
       type: "textbox",
       canRepeatSameValue: false,
     },
     {
+      type: "button",
+      id: "view",
+      label: "Details",
       buttons: [
         {
-          buttonlabel: "View Details",
-          isButtonDisable: (row) => {
+          buttonlabel: "View",
+          isButtonRendered: (row) => {
             // console.log("view Row : ", row);
+            return true;
+          },
+          isButtonDisabled: (row) => {
             return false;
           },
           function: (row) => {
@@ -114,10 +116,71 @@ export default function AllocateTicket() {
           },
         },
       ],
+    },
+    {
+      buttons: [
+        {
+          buttonlabel: "Resolve",
+          isButtonRendered: (row) => {
+            // console.log("view Row : ", row);
+            if (row.status === "W.I.P") return true;
+            else return false;
+          },
+          isButtonDisabled: (row) => {
+            //console.log("Assign Row : ", row);
+            // if (row.status === "W.I.P") return true;
+            // else
+            return false;
+          },
+          function: (row) => {
+            console.log("Obj : ", row);
+            setSelectedRow(row);
+            setDialogOpen(true);
+          },
+        },
+
+        {
+          buttonlabel: "Assign",
+          isButtonRendered: (row) => {
+            //console.log("Assign Row : ", row);
+            if (row.status === "open") return true;
+            else return false;
+          },
+
+          isButtonDisabled: (row) => {
+            //console.log("Assign Row : ", row);
+            if (row.status === "W.I.P") return true;
+            else return false;
+          },
+
+          function: (row) => {
+            setSelectedRow(row);
+            setDialogOpenAssign(true);
+          },
+        },
+        {
+          buttonlabel: "Close",
+          isButtonRendered: (row) => {
+            //console.log("Assign Row : ", row);
+            if (row.status === "resolved") return true;
+            else return false;
+          },
+          isButtonDisabled: (row) => {
+            //console.log("Assign Row : ", row);
+            // if (row.status === "W.I.P") return true;
+            // else
+            return false;
+          },
+          function: (row) => {
+            setSelectedRow(row);
+            setDialogOpenAssign(true);
+          },
+        },
+      ],
 
       type: "button",
-      id: "viewDetails",
-      label: "view Details",
+      id: "action",
+      label: "Action",
     },
     // {
     //   buttonlabel: "Assign",
@@ -243,7 +306,7 @@ export default function AllocateTicket() {
     const interval = setInterval(() => {
       console.log("UseEffect called");
       fetchAllTicketsDetails();
-    }, 1500);
+    }, 1500000);
 
     return () => {
       clearInterval(interval);
@@ -256,223 +319,232 @@ export default function AllocateTicket() {
   const handleChangeAdmin = (event) => {
     setSelecteAdmin(event.target.value);
   };
-  const handleSubmit = async (plantId, ticketNo) => {
+  const handleSubmit = async (selectedRow) => {
+    // .plantId, selectedRow.ticketNo
+    const plantId = selectedRow.plantId;
+    const ticketNo = selectedRow.ticketNo;
+    const tikcetStatus = selectedRow.status;
     // Handle submit logic here
     if (selectedAdmin) {
       console.log("palnt id and ticket ", plantId, ticketNo);
       console.log("Selected User:", selectedAdmin);
-      // updateStatus(plantId, ticketNo);
+
+      const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
+
+      const allAssetData = await getSelectedOptionTask("Green Plant");
+      const currentAsset_Activity = allAssetData.filter(
+        (item) => item.taskId === "T202405141316501650"
+      ); //Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented
+      console.log("Current Activity : ", currentAsset_Activity);
+      let current_starttime = dayjs().add(1, "day");
+
+      const finalActivityList = currentAsset_Activity[0].activityList.map(
+        (obj) => {
+          // Apply the function constructor to create a new Activity object
+          const startTime = current_starttime.format(
+            "YYYY-MM-DDTHH:mm:ss.SSSZ"
+          );
+          const endTIme = current_starttime
+            .add(obj.duration, "minute")
+            .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+          current_starttime = current_starttime.add(obj.duration, "minute");
+
+          //const duration = endTime.diff(startTime, 'millisecond');
+          return createActivity(
+            obj.taskId || null,
+            obj.taskName || null,
+            obj.jobId || null,
+            obj.activityId || null,
+            obj.activityName || null,
+            obj.sequence || null,
+            obj.logbook || null,
+            obj.duration || null,
+            obj.xPos || null,
+            obj.yPos || null,
+            obj.performer || "",
+            obj.approver || "",
+            // obj.scheduledActivityStartTime || null,
+            // obj.scheduledActivityEndTime || null,
+            startTime,
+            endTIme,
+            obj.actualActivityStartTime || null,
+            obj.actualActivityEndTime || null,
+            obj.notBelongToPerformer || false,
+            obj.notBelongToApprover || false,
+            obj.actvityStatus || "Not Started",
+            // "Not Started",
+            obj.isActvityBtnDisableOnCompletion || false,
+            obj.isActvityBtnDisbleForActvtOrder || false,
+            obj.actAbrv || null,
+            obj.available || true,
+            obj.performerAvlReasons || [],
+            obj.assetAvailable || true,
+            obj.assetAvlReasons || [],
+            obj.actualActvtyStrt || null,
+            obj.actualActvtEnd || null,
+            obj.reviewerActivityStartTime || null,
+            obj.reviewerActivityStopTime || null,
+            obj.remarks || null,
+            obj.assetId || "",
+            obj.assetName || "",
+            obj.assetIDList || [],
+            obj.assetNameList || [],
+            obj.groupOrDept || false,
+            obj.groupOrDeptName || null,
+            obj.performerType || null,
+            // boolean_current_groupOrDept,
+            // current_groupOrDept,
+            // current_performerType,
+            obj.getGroupOrDeptWisePerformer || null,
+            obj.completedActivity || 0,
+            obj.pendingActivity || 0,
+            obj.rejectedActivity || 0,
+            obj.date || null,
+            obj.actvtCount || 0,
+            obj.actFile || null,
+            obj.buffer || 0,
+            obj.delayDueToBuffer || null,
+            obj.enforce || false,
+            obj.selectedAssetList || null,
+            obj.selectedAssetIdsList || null
+          );
+        }
+      );
+
+      //   const demoActivity = createActivity(
+      //     "A202405141329292929",  // activityId
+      //     "COMPLETE",  // activityName
+      //     false,  // actvityBtnDisableOnCompletion
+      //     false,  // actvityBtnDisbleForActvtOrder
+      //     0,  // actvtCount
+      //     true,  // assetAvailable
+      //     [],  // assetAvlReasons
+      //     ['A08042024112657985', 'A08042024112657985', 'A08042024112657985', 'A08042024112657985'],  // assetIDList
+      //     ['Weighing Scale', 'Weighing Scale', 'Weighing Scale', 'Weighing Scale'],  // assetNameList
+      //     true,  // available
+      //     false,  // booleanForActivityStatus
+      //     0,  // buffer
+      //     0,  // completedActivity
+      //     false,  // disable
+      //     false,  // disableForAction
+      //     20,  // duration
+      //     false,  // enforce
+      //     true,  // groupOrDept
+      //     "72053 Vivel BW Mint Cucumber",  // logbook
+      //     false,  // notBelongToApprover
+      //     false,  // notBelongToPerformer
+      //     0,  // pendingActivity
+      //     [],  // performerAvlReasons
+      //     0,  // rejectedActivity
+      //     1,  // sequence
+      //     "T20240408115606566",  // taskId
+      //     null,  // actAbrv
+      //     null,  // actFile
+      //     null,  // actualActivityEndTime
+      //     null,  // actualActivityStartTime
+      //     null,  // actualActvtEnd
+      //     null,  // actualActvtyStrt
+      //     "Not Started",  // actvityStatus
+      //     "avrajit.roy@greenwave.co.in",  // approver
+      //     "",  // assetId
+      //     "",  // assetName
+      //     null,  // date
+      //     null,  // delayDueToBuffer
+      //     null,  // getGroupOrDeptWisePerformer
+      //     "Administrator",  // groupOrDeptName
+      //     false,  // isActvityBtnDisableOnCompletion
+      //     false,  // isActvityBtnDisbleForActvtOrder
+      //     null,  // jobId
+      //     "",  // performer
+      //     "Department",  // performerType
+      //     null,  // remarks
+      //     null,  // reviewerActivityStartTime
+      //     null,  // reviewerActivityStopTime
+      //     "2024-05-15T00:20:00.000+05:30",  // scheduledActivityEndTime
+      //     "2024-05-15T00:00:00.000+05:30",  // scheduledActivityStartTime
+      //     null,  // selectedAssetIdsList
+      //     null,  // selectedAssetList
+      //     null,  // xPos
+      //     null   // yPos
+      // );
+
+      // console.log(demoActivity);
+
+      //   const activity = [
+      //     createActivity(
+      //       "A202405141317511751",
+      //       "Ticket Resolve",
+      //       false,
+      //       false,
+      //       0,
+      //       true,
+      //       null,
+      //       null,
+      //       null,
+      //       true,
+      //       false,
+      //       0,
+      //       0,
+      //       false,
+      //       false,
+      //       10,
+      //       false,
+      //       false,
+      //       "SupportTicket",
+      //       false,
+      //       false,
+      //       0,
+      //       null,
+      //       0,
+      //       2,
+      //       "T202405141316501650"
+      //     ),
+      //   ];
+
+      const task = createTask(
+        null,
+        ticketNo,
+        "T202405141316501650",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        // activity,
+        finalActivityList
+      );
+
+      const job = createJobDetails(
+        task,
+        jobId,
+        null,
+        userData.email,
+        userData.email,
+        dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        null,
+        null,
+        null,
+        "device",
+        null
+      );
+
+      const success = await saveJobDetails(job);
+      console.log("Succces ", job);
+      // await updateStatus(plantId, ticketNo, tikcetStatus);
       setDialogOpenAssign(false);
       setSelectedRow(null);
       setSelecteAdmin("");
+      setSnackbarText("Assigned Successfully");
+      setsnackbarSeverity("success");
+      setSnackbarOpen(true);
     } else {
       setSnackbarText("Select an Admin");
       setsnackbarSeverity("error");
       setSnackbarOpen(true);
       return;
     }
-
-    const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
-
-    const allAssetData = await getSelectedOptionTask("Green Plant");
-    const currentAsset_Activity = allAssetData.filter(
-      (item) => item.taskId === "T202405141316501650"
-    ); //Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented
-    console.log("Current Activity : ", currentAsset_Activity);
-    let current_starttime = dayjs().add(1, "day");
-
-    const finalActivityList = currentAsset_Activity[0].activityList.map(
-      (obj) => {
-        // Apply the function constructor to create a new Activity object
-        const startTime = current_starttime.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-        const endTIme = current_starttime
-          .add(obj.duration, "minute")
-          .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-        current_starttime = current_starttime.add(obj.duration, "minute");
-
-        //const duration = endTime.diff(startTime, 'millisecond');
-        return createActivity(
-          obj.taskId || null,
-          obj.taskName || null,
-          obj.jobId || null,
-          obj.activityId || null,
-          obj.activityName || null,
-          obj.sequence || null,
-          obj.logbook || null,
-          obj.duration || null,
-          obj.xPos || null,
-          obj.yPos || null,
-          obj.performer || "",
-          obj.approver || "",
-          // obj.scheduledActivityStartTime || null,
-          // obj.scheduledActivityEndTime || null,
-          startTime,
-          endTIme,
-          obj.actualActivityStartTime || null,
-          obj.actualActivityEndTime || null,
-          obj.notBelongToPerformer || false,
-          obj.notBelongToApprover || false,
-          obj.actvityStatus || "Not Started",
-          // "Not Started",
-          obj.isActvityBtnDisableOnCompletion || false,
-          obj.isActvityBtnDisbleForActvtOrder || false,
-          obj.actAbrv || null,
-          obj.available || true,
-          obj.performerAvlReasons || [],
-          obj.assetAvailable || true,
-          obj.assetAvlReasons || [],
-          obj.actualActvtyStrt || null,
-          obj.actualActvtEnd || null,
-          obj.reviewerActivityStartTime || null,
-          obj.reviewerActivityStopTime || null,
-          obj.remarks || null,
-          obj.assetId || "",
-          obj.assetName || "",
-          obj.assetIDList || [],
-          obj.assetNameList || [],
-          obj.groupOrDept || false,
-          obj.groupOrDeptName || null,
-          obj.performerType || null,
-          // boolean_current_groupOrDept,
-          // current_groupOrDept,
-          // current_performerType,
-          obj.getGroupOrDeptWisePerformer || null,
-          obj.completedActivity || 0,
-          obj.pendingActivity || 0,
-          obj.rejectedActivity || 0,
-          obj.date || null,
-          obj.actvtCount || 0,
-          obj.actFile || null,
-          obj.buffer || 0,
-          obj.delayDueToBuffer || null,
-          obj.enforce || false,
-          obj.selectedAssetList || null,
-          obj.selectedAssetIdsList || null
-        );
-      }
-    );
-
-    //   const demoActivity = createActivity(
-    //     "A202405141329292929",  // activityId
-    //     "COMPLETE",  // activityName
-    //     false,  // actvityBtnDisableOnCompletion
-    //     false,  // actvityBtnDisbleForActvtOrder
-    //     0,  // actvtCount
-    //     true,  // assetAvailable
-    //     [],  // assetAvlReasons
-    //     ['A08042024112657985', 'A08042024112657985', 'A08042024112657985', 'A08042024112657985'],  // assetIDList
-    //     ['Weighing Scale', 'Weighing Scale', 'Weighing Scale', 'Weighing Scale'],  // assetNameList
-    //     true,  // available
-    //     false,  // booleanForActivityStatus
-    //     0,  // buffer
-    //     0,  // completedActivity
-    //     false,  // disable
-    //     false,  // disableForAction
-    //     20,  // duration
-    //     false,  // enforce
-    //     true,  // groupOrDept
-    //     "72053 Vivel BW Mint Cucumber",  // logbook
-    //     false,  // notBelongToApprover
-    //     false,  // notBelongToPerformer
-    //     0,  // pendingActivity
-    //     [],  // performerAvlReasons
-    //     0,  // rejectedActivity
-    //     1,  // sequence
-    //     "T20240408115606566",  // taskId
-    //     null,  // actAbrv
-    //     null,  // actFile
-    //     null,  // actualActivityEndTime
-    //     null,  // actualActivityStartTime
-    //     null,  // actualActvtEnd
-    //     null,  // actualActvtyStrt
-    //     "Not Started",  // actvityStatus
-    //     "avrajit.roy@greenwave.co.in",  // approver
-    //     "",  // assetId
-    //     "",  // assetName
-    //     null,  // date
-    //     null,  // delayDueToBuffer
-    //     null,  // getGroupOrDeptWisePerformer
-    //     "Administrator",  // groupOrDeptName
-    //     false,  // isActvityBtnDisableOnCompletion
-    //     false,  // isActvityBtnDisbleForActvtOrder
-    //     null,  // jobId
-    //     "",  // performer
-    //     "Department",  // performerType
-    //     null,  // remarks
-    //     null,  // reviewerActivityStartTime
-    //     null,  // reviewerActivityStopTime
-    //     "2024-05-15T00:20:00.000+05:30",  // scheduledActivityEndTime
-    //     "2024-05-15T00:00:00.000+05:30",  // scheduledActivityStartTime
-    //     null,  // selectedAssetIdsList
-    //     null,  // selectedAssetList
-    //     null,  // xPos
-    //     null   // yPos
-    // );
-
-    // console.log(demoActivity);
-
-    //   const activity = [
-    //     createActivity(
-    //       "A202405141317511751",
-    //       "Ticket Resolve",
-    //       false,
-    //       false,
-    //       0,
-    //       true,
-    //       null,
-    //       null,
-    //       null,
-    //       true,
-    //       false,
-    //       0,
-    //       0,
-    //       false,
-    //       false,
-    //       10,
-    //       false,
-    //       false,
-    //       "SupportTicket",
-    //       false,
-    //       false,
-    //       0,
-    //       null,
-    //       0,
-    //       2,
-    //       "T202405141316501650"
-    //     ),
-    //   ];
-
-    const task = createTask(
-      null,
-      ticketNo,
-      "T202405141316501650",
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      // activity,
-      finalActivityList
-    );
-
-    const job = createJobDetails(
-      task,
-      jobId,
-      null,
-      userData.email,
-      userData.email,
-      dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-      dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-      null,
-      null,
-      null,
-      "device",
-      null
-    );
-
-    const success = await saveJobDetails(job);
-    console.log("Succces ", success);
   };
 
   return (
@@ -602,9 +674,7 @@ export default function AllocateTicket() {
             {selectedRow && (
               <Button
                 variant="contained"
-                onClick={() =>
-                  handleSubmit(selectedRow.plantId, selectedRow.ticketNo)
-                }
+                onClick={() => handleSubmit(selectedRow)}
               >
                 Allocate
               </Button>

@@ -71,7 +71,7 @@ export default function AdminHome({ sendUrllist }) {
     useState(false);
   const [selectedAdminID, setSelectedAdminID] = useState("");
   const [logedUser, setLogedUser] = useState([]);
-
+  const DB_IP = process.env.REACT_APP_SERVERIP;
   const navigate = useNavigate();
   // const [switchLabel, setSwitchLabel] = useState("Toggle Admin");
   // const [switchChecked, setSwitchChecked] = useState(false);
@@ -131,7 +131,7 @@ export default function AdminHome({ sendUrllist }) {
   const fetchUser = async () => {
     console.log("expire : ", localStorage.getItem("expire"));
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -164,7 +164,7 @@ export default function AdminHome({ sendUrllist }) {
       console.log("Current UserData in fetchDivs() : ", userData);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -206,7 +206,7 @@ export default function AdminHome({ sendUrllist }) {
     console.log(`adminhome Bearer ${localStorage.getItem("token")}`);
     try {
       const response = await fetch(
-        "http://localhost:8081/users/",
+        `http://${DB_IP}/users/`,
         // `http://${process.env.SERVERIP}:${process.env.PORT}/users/`
         {
           method: "GET",
@@ -236,7 +236,7 @@ export default function AdminHome({ sendUrllist }) {
   const fetchAdminData = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8081/users/",
+        `http://${DB_IP}/users/`,
         // const response = await fetch("http://localhost:8081/admins/",
         {
           method: "GET",
@@ -284,7 +284,7 @@ export default function AdminHome({ sendUrllist }) {
   async function deleteUserByUserID(e) {
     console.log("e : ", e);
     try {
-      const response = await fetch(`http://localhost:8081/users/user/${e}`, {
+      const response = await fetch(`http://${DB_IP}/users/user/${e}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -308,7 +308,7 @@ export default function AdminHome({ sendUrllist }) {
 
   async function deleteAdminByAdminID(e) {
     try {
-      const response = await fetch(`http://localhost:8081/admins/admin/${e}`, {
+      const response = await fetch(`http://${DB_IP}/admins/admin/${e}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -333,7 +333,7 @@ export default function AdminHome({ sendUrllist }) {
   async function resetPasswordByAdminID(e) {
     try {
       const response = await fetch(
-        `http://localhost:8081/users/user/resetPassword?userId=${e}&defaultPassword=${defaultPassword}`,
+        `http://${DB_IP}/users/user/resetPassword?userId=${e}&defaultPassword=${defaultPassword}`,
         {
           method: "POST",
           headers: {

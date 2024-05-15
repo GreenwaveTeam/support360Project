@@ -56,7 +56,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useUserContext } from "../../../modules/contexts/UserContext";
 
 const drawerWidth = 240;
-
+const DB_IP = process.env.REACT_APP_SERVERIP;
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -193,7 +193,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
   const fetchUser = async () => {
     console.log(`userhome Bearer ${localStorage.getItem("token")}`);
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -313,11 +313,11 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
 
     console.log("formData : : ", formData);
     console.log(
-      `http://localhost:8081/admins/admin/changePassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}&newPassword=${formData.newPassword}`
+      `http://${DB_IP}/admins/admin/changePassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}&newPassword=${formData.newPassword}`
     );
     try {
       const response = await fetch(
-        `http://localhost:8081/admins/admin/changePassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}&newPassword=${formData.newPassword}`,
+        `http://${DB_IP}/admins/admin/changePassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}&newPassword=${formData.newPassword}`,
         {
           method: "POST",
           headers: {
@@ -356,7 +356,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
   const checkOldPassword = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8081/admins/admin/checkOldPassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}`,
+        `http://${DB_IP}/admins/admin/checkOldPassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}`,
         {
           method: "POST",
           headers: {

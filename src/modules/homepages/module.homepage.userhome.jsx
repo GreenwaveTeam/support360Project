@@ -130,6 +130,8 @@ function UserHome({ sendUrllist }) {
     setNonCriticalInfrastructureIssuesCurrentMonth,
   ] = useState(0);
 
+  const DB_IP = process.env.REACT_APP_SERVERIP;
+
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("catagory");
 
@@ -317,7 +319,7 @@ function UserHome({ sendUrllist }) {
       console.log("Current UserData in fetchDivs() : ", userData);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -384,7 +386,7 @@ function UserHome({ sendUrllist }) {
   const monthwiseticketraised = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8081/users/user/monthwiseticketraised",
+        `http://${DB_IP}/users/user/monthwiseticketraised`,
         {
           method: "GET",
           headers: {
@@ -423,7 +425,7 @@ function UserHome({ sendUrllist }) {
   const monthAndCatagoryWiseTicketRaised = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8081/users/user/monthAndCatagoryWiseTicketRaised",
+        `http://${DB_IP}/users/user/monthAndCatagoryWiseTicketRaised`,
         {
           method: "GET",
           headers: {
@@ -508,7 +510,7 @@ function UserHome({ sendUrllist }) {
   const getPendingTickets = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8081/users/user/pendingTickets",
+        `http://${DB_IP}/users/user/pendingTickets`,
         {
           method: "GET",
           headers: {
@@ -542,16 +544,13 @@ function UserHome({ sendUrllist }) {
 
   const getAllTickets = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8081/users/user/allTickets",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`http://${DB_IP}/users/user/allTickets`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       console.log("allTicketData : ", data);
       setAllTicketData(data);
@@ -562,16 +561,13 @@ function UserHome({ sendUrllist }) {
 
   const fetchComponents = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8081/role/{role}/{pagename}",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`http://${DB_IP}/role/{role}/{pagename}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       if (response.status === 403) {
         localStorage.clear();
         navigate("/login");
@@ -596,7 +592,7 @@ function UserHome({ sendUrllist }) {
   const fetchUser = async () => {
     console.log("expire : ", localStorage.getItem("expire"));
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -649,17 +645,14 @@ function UserHome({ sendUrllist }) {
   const fetchTicketDetails = async () => {
     console.log(`userhome Bearer ${localStorage.getItem("token")}`);
     try {
-      const response = await fetch(
-        "http://localhost:8081/users/user/ticketInfo",
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            // Authorization: `Bearer ${token}`,
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await fetch(`http://${DB_IP}/users/user/ticketInfo`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          // Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const data = await response.json();
       console.log("fetchTicketDetails data : ", data);
       setTicketData((prevData) => ({

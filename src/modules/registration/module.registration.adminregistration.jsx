@@ -85,6 +85,7 @@ export default function AdminRegistration({ sendUrllist }) {
   const handleMouseDownPassword = (e) => {
     e.preventDefault();
   };
+  const DB_IP = process.env.REACT_APP_SERVERIP;
 
   const [snackbarText, setSnackbarText] = useState("");
   const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
@@ -217,7 +218,7 @@ export default function AdminRegistration({ sendUrllist }) {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch("http://localhost:8081/role", {
+      const response = await fetch(`http://${DB_IP}/role`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -264,11 +265,11 @@ export default function AdminRegistration({ sendUrllist }) {
     try {
       console.log(
         "updateFormData.adminId : ",
-        `http://localhost:8081/admins/admin/${updateFormData.adminId}`
+        `http://${DB_IP}/admins/admin/${updateFormData.adminId}`
       );
       console.log("updateFormData : ", updateFormData);
       const response = await fetch(
-        `http://localhost:8081/admins/admin/${updateFormData.adminId}`,
+        `http://${DB_IP}/admins/admin/${updateFormData.adminId}`,
         {
           method: "PUT",
           headers: {
@@ -360,7 +361,7 @@ export default function AdminRegistration({ sendUrllist }) {
 
     console.log("formData : : ", formData);
     try {
-      const response = await fetch("http://localhost:8081/auth/admin/signup", {
+      const response = await fetch(`http://${DB_IP}/auth/admin/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

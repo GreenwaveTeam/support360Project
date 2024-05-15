@@ -65,6 +65,7 @@ export default function PlantPage({ sendUrllist }) {
     // supportStartDate: dayjs(),
     // supportEndDate: dayjs(),
   });
+  const DB_IP = process.env.REACT_APP_SERVERIP;
 
   const newColors = ["#ff7043", "#7e57c2", "#81c784"];
   const getColor = (index) => {
@@ -135,7 +136,7 @@ export default function PlantPage({ sendUrllist }) {
 
   const fetchPlantData = async () => {
     try {
-      const response = await fetch("http://localhost:8081/plants/", {
+      const response = await fetch(`http:${DB_IP}/plants/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -162,7 +163,7 @@ export default function PlantPage({ sendUrllist }) {
     console.log("plantId : ", e);
     try {
       const response = await fetch(
-        `http://localhost:8081/plants/plant?plantId=${e}`,
+        `http://${DB_IP}/plants/plant?plantId=${e}`,
         {
           method: "DELETE",
           headers: {
@@ -217,7 +218,7 @@ export default function PlantPage({ sendUrllist }) {
     }
 
     try {
-      const response = await fetch("http://localhost:8081/plants/", {
+      const response = await fetch(`http://${DB_IP}/plants/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

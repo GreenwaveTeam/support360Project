@@ -53,6 +53,7 @@ import WarehouseOutlinedIcon from "@mui/icons-material/WarehouseOutlined";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { width } from "@mui/system";
 import { extendTokenExpiration } from "../helper/Support360Api";
+import LocationCityIcon from "@mui/icons-material/LocationCity";
 
 export default function AdminHome({ sendUrllist }) {
   const [userList, setUserList] = useState([]);
@@ -541,12 +542,12 @@ export default function AdminHome({ sendUrllist }) {
               <div style={{ height: "inherit" }}>
                 <Button
                   variant="contained"
-                  startIcon={<WarehouseOutlinedIcon />}
+                  startIcon={<LocationCityIcon />}
                   sx={{
                     mt: 1.2,
                     mb: 1,
-                    backgroundImage:
-                      "linear-gradient(to top, #0bd360 0%, #3cba92 100%);",
+
+                    background: "#7e57c2",
                     marginRight: "8px",
                   }}
                   onClick={() => {
@@ -563,8 +564,7 @@ export default function AdminHome({ sendUrllist }) {
                   sx={{
                     mt: 1.2,
                     mb: 1,
-                    backgroundImage:
-                      "linear-gradient(to top, #0bd360 0%, #3cba92 100%);",
+                    background: "#f56133",
                   }}
                   onClick={() => {
                     navigate("/admin/allocateTicket");
@@ -644,7 +644,6 @@ export default function AdminHome({ sendUrllist }) {
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "space-between",
-
                                     columnGap: "1rem",
                                   }}
                                 >
@@ -743,13 +742,15 @@ export default function AdminHome({ sendUrllist }) {
                                       </Tooltip> */}
 
                                     <FormControl fullWidth>
-                                      <InputLabel htmlFor="search">
+                                      <InputLabel
+                                        sx={{ marginTop: "-7px" }}
+                                        htmlFor="search"
+                                      >
                                         <div style={{ display: "flex" }}>
                                           <SearchOutlinedIcon
                                             style={{
+                                              fontSize: "1rem",
                                               marginRight: "5px",
-                                              padding: "14.5px 14px !important",
-                                              height: "0.9375rem !important",
                                             }}
                                           />
                                           Search...
@@ -767,7 +768,7 @@ export default function AdminHome({ sendUrllist }) {
                                         sx={{
                                           marginLeft: "5px",
                                           width: "200px",
-                                          padding: "23.5px 14px !important",
+                                          padding: "17px 14px !important",
                                           height: "1.1375rem !important",
                                         }}
                                         onChange={(e) =>
@@ -1126,6 +1127,7 @@ export default function AdminHome({ sendUrllist }) {
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "space-between",
+                                    columnGap: "1rem",
                                   }}
                                 >
                                   {/* {divIsVisibleList.includes(
@@ -1183,13 +1185,23 @@ export default function AdminHome({ sendUrllist }) {
                                         </IconButton>
                                       </Tooltip> */}
                                     <FormControl fullWidth>
-                                      <InputLabel htmlFor="search">
-                                        <div style={{ display: "flex" }}>
+                                      <InputLabel
+                                        sx={{ marginTop: "-7px" }}
+                                        htmlFor="search"
+                                      >
+                                        <di
+                                          style={{
+                                            display: "flex",
+                                            //padding: "10px 14px !important",
+                                          }}
+                                        >
                                           <SearchOutlinedIcon
                                             style={{
+                                              fontSize: "1rem",
                                               marginRight: "5px",
-                                              padding: "14.5px 14px !important",
-                                              height: "0.9375rem !important",
+                                              //marginTop: "-1rem",
+                                              // padding: "14.5px 14px !important",
+                                              //height: "0.9375rem !important",
                                             }}
                                           />
                                           Search...
@@ -1206,7 +1218,7 @@ export default function AdminHome({ sendUrllist }) {
                                         sx={{
                                           marginLeft: "5px",
                                           width: "200px",
-                                          padding: "23.5px 14px !important",
+                                          padding: "17px 14px !important",
                                           height: "1.1375rem !important",
                                         }}
                                         onChange={(e) =>

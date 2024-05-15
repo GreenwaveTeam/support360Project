@@ -276,7 +276,7 @@ export default function DataTableByCatagory({ plantId, ticketNo }) {
     const interval = setInterval(() => {
       console.log("UseEffect called");
       fetchData();
-    }, 1500000);
+    }, 1500);
 
     return () => {
       clearInterval(interval);

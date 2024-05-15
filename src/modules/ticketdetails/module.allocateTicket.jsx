@@ -235,7 +235,7 @@ export default function AllocateTicket() {
     const interval = setInterval(() => {
       console.log("UseEffect called");
       fetchAllTicketsDetails();
-    }, 1500000);
+    }, 1500);
 
     return () => {
       clearInterval(interval);

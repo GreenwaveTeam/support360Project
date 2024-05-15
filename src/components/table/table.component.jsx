@@ -684,13 +684,15 @@ export default function CustomTable({
                                 {column.type === "button" && (
                                   <div>
                                     {column.buttons.map((columnbutton,buttonindex)=>
+                                    {columnbutton.isButtonDisable(row)&&
                                     <Button
-                                      disabled={columnbutton.isButtonDisable(row)}
+                                      
                                       variant="contained"
                                       onClick={() => columnbutton.function(row)}
                                     >
                                       {columnbutton.buttonlabel}
                                     </Button>
+                                    }
                             )}
                                   </div>
                                 )}

@@ -122,7 +122,7 @@ export const fetchApplicationNames = async (plantID) => {
           export const fetchCurrentUser = async () => {
             // let role = "";
             try {
-              const response = await fetch(`http://${DB_IP}:8081/users/user`, {
+              const response = await fetch(`http://${DB_IP}/users/user`, {
                 method: "GET",
                 headers: {
                   // Authorization: `Bearer ${token}`,

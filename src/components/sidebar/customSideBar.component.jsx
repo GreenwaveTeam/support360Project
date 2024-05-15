@@ -10,7 +10,7 @@ import { ThemeProvider, createMuiTheme } from "@mui/material/styles";
 const defaultStyles = {
   //color: "#c50808",
 };
-
+const DB_IP = process.env.REACT_APP_SERVERIP;
 const CustomMenuItem = ({ label, path }) => {
   const navigate = useNavigate();
 
@@ -153,10 +153,10 @@ const CustomPanelBar = () => {
       console.log("navi role => ", role);
       console.log(
         "navi link ",
-        `http://localhost:8081/navigation/${role ? role : ""}`
+        `http://${DB_IP}/navigation/${role ? role : ""}`
       );
       const response = await fetch(
-        `http://localhost:8081/navigation/${role ? role : ""}`,
+        `http://${DB_IP}/navigation/${role ? role : ""}`,
         {
           method: "GET",
           headers: {
@@ -188,7 +188,7 @@ const CustomPanelBar = () => {
   const fetchUser = async () => {
     let role = "";
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,

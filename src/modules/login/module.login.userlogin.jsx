@@ -37,7 +37,7 @@ export default function UserLogin() {
   const [open, setOpen] = useState(false);
   const [snackbarText, setSnackbarText] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+  const DB_IP = process.env.REACT_APP_SERVERIP;
   useEffect(() => {
     if (isAuthenticated()) {
       fetchUser();
@@ -121,7 +121,7 @@ export default function UserLogin() {
   const fetchUser = async () => {
     console.log(`userhome Bearer ${localStorage.getItem("token")}`);
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -156,7 +156,7 @@ export default function UserLogin() {
 
   const fetchPageName = async (role) => {
     try {
-      const response = await fetch(`http://localhost:8081/role/${role}`, {
+      const response = await fetch(`http://${DB_IP}/role/${role}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

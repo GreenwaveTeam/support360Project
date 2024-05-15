@@ -155,6 +155,8 @@ export default function UserRegistration({ sendUrllist }) {
 
   const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
 
+  const DB_IP = process.env.REACT_APP_SERVERIP;
+
   const handleClose = (e, reason) => {
     if (reason === "clickaway") {
       return;
@@ -336,7 +338,7 @@ export default function UserRegistration({ sendUrllist }) {
 
   const fetchPlantData = async () => {
     try {
-      const response = await fetch("http://localhost:8081/plants/", {
+      const response = await fetch(`http://${DB_IP}/plants/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -361,7 +363,7 @@ export default function UserRegistration({ sendUrllist }) {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch("http://localhost:8081/role", {
+      const response = await fetch(`http://${DB_IP}/role`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -382,7 +384,7 @@ export default function UserRegistration({ sendUrllist }) {
 
   const postPlantName = async () => {
     try {
-      const response = await fetch("http://localhost:8081/plants/plant", {
+      const response = await fetch(`http://${DB_IP}/plants/plant`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -474,11 +476,11 @@ export default function UserRegistration({ sendUrllist }) {
     try {
       console.log(
         "updateFormData.userId : ",
-        `http://localhost:8081/users/user/${updateFormData.userId}`
+        `http://${DB_IP}/users/user/${updateFormData.userId}`
       );
       console.log("updateFormData : ", updateFormData);
       const response = await fetch(
-        `http://localhost:8081/users/user/${updateFormData.userId}`,
+        `http://${DB_IP}/users/user/${updateFormData.userId}`,
         {
           method: "PUT",
           headers: {
@@ -601,7 +603,7 @@ export default function UserRegistration({ sendUrllist }) {
 
     console.log("formData : : ", formData);
     try {
-      const response = await fetch("http://localhost:8081/auth/user/signup", {
+      const response = await fetch(`http://${DB_IP}/auth/user/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -65,7 +65,7 @@ import Fab from "@mui/material/Fab";
 import CustomButton from "../../../components/button/button.component";
 import { ArrowRightIcon } from "@mui/x-date-pickers";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
-
+const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function UserDeviceTree({ sendUrllist }) {
   const [snackbarText, setSnackbarText] = useState("Data saved !");
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
@@ -174,7 +174,7 @@ export default function UserDeviceTree({ sendUrllist }) {
   const fetchUser = async () => {
     let role = "";
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -202,7 +202,7 @@ export default function UserDeviceTree({ sendUrllist }) {
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -236,7 +236,7 @@ export default function UserDeviceTree({ sendUrllist }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8081/device/admin/getTree/${userData.plantID}`,
+          `http://${DB_IP}/device/admin/getTree/${userData.plantID}`,
           {
             method: "GET",
             headers: {
@@ -342,17 +342,14 @@ export default function UserDeviceTree({ sendUrllist }) {
   };
   const handleSubmitPost = async (dataLocal) => {
     try {
-      const response = await fetch(
-        "http://localhost:8081/device/user/saveTicket",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify(dataLocal),
-        }
-      );
+      const response = await fetch(`http://${DB_IP}/device/user/saveTicket`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(dataLocal),
+      });
 
       if (response.ok) {
         // setPostDataStatus("Data successfully posted!");
@@ -465,7 +462,7 @@ export default function UserDeviceTree({ sendUrllist }) {
       try {
         const response = await fetch(
           // `http://localhost:9999/admin/P009/${category}`
-          `http://localhost:8081/device/admin/${userData.plantID}/${category}`,
+          `http://${DB_IP}/device/admin/${userData.plantID}/${category}`,
           {
             method: "GET",
             headers: {

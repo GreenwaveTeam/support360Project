@@ -39,11 +39,12 @@ const DeviceCategory = ({ sendUrllist }) => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [filteredRows, setFilteredRows] = useState([]);
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
-
+  const DB_IP = process.env.REACT_APP_SERVERIP;
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
+    { pageName: "User Configure", pagelink: "/admin/configurePage" },
     {
       pageName: "Device Issue Category",
       pagelink: "/admin/Device/CategoryConfigure",
@@ -61,7 +62,7 @@ const DeviceCategory = ({ sendUrllist }) => {
   const fetchUser = async () => {
     let role = "";
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -86,7 +87,7 @@ const DeviceCategory = ({ sendUrllist }) => {
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=/admin/Device/CategoryConfigure`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/Device/CategoryConfigure`,
         {
           method: "GET",
           headers: {
@@ -126,7 +127,7 @@ const DeviceCategory = ({ sendUrllist }) => {
         console.log(`userhome Bearer ${localStorage.getItem("token")}`);
         // Make the API call to fetch data
         const response = await axios.get(
-          `http://localhost:8081/device/admin/${plantid}/categories`,
+          `http://${DB_IP}/device/admin/${plantid}/categories`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -195,7 +196,7 @@ const DeviceCategory = ({ sendUrllist }) => {
 
     try {
       // Send requestBody as request body in the DELETE request
-      await axios.delete("http://localhost:8081/device/admin/categories", {
+      await axios.delete("http://${DB_IP}/device/admin/categories", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",
@@ -238,7 +239,7 @@ const DeviceCategory = ({ sendUrllist }) => {
       };
       try {
         const response = await axios.put(
-          `http://localhost:8081/device/admin/${plantid}/categories/` +
+          `http://${DB_IP}/device/admin/${plantid}/categories/` +
             selectedCategory.categoryname,
           requestData,
           {

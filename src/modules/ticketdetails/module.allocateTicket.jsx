@@ -1,3 +1,4 @@
+// 5a72b5a21245ea165112a0615a678ace71d6a368
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
@@ -8,7 +9,9 @@ import axios from "axios";
 import {
   fetchAdminList,
   fetchUser,
+  getAllAssetGroups,
   getAllOpenTicketDetails,
+  getSelectedOptionTask,
   updateStatus,
 } from "./AllocateTicket";
 import Badge from "@mui/material/Badge";
@@ -97,35 +100,40 @@ export default function AllocateTicket() {
       canRepeatSameValue: false,
     },
     {
-      buttonlabel: "View Details",
+      buttons: [
+        {
+          buttonlabel: "View Details",
+          isButtonDisable: (row) => {
+            // console.log("view Row : ", row);
+            return false;
+          },
+          function: (row) => {
+            console.log("Obj : ", row);
+            setSelectedRow(row);
+            setDialogOpen(true);
+          },
+        },
+      ],
+
       type: "button",
       id: "viewDetails",
       label: "view Details",
-      isButtonDisable: (row) => {
-        // console.log("view Row : ", row);
-        return false;
-      },
-      function: (row) => {
-        console.log("Obj : ", row);
-        setSelectedRow(row);
-        setDialogOpen(true);
-      },
     },
-    {
-      buttonlabel: "Assign",
-      type: "button",
-      id: "Assign",
-      label: "Assign Ticket",
-      isButtonDisable: (row) => {
-        //console.log("Assign Row : ", row);
-        if (row.status === "pending") return true;
-        else return false;
-      },
-      function: (row) => {
-        setSelectedRow(row);
-        setDialogOpenAssign(true);
-      },
-    },
+    // {
+    //   buttonlabel: "Assign",
+    //   type: "button",
+    //   id: "Assign",
+    //   label: "Assign Ticket",
+    //   isButtonDisable: (row) => {
+    //     //console.log("Assign Row : ", row);
+    //     if (row.status === "pending") return true;
+    //     else return false;
+    //   },
+    //   function: (row) => {
+    //     setSelectedRow(row);
+    //     setDialogOpenAssign(true);
+    //   },
+    // },
   ];
 
   const handleAdminIdChange = (event) => {
@@ -251,12 +259,12 @@ export default function AllocateTicket() {
   const handleSubmit = async (plantId, ticketNo) => {
     // Handle submit logic here
     if (selectedAdmin) {
-      console.log("palnt id and ticke ", plantId, ticketNo);
+      console.log("palnt id and ticket ", plantId, ticketNo);
       console.log("Selected User:", selectedAdmin);
-      updateStatus(plantId, ticketNo);
+      // updateStatus(plantId, ticketNo);
       setDialogOpenAssign(false);
       setSelectedRow(null);
-      setSelecteAdmin();
+      setSelecteAdmin("");
     } else {
       setSnackbarText("Select an Admin");
       setsnackbarSeverity("error");
@@ -265,36 +273,174 @@ export default function AllocateTicket() {
     }
 
     const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
-    const activity = [
-      createActivity(
-        "A202405141317511751",
-        "Ticket Resolve",
-        false,
-        false,
-        0,
-        true,
-        null,
-        null,
-        null,
-        true,
-        false,
-        0,
-        0,
-        false,
-        false,
-        10,
-        false,
-        false,
-        "SupportTicket",
-        false,
-        false,
-        0,
-        null,
-        0,
-        2,
-        "T202405141316501650"
-      ),
-    ];
+
+    const allAssetData = await getSelectedOptionTask("Green Plant");
+    const currentAsset_Activity = allAssetData.filter(
+      (item) => item.taskId === "T202405141316501650"
+    ); //Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented
+    console.log("Current Activity : ", currentAsset_Activity);
+    let current_starttime = dayjs().add(1, "day");
+
+    const finalActivityList = currentAsset_Activity[0].activityList.map(
+      (obj) => {
+        // Apply the function constructor to create a new Activity object
+        const startTime = current_starttime.format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+        const endTIme = current_starttime
+          .add(obj.duration, "minute")
+          .format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+        current_starttime = current_starttime.add(obj.duration, "minute");
+
+        //const duration = endTime.diff(startTime, 'millisecond');
+        return createActivity(
+          obj.taskId || null,
+          obj.taskName || null,
+          obj.jobId || null,
+          obj.activityId || null,
+          obj.activityName || null,
+          obj.sequence || null,
+          obj.logbook || null,
+          obj.duration || null,
+          obj.xPos || null,
+          obj.yPos || null,
+          obj.performer || "",
+          obj.approver || "",
+          // obj.scheduledActivityStartTime || null,
+          // obj.scheduledActivityEndTime || null,
+          startTime,
+          endTIme,
+          obj.actualActivityStartTime || null,
+          obj.actualActivityEndTime || null,
+          obj.notBelongToPerformer || false,
+          obj.notBelongToApprover || false,
+          obj.actvityStatus || "Not Started",
+          // "Not Started",
+          obj.isActvityBtnDisableOnCompletion || false,
+          obj.isActvityBtnDisbleForActvtOrder || false,
+          obj.actAbrv || null,
+          obj.available || true,
+          obj.performerAvlReasons || [],
+          obj.assetAvailable || true,
+          obj.assetAvlReasons || [],
+          obj.actualActvtyStrt || null,
+          obj.actualActvtEnd || null,
+          obj.reviewerActivityStartTime || null,
+          obj.reviewerActivityStopTime || null,
+          obj.remarks || null,
+          obj.assetId || "",
+          obj.assetName || "",
+          obj.assetIDList || [],
+          obj.assetNameList || [],
+          obj.groupOrDept || false,
+          obj.groupOrDeptName || null,
+          obj.performerType || null,
+          // boolean_current_groupOrDept,
+          // current_groupOrDept,
+          // current_performerType,
+          obj.getGroupOrDeptWisePerformer || null,
+          obj.completedActivity || 0,
+          obj.pendingActivity || 0,
+          obj.rejectedActivity || 0,
+          obj.date || null,
+          obj.actvtCount || 0,
+          obj.actFile || null,
+          obj.buffer || 0,
+          obj.delayDueToBuffer || null,
+          obj.enforce || false,
+          obj.selectedAssetList || null,
+          obj.selectedAssetIdsList || null
+        );
+      }
+    );
+
+    //   const demoActivity = createActivity(
+    //     "A202405141329292929",  // activityId
+    //     "COMPLETE",  // activityName
+    //     false,  // actvityBtnDisableOnCompletion
+    //     false,  // actvityBtnDisbleForActvtOrder
+    //     0,  // actvtCount
+    //     true,  // assetAvailable
+    //     [],  // assetAvlReasons
+    //     ['A08042024112657985', 'A08042024112657985', 'A08042024112657985', 'A08042024112657985'],  // assetIDList
+    //     ['Weighing Scale', 'Weighing Scale', 'Weighing Scale', 'Weighing Scale'],  // assetNameList
+    //     true,  // available
+    //     false,  // booleanForActivityStatus
+    //     0,  // buffer
+    //     0,  // completedActivity
+    //     false,  // disable
+    //     false,  // disableForAction
+    //     20,  // duration
+    //     false,  // enforce
+    //     true,  // groupOrDept
+    //     "72053 Vivel BW Mint Cucumber",  // logbook
+    //     false,  // notBelongToApprover
+    //     false,  // notBelongToPerformer
+    //     0,  // pendingActivity
+    //     [],  // performerAvlReasons
+    //     0,  // rejectedActivity
+    //     1,  // sequence
+    //     "T20240408115606566",  // taskId
+    //     null,  // actAbrv
+    //     null,  // actFile
+    //     null,  // actualActivityEndTime
+    //     null,  // actualActivityStartTime
+    //     null,  // actualActvtEnd
+    //     null,  // actualActvtyStrt
+    //     "Not Started",  // actvityStatus
+    //     "avrajit.roy@greenwave.co.in",  // approver
+    //     "",  // assetId
+    //     "",  // assetName
+    //     null,  // date
+    //     null,  // delayDueToBuffer
+    //     null,  // getGroupOrDeptWisePerformer
+    //     "Administrator",  // groupOrDeptName
+    //     false,  // isActvityBtnDisableOnCompletion
+    //     false,  // isActvityBtnDisbleForActvtOrder
+    //     null,  // jobId
+    //     "",  // performer
+    //     "Department",  // performerType
+    //     null,  // remarks
+    //     null,  // reviewerActivityStartTime
+    //     null,  // reviewerActivityStopTime
+    //     "2024-05-15T00:20:00.000+05:30",  // scheduledActivityEndTime
+    //     "2024-05-15T00:00:00.000+05:30",  // scheduledActivityStartTime
+    //     null,  // selectedAssetIdsList
+    //     null,  // selectedAssetList
+    //     null,  // xPos
+    //     null   // yPos
+    // );
+
+    // console.log(demoActivity);
+
+    //   const activity = [
+    //     createActivity(
+    //       "A202405141317511751",
+    //       "Ticket Resolve",
+    //       false,
+    //       false,
+    //       0,
+    //       true,
+    //       null,
+    //       null,
+    //       null,
+    //       true,
+    //       false,
+    //       0,
+    //       0,
+    //       false,
+    //       false,
+    //       10,
+    //       false,
+    //       false,
+    //       "SupportTicket",
+    //       false,
+    //       false,
+    //       0,
+    //       null,
+    //       0,
+    //       2,
+    //       "T202405141316501650"
+    //     ),
+    //   ];
 
     const task = createTask(
       null,
@@ -306,7 +452,8 @@ export default function AllocateTicket() {
       null,
       null,
       null,
-      activity
+      // activity,
+      finalActivityList
     );
 
     const job = createJobDetails(
@@ -315,8 +462,8 @@ export default function AllocateTicket() {
       null,
       userData.email,
       userData.email,
-      dayjs().format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-      dayjs().format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+      dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+      dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
       null,
       null,
       null,

@@ -52,7 +52,7 @@ import Slide from "@mui/material/Slide";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CustomButton from "../../../components/button/button.component";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
-
+const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function InfrastructureUser({ sendUrllist }) {
   const [open, setOpen] = useState(false);
   const [dropdownValue, setDropdownValue] = useState("");
@@ -174,7 +174,7 @@ export default function InfrastructureUser({ sendUrllist }) {
   const fetchUser = async () => {
     let role = "";
     try {
-      const response = await fetch("http://localhost:8081/users/user", {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
         method: "GET",
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -203,7 +203,7 @@ export default function InfrastructureUser({ sendUrllist }) {
       console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {
@@ -247,7 +247,7 @@ export default function InfrastructureUser({ sendUrllist }) {
     console.log(`Bearer ${localStorage.getItem("token")}`);
     console.log("User Data plant : ", userData.plantID);
     // Fetch data from the API
-    fetch(`http://localhost:8081/infrastructure/admin/${userData.plantID}`, {
+    fetch(`http://${DB_IP}/infrastructure/admin/${userData.plantID}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -270,7 +270,7 @@ export default function InfrastructureUser({ sendUrllist }) {
     // Fetch issues for the selected infrastructure
     if (selectedInfrastructure) {
       fetch(
-        `http://localhost:8081/infrastructure/admin/${userData.plantID}/${selectedInfrastructure}/issues`,
+        `http://${DB_IP}/infrastructure/admin/${userData.plantID}/${selectedInfrastructure}/issues`,
         {
           method: "GET",
           headers: {
@@ -296,7 +296,7 @@ export default function InfrastructureUser({ sendUrllist }) {
     console.log("cureent Data ", dataLocal);
     try {
       const response = await fetch(
-        "http://localhost:8081/infrastructure/user/saveInfraTicket",
+        `http://${DB_IP}/infrastructure/user/saveInfraTicket`,
         {
           method: "POST",
           headers: {

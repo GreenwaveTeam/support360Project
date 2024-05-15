@@ -41,6 +41,7 @@ const AdminPage = ({ sendUrllist }) => {
 
   const location = useLocation();
   const currentPageLocation = useLocation().pathname;
+  const DB_IP = process.env.REACT_APP_SERVERIP;
 
   const { userData, setUserData } = useUserContext();
   console.log("userData ==>> ", userData);
@@ -73,7 +74,7 @@ const AdminPage = ({ sendUrllist }) => {
       console.log("Current UserData in fetchDivs() : ", userData);
 
       const response = await fetch(
-        `http://localhost:8081/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
+        `http://${DB_IP}/role/roledetails?role=superadmin&pagename=${currentPageLocation}`,
         {
           method: "GET",
           headers: {

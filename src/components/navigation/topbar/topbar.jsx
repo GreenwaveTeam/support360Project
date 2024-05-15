@@ -89,6 +89,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
 
   const [user, setUser] = useState();
   const [userName, setUserName] = useState("");
+  const [userplantID, setUserplantID] = useState("");
   const [dialogopen, setdialogopen] = useState(false);
   // const [newPass, setNewPass] = useState("");
   // const [cnfNewPass, setCnfNewPass] = useState("");
@@ -210,6 +211,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       console.log("fetchUser data : ", data);
       setUser(data);
       setUserName(data.name);
+      setUserplantID(data.plantID);
       differenceInDays(data.supportStartDate, data.supportEndDate);
       differenceInDaysTillNow(new Date(), data.supportEndDate);
     } catch (error) {
@@ -281,6 +283,9 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
 
   const setNewPassword = async () => {
     console.log("user.userId : ", user.userId);
+    console.log("user : ", user);
+    console.log("user.plantID : ", user.plantID);
+
     // e.preventDefault();
     const newFormErrors = {};
     Object.keys(formData).forEach((key) => {
@@ -485,16 +490,18 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                       {userName}
                     </MenuItem>
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
-                    <MenuItem onClick={ChangePasswordClickOpen}>
-                      <>
-                        <TimelapseIcon
-                          sx={{ marginRight: "0.4rem" }}
-                          fontSize="small"
-                        />
-                      </>
-                      {/* {daysDifferenceTillNow} Support Days Left */}
-                      {daysDifference} Support Days Left
-                    </MenuItem>
+                    {userplantID !== "NA" && (
+                      <MenuItem>
+                        <>
+                          <TimelapseIcon
+                            sx={{ marginRight: "0.4rem" }}
+                            fontSize="small"
+                          />
+                        </>
+                        {/* {daysDifferenceTillNow} Support Days Left */}
+                        {daysDifferenceTillNow} Support Days Left
+                      </MenuItem>
+                    )}
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                     <MenuItem onClick={ChangePasswordClickOpen}>
                       <>

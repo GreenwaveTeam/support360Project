@@ -743,13 +743,6 @@ function UserHome({ sendUrllist }) {
   //   }
   // };
 
-  const list = [
-    "support-till-date",
-    "ticket-information",
-    "open-tickets",
-    "last-ticket-raised",
-  ];
-
   const fetchUser = async () => {
     console.log("expire : ", localStorage.getItem("expire"));
     try {
@@ -915,11 +908,9 @@ function UserHome({ sendUrllist }) {
   }, [count]);
   return (
     <>
-      {divIsVisibleList && divIsVisibleList.includes("user-home") && (
-        <>
-          <Box>
-            <Container maxWidth="">
-              {/* <div class="row" style={{ marginBottom: "1rem" }}>
+      <Box>
+        <Container maxWidth="">
+          {/* <div class="row" style={{ marginBottom: "1rem" }}>
           <div class="col-md-8">
             <div class="row">
               <div class="col-md-12">
@@ -983,8 +974,10 @@ function UserHome({ sendUrllist }) {
             </div>
           </div>
         </div> */}
-              <div class="row">
-                <div class="col-md-7">
+          <div class="row">
+            <div class="col-md-7">
+              {divIsVisibleList && divIsVisibleList.includes("trend") && (
+                <>
                   <div class="row">
                     <div class="col-md-4">
                       <Card
@@ -1352,107 +1345,114 @@ function UserHome({ sendUrllist }) {
                 </Card> */}
                     </div>
                   </div>
-                  <div class="row" style={{ marginTop: "1rem" }}>
-                    <div class="col-md-12">
-                      {/* <Card>
+                </>
+              )}
+              {divIsVisibleList && divIsVisibleList.includes("chart") && (
+                <div class="row" style={{ marginTop: "1rem" }}>
+                  <div class="col-md-12">
+                    {/* <Card>
                   <CardContent sx={{ paddingBottom: "16px !important" }}>
                     <Typography gutterBottom variant="h5" component="div">
                       Last Ticket Raised
                     </Typography>
                   </CardContent>
                 </Card> */}
-                      <Card>
-                        <CardContent sx={{ paddingBottom: "16px !important" }}>
-                          {/* <ResponsiveChartContainer> */}
+                    <Card>
+                      <CardContent sx={{ paddingBottom: "16px !important" }}>
+                        {/* <ResponsiveChartContainer> */}
 
-                          <BarChart
-                            dataset={monthWiseTicket}
-                            xAxis={[{ scaleType: "band", dataKey: "month" }]}
-                            series={[
-                              { dataKey: "Issue_Count", label: "Issue Count" },
-                              {
-                                dataKey: "Pending_Issues",
-                                label: "Pending Issues",
-                              },
-                              {
-                                dataKey: "Resolved_Issues",
-                                label: "Resolved Issues",
-                              },
-                            ]}
-                            {...chartSetting}
-                          />
+                        <BarChart
+                          dataset={monthWiseTicket}
+                          xAxis={[{ scaleType: "band", dataKey: "month" }]}
+                          series={[
+                            { dataKey: "Issue_Count", label: "Issue Count" },
+                            {
+                              dataKey: "Pending_Issues",
+                              label: "Pending Issues",
+                            },
+                            {
+                              dataKey: "Resolved_Issues",
+                              label: "Resolved Issues",
+                            },
+                          ]}
+                          {...chartSetting}
+                        />
 
-                          {/* </ResponsiveChartContainer> */}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                  <div class="row" style={{ marginTop: "1rem" }}>
-                    <div class="col-md-6">
-                      <Card>
-                        <CardContent
-                          sx={{
-                            paddingBottom: "16px !important",
-                            display: "grid",
-                            justifyItems: "center",
-                          }}
-                        >
-                          <Chip
-                            variant="outlined"
-                            component="div"
-                            color="info"
-                            label="Response Time (AVG)"
-                          />
-
-                          <SparkLineChart
-                            data={[3, 4, 2, 5, 4, 2, 4, 0, 5, 4, 2, 4, 6]}
-                            height={35}
-                          />
-                        </CardContent>
-                      </Card>
-                    </div>
-                    <div class="col-md-6">
-                      <Card>
-                        <CardContent
-                          sx={{
-                            paddingBottom: "16px !important",
-                            display: "grid",
-                            justifyItems: "center",
-                          }}
-                        >
-                          <Chip
-                            variant="outlined"
-                            component="div"
-                            color="info"
-                            label="Resolved Time (AVG)"
-                          />
-                          <SparkLineChart
-                            data={[
-                              1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6,
-                            ]}
-                            height={35}
-                          />
-                        </CardContent>
-                      </Card>
-                    </div>
+                        {/* </ResponsiveChartContainer> */}
+                      </CardContent>
+                    </Card>
                   </div>
                 </div>
-                <div class="col-md-5">
-                  <Button
-                    onClick={() => {
-                      handleToggleView();
-                    }}
-                  >
-                    {viewMode === "all"
-                      ? "Show Ticket History"
-                      : "Show All Tickets"}
-                  </Button>
-                  {viewMode === "all" ? (
-                    <div className="row">
-                      <div className="col-md-12">
-                        <Card className="dashboard-rightSide-Table">
-                          <CardContent sx={{ padding: "0" }}>
-                            {/*<div
+              )}
+              {divIsVisibleList && divIsVisibleList.includes("spark-line") && (
+                <div class="row" style={{ marginTop: "1rem" }}>
+                  <div class="col-md-6">
+                    <Card>
+                      <CardContent
+                        sx={{
+                          paddingBottom: "16px !important",
+                          display: "grid",
+                          justifyItems: "center",
+                        }}
+                      >
+                        <Chip
+                          variant="outlined"
+                          component="div"
+                          color="info"
+                          label="Response Time (AVG)"
+                        />
+
+                        <SparkLineChart
+                          data={[3, 4, 2, 5, 4, 2, 4, 0, 5, 4, 2, 4, 6]}
+                          height={35}
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <div class="col-md-6">
+                    <Card>
+                      <CardContent
+                        sx={{
+                          paddingBottom: "16px !important",
+                          display: "grid",
+                          justifyItems: "center",
+                        }}
+                      >
+                        <Chip
+                          variant="outlined"
+                          component="div"
+                          color="info"
+                          label="Resolved Time (AVG)"
+                        />
+                        <SparkLineChart
+                          data={[
+                            1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6,
+                          ]}
+                          height={35}
+                        />
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              )}
+            </div>
+            {divIsVisibleList && divIsVisibleList.includes("table") && (
+              <div class="col-md-5">
+                <Button
+                  onClick={() => {
+                    handleToggleView();
+                  }}
+                >
+                  {viewMode === "all"
+                    ? "Show Ticket History"
+                    : "Show All Tickets"}
+                </Button>
+                {viewMode === "all" ? (
+                  <div className="row">
+                    <div className="col-md-12">
+                      <Card className="dashboard-rightSide-Table">
+                        <CardContent sx={{ padding: "0" }}>
+                          {/*<div
                               style={{
                                 padding: "0.8rem",
                                 display: "flex",
@@ -1591,25 +1591,25 @@ function UserHome({ sendUrllist }) {
                                 </Grid>
                               </Grid>
                             )}*/}
-                            {allTickets && (
-                              <CustomTable
-                                columns={Columns}
-                                rows={allTickets}
-                                isNotDeletable={true}
-                                setRows={setAllTickets}
-                                tablename={"All Tickets"}
-                              ></CustomTable>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </div>
+                          {allTickets && (
+                            <CustomTable
+                              columns={Columns}
+                              rows={allTickets}
+                              isNotDeletable={true}
+                              setRows={setAllTickets}
+                              tablename={"All Tickets"}
+                            ></CustomTable>
+                          )}
+                        </CardContent>
+                      </Card>
                     </div>
-                  ) : (
-                    <div className="row">
-                      <div className="col-md-12">
-                        <Card className="dashboard-rightSide-Table">
-                          <CardContent sx={{ padding: "0" }}>
-                            {/* <div
+                  </div>
+                ) : (
+                  <div className="row">
+                    <div className="col-md-12">
+                      <Card className="dashboard-rightSide-Table">
+                        <CardContent sx={{ padding: "0" }}>
+                          {/* <div
                               style={{
                                 padding: "0.8rem",
                                 display: "flex",
@@ -1710,21 +1710,21 @@ function UserHome({ sendUrllist }) {
                                 </TableContainer>
                               </Grid>
                             </Grid> */}
-                            {closedTickets && (
-                              <CustomTable
-                                columns={ClosedTicketColumns}
-                                rows={closedTickets}
-                                isNotDeletable={true}
-                                setRows={setClosedTickets}
-                                tablename={"Ticket History"}
-                              ></CustomTable>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </div>
+                          {closedTickets && (
+                            <CustomTable
+                              columns={ClosedTicketColumns}
+                              rows={closedTickets}
+                              isNotDeletable={true}
+                              setRows={setClosedTickets}
+                              tablename={"Ticket History"}
+                            ></CustomTable>
+                          )}
+                        </CardContent>
+                      </Card>
                     </div>
-                  )}
-                  {/* <div className="row" style={{ marginTop: "1rem" }}>
+                  </div>
+                )}
+                {/* <div className="row" style={{ marginTop: "1rem" }}>
               <div className="col-md-12">
                 <Card>
                   <CardContent sx={{ padding: "0" }}>
@@ -1788,10 +1788,11 @@ function UserHome({ sendUrllist }) {
                 </Card>
               </div>
             </div> */}
-                </div>
               </div>
+            )}
+          </div>
 
-              {/* <Grid container spacing={2}>
+          {/* <Grid container spacing={2}>
           <Grid item xs={6}>
             <TableContainer sx={tableStyle}>
               <Table>
@@ -1861,7 +1862,7 @@ function UserHome({ sendUrllist }) {
             />
           </Grid>
         </Grid> */}
-              {/* <div
+          {/* <div
           style={{
             display: "flex",
             justifyContent: "center",
@@ -1941,27 +1942,25 @@ function UserHome({ sendUrllist }) {
             </Button>
           </div>
         </div> */}
-            </Container>
-          </Box>
+        </Container>
+      </Box>
+      <div>
+        <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
           <div>
-            <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
-              <div>
-                {/* <DialogTitle>Details</DialogTitle> */}
-                <DialogContent>
-                  {selectedRow && (
-                    <div>
-                      <DataTableByCatagory
-                        plantId={selectedRow.plantId}
-                        ticketNo={selectedRow.ticketNo}
-                      ></DataTableByCatagory>
-                    </div>
-                  )}
-                </DialogContent>
-              </div>
-            </Dialog>
+            {/* <DialogTitle>Details</DialogTitle> */}
+            <DialogContent>
+              {selectedRow && (
+                <div>
+                  <DataTableByCatagory
+                    plantId={selectedRow.plantId}
+                    ticketNo={selectedRow.ticketNo}
+                  ></DataTableByCatagory>
+                </div>
+              )}
+            </DialogContent>
           </div>
-        </>
-      )}
+        </Dialog>
+      </div>
     </>
   );
 }

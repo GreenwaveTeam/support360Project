@@ -1,8 +1,9 @@
 // api.js
+const DB_IP = process.env.REACT_APP_SERVERIP;
 
 export const fetchPlants = async () => {
   try {
-    const response = await fetch("http://localhost:8081/plants/", {
+    const response = await fetch(`http://${DB_IP}/plants/`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -23,7 +24,7 @@ export const fetchPlants = async () => {
 
 export const fetchRoles = async () => {
   try {
-    const response = await fetch("http://localhost:8081/role", {
+    const response = await fetch(`http://${DB_IP}/role`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -45,7 +46,7 @@ export const fetchRoles = async () => {
 
 export const addPlant = async (newPlantName) => {
   try {
-    const response = await fetch("http://localhost:8081/plants/plant", {
+    const response = await fetch(`http://${DB_IP}/plants/plant`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -69,7 +70,7 @@ export const addPlant = async (newPlantName) => {
 export const updateUser = async (updateFormData) => {
   try {
     const response = await fetch(
-      `http://localhost:8081/users/user/${updateFormData.userId}`,
+      `http://${DB_IP}/users/user/${updateFormData.userId}`,
       {
         method: "PUT",
         headers: {
@@ -94,7 +95,7 @@ export const updateUser = async (updateFormData) => {
 
 export const registerUser = async (formData) => {
   try {
-    const response = await fetch("http://localhost:8081/auth/user/signup", {
+    const response = await fetch(`http://${DB_IP}/auth/user/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -120,7 +121,7 @@ export const registerUser = async (formData) => {
 export const fetchPagesByRole = async (role) => {
   console.log("role : ", role);
   try {
-    const response = await fetch(`http://localhost:8081/role/${role}`, {
+    const response = await fetch(`http://${DB_IP}/role/${role}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -145,11 +146,11 @@ export const updateAdmin = async (updateFormData) => {
   try {
     console.log(
       "updateFormData.adminId : ",
-      `http://localhost:8081/admins/admin/${updateFormData.adminId}`
+      `http://${DB_IP}/admins/admin/${updateFormData.adminId}`
     );
     console.log("updateFormData : ", updateFormData);
     const response = await fetch(
-      `http://localhost:8081/admins/admin/${updateFormData.adminId}`,
+      `http://${DB_IP}/admins/admin/${updateFormData.adminId}`,
       {
         method: "PUT",
         headers: {
@@ -174,7 +175,7 @@ export const updateAdmin = async (updateFormData) => {
 
 export const registerAdmin = async (formData) => {
   try {
-    const response = await fetch("http://localhost:8081/auth/admin/signup", {
+    const response = await fetch(`http://${DB_IP}/auth/admin/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -200,7 +201,7 @@ export const registerAdmin = async (formData) => {
 export const extendTokenExpiration = async () => {
   try {
     const response = await fetch(
-      `http://localhost:8081/auth/extendTokenExpiration?token=${localStorage.getItem(
+      `http://${DB_IP}/auth/extendTokenExpiration?token=${localStorage.getItem(
         "token"
       )}`
     );

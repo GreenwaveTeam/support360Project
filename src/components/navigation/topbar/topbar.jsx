@@ -356,7 +356,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
   const checkOldPassword = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8081/admins/admin/changePassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}`,
+        `http://localhost:8081/admins/admin/checkOldPassword?adminId=${user.userId}&oldPassword=${formData.oldPassword}`,
         {
           method: "POST",
           headers: {
@@ -492,7 +492,8 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                           fontSize="small"
                         />
                       </>
-                      {daysDifferenceTillNow} Support Days Left
+                      {/* {daysDifferenceTillNow} Support Days Left */}
+                      {daysDifference} Support Days Left
                     </MenuItem>
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                     <MenuItem onClick={ChangePasswordClickOpen}>

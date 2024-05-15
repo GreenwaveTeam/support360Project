@@ -23,6 +23,7 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
 import { Button } from "primereact/button";
@@ -530,9 +531,10 @@ function UserHome({ sendUrllist }) {
         "setOpenTickets : ",
         data.filter((ticket) => ticket.status === "open")
       );
-      setPendingTickets(data.filter((ticket) => ticket.status === "pending"));
-      setResolvedTickets(data.filter((ticket) => ticket.status === "resolved"));
-      setOpenTickets(data.filter((ticket) => ticket.status === "open"));
+      // setPendingTickets(data.filter((ticket) => ticket.status === "pending"));
+      // setResolvedTickets(data.filter((ticket) => ticket.status === "resolved"));
+      // setOpenTickets(data.filter((ticket) => ticket.status === "open"));
+      setPendingTickets(data);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -1232,7 +1234,7 @@ function UserHome({ sendUrllist }) {
                               variant="h5"
                               component="div"
                             >
-                              Pending Tickets
+                              All Tickets
                             </Typography>
                             <IconButton onClick={handleToggleView}>
                               {viewMode === "pending" ? (
@@ -1279,6 +1281,12 @@ function UserHome({ sendUrllist }) {
                                       <TableCell align="center">
                                         Severity
                                       </TableCell>
+                                      <TableCell align="center">
+                                        Status
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        Confirm
+                                      </TableCell>
                                     </TableRow>
                                   </TableHead>
                                   <TableBody>
@@ -1289,7 +1297,17 @@ function UserHome({ sendUrllist }) {
                                         )
                                       : pendingTickets
                                     ).map((ticket, index) => (
-                                      <TableRow key={index}>
+                                      <TableRow
+                                        key={index}
+                                        style={{
+                                          backgroundColor:
+                                            ticket.status === "pending"
+                                              ? "red"
+                                              : ticket.status === "open"
+                                              ? "green"
+                                              : "blue",
+                                        }}
+                                      >
                                         <TableCell align="center">
                                           {ticket.category}
                                         </TableCell>
@@ -1304,6 +1322,20 @@ function UserHome({ sendUrllist }) {
                                         </TableCell>
                                         <TableCell align="center">
                                           {ticket.severity}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                          {ticket.status}
+                                        </TableCell>
+                                        <TableCell align="center">
+                                          {ticket.status === "resolved" && (
+                                            <IconButton>
+                                              <CheckCircleOutlineIcon
+                                                onClick={() =>
+                                                  console.log("hello")
+                                                }
+                                              />
+                                            </IconButton>
+                                          )}
                                         </TableCell>
                                       </TableRow>
                                     ))}
@@ -1421,96 +1453,6 @@ function UserHome({ sendUrllist }) {
                     </div>
                   </div>
                 )}
-                <div className="row" style={{ marginTop: "1rem" }}>
-                  <div className="col-md-12">
-                    <Card className="dashboard-rightSide-Table">
-                      <CardContent sx={{ padding: "0" }}>
-                        <div
-                          style={{
-                            padding: "0.8rem",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            height: "3rem",
-                          }}
-                        >
-                          <Typography
-                            sx={{ mb: 0, fontWeight: 600 }}
-                            gutterBottom
-                            variant="h5"
-                            component="div"
-                          >
-                            Resolved Tickets
-                          </Typography>
-                          <div>
-                            <TablePagination
-                              rowsPerPageOptions={[5, 10, 25]}
-                              component="div"
-                              count={resolvedTickets.length}
-                              rowsPerPage={rowsPerPage}
-                              page={page}
-                              labelRowsPerPage=""
-                              onPageChange={(e, newPage) => setPage(newPage)}
-                              onRowsPerPageChange={(e) => {
-                                setRowsPerPage(parseInt(e.target.value, 10));
-                                setPage(0);
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <Divider sx={{ opacity: "0.8" }} />
-                        <Grid container spacing={0}>
-                          <Grid item xs={12}>
-                            <TableContainer sx={{ overflow: "auto" }}>
-                              <Table>
-                                <TableHead>
-                                  <TableRow>
-                                    <TableCell align="center">
-                                      Category
-                                    </TableCell>
-                                    <TableCell align="center">Time</TableCell>
-                                    <TableCell align="center">ID</TableCell>
-                                    <TableCell align="center">
-                                      Description
-                                    </TableCell>
-                                    {/* <TableCell align="center">Status</TableCell> */}
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {(rowsPerPage > 0
-                                    ? resolvedTickets.slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                      )
-                                    : resolvedTickets
-                                  ).map((ticket, index) => (
-                                    <TableRow key={index}>
-                                      <TableCell align="center">
-                                        {ticket.category}
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        {ticket.time}
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        {ticket.id}
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        {ticket.description}
-                                      </TableCell>
-                                      {/* <TableCell align="center">
-                                    {ticket.status}
-                                  </TableCell> */}
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
                 {/* <div className="row" style={{ marginTop: "1rem" }}>
               <div className="col-md-12">
                 <Card>

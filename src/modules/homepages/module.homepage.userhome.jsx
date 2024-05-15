@@ -536,7 +536,7 @@ function UserHome({ sendUrllist }) {
       // setPendingTickets(data.filter((ticket) => ticket.status === "pending"));
       // setResolvedTickets(data.filter((ticket) => ticket.status === "resolved"));
       // setOpenTickets(data.filter((ticket) => ticket.status === "open"));
-      setPendingTickets(data);
+      setPendingTickets(data.filter((ticket) => ticket.status !== "closed"));
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -1264,6 +1264,9 @@ function UserHome({ sendUrllist }) {
                                   <TableHead>
                                     <TableRow>
                                       <TableCell align="center">
+                                        Status
+                                      </TableCell>
+                                      <TableCell align="center">
                                         Category
                                       </TableCell>
                                       <TableCell align="center">Time</TableCell>
@@ -1273,9 +1276,6 @@ function UserHome({ sendUrllist }) {
                                       </TableCell>
                                       <TableCell align="center">
                                         Severity
-                                      </TableCell>
-                                      <TableCell align="center">
-                                        Status
                                       </TableCell>
                                       <TableCell align="center">
                                         Confirm
@@ -1290,17 +1290,28 @@ function UserHome({ sendUrllist }) {
                                         )
                                       : pendingTickets
                                     ).map((ticket, index) => (
-                                      <TableRow
-                                        key={index}
-                                        style={{
-                                          backgroundColor:
-                                            ticket.status === "pending"
-                                              ? "red"
-                                              : ticket.status === "open"
-                                              ? "green"
-                                              : "blue",
-                                        }}
-                                      >
+                                      <TableRow key={index}>
+                                        <TableCell align="center">
+                                          <Chip
+                                            variant="outlined"
+                                            component="div"
+                                            style={{
+                                              borderColor:
+                                                ticket.status === "pending"
+                                                  ? "red"
+                                                  : ticket.status === "open"
+                                                  ? "green"
+                                                  : "blue",
+                                              color:
+                                                ticket.status === "pending"
+                                                  ? "red"
+                                                  : ticket.status === "open"
+                                                  ? "green"
+                                                  : "blue",
+                                            }}
+                                            label={ticket.status}
+                                          />
+                                        </TableCell>
                                         <TableCell align="center">
                                           {ticket.category}
                                         </TableCell>
@@ -1315,9 +1326,6 @@ function UserHome({ sendUrllist }) {
                                         </TableCell>
                                         <TableCell align="center">
                                           {ticket.severity}
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          {ticket.status}
                                         </TableCell>
                                         <TableCell align="center">
                                           {ticket.status === "resolved" && (

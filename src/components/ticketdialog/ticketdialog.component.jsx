@@ -17,6 +17,12 @@ export default function TicketDialog({ticketDialogOpen, setTicketDialogOpen, tic
 
         const handleCopyText=async (e)=>
         {
+          if (!navigator.clipboard) {
+            console.error("Clipboard API not available");
+            
+            return;
+          }
+          console.log('handleCopyText() called ')
             setCopyText('Copied!')
             await navigator.clipboard.writeText(ticketNumber)
             setTimeout(()=>

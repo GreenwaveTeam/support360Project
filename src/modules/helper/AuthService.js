@@ -1,9 +1,11 @@
+const DB_IP = process.env.REACT_APP_SERVERIP;
+
 export const login = async (username, password) => {
   // if (localStorage.getItem("token") !== null) {
   //   localStorage.removeItem("token");
   // }
   try {
-    const response = await fetch("http://localhost:8081/auth/signin", {
+    const response = await fetch(`http://${DB_IP}/auth/signin`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

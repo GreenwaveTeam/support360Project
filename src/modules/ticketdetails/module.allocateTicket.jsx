@@ -8,6 +8,7 @@ import TabPanel from "@mui/lab/TabPanel";
 import axios from "axios";
 import {
   fetchAdminList,
+  fetchStatusFromJob,
   fetchUser,
   getAllAssetGroups,
   getAllOpenTicketDetails,
@@ -52,6 +53,8 @@ export default function AllocateTicket() {
   const [admins, setAdmins] = React.useState([]);
   const [selectedAdmin, setSelecteAdmin] = React.useState("");
   const [userData, setUserData] = React.useState("");
+  const [jobStatus, setJobStatus] = React.useState("");
+  const [jobStatusForButton, setJobstatusForButton] = React.useState("");
   // const [tikcetStatus, setTicketStatus] = React.useState("");
 
   //   const application=1;
@@ -111,6 +114,7 @@ export default function AllocateTicket() {
           },
           function: (row) => {
             console.log("Obj : ", row);
+            handleFetchJobStatus(row.ticketNo);
             setSelectedRow(row);
             setDialogOpen(true);
           },
@@ -130,7 +134,12 @@ export default function AllocateTicket() {
             //console.log("Assign Row : ", row);
             // if (row.status === "W.I.P") return true;
             // else
-            return false;
+            const status = handleFetchJobStatus(row.ticketNo);
+            if (status === "Completed") {
+              return false;
+            } else {
+              return true;
+            }
           },
           function: (row) => {
             console.log("Obj : ", row);
@@ -198,9 +207,19 @@ export default function AllocateTicket() {
     //   },
     // },
   ];
+  React.useEffect(() => {
+    setUserData(fetchUser);
+    fetchAllTicketsDetails();
+    // const status = handleFetchJobStatus(row.ticketNo);
+  }, []);
 
-  const handleAdminIdChange = (event) => {
-    // setSelectedAdminId(event.target.value);
+  const handleFetchJobStatus = async (ticketNo) => {
+    const data = await fetchStatusFromJob(ticketNo);
+    console.log("status ", data);
+    if (data) {
+      setJobStatus(data.Status);
+      return data.Status;
+    }
   };
   const handleAddAssignment = () => {
     // Here you can implement the logic to add the assignment with the selected Admin ID
@@ -296,11 +315,6 @@ export default function AllocateTicket() {
       console.error("Error fetching ticket details:", error);
     }
   };
-
-  React.useEffect(() => {
-    setUserData(fetchUser);
-    fetchAllTicketsDetails();
-  }, []);
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -634,7 +648,13 @@ export default function AllocateTicket() {
       <div>
         <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
           <div>
-            {/* <DialogTitle>Details</DialogTitle> */}
+            <DialogTitle>
+              <h6>
+                {jobStatus
+                  ? "Job Status : " + jobStatus
+                  : "Ticket Not Assigned"}
+              </h6>
+            </DialogTitle>
             <DialogContent>
               {selectedRow && (
                 <div>

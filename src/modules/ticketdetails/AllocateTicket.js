@@ -1,9 +1,9 @@
 import axios from "axios";
-
+const DB_IP = process.env.REACT_APP_SERVERIP;
 export const fetchUser = async () => {
   // let role = "";
   try {
-    const response = await fetch("http://localhost:8081/users/user", {
+    const response = await fetch(`http://${DB_IP}/users/user`, {
       method: "GET",
       headers: {
         // Authorization: `Bearer ${token}`,
@@ -25,7 +25,7 @@ export const getAllOpenTicketDetails = async () => {
   try {
     console.log(`userhome Bearer ${localStorage.getItem("token")}`);
     // Make the API call to fetch data
-    const response = await axios.get(`http://localhost:8081/ticket`, {
+    const response = await axios.get(`http://${DB_IP}/ticket`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",
@@ -46,8 +46,8 @@ export const getAllOpenTicketDetails = async () => {
 export const fetchAdminList = async () => {
   try {
     const response = await fetch(
-      "http://localhost:8081/users/",
-      // const response = await fetch("http://localhost:8081/admins/",
+      `http://${DB_IP}/users/`,
+      // const response = await fetch("http://${DB_IP}/admins/",
       {
         method: "GET",
         headers: {
@@ -72,7 +72,7 @@ export const fetchAdminList = async () => {
 export const fetchTicketDetailByPlantAndTicket = async (plantId, ticketNo) => {
   try {
     const response = await fetch(
-      `http://localhost:8081/ticket/ticketDetails?plantId=${plantId}&ticketNo=${ticketNo}`,
+      `http://${DB_IP}/ticket/ticketDetails?plantId=${plantId}&ticketNo=${ticketNo}`,
       {
         method: "GET",
         headers: {
@@ -93,7 +93,7 @@ export const fetchTicketDetailByPlantAndTicket = async (plantId, ticketNo) => {
 export const updateStatus = async (plantId, ticketNo) => {
   try {
     const response = await fetch(
-      `http://localhost:8081/ticket/upadteStatus?plantId=${plantId}&ticketNo=${ticketNo}`,
+      `http://${DB_IP}/ticket/upadteStatus?plantId=${plantId}&ticketNo=${ticketNo}`,
       {
         method: "PUT",
         headers: {
@@ -149,5 +149,36 @@ export const getSelectedOptionTask = async (selected_asset) => {
   } catch (error) {
     console.error("Error for fetching the task dropdown value : ", error);
     // return null;
+  }
+};
+
+
+export const fetchStatusFromJob = async (ticketNo) => {
+  try {
+    const response = await fetch(
+      // console.log("URL : ",`http://localhost:8090/dashboard/jobStatus?ticketNo=${ticketNo}`),
+      `http://localhost:8090/dashboard/jobStatus?ticketNo=${ticketNo}`,
+      {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    let data ="";
+    console.log("After call")
+    if(response.ok){
+     // console.log(response)
+      data = await response.json();
+      return data;
+    }
+    
+    // setTicketDetails(data);
+   else{ return data;}
+   
+  } catch (error) {
+    console.error("Error fetching user list:", error);
   }
 };

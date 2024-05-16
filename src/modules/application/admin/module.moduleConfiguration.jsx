@@ -7,6 +7,7 @@ import {
   Dialog,
   Typography,
   Menu,
+  Tooltip,
 } from "@mui/material";
 import axios from "axios";
 import Tab from "@mui/material/Tab";
@@ -975,8 +976,7 @@ export default function ModuleConfigure({ sendUrllist }) {
                         id="filter"
                         onChange={handleFilterChange}
                       />
-                      <Typography color="#f44336" variant="h5">Right click on the tab to update or delete module</Typography>
-                   
+                      
                       <TabList
                         onChange={handleChange}
                         // sx={{ backgroundColor: "red" }}
@@ -989,7 +989,7 @@ export default function ModuleConfigure({ sendUrllist }) {
                         {filteredModules.map((module, index) => (
                           <Tab
                             key={index}
-                            label={module.modulename}
+                            label={<Tooltip title="Right Click to modify module">{module.modulename}</Tooltip> }
                             onContextMenu={(event) =>
                               handleContextClick(event, module)
                             }

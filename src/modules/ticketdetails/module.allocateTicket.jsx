@@ -39,6 +39,7 @@ import {
   saveJobDetails,
 } from "./Utility";
 import dayjs from "dayjs";
+import { useState } from "react";
 
 export default function AllocateTicket() {
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
@@ -54,7 +55,10 @@ export default function AllocateTicket() {
   const [selectedAdmin, setSelecteAdmin] = React.useState("");
   const [userData, setUserData] = React.useState("");
   const [jobStatus, setJobStatus] = React.useState("");
-  const [jobStatusForButton, setJobstatusForButton] = React.useState("");
+  const [applicationTickets, setApplicationTickets] = React.useState([]);
+  const [deviceTickets, setDeviceTickets] = React.useState([]);
+  const [infrastructureTickets, setInfrastructureTickets] = useState([]);
+
   // const [tikcetStatus, setTicketStatus] = React.useState("");
 
   //   const application=1;
@@ -89,6 +93,12 @@ export default function AllocateTicket() {
     {
       id: "useremail",
       label: "User Email",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "job_status",
+      label: "Job Status",
       type: "textbox",
       canRepeatSameValue: false,
     },
@@ -134,17 +144,21 @@ export default function AllocateTicket() {
             //console.log("Assign Row : ", row);
             // if (row.status === "W.I.P") return true;
             // else
-            const status = handleFetchJobStatus(row.ticketNo);
-            if (status === "Completed") {
+            //const status = handleFetchJobStatus(row.ticketNo);
+            if (row.job_status === "Completed".toLowerCase()) {
               return false;
             } else {
               return true;
             }
           },
-          function: (row) => {
+          function: async (row) => {
+            const plantId = selectedRow.plantId;
+            const ticketNo = selectedRow.ticketNo;
+            const tikcetStatus = selectedRow.status;
+            await updateStatus(plantId, ticketNo, tikcetStatus);
             console.log("Obj : ", row);
             setSelectedRow(row);
-            setDialogOpen(true);
+            // setDialogOpen(true);
           },
         },
 
@@ -180,9 +194,13 @@ export default function AllocateTicket() {
             // else
             return false;
           },
-          function: (row) => {
+          function: async (row) => {
+            const plantId = selectedRow.plantId;
+            const ticketNo = selectedRow.ticketNo;
+            const tikcetStatus = selectedRow.status;
+            await updateStatus(plantId, ticketNo, tikcetStatus);
+            console.log("Obj : ", row);
             setSelectedRow(row);
-            setDialogOpenAssign(true);
           },
         },
       ],
@@ -217,8 +235,8 @@ export default function AllocateTicket() {
     const data = await fetchStatusFromJob(ticketNo);
     console.log("status ", data);
     if (data) {
-      setJobStatus(data.Status);
-      return data.Status;
+      setJobStatus(data);
+      return data;
     }
   };
   const handleAddAssignment = () => {
@@ -285,21 +303,37 @@ export default function AllocateTicket() {
       const deviceTicketArray = [];
       const infrastructureTicketArray = [];
 
-      // Categorize tickets based on their ticket number prefix
-      response?.forEach((element) => {
-        if (element?.ticketNo.charAt(0).toLowerCase() === "a") {
-          applicationTicketArray.push(element);
-        } else if (element?.ticketNo.charAt(0).toLowerCase() === "d") {
-          deviceTicketArray.push(element);
-        } else {
-          infrastructureTicketArray.push(element);
+      // Process each ticket
+      for (const element of response) {
+        if (!element?.ticketNo) return;
+        const firstChar = element.ticketNo.charAt(0).toLowerCase();
+        const jobStatus = await fetchStatusFromJob(element.ticketNo);
+        const ticketWithStatus = {
+          ...element,
+          job_status: jobStatus || "Not Assigned",
+        }; // Adding job_status property
+
+        switch (firstChar) {
+          case "a":
+            applicationTicketArray.push(ticketWithStatus);
+            break;
+          case "d":
+            deviceTicketArray.push(ticketWithStatus);
+            break;
+          default:
+            infrastructureTicketArray.push(ticketWithStatus);
         }
-      });
+      }
 
       // Log categorized tickets
       console.log("Application Tickets:", applicationTicketArray);
       console.log("Device Tickets:", deviceTicketArray);
       console.log("Infrastructure Tickets:", infrastructureTicketArray);
+
+      // Update state variables with categorized tickets
+      setApplicationTickets(applicationTicketArray);
+      setDeviceTickets(deviceTicketArray);
+      setInfrastructureTickets(infrastructureTicketArray);
 
       // Create final tickets object
       const finalTicket = {
@@ -320,7 +354,7 @@ export default function AllocateTicket() {
     const interval = setInterval(() => {
       console.log("UseEffect called");
       fetchAllTicketsDetails();
-    }, 1500000);
+    }, 4000);
 
     return () => {
       clearInterval(interval);
@@ -546,7 +580,7 @@ export default function AllocateTicket() {
 
       const success = await saveJobDetails(job);
       console.log("Succces ", job);
-      // await updateStatus(plantId, ticketNo, tikcetStatus);
+      await updateStatus(plantId, ticketNo, tikcetStatus);
       setDialogOpenAssign(false);
       setSelectedRow(null);
       setSelecteAdmin("");
@@ -609,36 +643,36 @@ export default function AllocateTicket() {
             </TabList>
           </Box>
           <TabPanel value="1">
-            {allTickets.application && (
+            {applicationTickets && (
               <CustomTable
                 columns={Columns}
-                rows={allTickets.application}
+                rows={applicationTickets}
                 isNotDeletable={true}
-                setRows={setAllTickets}
+                setRows={setApplicationTickets}
                 tablename={"Application Tickets"}
               ></CustomTable>
             )}
           </TabPanel>
 
           <TabPanel value="2">
-            {allTickets.device && (
+            {deviceTickets && (
               <CustomTable
                 columns={Columns}
-                rows={allTickets.device}
+                rows={deviceTickets}
                 isNotDeletable={true}
-                setRows={setAllTickets}
+                setRows={setDeviceTickets}
                 tablename={"Device Tickets"}
               ></CustomTable>
             )}
           </TabPanel>
 
           <TabPanel value="3">
-            {allTickets.infrastructure && (
+            {infrastructureTickets && (
               <CustomTable
                 columns={Columns}
-                rows={allTickets.infrastructure}
+                rows={infrastructureTickets}
                 isNotDeletable={true}
-                setRows={setAllTickets}
+                setRows={setInfrastructureTickets}
                 tablename={"Infrastructure Tickets"}
               ></CustomTable>
             )}

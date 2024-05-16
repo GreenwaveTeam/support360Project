@@ -258,30 +258,30 @@ export default function DataTableByCatagory({ plantId, ticketNo }) {
   //     };
   //   }, []);
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetchTicketDetailByPlantAndTicket(
-          plantId,
-          ticketNo
-        );
-        console.log("Final Response : ", response);
-        setTicketDetails(response);
-      } catch (error) {
-        // Handle errors if any
-        console.error("Error fetching data:", error);
-      }
-    };
+  // React.useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetchTicketDetailByPlantAndTicket(
+  //         plantId,
+  //         ticketNo
+  //       );
+  //       console.log("Final Response : ", response);
+  //       setTicketDetails(response);
+  //     } catch (error) {
+  //       // Handle errors if any
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
 
-    const interval = setInterval(() => {
-      console.log("UseEffect called");
-      fetchData();
-    }, 1500000);
+  //   const interval = setInterval(() => {
+  //     console.log("UseEffect called");
+  //     fetchData();
+  //   }, 9000);
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, [plantId, ticketNo]); // Make sure to include any dependencies in the dependency array
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, [plantId, ticketNo]); // Make sure to include any dependencies in the dependency array
 
   return (
     <>

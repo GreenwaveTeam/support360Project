@@ -172,7 +172,7 @@ export const fetchStatusFromJob = async (ticketNo) => {
     if(response.ok){
      // console.log(response)
       data = await response.json();
-      return data;
+      return data.status;
     }
     
     // setTicketDetails(data);

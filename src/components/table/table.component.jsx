@@ -685,6 +685,7 @@ export default function CustomTable({
                                   <div>
                                     {column.buttons.map(
                                       (columnbutton, buttonindex) =>
+                                        <div key={buttonindex}>
                                         columnbutton.isButtonRendered(row) && (
                                           <Button
                                             variant="contained"
@@ -698,6 +699,7 @@ export default function CustomTable({
                                             {columnbutton.buttonlabel}
                                           </Button>
                                         )
+                                        </div>
                                     )}
                                   </div>
                                 )}

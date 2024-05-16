@@ -152,118 +152,114 @@ const AdminPage = ({ sendUrllist }) => {
 
   return (
     <>
-      {divIsVisibleList && divIsVisibleList.includes("configure-page") && (
-        <>
-          <Container component="main" maxWidth="md">
-            <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
-              {/* <Avatar>{convertToInitials(userData.name)}</Avatar>
+      <Container component="main" maxWidth="md">
+        <Card sx={{ borderRadius: 2, boxShadow: 1 }}>
+          {/* <Avatar>{convertToInitials(userData.name)}</Avatar>
           <br></br> */}
-              <Box sx={{ padding: "0.7rem", background: colors.grey[900] }}>
-                <Typography
-                  component="h1"
-                  variant="h5"
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    //rowGap: "1rem",
-                    columnGap: "0.5rem",
-                  }}
-                >
-                  Configure for :{"  "}
-                  <Chip
-                    //component="span"
-                    //variant="h4"
-                    sx={{ fontWeight: "bold" }}
-                    label={userData.userId}
-                    size="medium"
-                    color="info"
-                  />
-                </Typography>
-              </Box>
-              <Divider />
+          <Box sx={{ padding: "0.7rem", background: colors.grey[900] }}>
+            <Typography
+              component="h1"
+              variant="h5"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                //rowGap: "1rem",
+                columnGap: "0.5rem",
+              }}
+            >
+              Configure for :{"  "}
+              <Chip
+                //component="span"
+                //variant="h4"
+                sx={{ fontWeight: "bold" }}
+                label={userData.userId}
+                size="medium"
+                color="info"
+              />
+            </Typography>
+          </Box>
+          <Divider />
 
-              {/* <Typography component="h1" variant="h5">
+          {/* <Typography component="h1" variant="h5">
         Create Configuration for {userName}
       </Typography> */}
-              <Grid
-                container
-                //spacing={1}
-                direction="column"
-                justifyContent="center"
-                alignItems="center"
-                rowGap={"1rem"}
-                margin={"1rem 0rem"}
-                //marginTop={"2rem"}
-                //sx={{ background: colors.grey[900] }}
-              >
-                {/* {divIsVisibleList.includes("application-button") && ( */}
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={() => {
-                      navigate("/admin/ApplicationConfigure", {
-                        state: { plantID: userPlantID },
-                      });
-                    }}
-                  >
-                    Application
-                  </Button>
-                </Grid>
-                {/* )}
-          {divIsVisibleList.includes("device-button") && ( */}
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={() => {
-                      navigate("/admin/DeviceConfigure", {
-                        state: { plantID: userPlantID },
-                      });
-                    }}
-                  >
-                    Device
-                  </Button>
-                </Grid>
-                {/* )} */}
-                {/* {divIsVisibleList.includes("device-configure-button") && ( */}
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={() => {
-                      navigate("/admin/Device/CategoryConfigure", {
-                        state: { plantID: userPlantID },
-                      });
-                    }}
-                  >
-                    Device Configure
-                  </Button>
-                </Grid>
-                {/* )} */}
-                {/* {divIsVisibleList.includes("infrastructure-button") && ( */}
-                <Grid item>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={() => {
-                      navigate("/admin/InfrastructureConfigure");
-                    }}
-                  >
-                    Infrastructure
-                  </Button>
-                </Grid>
-                {/* )} */}
+          <Grid
+            container
+            //spacing={1}
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            rowGap={"1rem"}
+            margin={"1rem 0rem"}
+            //marginTop={"2rem"}
+            //sx={{ background: colors.grey[900] }}
+          >
+            {divIsVisibleList.includes("application-button") && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => {
+                    navigate("/admin/ApplicationConfigure", {
+                      state: { plantID: userPlantID },
+                    });
+                  }}
+                >
+                  Application
+                </Button>
               </Grid>
-            </Card>
-          </Container>
-        </>
-      )}
+            )}
+            {divIsVisibleList.includes("device-button") && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => {
+                    navigate("/admin/DeviceConfigure", {
+                      state: { plantID: userPlantID },
+                    });
+                  }}
+                >
+                  Device
+                </Button>
+              </Grid>
+            )}
+            {divIsVisibleList.includes("device-catagory-button") && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => {
+                    navigate("/admin/Device/CategoryConfigure", {
+                      state: { plantID: userPlantID },
+                    });
+                  }}
+                >
+                  Device Catagory
+                </Button>
+              </Grid>
+            )}
+            {divIsVisibleList.includes("infrastructure-button") && (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  onClick={() => {
+                    navigate("/admin/InfrastructureConfigure");
+                  }}
+                >
+                  Infrastructure
+                </Button>
+              </Grid>
+            )}
+          </Grid>
+        </Card>
+      </Container>
     </>
   );
 };

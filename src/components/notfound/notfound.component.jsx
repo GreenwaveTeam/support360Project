@@ -4,8 +4,12 @@ import BackHandIcon from "@mui/icons-material/BackHand";
 import ReplyIcon from "@mui/icons-material/Reply";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import notfoundimg from "../../resources/images/page404.png";
+import { useEffect } from "react";
 
 const NotFound = () => {
+  useEffect(()=>{
+    localStorage.clear()
+  },[])
   return (
     <>
       <br />

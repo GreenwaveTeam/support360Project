@@ -104,6 +104,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     newPassword: false,
     confirmNewPassword: false,
     newPasswordNotMatch: false,
+    weakNewPassword: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -168,6 +169,12 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     });
     return capitalizedWords.join(" ");
   }
+
+  const validatePassword = (password) => {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+    return passwordRegex.test(password);
+  };
 
   const confirmPassword = async (e) => {
     const passwordsMatch = formData.newPassword === e;
@@ -307,6 +314,16 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
         console.log(`${convertToTitleCase(key)} must be filled`);
         return;
       }
+    }
+
+    if (!validatePassword(formData.newPassword)) {
+      handleClick();
+      setSnackbarText(
+        "Password must contain at least 6 characters, including uppercase, lowercase, numeric, and special characters"
+      );
+      setsnackbarSeverity("error");
+      setFormErrors({ ...formErrors, weakNewPassword: true });
+      return;
     }
 
     if (formData.newPassword !== formData.confirmNewPassword) {
@@ -613,7 +630,11 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
             <Grid item xs={6}>
               <FormControl
                 fullWidth
-                error={formErrors.newPassword || formErrors.newPasswordNotMatch}
+                error={
+                  formErrors.newPassword ||
+                  formErrors.newPasswordNotMatch ||
+                  formErrors.weakNewPassword
+                }
               >
                 <InputLabel htmlFor="newPassword">New Password</InputLabel>
                 <OutlinedInput
@@ -627,6 +648,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                   onChange={(e) => {
                     const newPassword = e.target.value;
                     // setNewPass(newPassword);
+                    const isPasswordValid = validatePassword(newPassword);
                     setFormData({
                       ...formData,
                       newPassword: newPassword.trim(),
@@ -636,6 +658,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                       newPassword: newPassword.trim() === "",
                       newPasswordNotMatch:
                         newPassword !== formData.confirmNewPassword,
+                      weakNewPassword: !isPasswordValid,
                     });
                     console.log(
                       "password !== cnfpass : ",
@@ -658,6 +681,12 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                 />
                 {formErrors.newPassword && (
                   <FormHelperText>Password must be filled</FormHelperText>
+                )}
+                {formErrors.weakNewPassword && (
+                  <FormHelperText>
+                    Password must contain at least 6 characters, including
+                    uppercase, lowercase, numeric, and special characters
+                  </FormHelperText>
                 )}
                 {formErrors.newPasswordNotMatch && (
                   <FormHelperText>Password does not match !</FormHelperText>

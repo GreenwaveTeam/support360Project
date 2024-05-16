@@ -141,6 +141,7 @@ function UserHome({ sendUrllist }) {
   ] = useState(0);
 
   const [catagoryWiseTrend, setCatagoryWiseTrend] = useState([]);
+  const [supportDateExpired, setSupportDateExpired] = useState(false);
 
   const DB_IP = process.env.REACT_APP_SERVERIP;
 
@@ -625,7 +626,6 @@ function UserHome({ sendUrllist }) {
         " " +
         currentDate.getFullYear();
       console.log("currentMonthYear : ", currentMonthYear);
-      let applicationIssuesCurrentMonth;
       data.forEach((item) => {
         if (Object.keys(item)[0] === currentMonthYear) {
           // applicationIssuesCurrentMonth = item[currentMonthYear]["Application_Issues"];
@@ -787,7 +787,6 @@ function UserHome({ sendUrllist }) {
       });
       differenceInDays(data.supportStartDate, data.supportEndDate);
       differenceInDaysTillNow(new Date(), data.supportEndDate);
-
       let role = data.role;
       console.log("Role Test : ", role);
       fetchDivs(role);
@@ -864,6 +863,9 @@ function UserHome({ sendUrllist }) {
     );
     setDaysDifferenceTillNow(differenceInDay);
     console.log("DaysDifferenceTillNow : ", differenceInDay);
+    if (differenceInDay < 0) {
+      setSupportDateExpired(true);
+    }
   };
 
   const fetchCatagoryWiseTrend = async () => {
@@ -903,14 +905,21 @@ function UserHome({ sendUrllist }) {
       } else {
         clearInterval(interval);
       }
-    }, 0.0005); // Adjust the interval duration for speed
+    }, 0.0005);
     return () => clearInterval(interval);
   }, [count]);
   return (
     <>
-      <Box>
-        <Container maxWidth="">
-          {/* <div class="row" style={{ marginBottom: "1rem" }}>
+      {supportDateExpired ? (
+        <Typography component="h1" variant="h3" sx={{ fontWeight: "600" }}>
+          {/* The support period for plant "{formData.plantName}" has expired. */}
+          The support subscription for plant "{formData.plantName}" expired{" "}
+          {Math.abs(daysDifferenceTillNow)} days ago.
+        </Typography>
+      ) : (
+        <Box>
+          <Container maxWidth="">
+            {/* <div class="row" style={{ marginBottom: "1rem" }}>
           <div class="col-md-8">
             <div class="row">
               <div class="col-md-12">
@@ -974,107 +983,110 @@ function UserHome({ sendUrllist }) {
             </div>
           </div>
         </div> */}
-          <div class="row">
-            <div class="col-md-7">
-              {divIsVisibleList && divIsVisibleList.includes("trend") && (
-                <>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <Card
-                        onClick={(e) => {
-                          navigate("/user/ReportDevice", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                        sx={{ borderRadius: 1 }}
-                      >
-                        <CardContent sx={{ paddingBottom: "16px !important" }}>
-                          <div className="row">
-                            <div
-                              className="col-md-6"
-                              style={{
-                                paddingLeft: "2rem",
-                                display: "grid",
-                                alignItems: "center",
-                                justifyItems: "center",
-                              }}
-                            >
-                              <div className="row">
-                                <Typography
-                                  sx={{ fontWeight: 600, fontSize: "1.7rem" }}
-                                >
-                                  <CounterAnimation
-                                    targetValue={deviceIssuesCurrentMonth}
-                                  />
-                                </Typography>
-                              </div>
+            <div class="row">
+              <div class="col-md-7">
+                {divIsVisibleList && divIsVisibleList.includes("trend") && (
+                  <>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <Card
+                          onClick={(e) => {
+                            navigate("/user/ReportDevice", {
+                              state: { plantID: formData.plantID },
+                            });
+                          }}
+                          sx={{ borderRadius: 1 }}
+                        >
+                          <CardContent
+                            sx={{ paddingBottom: "16px !important" }}
+                          >
+                            <div className="row">
                               <div
-                                className="row"
+                                className="col-md-6"
                                 style={{
-                                  fontSize: "0.9rem",
-                                  fontWeight: 600,
+                                  paddingLeft: "2rem",
+                                  display: "grid",
+                                  alignItems: "center",
+                                  justifyItems: "center",
                                 }}
                               >
-                                Device
-                              </div>
-                            </div>
-                            <div
-                              className="col-md-6"
-                              style={{
-                                display: "grid",
-                                justifyItems: "center",
-                                alignItems: "center",
-                                rowGap: "0.6rem",
-                              }}
-                            >
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <Button
-                                    style={{ borderRadius: "50%" }}
-                                    icon={
-                                      catagoryWiseTrend[0].device_difference >
-                                      0 ? (
-                                        <TrendingDownIcon />
-                                      ) : (
-                                        <TrendingUpIcon />
-                                      )
-                                    }
-                                    rounded
-                                    //outlined
-                                    severity={
-                                      catagoryWiseTrend[0].device_difference > 0
-                                        ? "danger"
-                                        : "success"
-                                    }
-                                    aria-label="Cancel"
-                                  />
+                                <div className="row">
+                                  <Typography
+                                    sx={{ fontWeight: 600, fontSize: "1.7rem" }}
+                                  >
+                                    <CounterAnimation
+                                      targetValue={deviceIssuesCurrentMonth}
+                                    />
+                                  </Typography>
+                                </div>
+                                <div
+                                  className="row"
+                                  style={{
+                                    fontSize: "0.9rem",
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Device
                                 </div>
                               </div>
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      columnGap: "0.5rem",
-                                    }}
-                                  >
-                                    <Badge
-                                      value={criticalDeviceIssuesCurrentMonth}
-                                      severity="warning"
-                                    ></Badge>
-                                    <Badge
-                                      value={
-                                        nonCriticalDeviceIssuesCurrentMonth
+                              <div
+                                className="col-md-6"
+                                style={{
+                                  display: "grid",
+                                  justifyItems: "center",
+                                  alignItems: "center",
+                                  rowGap: "0.6rem",
+                                }}
+                              >
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <Button
+                                      style={{ borderRadius: "50%" }}
+                                      icon={
+                                        catagoryWiseTrend[0].device_difference >
+                                        0 ? (
+                                          <TrendingDownIcon />
+                                        ) : (
+                                          <TrendingUpIcon />
+                                        )
                                       }
-                                      severity="info"
-                                    ></Badge>
+                                      rounded
+                                      //outlined
+                                      severity={
+                                        catagoryWiseTrend[0].device_difference >
+                                        0
+                                          ? "danger"
+                                          : "success"
+                                      }
+                                      aria-label="Cancel"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.5rem",
+                                      }}
+                                    >
+                                      <Badge
+                                        value={criticalDeviceIssuesCurrentMonth}
+                                        severity="warning"
+                                      ></Badge>
+                                      <Badge
+                                        value={
+                                          nonCriticalDeviceIssuesCurrentMonth
+                                        }
+                                        severity="info"
+                                      ></Badge>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
 
-                          {/* <div className="row">
+                            {/* <div className="row">
                       <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
                         <div className="row">
                           <div class="col-md-12">
@@ -1119,212 +1131,239 @@ function UserHome({ sendUrllist }) {
                         />
                       </div>
                     </div> */}
-                        </CardContent>
-                      </Card>
-                    </div>
-                    <div class="col-md-4">
-                      <Card
-                        onClick={(e) => {
-                          navigate("/user/ReportApplication", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                      >
-                        <CardContent sx={{ paddingBottom: "16px !important" }}>
-                          <div className="row">
-                            <div
-                              className="col-md-6"
-                              style={{
-                                paddingLeft: "2rem",
-                                display: "grid",
-                                alignItems: "center",
-                                justifyItems: "center",
-                              }}
-                            >
-                              <div className="row">
-                                <CounterAnimation
-                                  targetValue={applicationIssuesCurrentMonth}
-                                />
-                              </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                      <div class="col-md-4">
+                        <Card
+                          onClick={(e) => {
+                            navigate("/user/ReportApplication", {
+                              state: { plantID: formData.plantID },
+                            });
+                          }}
+                        >
+                          <CardContent
+                            sx={{ paddingBottom: "16px !important" }}
+                          >
+                            <div className="row">
                               <div
-                                className="row"
+                                className="col-md-6"
                                 style={{
-                                  fontSize: "0.9rem",
-                                  fontWeight: 600,
+                                  paddingLeft: "2rem",
+                                  display: "grid",
+                                  alignItems: "center",
+                                  justifyItems: "center",
                                 }}
                               >
-                                Application
-                              </div>
-                            </div>
-                            <div
-                              className="col-md-6"
-                              style={{
-                                display: "grid",
-                                justifyItems: "center",
-                                alignItems: "center",
-                                rowGap: "0.6rem",
-                              }}
-                            >
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <Button
-                                    style={{ borderRadius: "50%" }}
-                                    icon={
-                                      catagoryWiseTrend[0]
-                                        .application_difference > 0 ? (
-                                        <TrendingDownIcon />
-                                      ) : (
-                                        <TrendingUpIcon />
-                                      )
-                                    }
-                                    rounded
-                                    //outlined
-                                    severity={
-                                      catagoryWiseTrend[0]
-                                        .application_difference > 0
-                                        ? "danger"
-                                        : "success"
-                                    }
-                                    aria-label="Cancel"
-                                  />
-                                </div>
-                              </div>
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      columnGap: "0.5rem",
-                                    }}
-                                  >
-                                    <Badge
-                                      value={
-                                        criticalApplicationIssuesCurrentMonth
-                                      }
-                                      severity="warning"
-                                    ></Badge>
-                                    <Badge
-                                      value={
-                                        nonCriticalApplicationIssuesCurrentMonth
-                                      }
-                                      severity="info"
-                                    ></Badge>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                    <div class="col-md-4">
-                      <Card
-                        onClick={(e) => {
-                          navigate("/user/ReportInfrastructure", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                      >
-                        <CardContent sx={{ paddingBottom: "16px !important" }}>
-                          <div className="row">
-                            <div
-                              className="col-md-6"
-                              style={{
-                                paddingLeft: "2rem",
-                                display: "grid",
-                                alignItems: "center",
-                                justifyItems: "center",
-                              }}
-                            >
-                              <div className="row">
-                                <Typography
-                                  sx={{ fontWeight: 600, fontSize: "1.7rem" }}
-                                >
+                                <div className="row">
                                   <CounterAnimation
-                                    targetValue={
-                                      infrastructureIssuesCurrentMonth
-                                    }
-                                  />
-                                </Typography>
-                              </div>
-                              <div
-                                className="row"
-                                style={{
-                                  fontSize: "0.9rem",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                Infrastructure
-                              </div>
-                            </div>
-                            <div
-                              className="col-md-6"
-                              style={{
-                                display: "grid",
-                                justifyItems: "center",
-                                alignItems: "center",
-                                rowGap: "0.6rem",
-                              }}
-                            >
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <Button
-                                    style={{ borderRadius: "50%" }}
-                                    // icon={
-                                    //   catagoryWiseTrend[0]
-                                    //     .infrastructure_difference > 0
-                                    //     ? "pi pi-thumbs-down-fill"
-                                    //     : "pi pi-thumbs-up-fill"
-                                    // }
-                                    icon={
-                                      catagoryWiseTrend[0]
-                                        .infrastructure_difference > 0 ? (
-                                        <TrendingDownIcon />
-                                      ) : (
-                                        <TrendingUpIcon />
-                                      )
-                                    }
-                                    rounded
-                                    //outlined
-                                    severity={
-                                      catagoryWiseTrend[0]
-                                        .infrastructure_difference > 0
-                                        ? "danger"
-                                        : "success"
-                                    }
-                                    aria-label="Cancel"
+                                    targetValue={applicationIssuesCurrentMonth}
                                   />
                                 </div>
+                                <div
+                                  className="row"
+                                  style={{
+                                    fontSize: "0.9rem",
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Application
+                                </div>
                               </div>
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      columnGap: "0.5rem",
-                                    }}
-                                  >
-                                    <Badge
-                                      value={
-                                        criticalInfrastructureIssuesCurrentMonth
+                              <div
+                                className="col-md-6"
+                                style={{
+                                  display: "grid",
+                                  justifyItems: "center",
+                                  alignItems: "center",
+                                  rowGap: "0.6rem",
+                                }}
+                              >
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <Button
+                                      style={{ borderRadius: "50%" }}
+                                      icon={
+                                        catagoryWiseTrend[0]
+                                          .application_difference > 0 ? (
+                                          <TrendingDownIcon />
+                                        ) : (
+                                          <TrendingUpIcon />
+                                        )
                                       }
-                                      severity="warning"
-                                    ></Badge>
-                                    <Badge
-                                      value={
-                                        nonCriticalInfrastructureIssuesCurrentMonth
+                                      rounded
+                                      //outlined
+                                      severity={
+                                        catagoryWiseTrend[0]
+                                          .application_difference > 0
+                                          ? "danger"
+                                          : "success"
                                       }
-                                      severity="info"
-                                    ></Badge>
+                                      aria-label="Cancel"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.5rem",
+                                      }}
+                                    >
+                                      <Badge
+                                        value={
+                                          criticalApplicationIssuesCurrentMonth
+                                        }
+                                        severity="warning"
+                                      ></Badge>
+                                      <Badge
+                                        value={
+                                          nonCriticalApplicationIssuesCurrentMonth
+                                        }
+                                        severity="info"
+                                      ></Badge>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </div>
+                      <div class="col-md-4">
+                        <Card
+                          onClick={(e) => {
+                            navigate("/user/ReportInfrastructure", {
+                              state: { plantID: formData.plantID },
+                            });
+                          }}
+                        >
+                          <CardContent
+                            sx={{ paddingBottom: "16px !important" }}
+                          >
+                            <div className="row">
+                              <div
+                                className="col-md-6"
+                                style={{
+                                  paddingLeft: "2rem",
+                                  display: "grid",
+                                  alignItems: "center",
+                                  justifyItems: "center",
+                                }}
+                              >
+                                <div className="row">
+                                  <Typography
+                                    sx={{ fontWeight: 600, fontSize: "1.7rem" }}
+                                  >
+                                    <CounterAnimation
+                                      targetValue={
+                                        infrastructureIssuesCurrentMonth
+                                      }
+                                    />
+                                  </Typography>
+                                </div>
+                                <div
+                                  className="row"
+                                  style={{
+                                    fontSize: "0.9rem",
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Infrastructure
+                                </div>
+                              </div>
+                              <div
+                                className="col-md-6"
+                                style={{
+                                  display: "grid",
+                                  justifyItems: "center",
+                                  alignItems: "center",
+                                  rowGap: "0.6rem",
+                                }}
+                              >
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <Button
+                                      style={{ borderRadius: "50%" }}
+                                      // icon={
+                                      //   catagoryWiseTrend[0]
+                                      //     .infrastructure_difference > 0
+                                      //     ? "pi pi-thumbs-down-fill"
+                                      //     : "pi pi-thumbs-up-fill"
+                                      // }
+                                      icon={
+                                        catagoryWiseTrend[0]
+                                          .infrastructure_difference > 0 ? (
+                                          <TrendingDownIcon />
+                                        ) : (
+                                          <TrendingUpIcon />
+                                        )
+                                      }
+                                      rounded
+                                      //outlined
+                                      severity={
+                                        catagoryWiseTrend[0]
+                                          .infrastructure_difference > 0
+                                          ? "danger"
+                                          : "success"
+                                      }
+                                      aria-label="Cancel"
+                                    />
+                                  </div>
+                                </div>
+                                <div className="row">
+                                  <div className="col-md-12">
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.5rem",
+                                      }}
+                                    >
+                                      <Badge
+                                        value={
+                                          criticalInfrastructureIssuesCurrentMonth
+                                        }
+                                        severity="warning"
+                                      ></Badge>
+                                      <Badge
+                                        value={
+                                          nonCriticalInfrastructureIssuesCurrentMonth
+                                        }
+                                        severity="info"
+                                      ></Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
                     </div>
-                  </div>
+                    <div class="row" style={{ marginTop: "1rem" }}>
+                      <div class="col-md-12">
+                        {/* <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Last Ticket Raised
+                    </Typography>
+                  </CardContent>
+                </Card> */}
+                        {/* <Card>
+                  <CardContent sx={{ padding: "12px 8px 2px 8px !important" }}> */}
+
+                        <div>
+                          <MeterGroup values={matergroupvalues} max={100} />
+                        </div>
+
+                        {/* </CardContent>
+                </Card> */}
+                      </div>
+                    </div>
+                  </>
+                )}
+                {divIsVisibleList && divIsVisibleList.includes("chart") && (
                   <div class="row" style={{ marginTop: "1rem" }}>
                     <div class="col-md-12">
                       {/* <Card>
@@ -1334,125 +1373,104 @@ function UserHome({ sendUrllist }) {
                     </Typography>
                   </CardContent>
                 </Card> */}
-                      {/* <Card>
-                  <CardContent sx={{ padding: "12px 8px 2px 8px !important" }}> */}
+                      <Card>
+                        <CardContent sx={{ paddingBottom: "16px !important" }}>
+                          {/* <ResponsiveChartContainer> */}
 
-                      <div>
-                        <MeterGroup values={matergroupvalues} max={100} />
-                      </div>
+                          <BarChart
+                            dataset={monthWiseTicket}
+                            xAxis={[{ scaleType: "band", dataKey: "month" }]}
+                            series={[
+                              { dataKey: "Issue_Count", label: "Issue Count" },
+                              {
+                                dataKey: "Pending_Issues",
+                                label: "Pending Issues",
+                              },
+                              {
+                                dataKey: "Resolved_Issues",
+                                label: "Resolved Issues",
+                              },
+                            ]}
+                            {...chartSetting}
+                          />
 
-                      {/* </CardContent>
-                </Card> */}
+                          {/* </ResponsiveChartContainer> */}
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
-                </>
-              )}
-              {divIsVisibleList && divIsVisibleList.includes("chart") && (
-                <div class="row" style={{ marginTop: "1rem" }}>
-                  <div class="col-md-12">
-                    {/* <Card>
-                  <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Last Ticket Raised
-                    </Typography>
-                  </CardContent>
-                </Card> */}
-                    <Card>
-                      <CardContent sx={{ paddingBottom: "16px !important" }}>
-                        {/* <ResponsiveChartContainer> */}
+                )}
+                {divIsVisibleList &&
+                  divIsVisibleList.includes("spark-line") && (
+                    <div class="row" style={{ marginTop: "1rem" }}>
+                      <div class="col-md-6">
+                        <Card>
+                          <CardContent
+                            sx={{
+                              paddingBottom: "16px !important",
+                              display: "grid",
+                              justifyItems: "center",
+                            }}
+                          >
+                            <Chip
+                              variant="outlined"
+                              component="div"
+                              color="info"
+                              label="Response Time (AVG)"
+                            />
 
-                        <BarChart
-                          dataset={monthWiseTicket}
-                          xAxis={[{ scaleType: "band", dataKey: "month" }]}
-                          series={[
-                            { dataKey: "Issue_Count", label: "Issue Count" },
-                            {
-                              dataKey: "Pending_Issues",
-                              label: "Pending Issues",
-                            },
-                            {
-                              dataKey: "Resolved_Issues",
-                              label: "Resolved Issues",
-                            },
-                          ]}
-                          {...chartSetting}
-                        />
-
-                        {/* </ResponsiveChartContainer> */}
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              )}
-              {divIsVisibleList && divIsVisibleList.includes("spark-line") && (
-                <div class="row" style={{ marginTop: "1rem" }}>
-                  <div class="col-md-6">
-                    <Card>
-                      <CardContent
-                        sx={{
-                          paddingBottom: "16px !important",
-                          display: "grid",
-                          justifyItems: "center",
-                        }}
-                      >
-                        <Chip
-                          variant="outlined"
-                          component="div"
-                          color="info"
-                          label="Response Time (AVG)"
-                        />
-
-                        <SparkLineChart
-                          data={[3, 4, 2, 5, 4, 2, 4, 0, 5, 4, 2, 4, 6]}
-                          height={35}
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div class="col-md-6">
-                    <Card>
-                      <CardContent
-                        sx={{
-                          paddingBottom: "16px !important",
-                          display: "grid",
-                          justifyItems: "center",
-                        }}
-                      >
-                        <Chip
-                          variant="outlined"
-                          component="div"
-                          color="info"
-                          label="Resolved Time (AVG)"
-                        />
-                        <SparkLineChart
-                          data={[
-                            1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6,
-                          ]}
-                          height={35}
-                        />
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              )}
-            </div>
-            {divIsVisibleList && divIsVisibleList.includes("table") && (
-              <div class="col-md-5">
-                <Button
-                  onClick={() => {
-                    handleToggleView();
-                  }}
-                >
-                  {viewMode === "all"
-                    ? "Show Ticket History"
-                    : "Show All Tickets"}
-                </Button>
-                {viewMode === "all" ? (
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Card className="dashboard-rightSide-Table">
-                        <CardContent sx={{ padding: "0" }}>
-                          {/*<div
+                            <SparkLineChart
+                              data={[3, 4, 2, 5, 4, 2, 4, 0, 5, 4, 2, 4, 6]}
+                              height={35}
+                            />
+                          </CardContent>
+                        </Card>
+                      </div>
+                      <div class="col-md-6">
+                        <Card>
+                          <CardContent
+                            sx={{
+                              paddingBottom: "16px !important",
+                              display: "grid",
+                              justifyItems: "center",
+                            }}
+                          >
+                            <Chip
+                              variant="outlined"
+                              component="div"
+                              color="info"
+                              label="Resolved Time (AVG)"
+                            />
+                            <SparkLineChart
+                              data={[
+                                1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6,
+                              ]}
+                              height={35}
+                            />
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  )}
+              </div>
+              {divIsVisibleList && divIsVisibleList.includes("table") && (
+                <div class="col-md-5">
+                  <Button
+                    onClick={() => {
+                      handleToggleView();
+                    }}
+                    style={{ width: "100%", borderRadius: "30px" }}
+                  >
+                    {viewMode === "all"
+                      ? "Show Ticket History"
+                      : "Show All Tickets"}
+                  </Button>
+                  {viewMode === "all" ? (
+                    <div className="row">
+                      <div className="col-md-12">
+                        <Card className="dashboard-rightSide-Table">
+                          <CardContent sx={{ padding: "0" }}>
+                            {/*<div
                               style={{
                                 padding: "0.8rem",
                                 display: "flex",
@@ -1591,25 +1609,25 @@ function UserHome({ sendUrllist }) {
                                 </Grid>
                               </Grid>
                             )}*/}
-                          {allTickets && (
-                            <CustomTable
-                              columns={Columns}
-                              rows={allTickets}
-                              isNotDeletable={true}
-                              setRows={setAllTickets}
-                              tablename={"All Tickets"}
-                            ></CustomTable>
-                          )}
-                        </CardContent>
-                      </Card>
+                            {allTickets && (
+                              <CustomTable
+                                columns={Columns}
+                                rows={allTickets}
+                                isNotDeletable={true}
+                                setRows={setAllTickets}
+                                tablename={"All Tickets"}
+                              ></CustomTable>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Card className="dashboard-rightSide-Table">
-                        <CardContent sx={{ padding: "0" }}>
-                          {/* <div
+                  ) : (
+                    <div className="row">
+                      <div className="col-md-12">
+                        <Card className="dashboard-rightSide-Table">
+                          <CardContent sx={{ padding: "0" }}>
+                            {/* <div
                               style={{
                                 padding: "0.8rem",
                                 display: "flex",
@@ -1710,21 +1728,21 @@ function UserHome({ sendUrllist }) {
                                 </TableContainer>
                               </Grid>
                             </Grid> */}
-                          {closedTickets && (
-                            <CustomTable
-                              columns={ClosedTicketColumns}
-                              rows={closedTickets}
-                              isNotDeletable={true}
-                              setRows={setClosedTickets}
-                              tablename={"Ticket History"}
-                            ></CustomTable>
-                          )}
-                        </CardContent>
-                      </Card>
+                            {closedTickets && (
+                              <CustomTable
+                                columns={ClosedTicketColumns}
+                                rows={closedTickets}
+                                isNotDeletable={true}
+                                setRows={setClosedTickets}
+                                tablename={"Ticket History"}
+                              ></CustomTable>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
                     </div>
-                  </div>
-                )}
-                {/* <div className="row" style={{ marginTop: "1rem" }}>
+                  )}
+                  {/* <div className="row" style={{ marginTop: "1rem" }}>
               <div className="col-md-12">
                 <Card>
                   <CardContent sx={{ padding: "0" }}>
@@ -1788,11 +1806,11 @@ function UserHome({ sendUrllist }) {
                 </Card>
               </div>
             </div> */}
-              </div>
-            )}
-          </div>
+                </div>
+              )}
+            </div>
 
-          {/* <Grid container spacing={2}>
+            {/* <Grid container spacing={2}>
           <Grid item xs={6}>
             <TableContainer sx={tableStyle}>
               <Table>
@@ -1862,7 +1880,7 @@ function UserHome({ sendUrllist }) {
             />
           </Grid>
         </Grid> */}
-          {/* <div
+            {/* <div
           style={{
             display: "flex",
             justifyContent: "center",
@@ -1942,8 +1960,9 @@ function UserHome({ sendUrllist }) {
             </Button>
           </div>
         </div> */}
-        </Container>
-      </Box>
+          </Container>
+        </Box>
+      )}
       <div>
         <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
           <div>

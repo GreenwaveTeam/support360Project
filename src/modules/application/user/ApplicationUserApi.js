@@ -94,7 +94,7 @@ export const fetchApplicationNames = async (plantID) => {
                 "Current API call : ",
                 `http://${DB_IP}/application/user/${plantID}/${application}/${module}`
               );
-              const API = `http://localhost:8081/application/user/${plantID}/${application}/${module}`;
+              const API = `http://${DB_IP}/application/user/${plantID}/${application}/${module}`;
               const response = await fetch(API, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,

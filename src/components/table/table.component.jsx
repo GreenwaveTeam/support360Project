@@ -415,30 +415,30 @@ export default function CustomTable({
                     {column.label}
                   </TableCell>
                 ))}
-                {editActive && (
-                  <TableCell
-                    align="center"
-                    sx={{
-                      backgroundColor: colors.grey[900],
-                      fontWeight: "bold",
-                      fontSize: "14px",
-                    }}
-                  >
-                    <div>Edit</div>
-                  </TableCell>
-                )}
-                {!isNotDeletable && (
-                  <TableCell
-                    align="center"
-                    sx={{
-                      backgroundColor: colors.grey[900],
-                      fontWeight: "bold",
-                      fontSize: "14px",
-                    }}
-                  >
-                    <div>Delete</div>
-                  </TableCell>
-                )}
+                {editActive && 
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: colors.grey[900],
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                >
+                  <div>Edit</div>
+                </TableCell>
+                }
+                {!isNotDeletable &&
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: colors.grey[900],
+                    fontWeight: "bold",
+                    fontSize: "14px",
+                  }}
+                >
+                   <div>Delete</div>
+                </TableCell>
+              }
               </TableRow>
             </TableHead>
             {/* {progressVisible&&filteredrows?.length === 0 && (
@@ -683,84 +683,70 @@ export default function CustomTable({
                                   )}
                                 {column.type === "button" && (
                                   <div>
-                                    {column.buttons.map(
-                                      (columnbutton, buttonindex) =>
-                                        <div key={buttonindex}>
-                                        columnbutton.isButtonRendered(row) && (
-                                          <Button
-                                            variant="contained"
-                                            disabled={columnbutton.isButtonDisabled(
-                                              row
-                                            )}
-                                            onClick={() =>
-                                              columnbutton.function(row)
-                                            }
-                                          >
-                                            {columnbutton.buttonlabel}
-                                          </Button>
-                                        )
-                                        </div>
-                                    )}
+                                    {column.buttons.map((columnbutton,buttonindex)=>
+                                    {columnbutton.isButtonDisable(row)&&
+                                    <Button
+                                      
+                                      variant="contained"
+                                      onClick={() => columnbutton.function(row)}
+                                    >
+                                      {columnbutton.buttonlabel}
+                                    </Button>
+                                    }
+                            )}
                                   </div>
                                 )}
                               </div>
                             </TableCell>
                           );
                         })}
-                        {editActive && (
-                          <TableCell sx={{ width: "10%" }} align="right">
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                              }}
-                            >
-                              {editRowIndex !== index && (
-                                <Tooltip
-                                  TransitionComponent={Fade}
-                                  title="Edit"
+                        {editActive &&
+                        <TableCell sx={{ width: "10%" }} align="right">
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            {editRowIndex !== index &&  (
+                              <Tooltip TransitionComponent={Fade} title="Edit">
+                                <Button
+                                  onClick={() => handleEditClick(index, row)}
                                 >
-                                  <Button
-                                    onClick={() => handleEditClick(index, row)}
-                                  >
-                                    <EditIcon
-                                      style={{
-                                        cursor: "pointer",
-                                        color: "#42a5f5",
-                                      }}
-                                      align="right"
-                                      color="primary"
-                                    />
-                                  </Button>
-                                </Tooltip>
-                              )}
-                              {editRowIndex === index && (
-                                <Tooltip
-                                  TransitionComponent={Fade}
-                                  title="Save"
-                                >
-                                  <Button onClick={() => handleSaveClick(row)}>
-                                    <CheckIcon color="primary" />
-                                  </Button>
-                                </Tooltip>
-                              )}
-                              {editRowIndex === index && (
-                                <Tooltip
-                                  TransitionComponent={Fade}
-                                  title="Cancel"
-                                >
-                                  <Button
-                                    onClick={() => handleCancelClick(row)}
-                                  >
-                                    <CancelIcon sx={{ color: "#FE2E2E" }} />
-                                  </Button>
-                                </Tooltip>
-                              )}
-                            </div>
-                          </TableCell>
-                        )}
-                        {!isNotDeletable && (
-                          <TableCell sx={{ width: "10%" }} align="right">
+                                  <EditIcon
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#42a5f5",
+                                    }}
+                                    align="right"
+                                    color="primary"
+                                  />
+                                </Button>
+                              </Tooltip>
+                            )}
+                            {editRowIndex === index && (
+                              <Tooltip TransitionComponent={Fade} title="Save">
+                                <Button onClick={() => handleSaveClick(row)}>
+                                  <CheckIcon color="primary" />
+                                </Button>
+                              </Tooltip>
+                            )}
+                            {editRowIndex === index && (
+                              <Tooltip
+                                TransitionComponent={Fade}
+                                title="Cancel"
+                              >
+                                <Button onClick={() => handleCancelClick(row)}>
+                                  <CancelIcon sx={{ color: "#FE2E2E" }} />
+                                </Button>
+                              </Tooltip>
+                            )}
+                          </div>
+                        </TableCell>
+                      }
+                      {!isNotDeletable && (
+                        <TableCell sx={{ width: "10%" }} align="right">
+                          
                             <div
                               style={{
                                 display: "flex",
@@ -784,7 +770,8 @@ export default function CustomTable({
                                 </Button>
                               </Tooltip>
                             </div>
-                          </TableCell>
+                          
+                        </TableCell>
                         )}
                       </TableRow>
                     );

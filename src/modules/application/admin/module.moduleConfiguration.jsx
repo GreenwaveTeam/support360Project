@@ -43,6 +43,7 @@ import { ColorModeContext, tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 import { display } from "@mui/system";
+import { red } from "@mui/material/colors";
 
 export default function ModuleConfigure({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
@@ -154,6 +155,12 @@ export default function ModuleConfigure({ sendUrllist }) {
     setOpenEditDialog(true);
     setContextMenuPosition(null);
   };
+  const handleEditDialogClose=async()=>{
+      setUpdateModuleDialog(false);
+      setUpdateModuleName("");
+      setOpenEditDialog(false);
+      
+  }
   const handleModuleProceed = () => {
     setUpdateModuleDialog(true);
   };
@@ -961,12 +968,15 @@ export default function ModuleConfigure({ sendUrllist }) {
                       borderRadius: 3,
                     }}
                   >
+                    
                     <Box>
                       <TextField
                         label={"Filter Module"}
                         id="filter"
                         onChange={handleFilterChange}
                       />
+                      <Typography color="#f44336" variant="h5">Right click on the tab to update or delete module</Typography>
+                   
                       <TabList
                         onChange={handleChange}
                         // sx={{ backgroundColor: "red" }}
@@ -1297,7 +1307,7 @@ export default function ModuleConfigure({ sendUrllist }) {
               proceedButtonClick={handleUpdateModuleConfirm}
               cancelButtonText="Cancel"
             />
-            <Dialog open={openEditDialog}>
+            <Dialog open={openEditDialog} onClose={handleEditDialogClose}>
               <Container sx={{ display: "flex", flexDirection: "column" }}>
                 &nbsp;
                 <TextField

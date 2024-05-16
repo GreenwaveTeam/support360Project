@@ -390,10 +390,43 @@ export default function UserRegistration({ sendUrllist }) {
   };
 
   const handlenewPlantNameInputChange = (e) => {
+    console.log("Event:", e);
+    console.log("Value:", e.target.value);
+    console.log("Name:", e.target.name);
     const { name, value } = e.target;
     setNewPlantName({ ...newPlantName, [name]: value });
-    setFormData({ ...formData, [name]: value });
-    setUpdateFormData({ ...updateFormData, [name]: value });
+    // setFormData({ ...formData, [name]: value });
+    // setUpdateFormData({ ...updateFormData, [name]: value });
+  };
+
+  const handlenewPlantNameInputChangeForAll = () => {
+    // plantName: "",
+    // plantID: "",
+    // address: "",
+    // customerName: "",
+    // division: "",
+    // supportStartDate: dayjs(),
+    // supportEndDate: dayjs(),
+    setUpdateFormData({
+      ...updateFormData,
+      plantName: newPlantName.plantName,
+      plantID: newPlantName.plantID,
+      address: newPlantName.address,
+      customerName: newPlantName.customerName,
+      division: newPlantName.division,
+      supportStartDate: newPlantName.supportStartDate,
+      supportEndDate: newPlantName.supportEndDate,
+    });
+    setFormData({
+      ...formData,
+      plantName: newPlantName.plantName,
+      plantID: newPlantName.plantID,
+      address: newPlantName.address,
+      customerName: newPlantName.customerName,
+      division: newPlantName.division,
+      supportStartDate: newPlantName.supportStartDate,
+      supportEndDate: newPlantName.supportEndDate,
+    });
   };
 
   const updateHandleFormdataInputChange = (e) => {
@@ -2401,6 +2434,7 @@ export default function UserRegistration({ sendUrllist }) {
                             name="plantName"
                             label="Plant Name"
                             id="plantName"
+                            autoComplete="plantName"
                             value={newPlantName.plantName}
                             onChange={handlenewPlantNameInputChange}
                           />
@@ -2412,6 +2446,7 @@ export default function UserRegistration({ sendUrllist }) {
                             name="plantID"
                             label="PlantID"
                             id="plantID"
+                            autoComplete="plantID"
                             value={newPlantName.plantID}
                             onChange={handlenewPlantNameInputChange}
                           />
@@ -2423,6 +2458,7 @@ export default function UserRegistration({ sendUrllist }) {
                             name="address"
                             label="Address"
                             id="address"
+                            autoComplete="address"
                             value={newPlantName.address}
                             onChange={handlenewPlantNameInputChange}
                           />
@@ -2431,9 +2467,10 @@ export default function UserRegistration({ sendUrllist }) {
                           <Textfield
                             required
                             fullWidth={true}
-                            name="customer"
+                            name="customerName"
                             label="Customer"
                             id="customer"
+                            autoComplete="customer"
                             value={newPlantName.customerName}
                             onChange={handlenewPlantNameInputChange}
                           />
@@ -2472,6 +2509,7 @@ export default function UserRegistration({ sendUrllist }) {
                             name="division"
                             label="Division"
                             id="division"
+                            autoComplete="division"
                             value={newPlantName.division}
                             onChange={handlenewPlantNameInputChange}
                           />
@@ -2485,14 +2523,25 @@ export default function UserRegistration({ sendUrllist }) {
                       >
                         Cancel
                       </Button>
+
                       <Button
                         onClick={() => {
                           setOpenDeleteDialog(false);
                           postPlantName();
                           fetchPlantData();
+                          handlenewPlantNameInputChangeForAll();
                         }}
                         color="error"
                         autoFocus
+                        disabled={
+                          newPlantName.plantName === "" ||
+                          newPlantName.plantID === "" ||
+                          newPlantName.address === "" ||
+                          newPlantName.customerName === "" ||
+                          newPlantName.division === "" ||
+                          newPlantName.supportStartDate === "" ||
+                          newPlantName.supportEndDate === ""
+                        }
                       >
                         Save
                       </Button>

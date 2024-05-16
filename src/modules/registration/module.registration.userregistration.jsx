@@ -208,6 +208,11 @@ export default function UserRegistration({ sendUrllist }) {
     }
   };
 
+  const location = useLocation();
+  const currentPageLocation = useLocation().pathname;
+
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+
   useEffect(() => {
     // console.log("user : ", state.user);
     extendTokenExpiration();
@@ -222,7 +227,80 @@ export default function UserRegistration({ sendUrllist }) {
       }
     };
     fetchData();
+    fetchUser();
   }, [formData.role]);
+
+  const fetchUser = async () => {
+    console.log("expire : ", localStorage.getItem("expire"));
+    try {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status === 403) {
+        localStorage.clear();
+        navigate("/login");
+        return;
+      }
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      console.log("fetchUser email : ", data.email);
+
+      let role = data.role;
+      console.log("Role Test : ", role);
+      fetchDivs(role);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const fetchDivs = async (role) => {
+    try {
+      console.log("fetchDivs() called");
+      console.log("Current Page Location: ", currentPageLocation);
+      console.log("Currently passed Data : ", location.state);
+
+      const response = await fetch(
+        `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        navigate("/*");
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Current Response : ", data);
+        console.log("Current Divs : ", data.components);
+        setDivIsVisibleList(data.components);
+        console.log("data.components.length : ", data.components.length);
+        if (data.components.length === 0) {
+          navigate("/*");
+        }
+      }
+    } catch (error) {
+      console.log("Error in getting divs name :", error);
+      if (fetchDivs.length === 0) {
+        navigate("/*");
+      }
+      // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
+      // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
+      // setOpen(true); // Assuming setOpen is defined elsewhere
+      // setSearch("");
+      // setEditRowIndex(null);
+      // setEditValue("");
+    }
+  };
 
   const fetchUpdateData = async (selectedRole) => {
     console.log("fetchUpdateData called");
@@ -648,73 +726,76 @@ export default function UserRegistration({ sendUrllist }) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <Container component="main" maxWidth="md">
-        <CssBaseline />
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {isStatePresent ? (
-            // update form starts here...
-
-            <>
-              <Avatar
+    <>
+      {divIsVisibleList && divIsVisibleList.includes("user-registration") && (
+        <>
+          <Box sx={{ display: "flex" }}>
+            <Container component="main" maxWidth="md">
+              <CssBaseline />
+              <Box
                 sx={{
-                  backgroundImage:
-                    "linear-gradient(to right, #ed6ea0 0%, #ec8c69 100%);",
-                  width: "45px !important",
-                  height: "45px !important",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
                 }}
               >
-                {convertToInitials(updateFormData.name)}
-              </Avatar>
-              <br></br>
-              <Typography component="h1" variant="h5">
-                Update for :{"  "}
-                <Typography
-                  component="span"
-                  variant="h4"
-                  sx={{ fontWeight: "bold" }}
-                >
-                  {updateFormData.userId}
-                </Typography>
-              </Typography>
-              <form>
-                <Box noValidate sx={{ mt: 3 }}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Textfield
-                        name="name"
-                        required
-                        fullWidth
-                        id="name"
-                        label="Name"
-                        autoFocus
-                        value={updateFormData.name}
-                        onBlur={(e) => {
-                          setUpdateFormData({
-                            ...updateFormData,
-                            name: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={(e) => {
-                          setUpdateFormData({
-                            ...updateFormData,
-                            name: removeAllSpecialChar(e.target.value),
-                          });
-                          setUpdateFormErrors({
-                            ...updateFormErrors,
-                            name: e.target.value.trim() === "",
-                          });
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <Dropdown
+                {isStatePresent ? (
+                  // update form starts here...
+
+                  <>
+                    <Avatar
+                      sx={{
+                        backgroundImage:
+                          "linear-gradient(to right, #ed6ea0 0%, #ec8c69 100%);",
+                        width: "45px !important",
+                        height: "45px !important",
+                      }}
+                    >
+                      {convertToInitials(updateFormData.name)}
+                    </Avatar>
+                    <br></br>
+                    <Typography component="h1" variant="h5">
+                      Update for :{"  "}
+                      <Typography
+                        component="span"
+                        variant="h4"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        {updateFormData.userId}
+                      </Typography>
+                    </Typography>
+                    <form>
+                      <Box noValidate sx={{ mt: 3 }}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={6}>
+                            <Textfield
+                              name="name"
+                              required
+                              fullWidth
+                              id="name"
+                              label="Name"
+                              autoFocus
+                              value={updateFormData.name}
+                              onBlur={(e) => {
+                                setUpdateFormData({
+                                  ...updateFormData,
+                                  name: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={(e) => {
+                                setUpdateFormData({
+                                  ...updateFormData,
+                                  name: removeAllSpecialChar(e.target.value),
+                                });
+                                setUpdateFormErrors({
+                                  ...updateFormErrors,
+                                  name: e.target.value.trim() === "",
+                                });
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            {/* <Dropdown
                         id="designation"
                         value={updateFormData.designation}
                         label="Designation"
@@ -727,76 +808,80 @@ export default function UserRegistration({ sendUrllist }) {
                         ]}
                         fullWidth
                       /> */}
-                      <FormControl
-                        fullWidth
-                        error={updateFormErrors.designation}
-                      >
-                        <InputLabel id="designation-label">
-                          Designation
-                        </InputLabel>
-                        <Select
-                          labelId="designation-label"
-                          label="Designation"
-                          id="designation"
-                          value={updateFormData.designation}
-                          onChange={(e) => {
-                            const selectedDesignation = e.target.value;
-                            setUpdateFormData({
-                              ...updateFormData,
-                              designation: selectedDesignation,
-                            });
-                            if (selectedDesignation !== "") {
-                              setUpdateFormErrors({
-                                ...updateFormErrors,
-                                designation: false,
-                              });
-                            } else {
-                              setUpdateFormErrors({
-                                ...updateFormErrors,
-                                designation: true,
-                              });
-                            }
-                          }}
-                        >
-                          <MenuItem value="Operator">Operator</MenuItem>
-                          <MenuItem value="Supervisor">Supervisor</MenuItem>
-                          <MenuItem value="Lab Tester">Lab Tester</MenuItem>
-                        </Select>
-                        {updateFormErrors.designation && (
-                          <FormHelperText>
-                            Designation must be filled
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        InputProps={{ readOnly: true }}
-                        required
-                        fullWidth
-                        id="email"
-                        type="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        value={updateFormData.email}
-                        // onChange={handleEmailChange}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        InputProps={{ readOnly: true }}
-                        autoComplete="userId"
-                        name="userId"
-                        required
-                        fullWidth
-                        id="userId"
-                        label="User ID"
-                        value={updateFormData.userId}
-                        // onChange={handleUserIDChange}
-                      />
-                    </Grid>
-                    {/* {!userExist && (
+                            <FormControl
+                              fullWidth
+                              error={updateFormErrors.designation}
+                            >
+                              <InputLabel id="designation-label">
+                                Designation
+                              </InputLabel>
+                              <Select
+                                labelId="designation-label"
+                                label="Designation"
+                                id="designation"
+                                value={updateFormData.designation}
+                                onChange={(e) => {
+                                  const selectedDesignation = e.target.value;
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    designation: selectedDesignation,
+                                  });
+                                  if (selectedDesignation !== "") {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      designation: false,
+                                    });
+                                  } else {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      designation: true,
+                                    });
+                                  }
+                                }}
+                              >
+                                <MenuItem value="Operator">Operator</MenuItem>
+                                <MenuItem value="Supervisor">
+                                  Supervisor
+                                </MenuItem>
+                                <MenuItem value="Lab Tester">
+                                  Lab Tester
+                                </MenuItem>
+                              </Select>
+                              {updateFormErrors.designation && (
+                                <FormHelperText>
+                                  Designation must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              InputProps={{ readOnly: true }}
+                              required
+                              fullWidth
+                              id="email"
+                              type="email"
+                              label="Email Address"
+                              name="email"
+                              autoComplete="email"
+                              value={updateFormData.email}
+                              // onChange={handleEmailChange}
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              InputProps={{ readOnly: true }}
+                              autoComplete="userId"
+                              name="userId"
+                              required
+                              fullWidth
+                              id="userId"
+                              label="User ID"
+                              value={updateFormData.userId}
+                              // onChange={handleUserIDChange}
+                            />
+                          </Grid>
+                          {/* {!userExist && (
                     <Grid item xs={6}>
                       <FormControl fullWidth>
                         <InputLabel htmlFor="password">Password</InputLabel>
@@ -872,91 +957,91 @@ export default function UserRegistration({ sendUrllist }) {
                   </Alert>
                 </Box>
               )} */}
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="phoneNumber"
-                        label="Phone Number"
-                        id="phoneNumber"
-                        autoComplete="phoneNumber"
-                        value={updateFormData.phoneNumber}
-                        onBlur={(e) => {
-                          setUpdateFormData({
-                            ...updateFormData,
-                            phoneNumber: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={(e) => {
-                          const isValidPhoneNumber =
-                            !isNaN(e.target.value) &&
-                            e.target.value.length <= 10;
-                          const isPhoneNumberFilled =
-                            e.target.value.trim() === "";
-                          const isPhoneNumberLengthValid =
-                            e.target.value.length <= 9;
-                          setUpdateFormData({
-                            ...updateFormData,
-                            phoneNumber: isValidPhoneNumber
-                              ? removeAllExceptNumber(e.target.value)
-                              : formData.phoneNumber,
-                          });
-                          setUpdateFormErrors({
-                            ...updateFormErrors,
-                            phoneNumber: isPhoneNumberFilled,
-                            phoneNumberLength: isPhoneNumberLengthValid,
-                          });
-                        }}
-                        error={
-                          updateFormErrors.phoneNumber ||
-                          updateFormErrors.phoneNumberLength
-                        }
-                        helperText={
-                          (updateFormErrors.phoneNumber &&
-                            "Phone Number must be filled") ||
-                          (updateFormErrors.phoneNumberLength &&
-                            "Phone Number must be 10 digits")
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="accountOwnerCustomer"
-                        label="Account Owner Customer"
-                        id="accountOwnerCustomer"
-                        autoComplete="accountOwnerCustomer"
-                        value={updateFormData.accountOwnerCustomer}
-                        onBlur={(e) => {
-                          setUpdateFormData({
-                            ...updateFormData,
-                            accountOwnerCustomer: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={updateHandleFormdataInputChange}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="accountOwnerGW"
-                        label="Account Owner GW"
-                        id="accountOwnerGW"
-                        autoComplete="accountOwnerGW"
-                        value={updateFormData.accountOwnerGW}
-                        onBlur={(e) => {
-                          setUpdateFormData({
-                            ...updateFormData,
-                            accountOwnerGW: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={updateHandleFormdataInputChange}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <Dropdown
+                          <Grid item xs={6}>
+                            <Textfield
+                              required
+                              fullWidth
+                              name="phoneNumber"
+                              label="Phone Number"
+                              id="phoneNumber"
+                              autoComplete="phoneNumber"
+                              value={updateFormData.phoneNumber}
+                              onBlur={(e) => {
+                                setUpdateFormData({
+                                  ...updateFormData,
+                                  phoneNumber: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={(e) => {
+                                const isValidPhoneNumber =
+                                  !isNaN(e.target.value) &&
+                                  e.target.value.length <= 10;
+                                const isPhoneNumberFilled =
+                                  e.target.value.trim() === "";
+                                const isPhoneNumberLengthValid =
+                                  e.target.value.length <= 9;
+                                setUpdateFormData({
+                                  ...updateFormData,
+                                  phoneNumber: isValidPhoneNumber
+                                    ? removeAllExceptNumber(e.target.value)
+                                    : formData.phoneNumber,
+                                });
+                                setUpdateFormErrors({
+                                  ...updateFormErrors,
+                                  phoneNumber: isPhoneNumberFilled,
+                                  phoneNumberLength: isPhoneNumberLengthValid,
+                                });
+                              }}
+                              error={
+                                updateFormErrors.phoneNumber ||
+                                updateFormErrors.phoneNumberLength
+                              }
+                              helperText={
+                                (updateFormErrors.phoneNumber &&
+                                  "Phone Number must be filled") ||
+                                (updateFormErrors.phoneNumberLength &&
+                                  "Phone Number must be 10 digits")
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              required
+                              fullWidth
+                              name="accountOwnerCustomer"
+                              label="Account Owner Customer"
+                              id="accountOwnerCustomer"
+                              autoComplete="accountOwnerCustomer"
+                              value={updateFormData.accountOwnerCustomer}
+                              onBlur={(e) => {
+                                setUpdateFormData({
+                                  ...updateFormData,
+                                  accountOwnerCustomer: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={updateHandleFormdataInputChange}
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              required
+                              fullWidth
+                              name="accountOwnerGW"
+                              label="Account Owner GW"
+                              id="accountOwnerGW"
+                              autoComplete="accountOwnerGW"
+                              value={updateFormData.accountOwnerGW}
+                              onBlur={(e) => {
+                                setUpdateFormData({
+                                  ...updateFormData,
+                                  accountOwnerGW: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={updateHandleFormdataInputChange}
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            {/* <Dropdown
                         fullWidth
                         id="role"
                         value={updateFormData.role}
@@ -975,46 +1060,51 @@ export default function UserRegistration({ sendUrllist }) {
                         }}
                         list={roleList.map((p) => p)}
                       /> */}
-                      <FormControl fullWidth error={updateFormErrors.role}>
-                        <InputLabel id="role-label">Role</InputLabel>
-                        <Select
-                          labelId="role-label"
-                          label="Role"
-                          id="role"
-                          value={updateFormData.role}
-                          onChange={(e) => {
-                            const selectedRole = e.target.value;
-                            setUpdateFormData({
-                              ...updateFormData,
-                              role: selectedRole,
-                            });
-                            if (selectedRole !== "") {
-                              setUpdateFormErrors({
-                                ...updateFormErrors,
-                                role: false,
-                              });
-                            } else {
-                              setUpdateFormErrors({
-                                ...updateFormErrors,
-                                role: true,
-                              });
-                            }
-                            fetchUpdateData(selectedRole);
-                          }}
-                        >
-                          {roleList.map((role) => (
-                            <MenuItem key={role} value={role}>
-                              {role}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {updateFormErrors.role && (
-                          <FormHelperText>Role must be filled</FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <Dropdown
+                            <FormControl
+                              fullWidth
+                              error={updateFormErrors.role}
+                            >
+                              <InputLabel id="role-label">Role</InputLabel>
+                              <Select
+                                labelId="role-label"
+                                label="Role"
+                                id="role"
+                                value={updateFormData.role}
+                                onChange={(e) => {
+                                  const selectedRole = e.target.value;
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    role: selectedRole,
+                                  });
+                                  if (selectedRole !== "") {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      role: false,
+                                    });
+                                  } else {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      role: true,
+                                    });
+                                  }
+                                  fetchUpdateData(selectedRole);
+                                }}
+                              >
+                                {roleList.map((role) => (
+                                  <MenuItem key={role} value={role}>
+                                    {role}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {updateFormErrors.role && (
+                                <FormHelperText>
+                                  Role must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            {/* <Dropdown
                         fullWidth
                         id="homepage"
                         value={updateFormData.homepage}
@@ -1022,190 +1112,200 @@ export default function UserRegistration({ sendUrllist }) {
                         onChange={updateHandleHomepageChange}
                         list={["admin/home", "user/home"]}
                       /> */}
-                      <FormControl fullWidth error={updateFormErrors.homepage}>
-                        <InputLabel id="homepage-label">Homepage</InputLabel>
-                        <Select
-                          labelId="homepage-label"
-                          label="Homepage"
-                          id="homepage"
-                          value={updateFormData.homepage}
-                          onChange={(e) => {
-                            const selectedHomepage = e.target.value;
-                            setUpdateFormData({
-                              ...updateFormData,
-                              homepage: selectedHomepage,
-                            });
-                            if (selectedHomepage !== "") {
-                              setUpdateFormErrors({
-                                ...updateFormErrors,
-                                homepage: false,
-                              });
-                            } else {
-                              setUpdateFormErrors({
-                                ...updateFormErrors,
-                                homepage: true,
-                              });
-                            }
-                          }}
-                        >
-                          {/* <MenuItem value="admin/home">admin/home</MenuItem>
+                            <FormControl
+                              fullWidth
+                              error={updateFormErrors.homepage}
+                            >
+                              <InputLabel id="homepage-label">
+                                Homepage
+                              </InputLabel>
+                              <Select
+                                labelId="homepage-label"
+                                label="Homepage"
+                                id="homepage"
+                                value={updateFormData.homepage}
+                                onChange={(e) => {
+                                  const selectedHomepage = e.target.value;
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    homepage: selectedHomepage,
+                                  });
+                                  if (selectedHomepage !== "") {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      homepage: false,
+                                    });
+                                  } else {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      homepage: true,
+                                    });
+                                  }
+                                }}
+                              >
+                                {/* <MenuItem value="admin/home">admin/home</MenuItem>
                           <MenuItem value="user/home">user/home</MenuItem> */}
-                          {updateHomePageNames.map((page) => (
-                            <MenuItem key={page} value={page}>
-                              {page}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {updateFormErrors.homepage && (
-                          <FormHelperText>
-                            Homepage must be filled
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Autocomplete
-                        value={updateFormData.plantName}
-                        disablePortal
-                        fullWidth
-                        id="plantName"
-                        options={plantList.map((p) => p.plantName)}
-                        getOptionLabel={(option) => option}
-                        onChange={handleAutocompleteChange}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Plant Name"
-                            error={updateFormErrors.plantName}
-                            helperText={
-                              updateFormErrors.plantName &&
-                              "Plant Name must be filled"
-                            }
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl fullWidth error={updateFormErrors.plantID}>
-                        <InputLabel htmlFor="PlantID">PlantID</InputLabel>
-                        <OutlinedInput
-                          inputProps={{
-                            readOnly: true,
-                          }}
-                          label="PlantID"
-                          autoComplete="PlantID"
-                          name="PlantID"
-                          required
-                          fullWidth
-                          id="PlantID"
-                          value={updateFormData.plantID}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <Tooltip title="Add Plant">
-                                <IconButton
-                                  onClick={handleAddPlantClick}
-                                  edge="end"
-                                >
-                                  <AddCircleOutlineIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </InputAdornment>
-                          }
-                        />
-                        {updateFormErrors.plantID && (
-                          <FormHelperText>
-                            Plant ID must be filled
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="address"
-                        label="Address"
-                        id="address"
-                        autoComplete="address"
-                        value={updateFormData.address}
-                        // onChange={(e) => {
-                        //   setupdateFormData({
-                        //     ...updateFormData,
-                        //     address: e.target.value,
-                        //   });
-                        //   setupdateFormErrors({
-                        //     ...updateFormErrors,
-                        //     address: e.target.value.trim() === "",
-                        //   });
-                        // }}
-                        error={updateFormErrors.address}
-                        helperText={
-                          updateFormErrors.address && "Address must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="division"
-                        label="Division"
-                        id="division"
-                        autoComplete="division"
-                        value={updateFormData.division}
-                        // onChange={(e) => {
-                        //   setupdateFormData({
-                        //     ...updateFormData,
-                        //     division: e.target.value,
-                        //   });
-                        //   setupdateFormErrors({
-                        //     ...updateFormErrors,
-                        //     division: e.target.value.trim() === "",
-                        //   });
-                        // }}
-                        error={updateFormErrors.division}
-                        helperText={
-                          updateFormErrors.division && "Division must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="customer"
-                        label="Customer"
-                        id="customer"
-                        autoComplete="customer"
-                        value={updateFormData.customerName}
-                        // onChange={(e) => {
-                        //   setupdateFormData({
-                        //     ...updateFormData,
-                        //     customerName: removeAllSpecialChar(e.target.value),
-                        //   });
-                        //   setupdateFormErrors({
-                        //     ...updateFormErrors,
-                        //     customerName: e.target.value.trim() === "",
-                        //   });
-                        // }}
-                        error={updateFormErrors.customerName}
-                        helperText={
-                          updateFormErrors.customerName &&
-                          "Customer Name must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <Datepicker
+                                {updateHomePageNames.map((page) => (
+                                  <MenuItem key={page} value={page}>
+                                    {page}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {updateFormErrors.homepage && (
+                                <FormHelperText>
+                                  Homepage must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Autocomplete
+                              value={updateFormData.plantName}
+                              disablePortal
+                              fullWidth
+                              id="plantName"
+                              options={plantList.map((p) => p.plantName)}
+                              getOptionLabel={(option) => option}
+                              onChange={handleAutocompleteChange}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Plant Name"
+                                  error={updateFormErrors.plantName}
+                                  helperText={
+                                    updateFormErrors.plantName &&
+                                    "Plant Name must be filled"
+                                  }
+                                />
+                              )}
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <FormControl
+                              fullWidth
+                              error={updateFormErrors.plantID}
+                            >
+                              <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                              <OutlinedInput
+                                inputProps={{
+                                  readOnly: true,
+                                }}
+                                label="PlantID"
+                                autoComplete="PlantID"
+                                name="PlantID"
+                                required
+                                fullWidth
+                                id="PlantID"
+                                value={updateFormData.plantID}
+                                endAdornment={
+                                  <InputAdornment position="end">
+                                    <Tooltip title="Add Plant">
+                                      <IconButton
+                                        onClick={handleAddPlantClick}
+                                        edge="end"
+                                      >
+                                        <AddCircleOutlineIcon />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </InputAdornment>
+                                }
+                              />
+                              {updateFormErrors.plantID && (
+                                <FormHelperText>
+                                  Plant ID must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="address"
+                              label="Address"
+                              id="address"
+                              autoComplete="address"
+                              value={updateFormData.address}
+                              // onChange={(e) => {
+                              //   setupdateFormData({
+                              //     ...updateFormData,
+                              //     address: e.target.value,
+                              //   });
+                              //   setupdateFormErrors({
+                              //     ...updateFormErrors,
+                              //     address: e.target.value.trim() === "",
+                              //   });
+                              // }}
+                              error={updateFormErrors.address}
+                              helperText={
+                                updateFormErrors.address &&
+                                "Address must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="division"
+                              label="Division"
+                              id="division"
+                              autoComplete="division"
+                              value={updateFormData.division}
+                              // onChange={(e) => {
+                              //   setupdateFormData({
+                              //     ...updateFormData,
+                              //     division: e.target.value,
+                              //   });
+                              //   setupdateFormErrors({
+                              //     ...updateFormErrors,
+                              //     division: e.target.value.trim() === "",
+                              //   });
+                              // }}
+                              error={updateFormErrors.division}
+                              helperText={
+                                updateFormErrors.division &&
+                                "Division must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="customer"
+                              label="Customer"
+                              id="customer"
+                              autoComplete="customer"
+                              value={updateFormData.customerName}
+                              // onChange={(e) => {
+                              //   setupdateFormData({
+                              //     ...updateFormData,
+                              //     customerName: removeAllSpecialChar(e.target.value),
+                              //   });
+                              //   setupdateFormErrors({
+                              //     ...updateFormErrors,
+                              //     customerName: e.target.value.trim() === "",
+                              //   });
+                              // }}
+                              error={updateFormErrors.customerName}
+                              helperText={
+                                updateFormErrors.customerName &&
+                                "Customer Name must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            {/* <Datepicker
                         label="Support Start Date"
                         value={dayjs(updateFormData.supportStartDate)}
                         onChange={(startDate) =>
@@ -1216,26 +1316,26 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                         slotProps={{ textField: { fullWidth: true } }}
                       /> */}
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="supportStartDate"
-                        label="Support Start Date"
-                        id="supportStartDate"
-                        autoComplete="supportStartDate"
-                        value={updateFormData.supportStartDate}
-                        error={updateFormErrors.supportStartDate}
-                        helperText={
-                          updateFormErrors.supportStartDate &&
-                          "Support Start Date must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <Datepicker
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="supportStartDate"
+                              label="Support Start Date"
+                              id="supportStartDate"
+                              autoComplete="supportStartDate"
+                              value={updateFormData.supportStartDate}
+                              error={updateFormErrors.supportStartDate}
+                              helperText={
+                                updateFormErrors.supportStartDate &&
+                                "Support Start Date must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            {/* <Datepicker
                         label="Support End Date"
                         value={dayjs(updateFormData.supportEndDate)}
                         onChange={(endDate) =>
@@ -1246,81 +1346,83 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                         slotProps={{ textField: { fullWidth: true } }}
                       /> */}
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="supportEndDate"
-                        label="Support End Date"
-                        id="supportEndDate"
-                        autoComplete="supportEndDate"
-                        value={updateFormData.supportEndDate}
-                        error={updateFormErrors.supportEndDate}
-                        helperText={
-                          updateFormErrors.supportEndDate &&
-                          "Support End Date must be filled"
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                  <Button
-                    type="submit"
-                    color="secondary"
-                    fullWidth
-                    startIcon={<SaveSharpIcon />}
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    onClick={handleUpdate}
-                  >
-                    Update User
-                  </Button>
-                </Box>
-              </form>
-            </>
-          ) : (
-            // registration form starts here...
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="supportEndDate"
+                              label="Support End Date"
+                              id="supportEndDate"
+                              autoComplete="supportEndDate"
+                              value={updateFormData.supportEndDate}
+                              error={updateFormErrors.supportEndDate}
+                              helperText={
+                                updateFormErrors.supportEndDate &&
+                                "Support End Date must be filled"
+                              }
+                            />
+                          </Grid>
+                        </Grid>
+                        <Button
+                          type="submit"
+                          color="secondary"
+                          fullWidth
+                          startIcon={<SaveSharpIcon />}
+                          variant="contained"
+                          sx={{ mt: 3, mb: 2 }}
+                          onClick={handleUpdate}
+                        >
+                          Update User
+                        </Button>
+                      </Box>
+                    </form>
+                  </>
+                ) : (
+                  // registration form starts here...
 
-            <>
-              <Avatar>{convertToInitials(formData.name)}</Avatar>
-              <br></br>
-              <Typography component="h1" variant="h5">
-                User Registration Page
-              </Typography>
-              <form>
-                <Box noValidate sx={{ mt: 3 }}>
-                  <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                      <Textfield
-                        name="name"
-                        required
-                        fullWidth
-                        id="name"
-                        label="Name"
-                        autoFocus
-                        value={formData.name}
-                        onBlur={(e) => {
-                          setFormData({
-                            ...formData,
-                            name: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            name: removeAllSpecialChar(e.target.value),
-                          });
-                          setFormErrors({
-                            ...formErrors,
-                            name: e.target.value.trim() === "",
-                          });
-                        }}
-                        error={formErrors.name}
-                        helperText={formErrors.name && "Name must be filled"}
-                      />
-                    </Grid>
-                    {/* <Grid item xs={6}>
+                  <>
+                    <Avatar>{convertToInitials(formData.name)}</Avatar>
+                    <br></br>
+                    <Typography component="h1" variant="h5">
+                      User Registration Page
+                    </Typography>
+                    <form>
+                      <Box noValidate sx={{ mt: 3 }}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={6}>
+                            <Textfield
+                              name="name"
+                              required
+                              fullWidth
+                              id="name"
+                              label="Name"
+                              autoFocus
+                              value={formData.name}
+                              onBlur={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  name: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  name: removeAllSpecialChar(e.target.value),
+                                });
+                                setFormErrors({
+                                  ...formErrors,
+                                  name: e.target.value.trim() === "",
+                                });
+                              }}
+                              error={formErrors.name}
+                              helperText={
+                                formErrors.name && "Name must be filled"
+                              }
+                            />
+                          </Grid>
+                          {/* <Grid item xs={6}>
                       <Dropdown
                         id="designation"
                         value={formData.designation}
@@ -1335,80 +1437,89 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                       />
                     </Grid> */}
-                    <Grid item xs={6}>
-                      <FormControl fullWidth error={formErrors.designation}>
-                        <InputLabel id="designation-label">
-                          Designation
-                        </InputLabel>
-                        <Select
-                          labelId="designation-label"
-                          label="Designation"
-                          id="designation"
-                          value={formData.designation}
-                          onChange={(e) => {
-                            const selectedDesignation = e.target.value;
-                            setFormData({
-                              ...formData,
-                              designation: selectedDesignation,
-                            });
-                            if (selectedDesignation !== "") {
-                              setFormErrors({
-                                ...formErrors,
-                                designation: false,
-                              });
-                            } else {
-                              setFormErrors({
-                                ...formErrors,
-                                designation: true,
-                              });
-                            }
-                          }}
-                        >
-                          <MenuItem value="Operator">Operator</MenuItem>
-                          <MenuItem value="Supervisor">Supervisor</MenuItem>
-                          <MenuItem value="Lab Tester">Lab Tester</MenuItem>
-                        </Select>
-                        {formErrors.designation && (
-                          <FormHelperText>
-                            Designation must be filled
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        id="email"
-                        type="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        value={formData.email}
-                        onBlur={(e) => {
-                          setFormData({
-                            ...formData,
-                            email: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            email: removeNumberAndSpecialChar(
-                              removeSpaceAndLowerCase(e.target.value)
-                            ),
-                          });
-                          setFormErrors({
-                            ...formErrors,
-                            email: e.target.value.trim() === "",
-                          });
-                        }}
-                        error={formErrors.email}
-                        helperText={formErrors.email && "Email must be filled"}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <FormControl fullWidth error={formErrors.userId}>
+                          <Grid item xs={6}>
+                            <FormControl
+                              fullWidth
+                              error={formErrors.designation}
+                            >
+                              <InputLabel id="designation-label">
+                                Designation
+                              </InputLabel>
+                              <Select
+                                labelId="designation-label"
+                                label="Designation"
+                                id="designation"
+                                value={formData.designation}
+                                onChange={(e) => {
+                                  const selectedDesignation = e.target.value;
+                                  setFormData({
+                                    ...formData,
+                                    designation: selectedDesignation,
+                                  });
+                                  if (selectedDesignation !== "") {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      designation: false,
+                                    });
+                                  } else {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      designation: true,
+                                    });
+                                  }
+                                }}
+                              >
+                                <MenuItem value="Operator">Operator</MenuItem>
+                                <MenuItem value="Supervisor">
+                                  Supervisor
+                                </MenuItem>
+                                <MenuItem value="Lab Tester">
+                                  Lab Tester
+                                </MenuItem>
+                              </Select>
+                              {formErrors.designation && (
+                                <FormHelperText>
+                                  Designation must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              required
+                              fullWidth
+                              id="email"
+                              type="email"
+                              label="Email Address"
+                              name="email"
+                              autoComplete="email"
+                              value={formData.email}
+                              onBlur={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  email: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  email: removeNumberAndSpecialChar(
+                                    removeSpaceAndLowerCase(e.target.value)
+                                  ),
+                                });
+                                setFormErrors({
+                                  ...formErrors,
+                                  email: e.target.value.trim() === "",
+                                });
+                              }}
+                              error={formErrors.email}
+                              helperText={
+                                formErrors.email && "Email must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            {/* <FormControl fullWidth error={formErrors.userId}>
                         <InputLabel htmlFor="userId">UserID</InputLabel>
                         <OutlinedInput
                           autoComplete="userId"
@@ -1462,379 +1573,389 @@ export default function UserRegistration({ sendUrllist }) {
                           </FormHelperText>
                         )}
                       </FormControl> */}
-                      <FormControl fullWidth error={formErrors.userId}>
-                        <InputLabel htmlFor="userId">UserID</InputLabel>
-                        <OutlinedInput
-                          autoComplete="userId"
-                          name="userId"
-                          required
-                          fullWidth
-                          id="userId"
-                          label="UserID"
-                          value={formData.userId}
-                          onBlur={(e) => {
-                            setFormData({
-                              ...formData,
-                              userId: e.target.value.trim(),
-                            });
-                          }}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              userId: removeOnlySpecialChar(
-                                e.target.value.toLocaleLowerCase()
-                              ),
-                            });
-                            setUnchangedUserID(e.target.value);
-                            setFormErrors({
-                              ...formErrors,
-                              userId: e.target.value.trim() === "",
-                            });
-                          }}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <Tooltip title="Auto-fill UserID with Email Address">
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      checked={
-                                        formData.userId === formData.email
-                                      }
-                                      onChange={(e) => {
-                                        setFormData({
-                                          ...formData,
-                                          userId:
-                                            formData.userId === formData.email
-                                              ? unchangedUserID
-                                              : formData.email,
-                                        });
-                                      }}
-                                      name="autoFillUserID"
-                                      color="primary"
-                                    />
+                            <FormControl fullWidth error={formErrors.userId}>
+                              <InputLabel htmlFor="userId">UserID</InputLabel>
+                              <OutlinedInput
+                                autoComplete="userId"
+                                name="userId"
+                                required
+                                fullWidth
+                                id="userId"
+                                label="UserID"
+                                value={formData.userId}
+                                onBlur={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    userId: e.target.value.trim(),
+                                  });
+                                }}
+                                onChange={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    userId: removeOnlySpecialChar(
+                                      e.target.value.toLocaleLowerCase()
+                                    ),
+                                  });
+                                  setUnchangedUserID(e.target.value);
+                                  setFormErrors({
+                                    ...formErrors,
+                                    userId: e.target.value.trim() === "",
+                                  });
+                                }}
+                                endAdornment={
+                                  <InputAdornment position="end">
+                                    <Tooltip title="Auto-fill UserID with Email Address">
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            checked={
+                                              formData.userId === formData.email
+                                            }
+                                            onChange={(e) => {
+                                              setFormData({
+                                                ...formData,
+                                                userId:
+                                                  formData.userId ===
+                                                  formData.email
+                                                    ? unchangedUserID
+                                                    : formData.email,
+                                              });
+                                            }}
+                                            name="autoFillUserID"
+                                            color="primary"
+                                          />
+                                        }
+                                      />
+                                    </Tooltip>
+                                  </InputAdornment>
+                                }
+                              />
+                              {formErrors.userId && (
+                                <FormHelperText>
+                                  User ID must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <FormControl
+                              fullWidth
+                              error={
+                                formErrors.password ||
+                                formErrors.passwordNotMatch ||
+                                formErrors.weakPassword
+                              }
+                            >
+                              <InputLabel htmlFor="password">
+                                Password
+                              </InputLabel>
+                              <OutlinedInput
+                                label="Password"
+                                autoComplete="password"
+                                name="password"
+                                required
+                                fullWidth
+                                id="password"
+                                value={pass}
+                                onChange={(e) => {
+                                  const password = e.target.value;
+                                  setPass(password);
+                                  const isPasswordValid =
+                                    validatePassword(password);
+                                  setFormData({
+                                    ...formData,
+                                    password: password,
+                                  });
+                                  setFormErrors({
+                                    ...formErrors,
+                                    password: password.trim() === "",
+                                    passwordNotMatch: password !== cnfpass,
+                                    weakPassword: !isPasswordValid,
+                                  });
+                                  console.log(
+                                    "password !== cnfpass : ",
+                                    password !== cnfpass
+                                  );
+                                }}
+                                type={showPassword ? "text" : "password"}
+                                endAdornment={
+                                  <InputAdornment position="end">
+                                    <IconButton
+                                      aria-label="toggle password visibility"
+                                      onClick={handleClickShowPassword}
+                                      onMouseDown={handleMouseDownPassword}
+                                      edge="end"
+                                    >
+                                      {showPassword ? (
+                                        <VisibilityOff />
+                                      ) : (
+                                        <Visibility />
+                                      )}
+                                    </IconButton>
+                                  </InputAdornment>
+                                }
+                              />
+                              {formErrors.password && (
+                                <FormHelperText>
+                                  Password must be filled
+                                </FormHelperText>
+                              )}
+                              {formErrors.weakPassword && (
+                                <FormHelperText>
+                                  Password must contain at least 6 characters,
+                                  including uppercase, lowercase, numeric, and
+                                  special characters
+                                </FormHelperText>
+                              )}
+                              {formErrors.passwordNotMatch && (
+                                <FormHelperText>
+                                  Password does not match !
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              required
+                              fullWidth
+                              name="confirmPassword"
+                              label="Confirm Password"
+                              type="password"
+                              id="confirmPassword"
+                              value={cnfpass}
+                              onBlur={(e) => confirmPassword(e.target.value)}
+                              onChange={(e) => {
+                                const confirmPass = e.target.value;
+                                setCnfpass(confirmPass);
+                                setFormErrors({
+                                  ...formErrors,
+                                  confirmPassword: e.target.value.trim() === "",
+                                  passwordNotMatch: pass !== confirmPass,
+                                });
+                              }}
+                              error={
+                                formErrors.confirmPassword ||
+                                formErrors.passwordNotMatch
+                              }
+                              helperText={
+                                (formErrors.confirmPassword &&
+                                  "Confirm Password must be filled") ||
+                                (formErrors.passwordNotMatch &&
+                                  "Password does not match !")
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              required
+                              fullWidth
+                              name="phoneNumber"
+                              label="Phone Number"
+                              id="phoneNumber"
+                              autoComplete="phoneNumber"
+                              value={formData.phoneNumber}
+                              onBlur={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  phoneNumber: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={(e) => {
+                                const isValidPhoneNumber =
+                                  !isNaN(e.target.value) &&
+                                  e.target.value.length <= 10;
+                                const isPhoneNumberFilled =
+                                  e.target.value.trim() === "";
+                                const isPhoneNumberLengthValid =
+                                  e.target.value.length <= 9;
+                                setFormData({
+                                  ...formData,
+                                  phoneNumber: isValidPhoneNumber
+                                    ? removeAllExceptNumber(e.target.value)
+                                    : formData.phoneNumber,
+                                });
+                                setFormErrors({
+                                  ...formErrors,
+                                  phoneNumber: isPhoneNumberFilled,
+                                  phoneNumberLength: isPhoneNumberLengthValid,
+                                });
+                              }}
+                              error={
+                                formErrors.phoneNumber ||
+                                formErrors.phoneNumberLength
+                              }
+                              helperText={
+                                (formErrors.phoneNumber &&
+                                  "Phone Number must be filled") ||
+                                (formErrors.phoneNumberLength &&
+                                  "Phone Number must be 10 digits")
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              required
+                              fullWidth
+                              name="accountOwnerCustomer"
+                              label="Account Owner Customer"
+                              id="accountOwnerCustomer"
+                              autoComplete="accountOwnerCustomer"
+                              value={formData.accountOwnerCustomer}
+                              onBlur={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  accountOwnerCustomer: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  accountOwnerCustomer:
+                                    // removeNumberAndSpecialChar(
+                                    //   removeSpaceAndLowerCase(
+                                    e.target.value,
+                                  // )),
+                                });
+                                setFormErrors({
+                                  ...formErrors,
+                                  accountOwnerCustomer:
+                                    e.target.value.trim() === "",
+                                });
+                              }}
+                              error={formErrors.accountOwnerCustomer}
+                              helperText={
+                                formErrors.accountOwnerCustomer &&
+                                "Account Owner Customer must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <Textfield
+                              required
+                              fullWidth
+                              name="accountOwnerGW"
+                              label="Account Owner GW"
+                              id="accountOwnerGW"
+                              autoComplete="accountOwnerGW"
+                              value={formData.accountOwnerGW}
+                              onBlur={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  accountOwnerGW: e.target.value.trim(),
+                                });
+                              }}
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  accountOwnerGW:
+                                    // removeNumberAndSpecialChar(
+                                    //   removeSpaceAndLowerCase(
+                                    e.target.value,
+                                  // )),
+                                });
+                                setFormErrors({
+                                  ...formErrors,
+                                  accountOwnerGW: e.target.value.trim() === "",
+                                });
+                              }}
+                              error={formErrors.accountOwnerGW}
+                              helperText={
+                                formErrors.accountOwnerGW &&
+                                "Account Owner GW must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <FormControl fullWidth error={formErrors.role}>
+                              <InputLabel id="role-label">Role</InputLabel>
+                              <Select
+                                labelId="role-label"
+                                label="Role"
+                                id="role"
+                                value={formData.role}
+                                onChange={(e) => {
+                                  const selectedRole = e.target.value;
+                                  setFormData({
+                                    ...formData,
+                                    role: selectedRole,
+                                  });
+                                  if (selectedRole !== "") {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      role: false,
+                                    });
+                                  } else {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      role: true,
+                                    });
                                   }
-                                />
-                              </Tooltip>
-                            </InputAdornment>
-                          }
-                        />
-                        {formErrors.userId && (
-                          <FormHelperText>
-                            User ID must be filled
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl
-                        fullWidth
-                        error={
-                          formErrors.password ||
-                          formErrors.passwordNotMatch ||
-                          formErrors.weakPassword
-                        }
-                      >
-                        <InputLabel htmlFor="password">Password</InputLabel>
-                        <OutlinedInput
-                          label="Password"
-                          autoComplete="password"
-                          name="password"
-                          required
-                          fullWidth
-                          id="password"
-                          value={pass}
-                          onChange={(e) => {
-                            const password = e.target.value;
-                            setPass(password);
-                            const isPasswordValid = validatePassword(password);
-                            setFormData({
-                              ...formData,
-                              password: password,
-                            });
-                            setFormErrors({
-                              ...formErrors,
-                              password: password.trim() === "",
-                              passwordNotMatch: password !== cnfpass,
-                              weakPassword: !isPasswordValid,
-                            });
-                            console.log(
-                              "password !== cnfpass : ",
-                              password !== cnfpass
-                            );
-                          }}
-                          type={showPassword ? "text" : "password"}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
+                                }}
                               >
-                                {showPassword ? (
-                                  <VisibilityOff />
-                                ) : (
-                                  <Visibility />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                        {formErrors.password && (
-                          <FormHelperText>
-                            Password must be filled
-                          </FormHelperText>
-                        )}
-                        {formErrors.weakPassword && (
-                          <FormHelperText>
-                            Password must contain at least 6 characters,
-                            including uppercase, lowercase, numeric, and special
-                            characters
-                          </FormHelperText>
-                        )}
-                        {formErrors.passwordNotMatch && (
-                          <FormHelperText>
-                            Password does not match !
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="confirmPassword"
-                        label="Confirm Password"
-                        type="password"
-                        id="confirmPassword"
-                        value={cnfpass}
-                        onBlur={(e) => confirmPassword(e.target.value)}
-                        onChange={(e) => {
-                          const confirmPass = e.target.value;
-                          setCnfpass(confirmPass);
-                          setFormErrors({
-                            ...formErrors,
-                            confirmPassword: e.target.value.trim() === "",
-                            passwordNotMatch: pass !== confirmPass,
-                          });
-                        }}
-                        error={
-                          formErrors.confirmPassword ||
-                          formErrors.passwordNotMatch
-                        }
-                        helperText={
-                          (formErrors.confirmPassword &&
-                            "Confirm Password must be filled") ||
-                          (formErrors.passwordNotMatch &&
-                            "Password does not match !")
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="phoneNumber"
-                        label="Phone Number"
-                        id="phoneNumber"
-                        autoComplete="phoneNumber"
-                        value={formData.phoneNumber}
-                        onBlur={(e) => {
-                          setFormData({
-                            ...formData,
-                            phoneNumber: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={(e) => {
-                          const isValidPhoneNumber =
-                            !isNaN(e.target.value) &&
-                            e.target.value.length <= 10;
-                          const isPhoneNumberFilled =
-                            e.target.value.trim() === "";
-                          const isPhoneNumberLengthValid =
-                            e.target.value.length <= 9;
-                          setFormData({
-                            ...formData,
-                            phoneNumber: isValidPhoneNumber
-                              ? removeAllExceptNumber(e.target.value)
-                              : formData.phoneNumber,
-                          });
-                          setFormErrors({
-                            ...formErrors,
-                            phoneNumber: isPhoneNumberFilled,
-                            phoneNumberLength: isPhoneNumberLengthValid,
-                          });
-                        }}
-                        error={
-                          formErrors.phoneNumber || formErrors.phoneNumberLength
-                        }
-                        helperText={
-                          (formErrors.phoneNumber &&
-                            "Phone Number must be filled") ||
-                          (formErrors.phoneNumberLength &&
-                            "Phone Number must be 10 digits")
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="accountOwnerCustomer"
-                        label="Account Owner Customer"
-                        id="accountOwnerCustomer"
-                        autoComplete="accountOwnerCustomer"
-                        value={formData.accountOwnerCustomer}
-                        onBlur={(e) => {
-                          setFormData({
-                            ...formData,
-                            accountOwnerCustomer: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            accountOwnerCustomer:
-                              // removeNumberAndSpecialChar(
-                              //   removeSpaceAndLowerCase(
-                              e.target.value,
-                            // )),
-                          });
-                          setFormErrors({
-                            ...formErrors,
-                            accountOwnerCustomer: e.target.value.trim() === "",
-                          });
-                        }}
-                        error={formErrors.accountOwnerCustomer}
-                        helperText={
-                          formErrors.accountOwnerCustomer &&
-                          "Account Owner Customer must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Textfield
-                        required
-                        fullWidth
-                        name="accountOwnerGW"
-                        label="Account Owner GW"
-                        id="accountOwnerGW"
-                        autoComplete="accountOwnerGW"
-                        value={formData.accountOwnerGW}
-                        onBlur={(e) => {
-                          setFormData({
-                            ...formData,
-                            accountOwnerGW: e.target.value.trim(),
-                          });
-                        }}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            accountOwnerGW:
-                              // removeNumberAndSpecialChar(
-                              //   removeSpaceAndLowerCase(
-                              e.target.value,
-                            // )),
-                          });
-                          setFormErrors({
-                            ...formErrors,
-                            accountOwnerGW: e.target.value.trim() === "",
-                          });
-                        }}
-                        error={formErrors.accountOwnerGW}
-                        helperText={
-                          formErrors.accountOwnerGW &&
-                          "Account Owner GW must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl fullWidth error={formErrors.role}>
-                        <InputLabel id="role-label">Role</InputLabel>
-                        <Select
-                          labelId="role-label"
-                          label="Role"
-                          id="role"
-                          value={formData.role}
-                          onChange={(e) => {
-                            const selectedRole = e.target.value;
-                            setFormData({
-                              ...formData,
-                              role: selectedRole,
-                            });
-                            if (selectedRole !== "") {
-                              setFormErrors({
-                                ...formErrors,
-                                role: false,
-                              });
-                            } else {
-                              setFormErrors({
-                                ...formErrors,
-                                role: true,
-                              });
-                            }
-                          }}
-                        >
-                          <MenuItem value="">
-                            <h5>Select Role</h5>
-                          </MenuItem>
-                          {roleList.map((role) => (
-                            <MenuItem key={role} value={role}>
-                              {role}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {formErrors.role && (
-                          <FormHelperText>Role must be filled</FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl fullWidth error={formErrors.homepage}>
-                        <InputLabel id="homepage-label">Homepage</InputLabel>
-                        <Select
-                          labelId="homepage-label"
-                          label="Homepage"
-                          id="homepage"
-                          value={formData.homepage}
-                          onChange={(e) => {
-                            const selectedHomepage = e.target.value;
-                            setFormData({
-                              ...formData,
-                              homepage: selectedHomepage,
-                            });
-                            if (selectedHomepage !== "") {
-                              setFormErrors({
-                                ...formErrors,
-                                homepage: false,
-                              });
-                            } else {
-                              setFormErrors({
-                                ...formErrors,
-                                homepage: true,
-                              });
-                            }
-                          }}
-                        >
-                          <MenuItem value="">
-                            <h5>Select Homepage</h5>
-                          </MenuItem>
-                          {/* <MenuItem value="admin/home">admin/home</MenuItem>
+                                <MenuItem value="">
+                                  <h5>Select Role</h5>
+                                </MenuItem>
+                                {roleList.map((role) => (
+                                  <MenuItem key={role} value={role}>
+                                    {role}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {formErrors.role && (
+                                <FormHelperText>
+                                  Role must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <FormControl fullWidth error={formErrors.homepage}>
+                              <InputLabel id="homepage-label">
+                                Homepage
+                              </InputLabel>
+                              <Select
+                                labelId="homepage-label"
+                                label="Homepage"
+                                id="homepage"
+                                value={formData.homepage}
+                                onChange={(e) => {
+                                  const selectedHomepage = e.target.value;
+                                  setFormData({
+                                    ...formData,
+                                    homepage: selectedHomepage,
+                                  });
+                                  if (selectedHomepage !== "") {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      homepage: false,
+                                    });
+                                  } else {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      homepage: true,
+                                    });
+                                  }
+                                }}
+                              >
+                                <MenuItem value="">
+                                  <h5>Select Homepage</h5>
+                                </MenuItem>
+                                {/* <MenuItem value="admin/home">admin/home</MenuItem>
                           <MenuItem value="user/home">user/home</MenuItem> */}
-                          {homePageNames.map((page) => (
-                            <MenuItem key={page} value={page}>
-                              {page}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        {formErrors.homepage && (
-                          <FormHelperText>
-                            Homepage must be filled
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    {/* <Grid item xs={6}>
+                                {homePageNames.map((page) => (
+                                  <MenuItem key={page} value={page}>
+                                    {page}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {formErrors.homepage && (
+                                <FormHelperText>
+                                  Homepage must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+                          {/* <Grid item xs={6}>
                       <Autocomplete
                         value={formData.plantName}
                         disablePortal
@@ -1993,149 +2114,202 @@ export default function UserRegistration({ sendUrllist }) {
                       />
                     </Grid> */}
 
-                    <Grid item xs={6}>
-                      <Autocomplete
-                        value={formData.plantName}
-                        disablePortal
-                        fullWidth
-                        id="plantName"
-                        options={plantList.map((p) => p.plantName)}
-                        getOptionLabel={(option) => option}
-                        onChange={handleAutocompleteChange}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Plant Name"
-                            error={formErrors.plantName}
-                            helperText={
-                              formErrors.plantName &&
-                              "Plant Name must be filled"
-                            }
-                          />
-                        )}
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <FormControl fullWidth error={formErrors.plantID}>
-                        <InputLabel htmlFor="PlantID">PlantID</InputLabel>
-                        <OutlinedInput
-                          inputProps={{
-                            readOnly: true,
-                          }}
-                          label="PlantID"
-                          autoComplete="PlantID"
-                          name="PlantID"
-                          required
-                          fullWidth
-                          id="PlantID"
-                          value={formData.plantID}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <Tooltip title="Add Plant">
-                                <IconButton
-                                  onClick={handleAddPlantClick}
-                                  edge="end"
-                                >
-                                  <AddCircleOutlineIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </InputAdornment>
-                          }
-                        />
-                        {formErrors.plantID && (
-                          <FormHelperText>
-                            Plant ID must be filled
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="address"
-                        label="Address"
-                        id="address"
-                        autoComplete="address"
-                        value={formData.address}
-                        // onChange={(e) => {
-                        //   setFormData({
-                        //     ...formData,
-                        //     address: e.target.value,
-                        //   });
-                        //   setFormErrors({
-                        //     ...formErrors,
-                        //     address: e.target.value.trim() === "",
-                        //   });
-                        // }}
-                        error={formErrors.address}
-                        helperText={
-                          formErrors.address && "Address must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="division"
-                        label="Division"
-                        id="division"
-                        autoComplete="division"
-                        value={formData.division}
-                        // onChange={(e) => {
-                        //   setFormData({
-                        //     ...formData,
-                        //     division: e.target.value,
-                        //   });
-                        //   setFormErrors({
-                        //     ...formErrors,
-                        //     division: e.target.value.trim() === "",
-                        //   });
-                        // }}
-                        error={formErrors.division}
-                        helperText={
-                          formErrors.division && "Division must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="customer"
-                        label="Customer"
-                        id="customer"
-                        autoComplete="customer"
-                        value={formData.customerName}
-                        // onChange={(e) => {
-                        //   setFormData({
-                        //     ...formData,
-                        //     customerName: removeAllSpecialChar(e.target.value),
-                        //   });
-                        //   setFormErrors({
-                        //     ...formErrors,
-                        //     customerName: e.target.value.trim() === "",
-                        //   });
-                        // }}
-                        error={formErrors.customerName}
-                        helperText={
-                          formErrors.customerName &&
-                          "Customer Name must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <Datepicker
+                          <Grid item xs={6}>
+                            <Autocomplete
+                              value={formData.plantName}
+                              disablePortal
+                              fullWidth
+                              id="plantName"
+                              options={plantList.map((p) => p.plantName)}
+                              getOptionLabel={(option) => option}
+                              onChange={handleAutocompleteChange}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Plant Name"
+                                  error={formErrors.plantName}
+                                  helperText={
+                                    formErrors.plantName &&
+                                    "Plant Name must be filled"
+                                  }
+                                />
+                              )}
+                            />
+                          </Grid>
+                          {/* <Grid item xs={6}>
+                            <FormControl fullWidth error={formErrors.plantID}>
+                              <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                              <OutlinedInput
+                                inputProps={{
+                                  readOnly: true,
+                                }}
+                                label="PlantID"
+                                autoComplete="PlantID"
+                                name="PlantID"
+                                required
+                                fullWidth
+                                id="PlantID"
+                                value={formData.plantID}
+                                {divIsVisibleList && divIsVisibleList.includes("add-plant") && (
+                                endAdornment={
+                                  <InputAdornment position="end">
+                                    <Tooltip title="Add Plant">
+                                      <IconButton
+                                        onClick={handleAddPlantClick}
+                                        edge="end"
+                                      >
+                                        <AddCircleOutlineIcon />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </InputAdornment>
+                                }
+                              )}
+                              />
+                              {formErrors.plantID && (
+                                <FormHelperText>
+                                  Plant ID must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid> */}
+                          <Grid item xs={6}>
+                            <FormControl fullWidth error={formErrors.plantID}>
+                              <InputLabel htmlFor="PlantID">PlantID</InputLabel>
+                              {divIsVisibleList &&
+                              divIsVisibleList.includes("add-plant") ? (
+                                <OutlinedInput
+                                  inputProps={{
+                                    readOnly: true,
+                                  }}
+                                  label="PlantID"
+                                  autoComplete="PlantID"
+                                  name="PlantID"
+                                  required
+                                  fullWidth
+                                  id="PlantID"
+                                  value={formData.plantID}
+                                  endAdornment={
+                                    <InputAdornment position="end">
+                                      <Tooltip title="Add Plant">
+                                        <IconButton
+                                          onClick={handleAddPlantClick}
+                                          edge="end"
+                                        >
+                                          <AddCircleOutlineIcon />
+                                        </IconButton>
+                                      </Tooltip>
+                                    </InputAdornment>
+                                  }
+                                />
+                              ) : (
+                                <OutlinedInput
+                                  inputProps={{
+                                    readOnly: true,
+                                  }}
+                                  label="PlantID"
+                                  autoComplete="PlantID"
+                                  name="PlantID"
+                                  required
+                                  fullWidth
+                                  id="PlantID"
+                                  value={formData.plantID}
+                                />
+                              )}
+                              {formErrors.plantID && (
+                                <FormHelperText>
+                                  Plant ID must be filled
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Grid>
+
+                          <Grid item xs={6}>
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="address"
+                              label="Address"
+                              id="address"
+                              autoComplete="address"
+                              value={formData.address}
+                              // onChange={(e) => {
+                              //   setFormData({
+                              //     ...formData,
+                              //     address: e.target.value,
+                              //   });
+                              //   setFormErrors({
+                              //     ...formErrors,
+                              //     address: e.target.value.trim() === "",
+                              //   });
+                              // }}
+                              error={formErrors.address}
+                              helperText={
+                                formErrors.address && "Address must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="division"
+                              label="Division"
+                              id="division"
+                              autoComplete="division"
+                              value={formData.division}
+                              // onChange={(e) => {
+                              //   setFormData({
+                              //     ...formData,
+                              //     division: e.target.value,
+                              //   });
+                              //   setFormErrors({
+                              //     ...formErrors,
+                              //     division: e.target.value.trim() === "",
+                              //   });
+                              // }}
+                              error={formErrors.division}
+                              helperText={
+                                formErrors.division && "Division must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="customer"
+                              label="Customer"
+                              id="customer"
+                              autoComplete="customer"
+                              value={formData.customerName}
+                              // onChange={(e) => {
+                              //   setFormData({
+                              //     ...formData,
+                              //     customerName: removeAllSpecialChar(e.target.value),
+                              //   });
+                              //   setFormErrors({
+                              //     ...formErrors,
+                              //     customerName: e.target.value.trim() === "",
+                              //   });
+                              // }}
+                              error={formErrors.customerName}
+                              helperText={
+                                formErrors.customerName &&
+                                "Customer Name must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            {/* <Datepicker
                         label="Support Start Date"
                         value={dayjs(formData.supportStartDate)}
                         onChange={(startDate) =>
@@ -2146,26 +2320,26 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                         slotProps={{ textField: { fullWidth: true } }}
                       /> */}
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="supportStartDate"
-                        label="Support Start Date"
-                        id="supportStartDate"
-                        autoComplete="supportStartDate"
-                        value={formData.supportStartDate}
-                        error={formErrors.supportStartDate}
-                        helperText={
-                          formErrors.supportStartDate &&
-                          "Support Start Date must be filled"
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={6}>
-                      {/* <Datepicker
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="supportStartDate"
+                              label="Support Start Date"
+                              id="supportStartDate"
+                              autoComplete="supportStartDate"
+                              value={formData.supportStartDate}
+                              error={formErrors.supportStartDate}
+                              helperText={
+                                formErrors.supportStartDate &&
+                                "Support Start Date must be filled"
+                              }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            {/* <Datepicker
                         label="Support End Date"
                         value={dayjs(formData.supportEndDate)}
                         onChange={(endDate) =>
@@ -2176,173 +2350,177 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                         slotProps={{ textField: { fullWidth: true } }}
                       /> */}
-                      <TextField
-                        inputProps={{
-                          readOnly: true,
-                        }}
-                        required
-                        fullWidth
-                        name="supportEndDate"
-                        label="Support End Date"
-                        id="supportEndDate"
-                        autoComplete="supportEndDate"
-                        value={formData.supportEndDate}
-                        error={formErrors.supportEndDate}
-                        helperText={
-                          formErrors.supportEndDate &&
-                          "Support End Date must be filled"
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                    onClick={handleSubmit}
+                            <TextField
+                              inputProps={{
+                                readOnly: true,
+                              }}
+                              required
+                              fullWidth
+                              name="supportEndDate"
+                              label="Support End Date"
+                              id="supportEndDate"
+                              autoComplete="supportEndDate"
+                              value={formData.supportEndDate}
+                              error={formErrors.supportEndDate}
+                              helperText={
+                                formErrors.supportEndDate &&
+                                "Support End Date must be filled"
+                              }
+                            />
+                          </Grid>
+                        </Grid>
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          sx={{ mt: 3, mb: 2 }}
+                          onClick={handleSubmit}
+                        >
+                          Register User
+                        </Button>
+                      </Box>
+                    </form>
+                  </>
+                )}
+                <>
+                  <Dialog
+                    open={openDeleteDialog}
+                    onClose={() => setOpenDeleteDialog(false)}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
                   >
-                    Register User
-                  </Button>
-                </Box>
-              </form>
-            </>
-          )}
-          <>
-            <Dialog
-              open={openDeleteDialog}
-              onClose={() => setOpenDeleteDialog(false)}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
+                    <DialogTitle id="alert-dialog-title">
+                      {"Add New Plant"}
+                    </DialogTitle>
+                    <DialogContent style={{ padding: "10px" }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={6}>
+                          <Textfield
+                            required
+                            fullWidth={true}
+                            name="plantName"
+                            label="Plant Name"
+                            id="plantName"
+                            value={newPlantName.plantName}
+                            onChange={handlenewPlantNameInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Textfield
+                            required
+                            fullWidth={true}
+                            name="plantID"
+                            label="PlantID"
+                            id="plantID"
+                            value={newPlantName.plantID}
+                            onChange={handlenewPlantNameInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Textfield
+                            required
+                            fullWidth={true}
+                            name="address"
+                            label="Address"
+                            id="address"
+                            value={newPlantName.address}
+                            onChange={handlenewPlantNameInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Textfield
+                            required
+                            fullWidth={true}
+                            name="customer"
+                            label="Customer"
+                            id="customer"
+                            value={newPlantName.customerName}
+                            onChange={handlenewPlantNameInputChange}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Datepicker
+                            label="Support Start Date"
+                            value={dayjs(newPlantName.supportStartDate)}
+                            onChange={(startDate) =>
+                              setNewPlantName({
+                                ...newPlantName,
+                                supportStartDate:
+                                  startDate.format("YYYY-MM-DD"),
+                              })
+                            }
+                            slotProps={{ textField: { fullWidth: true } }}
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <Datepicker
+                            label="Support End Date"
+                            value={dayjs(newPlantName.supportEndDate)}
+                            onChange={(endDate) =>
+                              setNewPlantName({
+                                ...newPlantName,
+                                supportEndDate: endDate.format("YYYY-MM-DD"),
+                              })
+                            }
+                            slotProps={{ textField: { fullWidth: true } }}
+                          />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Textfield
+                            required
+                            fullWidth={true}
+                            name="division"
+                            label="Division"
+                            id="division"
+                            value={newPlantName.division}
+                            onChange={handlenewPlantNameInputChange}
+                          />
+                        </Grid>
+                      </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        onClick={() => setOpenDeleteDialog(false)}
+                        color="primary"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setOpenDeleteDialog(false);
+                          postPlantName();
+                          fetchPlantData();
+                        }}
+                        color="error"
+                        autoFocus
+                      >
+                        Save
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </>
+              </Box>
+            </Container>
+            <Snackbar
+              open={passwordErrorOpen}
+              autoHideDuration={3000}
+              onClose={handleClose}
+              TransitionComponent={Slide}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
             >
-              <DialogTitle id="alert-dialog-title">
-                {"Add New Plant"}
-              </DialogTitle>
-              <DialogContent style={{ padding: "10px" }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={6}>
-                    <Textfield
-                      required
-                      fullWidth={true}
-                      name="plantName"
-                      label="Plant Name"
-                      id="plantName"
-                      value={newPlantName.plantName}
-                      onChange={handlenewPlantNameInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield
-                      required
-                      fullWidth={true}
-                      name="plantID"
-                      label="PlantID"
-                      id="plantID"
-                      value={newPlantName.plantID}
-                      onChange={handlenewPlantNameInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield
-                      required
-                      fullWidth={true}
-                      name="address"
-                      label="Address"
-                      id="address"
-                      value={newPlantName.address}
-                      onChange={handlenewPlantNameInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Textfield
-                      required
-                      fullWidth={true}
-                      name="customer"
-                      label="Customer"
-                      id="customer"
-                      value={newPlantName.customerName}
-                      onChange={handlenewPlantNameInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Datepicker
-                      label="Support Start Date"
-                      value={dayjs(newPlantName.supportStartDate)}
-                      onChange={(startDate) =>
-                        setNewPlantName({
-                          ...newPlantName,
-                          supportStartDate: startDate.format("YYYY-MM-DD"),
-                        })
-                      }
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Datepicker
-                      label="Support End Date"
-                      value={dayjs(newPlantName.supportEndDate)}
-                      onChange={(endDate) =>
-                        setNewPlantName({
-                          ...newPlantName,
-                          supportEndDate: endDate.format("YYYY-MM-DD"),
-                        })
-                      }
-                      slotProps={{ textField: { fullWidth: true } }}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Textfield
-                      required
-                      fullWidth={true}
-                      name="division"
-                      label="Division"
-                      id="division"
-                      value={newPlantName.division}
-                      onChange={handlenewPlantNameInputChange}
-                    />
-                  </Grid>
-                </Grid>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={() => setOpenDeleteDialog(false)}
-                  color="primary"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    setOpenDeleteDialog(false);
-                    postPlantName();
-                    fetchPlantData();
-                  }}
-                  color="error"
-                  autoFocus
-                >
-                  Save
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </>
-        </Box>
-      </Container>
-      <Snackbar
-        open={passwordErrorOpen}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        TransitionComponent={Slide}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
-          onClose={handleClose}
-          severity={snackbarSeverity}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {snackbarText}
-        </Alert>
-      </Snackbar>
-    </Box>
+              <Alert
+                onClose={handleClose}
+                severity={snackbarSeverity}
+                variant="filled"
+                sx={{ width: "100%" }}
+              >
+                {snackbarText}
+              </Alert>
+            </Snackbar>
+          </Box>
+        </>
+      )}
+    </>
     //   </Main>
     // </Box>
   );

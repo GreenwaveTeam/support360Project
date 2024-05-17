@@ -534,7 +534,7 @@ export default function AdminHome({ sendUrllist }) {
                       navigate("/admin/Role");
                     }}
                   >
-                    Page Assign
+                    Role Configure
                   </Button>
                 </div>
               )}
@@ -692,19 +692,28 @@ export default function AdminHome({ sendUrllist }) {
                                       />
                                     </FormControl>
                                   </div> */}
-                                      <Button
-                                        sx={{
-                                          backgroundImage:
-                                            "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
-                                        }}
-                                        variant="contained"
-                                        startIcon={<AddCircleIcon />}
-                                        onClick={() =>
-                                          navigate("/admin/adminregistration")
-                                        }
-                                      >
-                                        Register New Admin
-                                      </Button>
+                                      <>
+                                        {divIsVisibleList &&
+                                          divIsVisibleList.includes(
+                                            "register-admin"
+                                          ) && (
+                                            <Button
+                                              sx={{
+                                                backgroundImage:
+                                                  "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+                                              }}
+                                              variant="contained"
+                                              startIcon={<AddCircleIcon />}
+                                              onClick={() =>
+                                                navigate(
+                                                  "/admin/adminregistration"
+                                                )
+                                              }
+                                            >
+                                              Register New Admin
+                                            </Button>
+                                          )}
+                                      </>
                                       <div>
                                         {/* <Textfield
                                         onChange={(e) =>
@@ -1177,19 +1186,28 @@ export default function AdminHome({ sendUrllist }) {
                                         columnGap: "1rem",
                                       }}
                                     >
-                                      <Button
-                                        sx={{
-                                          backgroundImage:
-                                            "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
-                                        }}
-                                        variant="contained"
-                                        startIcon={<AddCircleIcon />}
-                                        onClick={() =>
-                                          navigate("/admin/userregistration")
-                                        }
-                                      >
-                                        Register New User
-                                      </Button>
+                                      <>
+                                        {divIsVisibleList &&
+                                          divIsVisibleList.includes(
+                                            "register-user"
+                                          ) && (
+                                            <Button
+                                              sx={{
+                                                backgroundImage:
+                                                  "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+                                              }}
+                                              variant="contained"
+                                              startIcon={<AddCircleIcon />}
+                                              onClick={() =>
+                                                navigate(
+                                                  "/admin/userregistration"
+                                                )
+                                              }
+                                            >
+                                              Register New User
+                                            </Button>
+                                          )}
+                                      </>
                                       <div>
                                         {/* <Textfield
                                         onChange={(e) => handleSearchChange(e)}

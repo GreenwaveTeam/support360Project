@@ -90,10 +90,12 @@ export const fetchTicketDetailByPlantAndTicket = async (plantId, ticketNo) => {
   }
 };
 
-export const updateStatus = async (plantId, ticketNo) => {
+export const updateStatus = async (plantId, ticketNo,tikcetStatus) => {
+  console.log("update Link : ",`http://${DB_IP}/ticket/upadteStatus?plantId=${plantId}&ticketNo=${ticketNo}&ticketStatus=${tikcetStatus}`)
+
   try {
     const response = await fetch(
-      `http://${DB_IP}/ticket/upadteStatus?plantId=${plantId}&ticketNo=${ticketNo}`,
+      `http://${DB_IP}/ticket/upadteStatus?plantId=${plantId}&ticketNo=${ticketNo}&ticketStatus=${tikcetStatus}`,
       {
         method: "PUT",
         headers: {
@@ -101,7 +103,7 @@ export const updateStatus = async (plantId, ticketNo) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }
+      }   
     );
     //const data = await response.json();
     // setTicketDetails(data);
@@ -123,6 +125,7 @@ const password = "pass123";
 const encoded = btoa(username + ":" + password);
 
 export const getSelectedOptionTask = async (selected_asset) => {
+  console.log("getSelectedOptionTask : ",`http://localhost:8086/usergroup/jobAssetGroup/${selected_asset} `)
   try {
     console.log("getSelectedOptionTask() called ", selected_asset);
 

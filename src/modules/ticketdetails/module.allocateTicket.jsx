@@ -380,6 +380,7 @@ export default function AllocateTicket() {
       const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
 
       const allAssetData = await getSelectedOptionTask("Green Plant");
+      console.log("allAssetData ", allAssetData);
       const currentAsset_Activity = allAssetData.filter(
         (item) => item.taskId === "T202405141316501650"
       ); //Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented

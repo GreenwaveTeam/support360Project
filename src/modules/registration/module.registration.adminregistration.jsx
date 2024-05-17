@@ -129,12 +129,20 @@ export default function AdminRegistration({ sendUrllist }) {
     const fetchData = async () => {
       if (formData.role) {
         const pages = await fetchPagesByRole(formData.role);
+        console.log("pages : ", pages);
         setHomePageNames(pages);
       }
     };
     fetchData();
     fetchUser();
   }, [formData.role]);
+
+  function removeLeadingSlash(path) {
+    if (path.startsWith("/")) {
+      return path.substring(1);
+    }
+    return path;
+  }
 
   const fetchUser = async () => {
     console.log("expire : ", localStorage.getItem("expire"));
@@ -758,8 +766,11 @@ export default function AdminRegistration({ sendUrllist }) {
                               {/* <MenuItem value="admin/home">admin/home</MenuItem>
                           <MenuItem value="user/home">user/home</MenuItem> */}
                               {updateHomePageNames.map((page) => (
-                                <MenuItem key={page} value={page}>
-                                  {page}
+                                <MenuItem
+                                  key={page}
+                                  value={removeLeadingSlash(page)}
+                                >
+                                  {removeLeadingSlash(page)}
                                 </MenuItem>
                               ))}
                             </Select>
@@ -1181,8 +1192,11 @@ export default function AdminRegistration({ sendUrllist }) {
                               {/* <MenuItem value="admin/home">admin/home</MenuItem>
                           <MenuItem value="user/home">user/home</MenuItem> */}
                               {homePageNames.map((page) => (
-                                <MenuItem key={page} value={page}>
-                                  {page}
+                                <MenuItem
+                                  key={page}
+                                  value={removeLeadingSlash(page)}
+                                >
+                                  {removeLeadingSlash(page)}
                                 </MenuItem>
                               ))}
                             </Select>

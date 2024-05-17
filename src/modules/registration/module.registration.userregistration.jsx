@@ -466,6 +466,13 @@ export default function UserRegistration({ sendUrllist }) {
     return `${day}-${month}-${year}`;
   }
 
+  function removeLeadingSlash(path) {
+    if (path.startsWith("/")) {
+      return path.substring(1);
+    }
+    return path;
+  }
+
   const fetchPlantData = async () => {
     try {
       const response = await fetch(`http://${DB_IP}/plants/`, {
@@ -1179,8 +1186,11 @@ export default function UserRegistration({ sendUrllist }) {
                                 {/* <MenuItem value="admin/home">admin/home</MenuItem>
                           <MenuItem value="user/home">user/home</MenuItem> */}
                                 {updateHomePageNames.map((page) => (
-                                  <MenuItem key={page} value={page}>
-                                    {page}
+                                  <MenuItem
+                                    key={page}
+                                    value={removeLeadingSlash(page)}
+                                  >
+                                    {removeLeadingSlash(page)}
                                   </MenuItem>
                                 ))}
                               </Select>
@@ -1976,8 +1986,11 @@ export default function UserRegistration({ sendUrllist }) {
                                 {/* <MenuItem value="admin/home">admin/home</MenuItem>
                           <MenuItem value="user/home">user/home</MenuItem> */}
                                 {homePageNames.map((page) => (
-                                  <MenuItem key={page} value={page}>
-                                    {page}
+                                  <MenuItem
+                                    key={page}
+                                    value={removeLeadingSlash(page)}
+                                  >
+                                    {removeLeadingSlash(page)}
                                   </MenuItem>
                                 ))}
                               </Select>

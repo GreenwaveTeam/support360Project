@@ -170,16 +170,19 @@ export const fetchStatusFromJob = async (ticketNo) => {
         },
       }
     );
-    let data ="";
+    
     console.log("After call")
     if(response.ok){
      // console.log(response)
-      data = await response.json();
-      return data.status;
+     const data = await response.json();
+      console.log("inside API : ",ticketNo," ", data.status)
+      return data.Status;
+
+     
     }
     
     // setTicketDetails(data);
-   else{ return data;}
+   
    
   } catch (error) {
     console.error("Error fetching user list:", error);

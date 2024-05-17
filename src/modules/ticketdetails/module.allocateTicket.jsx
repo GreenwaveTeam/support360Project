@@ -40,25 +40,34 @@ import {
 } from "./Utility";
 import dayjs from "dayjs";
 import { useState } from "react";
+import {
+  fetchCurrentDivs,
+  fetchCurrentUser,
+} from "../application/user/ApplicationUserApi";
+// import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function AllocateTicket() {
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState("");
   const [snackbarSeverity, setsnackbarSeverity] = React.useState("");
-
-  const [value, setValue] = React.useState("1");
+  const navigate = useNavigate();
+  const [value, setValue] = React.useState("");
   const [allTickets, setAllTickets] = React.useState({});
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
   const [dialogOpenAssign, setDialogOpenAssign] = React.useState(false);
-  const [admins, setAdmins] = React.useState([]);
-  const [selectedAdmin, setSelecteAdmin] = React.useState("");
+  const [performers, setPerformers] = React.useState([]);
+  const [approvers, setApprovers] = React.useState([]);
+  const [selectedPerformer, setSelectedPerformer] = React.useState("");
+  const [selectedApprover, setSelectedApprover] = React.useState("");
   const [userData, setUserData] = React.useState("");
   const [jobStatus, setJobStatus] = React.useState("");
   const [applicationTickets, setApplicationTickets] = React.useState([]);
   const [deviceTickets, setDeviceTickets] = React.useState([]);
   const [infrastructureTickets, setInfrastructureTickets] = useState([]);
-
+  const currentPageLocation = useLocation().pathname;
+  const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   // const [tikcetStatus, setTicketStatus] = React.useState("");
 
   //   const application=1;
@@ -137,12 +146,12 @@ export default function AllocateTicket() {
           buttonlabel: "Resolve",
           isButtonRendered: (row) => {
             // console.log("view Row : ", row);
-            if (row.status === "W.I.P") return true;
+            if (row.status === "WIP") return true;
             else return false;
           },
           isButtonDisabled: (row) => {
             //console.log("Assign Row : ", row);
-            // if (row.status === "W.I.P") return true;
+            // if (row.status === "WIP") return true;
             // else
             //const status = handleFetchJobStatus(row.ticketNo);
             if (row.job_status === "Completed".toLowerCase()) {
@@ -172,7 +181,7 @@ export default function AllocateTicket() {
 
           isButtonDisabled: (row) => {
             //console.log("Assign Row : ", row);
-            if (row.status === "W.I.P") return true;
+            if (row.status === "WIP") return true;
             else return false;
           },
 
@@ -190,7 +199,7 @@ export default function AllocateTicket() {
           },
           isButtonDisabled: (row) => {
             //console.log("Assign Row : ", row);
-            // if (row.status === "W.I.P") return true;
+            // if (row.status === "WIP") return true;
             // else
             return false;
           },
@@ -226,10 +235,51 @@ export default function AllocateTicket() {
     // },
   ];
   React.useEffect(() => {
+    fetchUser1();
     setUserData(fetchUser);
     fetchAllTicketsDetails();
     // const status = handleFetchJobStatus(row.ticketNo);
   }, []);
+
+  const fetchUser1 = async () => {
+    // let role = "";
+    // try {
+    //   const response = await fetch("http://localhost:8081/users/user", {
+    //     method: "GET",
+    //     headers: {
+    //       // Authorization: `Bearer ${token}`,
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //     },
+    //   });
+    //   const data = await response.json();
+    //   console.log("fetchUser data : ", data);
+    //   // setFormData(data.role);
+    //   role = data.role;
+    //   setCurrentUserData(data);
+
+    //   console.log("Role Test : ", role);
+    //   fetchDivs(role);
+    // } catch (error) {
+    //   console.error("Error fetching user list:", error);
+    // }
+
+    const userData = await fetchCurrentUser();
+    if (userData) {
+      // setCurrentUserData(userData);
+      console.log("userData : ", userData);
+      let role = userData.role;
+      console.log("Role in Ticket  : ", role);
+      const currentDivs = await fetchCurrentDivs(role, currentPageLocation);
+      if (currentDivs) {
+        console.log("currentDivs : ", currentDivs);
+        if (currentDivs.length === 0) {
+          navigate("/*");
+        }
+        setDivIsVisibleList(currentDivs.components);
+      }
+    }
+  };
 
   const handleFetchJobStatus = async (ticketNo) => {
     const data = await fetchStatusFromJob(ticketNo);
@@ -295,7 +345,8 @@ export default function AllocateTicket() {
         fetchAdminList(),
       ]);
 
-      setAdmins(adminList);
+      setPerformers(adminList);
+      setApprovers(adminList);
       console.log(response);
 
       // Initialize arrays for different ticket categories
@@ -305,9 +356,10 @@ export default function AllocateTicket() {
 
       // Process each ticket
       for (const element of response) {
-        if (!element?.ticketNo) return;
+        if (!element?.ticketNo) continue;
         const firstChar = element.ticketNo.charAt(0).toLowerCase();
         const jobStatus = await fetchStatusFromJob(element.ticketNo);
+        console.log("Ticket and Status : ", element.ticketNo, " : ", jobStatus);
         const ticketWithStatus = {
           ...element,
           job_status: jobStatus || "Not Assigned",
@@ -354,7 +406,7 @@ export default function AllocateTicket() {
     const interval = setInterval(() => {
       console.log("UseEffect called");
       fetchAllTicketsDetails();
-    }, 4000);
+    }, 4000000);
 
     return () => {
       clearInterval(interval);
@@ -364,8 +416,11 @@ export default function AllocateTicket() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const handleChangeAdmin = (event) => {
-    setSelecteAdmin(event.target.value);
+  const handleChangePerformer = (event) => {
+    setSelectedPerformer(event.target.value);
+  };
+  const handleChangeApprover = (event) => {
+    setSelectedApprover(event.target.value);
   };
   const handleSubmit = async (selectedRow) => {
     // .plantId, selectedRow.ticketNo
@@ -373,16 +428,15 @@ export default function AllocateTicket() {
     const ticketNo = selectedRow.ticketNo;
     const tikcetStatus = selectedRow.status;
     // Handle submit logic here
-    if (selectedAdmin) {
+    if (selectedApprover && selectedPerformer) {
       console.log("palnt id and ticket ", plantId, ticketNo);
-      console.log("Selected User:", selectedAdmin);
+      // console.log("Selected User:", selectedAdmin);
 
       const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
 
       const allAssetData = await getSelectedOptionTask("Green Plant");
-      console.log("allAssetData ", allAssetData);
       const currentAsset_Activity = allAssetData.filter(
-        (item) => item.taskId === "T202405141316501650"
+        (item) => item.taskId === "T202405171323492349"
       ); //Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented
       console.log("Current Activity : ", currentAsset_Activity);
       let current_starttime = dayjs().add(1, "day");
@@ -410,8 +464,10 @@ export default function AllocateTicket() {
             obj.duration || null,
             obj.xPos || null,
             obj.yPos || null,
-            obj.performer || "",
-            obj.approver || "",
+            selectedPerformer,
+            selectedPerformer,
+            // obj.performer || "",
+            // obj.approver || "",
             // obj.scheduledActivityStartTime || null,
             // obj.scheduledActivityEndTime || null,
             startTime,
@@ -569,22 +625,24 @@ export default function AllocateTicket() {
         jobId,
         null,
         userData.email,
-        userData.email,
+        selectedApprover,
         dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
         dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
         null,
         null,
-        null,
-        "device",
+        selectedRow.ticket_priority,
+        userData.plantId,
         null
       );
 
       const success = await saveJobDetails(job);
       console.log("Succces ", job);
       await updateStatus(plantId, ticketNo, tikcetStatus);
-      setDialogOpenAssign(false);
+
       setSelectedRow(null);
-      setSelecteAdmin("");
+      setSelectedApprover("");
+      setSelectedPerformer("");
+      setDialogOpenAssign(false);
       setSnackbarText("Assigned Successfully");
       setsnackbarSeverity("success");
       setSnackbarOpen(true);
@@ -602,45 +660,59 @@ export default function AllocateTicket() {
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
-              <Tab
-                label={
-                  <>
-                    <Badge
-                      color="secondary"
-                      badgeContent={allTickets?.application?.length}
-                    >
-                      <div style={{ marginRight: "15px" }}>Application</div>
-                    </Badge>
-                  </>
-                }
-                value="1"
-              />
-              <Tab
-                label={
-                  <>
-                    <Badge
-                      color="secondary"
-                      badgeContent={allTickets?.device?.length}
-                    >
-                      <div style={{ marginRight: "15px" }}>Device</div>
-                    </Badge>
-                  </>
-                }
-                value="2"
-              />
-              <Tab
-                label={
-                  <>
-                    <Badge
-                      color="secondary"
-                      badgeContent={allTickets?.infrastructure?.length}
-                    >
-                      <div style={{ marginRight: "15px" }}>Infrastructure</div>
-                    </Badge>
-                  </>
-                }
-                value="3"
-              />
+              {divIsVisibleList &&
+                divIsVisibleList.includes("Application_Ticket_Tab") && (
+                  <Tab
+                    id="Application_Ticket_Tab"
+                    label={
+                      <>
+                        <Badge
+                          color="secondary"
+                          badgeContent={allTickets?.application?.length}
+                        >
+                          <div style={{ marginRight: "15px" }}>Application</div>
+                        </Badge>
+                      </>
+                    }
+                    value="1"
+                  />
+                )}
+              {divIsVisibleList &&
+                divIsVisibleList.includes("Device_Ticket_Tab") && (
+                  <Tab
+                    id="Device_Ticket_Tab"
+                    label={
+                      <>
+                        <Badge
+                          color="secondary"
+                          badgeContent={allTickets?.device?.length}
+                        >
+                          <div style={{ marginRight: "15px" }}>Device</div>
+                        </Badge>
+                      </>
+                    }
+                    value="2"
+                  />
+                )}
+              {divIsVisibleList &&
+                divIsVisibleList.includes("Infrastructure_Ticket_Tab") && (
+                  <Tab
+                    id="Infrastructure_Ticket_Tab"
+                    label={
+                      <>
+                        <Badge
+                          color="secondary"
+                          badgeContent={allTickets?.infrastructure?.length}
+                        >
+                          <div style={{ marginRight: "15px" }}>
+                            Infrastructure
+                          </div>
+                        </Badge>
+                      </>
+                    }
+                    value="3"
+                  />
+                )}
             </TabList>
           </Box>
           <TabPanel value="1">
@@ -708,19 +780,41 @@ export default function AllocateTicket() {
           <DialogTitle>Assign Ticket</DialogTitle>
           <DialogContent>
             {/* <Typography>Select Admin ID:</Typography> */}
-            {admins && (
+            {performers && (
               <FormControl sx={{ m: 1, minWidth: 150 }}>
-                <InputLabel id="user-dropdown-label">Select Admin</InputLabel>
+                <InputLabel id="user-dropdown-label">
+                  Select Performer
+                </InputLabel>
                 <Select
                   labelId="user-dropdown-label"
                   id="user-dropdown"
-                  value={selectedAdmin}
-                  onChange={handleChangeAdmin}
+                  value={selectedPerformer}
+                  onChange={handleChangePerformer}
                   label="Select User"
                 >
-                  {admins.map((admin) => (
-                    <MenuItem key={admin.name} value={admin.name}>
-                      {admin.name}
+                  {performers.map((admin) => (
+                    <MenuItem key={admin.userId} value={admin.userId}>
+                      {admin.name + " ( " + admin.userId + " )"}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+            {approvers && (
+              <FormControl sx={{ m: 1, minWidth: 150 }}>
+                <InputLabel id="user-dropdown-label">
+                  Select Approver
+                </InputLabel>
+                <Select
+                  labelId="user-dropdown-label"
+                  id="user-dropdown"
+                  value={selectedApprover}
+                  onChange={handleChangeApprover}
+                  label="Select User"
+                >
+                  {approvers.map((admin) => (
+                    <MenuItem key={admin.userId} value={admin.userId}>
+                      {admin.name + " ( " + admin.userId + " )"}
                     </MenuItem>
                   ))}
                 </Select>

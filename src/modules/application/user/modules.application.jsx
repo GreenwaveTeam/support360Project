@@ -9,7 +9,7 @@ import { ColorModeContext, tokens } from "../../../theme";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Skeleton from '@mui/material/Skeleton';
+import Skeleton from "@mui/material/Skeleton";
 import {
   Badge,
   CircularProgress,
@@ -74,8 +74,15 @@ import dayjs from "dayjs";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useMemo } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { fetchApplicationNames, fetchCurrentDivs, fetchCurrentUser, fetchTabData, fetchTabNames, postDatainDB } from "./ApplicationUserApi";
-import { RotatingLines } from 'react-loader-spinner'
+import {
+  fetchApplicationNames,
+  fetchCurrentDivs,
+  fetchCurrentUser,
+  fetchTabData,
+  fetchTabNames,
+  postDatainDB,
+} from "./ApplicationUserApi";
+import { RotatingLines } from "react-loader-spinner";
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -157,7 +164,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const { userData, setUserData } = useUserContext();
 
-  const [currentUserData,setCurrentUserData]= useState({})
+  const [currentUserData, setCurrentUserData] = useState({});
 
   /**************************************    useEffect()   ******************************* */
   useEffect(() => {
@@ -179,7 +186,7 @@ export default function ApplicationUser({ sendUrllist }) {
       fetchUser();
       setTicketNumber(generateRandomNumber());
     } else {
-      console.log('Error in fetching plantId ! ')
+      console.log("Error in fetching plantId ! ");
       setSnackbarSeverity("error");
       setSnackbarText("Error in fetching details !");
       setMainAlert(true);
@@ -318,8 +325,8 @@ export default function ApplicationUser({ sendUrllist }) {
       status: "open",
       //The case may arise when the issues are blank for the current selection  then only  add it the finaluserInput
       //Two more fields added
-      userName:currentUserData.name,
-      userEmailId:currentUserData.email,
+      userName: currentUserData.name,
+      userEmailId: currentUserData.email,
 
       issuesList: updatedfinalUserInput,
     };
@@ -405,7 +412,7 @@ export default function ApplicationUser({ sendUrllist }) {
     }
   };
 
-  const handleTabsChange =async (event, newValue) => {
+  const handleTabsChange = async (event, newValue) => {
     console.log(event);
     event.preventDefault();
     event.stopPropagation();
@@ -413,7 +420,6 @@ export default function ApplicationUser({ sendUrllist }) {
 
     console.log("Current Miscellaneous Issue => ", miscellaneousInput);
     saveCurrentTabModuleInformation(); //This is meant to save the information for the current modified information in the current Tab
-   
 
     //Resetting data
     setMiscellaneousInput("");
@@ -424,16 +430,16 @@ export default function ApplicationUser({ sendUrllist }) {
     setmiscellaneousRemarks("");
     setmiscellaneousSeverity("");
     //Now feed with new data
-    const moduleData=await fetchTabData(newValue, dropdownValue,userData);
+    const moduleData = await fetchTabData(newValue, dropdownValue, userData);
     if (!mainData) {
-      setSnackbarSeverity('error')
-      setSnackbarText('Error ! ')
-      setMainAlert(true)
+      setSnackbarSeverity("error");
+      setSnackbarText("Error ! ");
+      setMainAlert(true);
       return;
     }
     setValue(newValue);
     console.log("tab value", newValue);
-    setMainData(moduleData)
+    setMainData(moduleData);
 
     checkAndRestoreFromSuperInformationofAllModules(newValue, dropdownValue); // This method is reserved for restoring the previous user I/P based on the current selected module  i.e you only need to set the final userInput because on each div click check is already made in the finalUserInput list
 
@@ -470,14 +476,14 @@ export default function ApplicationUser({ sendUrllist }) {
     if (userData) {
       setCurrentUserData(userData);
       console.log("userData : ", userData);
-      let role =userData.role;
-      const currentDivs= await fetchCurrentDivs(role,currentPageLocation)
-      if(currentDivs)
-        {
-          console.log("currentDivs : ", currentDivs);
-             if (currentDivs.length === 0) {
-                navigate("/*");
-              }
+      let role = userData.role;
+
+      const currentDivs = await fetchCurrentDivs(role, currentPageLocation);
+      if (currentDivs) {
+        console.log("currentDivs : ", currentDivs);
+        if (currentDivs.length === 0) {
+          navigate("/*");
+        }
         setDivIsVisibleList(currentDivs.components);
       }
     }
@@ -581,25 +587,25 @@ export default function ApplicationUser({ sendUrllist }) {
       return;
     }
 
-    const tabData= await fetchTabNames(dropdownvalue,userData)
+    const tabData = await fetchTabNames(dropdownvalue, userData);
     if (tabData) {
       console.log("Data from Database : ", tabData);
       setTabsModuleNames(tabData);
       setValue(tabData[0]);
       //further a function will be called to set the image data here
-      console.log('UserData : ',userData)
-      const moduleData=await fetchTabData(tabData[0], dropdownvalue,userData);
-      console.log('Current Module Data :  ',moduleData)
-      if(moduleData)
-        setMainData(moduleData);
-    }
-    else
-    {
+      console.log("UserData : ", userData);
+      const moduleData = await fetchTabData(
+        tabData[0],
+        dropdownvalue,
+        userData
+      );
+      console.log("Current Module Data :  ", moduleData);
+      if (moduleData) setMainData(moduleData);
+    } else {
       setTabsModuleNames([]);
       navigate("/notfound");
     }
-  } 
-
+  };
 
   // const fetchTabs = async (dropdownvalue) => {
   //   if (dropdownvalue === "Select an application") {
@@ -1289,19 +1295,20 @@ export default function ApplicationUser({ sendUrllist }) {
 
     let json_Count = 0;
     try {
-      const results = await Promise.all(final_Json.map(async json_data => {
-        const success = await postDatainDB(json_data);
-        if (success) {
-          json_Count++;
-        }
-      }));
-    
+      const results = await Promise.all(
+        final_Json.map(async (json_data) => {
+          const success = await postDatainDB(json_data);
+          if (success) {
+            json_Count++;
+          }
+        })
+      );
+
       // The rest of your code
     } catch (error) {
       console.error("Error:", error.message);
     }
-    
-    
+
     //   )
     console.log("Number of JSON posted => ", json_Count);
 
@@ -1760,21 +1767,17 @@ export default function ApplicationUser({ sendUrllist }) {
   const [searchText, setSearchText] = useState("");
   // const [lastSetValue,setLastSetValue]=useState("");
 
-  const displayedOptions = useMemo(
-      () => {
-      const searchTextLowerCase = searchText.toLowerCase();
-      // console.log('Current Search Text : ',searchTextLowerCase)
-      return issuesDropdown.filter(
-          option => 
-          option.toLowerCase().includes(searchTextLowerCase)
-      );
-      },
-      [searchText, issuesDropdown]
-  );
+  const displayedOptions = useMemo(() => {
+    const searchTextLowerCase = searchText.toLowerCase();
+    // console.log('Current Search Text : ',searchTextLowerCase)
+    return issuesDropdown.filter((option) =>
+      option.toLowerCase().includes(searchTextLowerCase)
+    );
+  }, [searchText, issuesDropdown]);
 
   const isOptionInRange = displayedOptions.some(
-      option => option === userIssue
-    );
+    (option) => option === userIssue
+  );
   /*************************************************** Component return ************************************** */
   return (
     <div className="row">
@@ -2353,23 +2356,23 @@ export default function ApplicationUser({ sendUrllist }) {
                           value={module}
                           key={index}
                         ></Tab>
-                      ))
-                     
-                      }
-                    {!mainData.module_image&&<Tab
-    label={
-      <RotatingLines  
-        visible={true}
-        height="25"
-        width="25"
-        color="blue" // Change color to blue
-        strokeWidth="5" 
-      />
-    }
-    disabled // Make the tab unselectable
-    style={{ marginLeft: "auto" }} // Push the tab to the extreme right
-  />}
-</Tabs>
+                      ))}
+                      {!mainData.module_image && (
+                        <Tab
+                          label={
+                            <RotatingLines
+                              visible={true}
+                              height="25"
+                              width="25"
+                              color="blue" // Change color to blue
+                              strokeWidth="5"
+                            />
+                          }
+                          disabled // Make the tab unselectable
+                          style={{ marginLeft: "auto" }} // Push the tab to the extreme right
+                        />
+                      )}
+                    </Tabs>
                     {/* {!mainData.module_image && (
                       <Box sx={{ width: "100%" }}>
                         <LinearProgress />
@@ -2379,18 +2382,17 @@ export default function ApplicationUser({ sendUrllist }) {
                   </div>
                 </div>
               </Box>
-               {!mainData.module_image&&<>
-                <Skeleton
-  variant="rectangular"
-  width="100%" 
-  height={1000}
-  animation="pulse"
-  sx={{ bgcolor: 'grey', borderRadius: 10, mt:'10px' }}
-  
-/>
-
-                    </>   
-                       }
+              {!mainData.module_image && (
+                <>
+                  <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    height={1000}
+                    animation="pulse"
+                    sx={{ bgcolor: "grey", borderRadius: 10, mt: "10px" }}
+                  />
+                </>
+              )}
               {mainData.module_image && (
                 <>
                   <center>
@@ -2438,7 +2440,6 @@ export default function ApplicationUser({ sendUrllist }) {
                     />
                     <span> - * Indicates Issues have been added </span>
                   </Paper>
-                 
 
                   <motion.div
                     variants={icon}
@@ -2458,7 +2459,6 @@ export default function ApplicationUser({ sendUrllist }) {
                       // Note : Don't disturb the inline styling because then the click even is not getting triggered
                       //className="main-image-div"
                     >
-                     
                       {mainData.module_image && (
                         <Paper
                           elevation={3}

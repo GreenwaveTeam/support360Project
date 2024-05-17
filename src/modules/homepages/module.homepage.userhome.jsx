@@ -423,7 +423,7 @@ function UserHome({ sendUrllist }) {
     },
     {
       id: "status",
-      label: "status",
+      label: "Status",
       type: "textbox",
       canRepeatSameValue: false,
     },
@@ -473,7 +473,9 @@ function UserHome({ sendUrllist }) {
             console.log("Obj : ", row);
             // setSelectedRow(row);
             // setDialogOpen(true);
-            updateStatus(row.plantId, row.ticketNo);
+            updateStatus(row.plantId, row.ticketNo, row.status);
+            console.log("formData.plantID : ", formData.plantID);
+            showAlert(formData.plantID);
           },
         },
       ],

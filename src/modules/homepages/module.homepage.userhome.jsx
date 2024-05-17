@@ -332,10 +332,14 @@ function UserHome({ sendUrllist }) {
     // alert(`Time remaining until token expiry: ${timeRemaining}`);
     const details = await getAllOpenTicketDetails();
     console.log("formData.plantID : ", plantId);
-    setAllTickets(details.filter((ticket) => ticket.plantId === plantId));
+    setAllTickets(
+      details.filter(
+        (ticket) => ticket.plantId === plantId && ticket.status !== "close"
+      )
+    );
     setClosedTickets(
       details.filter(
-        (ticket) => ticket.plantId === plantId && ticket.status === "closed"
+        (ticket) => ticket.plantId === plantId && ticket.status === "close"
       )
     );
   };
@@ -430,7 +434,7 @@ function UserHome({ sendUrllist }) {
     {
       buttons: [
         {
-          buttonlabel: "View Details",
+          buttonlabel: "View",
           isButtonDisabled: (row) => {
             // console.log("view Row : ", row);
             return false;
@@ -450,15 +454,15 @@ function UserHome({ sendUrllist }) {
       ],
       type: "button",
       id: "viewDetails",
-      label: "view Details",
+      label: "View Details",
     },
     {
       buttons: [
         {
-          buttonlabel: "Confirm",
+          buttonlabel: "✔",
           isButtonDisabled: (row) => {
             // console.log("view Row : ", row);
-            if (row.status === "resolved") {
+            if (row.status === "resolve") {
               return false;
             }
             return true;
@@ -473,9 +477,13 @@ function UserHome({ sendUrllist }) {
             console.log("Obj : ", row);
             // setSelectedRow(row);
             // setDialogOpen(true);
-            updateStatus(row.plantId, row.ticketNo, row.status);
+            // if (updateStatus(row.plantId, row.ticketNo, row.status)) {
+            //   showAlert(formData.plantID);
+            // }
             console.log("formData.plantID : ", formData.plantID);
-            showAlert(formData.plantID);
+            setTimeout(() => {
+              showAlert(formData.plantID);
+            }, 2000);
           },
         },
       ],
@@ -513,7 +521,7 @@ function UserHome({ sendUrllist }) {
     {
       buttons: [
         {
-          buttonlabel: "View Details",
+          buttonlabel: "View",
           isButtonDisabled: (row) => {
             // console.log("view Row : ", row);
             return false;
@@ -533,7 +541,7 @@ function UserHome({ sendUrllist }) {
       ],
       type: "button",
       id: "viewDetails",
-      label: "view Details",
+      label: "View Details",
     },
   ];
 

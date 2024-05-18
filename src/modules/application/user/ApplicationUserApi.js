@@ -75,7 +75,10 @@ export const fetchApplicationNames = async (plantID) => {
         }
 
 
-        export const fetchTabData = async (module, application,userData) => {
+        export const fetchTabData = async (module, application,userData,abortControllerRef) => {
+            abortControllerRef.current?.abort();
+            abortControllerRef.current=new AbortController();
+
             console.log("fetchTabData() called");
             console.log("Tab Value : ", module);
             console.log("Current Application : ", application);
@@ -100,7 +103,9 @@ export const fetchApplicationNames = async (plantID) => {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
                   "Content-Type": "application/json",
                 },
+                signal: abortControllerRef.current?.signal,
               });
+              
               if (!response.ok) {
                 throw new Error("Failed to fetch data");
               }

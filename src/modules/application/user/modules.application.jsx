@@ -159,8 +159,11 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const [currentUserData,setCurrentUserData]= useState({})
 
-  const [disableTabSelection,setDisableTabSelection]=useState(false)
-  const [currentLoaderModule,setCurrentLoaderModule]=useState("");
+  // const [disableTabSelection,setDisableTabSelection]=useState(false)
+
+  const abortControllerRef=React.useRef();
+
+  // const [currentLoaderModule,setCurrentLoaderModule]=useState("");
 
   /**************************************    useEffect()   ******************************* */
   useEffect(() => {
@@ -410,7 +413,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const handleTabsChange =async (event, newValue) => {
     // setDisableTabSelection(true)
-    setCurrentLoaderModule(newValue)
+    // setCurrentLoaderModule(newValue)
     console.log('Current New Value : ',newValue)
     console.log(event);
     event.preventDefault();
@@ -429,17 +432,19 @@ export default function ApplicationUser({ sendUrllist }) {
     setOriginalIssuesDropdown([]);
     setmiscellaneousRemarks("");
     setmiscellaneousSeverity("");
-    //Now feed with new data
-    const moduleData=await fetchTabData(newValue, dropdownValue,userData);
-    if (!mainData) {
-      setSnackbarSeverity('error')
-      setSnackbarText('Error ! ')
-      setMainAlert(true)
-      return;
-    }
     setValue(newValue);
+    //Now feed with new data
+    const moduleData=await fetchTabData(newValue, dropdownValue,userData,abortControllerRef);
+    // if (!mainData) {
+    //   setSnackbarSeverity('error')
+    //   setSnackbarText('Error ! ')
+    //   setMainAlert(true)
+    //   return;
+    // }
+    // setValue(newValue);
     console.log("tab value", newValue);
-    setMainData(moduleData)
+    if(moduleData)
+      setMainData(moduleData)
 
     checkAndRestoreFromSuperInformationofAllModules(newValue, dropdownValue); // This method is reserved for restoring the previous user I/P based on the current selected module  i.e you only need to set the final userInput because on each div click check is already made in the finalUserInput list
 
@@ -587,22 +592,22 @@ export default function ApplicationUser({ sendUrllist }) {
       setTabsModuleNames([]);
       return;
     }
-    setDisableTabSelection(true)
+    // setDisableTabSelection(true)
 
     const tabData= await fetchTabNames(dropdownvalue,userData)
     if (tabData) {
       console.log("Data from Database : ", tabData);
       setTabsModuleNames(tabData);
       setValue(tabData[0]);
-      setCurrentLoaderModule(tabData[0])
+      // setCurrentLoaderModule(tabData[0])
       //further a function will be called to set the image data here
       console.log('UserData : ',userData)
-      const moduleData=await fetchTabData(tabData[0], dropdownvalue,userData);
+      const moduleData=await fetchTabData(tabData[0], dropdownvalue,userData,abortControllerRef);
       console.log('Current Module Data :  ',moduleData)
       if(moduleData)
         setMainData(moduleData);
 
-      setDisableTabSelection(false)
+      // setDisableTabSelection(false)
     }
     else
     {
@@ -2360,7 +2365,7 @@ export default function ApplicationUser({ sendUrllist }) {
                       {tabsmoduleNames.map((module, index) => (
                         <Tab
                           className="tab-names"
-                          label={<div>{module}{module===currentLoaderModule&&!mainData.module_image&& <RotatingLines  
+                          label={<div>{module}{module===value&&!mainData.module_image&& <RotatingLines  
                             visible={true}
                             height="20"
                             width="20"
@@ -2368,7 +2373,7 @@ export default function ApplicationUser({ sendUrllist }) {
                           />}</div>}
                           value={module}
                           key={index}
-                          disabled={disableTabSelection}
+                          // disabled={disableTabSelection}
                         ></Tab>
                       ))
                      

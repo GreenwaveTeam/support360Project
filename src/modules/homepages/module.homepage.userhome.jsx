@@ -56,6 +56,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { ColorModeContext, tokens } from "../../theme";
 import CounterAnimation from "./CounterAnimation";
 import {
+  getAllClosedTicketDetails,
   getAllOpenTicketDetails,
   updateStatus,
 } from "../ticketdetails/AllocateTicket";
@@ -267,11 +268,16 @@ function UserHome({ sendUrllist }) {
   const location = useLocation();
   const currentPageLocation = useLocation().pathname;
 
+  //
+  const [type, setType] = React.useState("bar");
+  //
+  const [count, setCount] = useState(0);
+  const ApplicationValue = 10;
+
   useEffect(() => {
     // setPendingTickets(await Promise.all(getAllOpenTicketDetails()));
     extendTokenExpiration();
     // setToken(`${localStorage.getItem("token")}`);
-    fetchUser();
     fetchTicketDetails();
     sendUrllist(urllist);
     monthwiseticketraised();
@@ -281,6 +287,28 @@ function UserHome({ sendUrllist }) {
     // getAllTickets();
     // showAlert();
     // setTokenExpiry(localStorage.getItem("expire"));
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (count < ApplicationValue) {
+        setCount(count + 1);
+      } else {
+        clearInterval(interval);
+      }
+    }, 0.0005);
+    return () => clearInterval(interval);
+  }, [count]);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      console.log("UseEffect called");
+      // showAlert(formData.plantID);
+      fetchUser();
+    }, 4000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   // useEffect(() => {
@@ -331,17 +359,12 @@ function UserHome({ sendUrllist }) {
   const showAlert = async (plantId) => {
     // alert(`Time remaining until token expiry: ${timeRemaining}`);
     const details = await getAllOpenTicketDetails();
+    const closedDetails = await getAllClosedTicketDetails(plantId);
     console.log("formData.plantID : ", plantId);
-    setAllTickets(
-      details.filter(
-        (ticket) => ticket.plantId === plantId && ticket.status !== "close"
-      )
-    );
-    setClosedTickets(
-      details.filter(
-        (ticket) => ticket.plantId === plantId && ticket.status === "close"
-      )
-    );
+    setAllTickets(details.filter((ticket) => ticket.plantId === plantId));
+    console.log("closedDetails : ", closedDetails);
+    console.log("closedTickets : ", closedTickets);
+    setClosedTickets(closedDetails);
   };
 
   const fetchDivs = async (role) => {
@@ -477,13 +500,15 @@ function UserHome({ sendUrllist }) {
             console.log("Obj : ", row);
             // setSelectedRow(row);
             // setDialogOpen(true);
-            // if (updateStatus(row.plantId, row.ticketNo, row.status)) {
-            //   showAlert(formData.plantID);
-            // }
-            console.log("formData.plantID : ", formData.plantID);
-            setTimeout(() => {
+            updateStatus(row.plantId, row.ticketNo, row.status);
+            showAlert(formData.plantID);
+            if (updateStatus(row.plantId, row.ticketNo, row.status)) {
               showAlert(formData.plantID);
-            }, 2000);
+            }
+            console.log("formData.plantID : ", formData.plantID);
+            // setTimeout(() => {
+            //   showAlert(formData.plantID);
+            // }, 2000);
           },
         },
       ],
@@ -902,22 +927,6 @@ function UserHome({ sendUrllist }) {
 
   const urllist = [{ pageName: "Home", pagelink: "/user/home" }];
 
-  //
-  const [type, setType] = React.useState("bar");
-  //
-  const [count, setCount] = useState(0);
-
-  const ApplicationValue = 10;
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (count < ApplicationValue) {
-        setCount(count + 1);
-      } else {
-        clearInterval(interval);
-      }
-    }, 0.0005);
-    return () => clearInterval(interval);
-  }, [count]);
   return (
     <>
       {supportDateExpired ? (

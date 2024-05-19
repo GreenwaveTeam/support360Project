@@ -43,6 +43,32 @@ export const getAllOpenTicketDetails = async () => {
   }
 };
 
+export const getAllClosedTicketDetails = async (plantID) => {
+  // let role = "";
+  try {
+    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+    // Make the API call to fetch data
+    const response = await axios.get(
+      `http://${DB_IP}/ticket/ticketDetails/closed/${plantID}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Extract data from the response
+    const data = await response.data;
+    console.log("data=====>", data);
+    if (data) {
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
 export const fetchAdminList = async () => {
   try {
     const response = await fetch(
@@ -90,8 +116,11 @@ export const fetchTicketDetailByPlantAndTicket = async (plantId, ticketNo) => {
   }
 };
 
-export const updateStatus = async (plantId, ticketNo,tikcetStatus) => {
-  console.log("update Link : ",`http://${DB_IP}/ticket/upadteStatus?plantId=${plantId}&ticketNo=${ticketNo}&ticketStatus=${tikcetStatus}`)
+export const updateStatus = async (plantId, ticketNo, tikcetStatus) => {
+  console.log(
+    "update Link : ",
+    `http://${DB_IP}/ticket/upadteStatus?plantId=${plantId}&ticketNo=${ticketNo}&ticketStatus=${tikcetStatus}`
+  );
 
   try {
     const response = await fetch(
@@ -103,7 +132,7 @@ export const updateStatus = async (plantId, ticketNo,tikcetStatus) => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      }   
+      }
     );
     //const data = await response.json();
     // setTicketDetails(data);
@@ -125,7 +154,10 @@ const password = "pass123";
 const encoded = btoa(username + ":" + password);
 
 export const getSelectedOptionTask = async (selected_asset) => {
-  console.log("getSelectedOptionTask : ",`http://localhost:8086/usergroup/jobAssetGroup/${selected_asset} `)
+  console.log(
+    "getSelectedOptionTask : ",
+    `http://localhost:8086/usergroup/jobAssetGroup/${selected_asset} `
+  );
   try {
     console.log("getSelectedOptionTask() called ", selected_asset);
 
@@ -155,7 +187,6 @@ export const getSelectedOptionTask = async (selected_asset) => {
   }
 };
 
-
 export const fetchStatusFromJob = async (ticketNo) => {
   try {
     const response = await fetch(
@@ -170,20 +201,16 @@ export const fetchStatusFromJob = async (ticketNo) => {
         },
       }
     );
-    
-    console.log("After call")
-    if(response.ok){
-     // console.log(response)
-     const data = await response.json();
-      console.log("inside API : ",ticketNo," ", data.status)
-      return data.Status;
 
-     
+    console.log("After call");
+    if (response.ok) {
+      // console.log(response)
+      const data = await response.json();
+      console.log("inside API : ", ticketNo, " ", data.status);
+      return data.Status;
     }
-    
+
     // setTicketDetails(data);
-   
-   
   } catch (error) {
     console.error("Error fetching user list:", error);
   }

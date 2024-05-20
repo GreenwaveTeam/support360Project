@@ -1041,12 +1041,13 @@ function UserHome({ sendUrllist }) {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                padding: "10px",
               }}
             >
               {gracePeriodStarted && gracePeriodExpired && (
                 <Typography
                   component="h1"
-                  variant="h3"
+                  variant="h5"
                   sx={{ fontWeight: "600" }}
                   color={"error"}
                 >
@@ -1057,7 +1058,7 @@ function UserHome({ sendUrllist }) {
               {gracePeriodStarted && !gracePeriodExpired && (
                 <Typography
                   component="h1"
-                  variant="h3"
+                  variant="h5"
                   sx={{ fontWeight: "600" }}
                   color={"error"}
                 >

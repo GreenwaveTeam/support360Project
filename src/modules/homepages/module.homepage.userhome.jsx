@@ -894,7 +894,7 @@ function UserHome({ sendUrllist }) {
     console.log("differenceInDaysTillNow  endDate : ", endDate);
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(endDate);
-    const endGracePeriodObj = endDateObj.getDate() + 30;
+    const endGracePeriodObj = new Date(endDateObj.getDate() + 30);
 
     const graceDifferenceInMilliseconds =
       endGracePeriodObj.getTime() - startDateObj.getTime();

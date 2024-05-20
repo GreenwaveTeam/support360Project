@@ -1051,8 +1051,9 @@ function UserHome({ sendUrllist }) {
                   sx={{ fontWeight: "600" }}
                   color={"error"}
                 >
-                  The support subscription for plant "{formData.plantName}"
-                  expired {Math.abs(daysDifferenceTillNow)} days ago.
+                  The support subscription for the plant "{formData.plantName}"
+                  expired {Math.abs(daysDifferenceTillNow)} days ago. Please
+                  renew it to continue receiving support.
                 </Typography>
               )}
               {gracePeriodStarted && !gracePeriodExpired && (
@@ -1062,9 +1063,9 @@ function UserHome({ sendUrllist }) {
                   sx={{ fontWeight: "600" }}
                   color={"error"}
                 >
-                  The support subscription for plant "{formData.plantName}"
-                  expired {Math.abs(daysDifferenceTillNow)} days ago, The Grace
-                  Period will end in {graceDifferenceTillNow} days.
+                  "The support subscription for plant "{formData.plantName}"
+                  expired {Math.abs(daysDifferenceTillNow)} days ago. The grace
+                  period will end in {graceDifferenceTillNow} days."
                 </Typography>
               )}
             </div>

@@ -350,6 +350,15 @@ export default function UserRegistration({ sendUrllist }) {
     return stringWithoutExtraSpaces;
   }
 
+  function capitalizeWords(str) {
+    return str
+      .split(" ")
+      .map((word) => {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(" ");
+  }
+
   function removeOnlySpecialChar(str) {
     var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9@.]/g, "");
     var atIndex = stringWithoutSpecialChars.indexOf("@");
@@ -628,13 +637,17 @@ export default function UserRegistration({ sendUrllist }) {
         }
       );
       if (response.ok) {
-        console.log("User Updated successfully");
-        navigate("/admin/home");
-      } else {
-        console.error("Failed to update user");
+        const text = await response.text();
         handleClick();
-        setSnackbarText("Failed to update User");
+        setSnackbarText(text);
+        setsnackbarSeverity("success");
+        navigate(`/admin/home`);
+      } else {
+        const text = await response.text();
+        handleClick();
+        setSnackbarText(text);
         setsnackbarSeverity("error");
+        return;
       }
     } catch (error) {
       console.error("Error : ", error);
@@ -819,7 +832,7 @@ export default function UserRegistration({ sendUrllist }) {
                               onBlur={(e) => {
                                 setUpdateFormData({
                                   ...updateFormData,
-                                  name: e.target.value.trim(),
+                                  name: capitalizeWords(e.target.value.trim()),
                                 });
                               }}
                               onChange={(e) => {
@@ -1446,7 +1459,7 @@ export default function UserRegistration({ sendUrllist }) {
                               onBlur={(e) => {
                                 setFormData({
                                   ...formData,
-                                  name: e.target.value.trim(),
+                                  name: capitalizeWords(e.target.value.trim()),
                                 });
                               }}
                               onChange={(e) => {

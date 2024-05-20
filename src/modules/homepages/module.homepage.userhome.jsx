@@ -894,7 +894,9 @@ function UserHome({ sendUrllist }) {
     console.log("differenceInDaysTillNow  endDate : ", endDate);
     const startDateObj = new Date(startDate);
     const endDateObj = new Date(endDate);
-    const endGracePeriodObj = new Date(endDateObj.getDate() + 30);
+    // const endGracePeriodObj = new Date(endDateObj.getDate() + 30);
+    const endGracePeriodObj = new Date(endDateObj);
+    endGracePeriodObj.setDate(endDateObj.getDate() + 30);
 
     const graceDifferenceInMilliseconds =
       endGracePeriodObj.getTime() - startDateObj.getTime();
@@ -1033,30 +1035,37 @@ function UserHome({ sendUrllist }) {
           </div>
         </div> */}
           <div class="row">
-            <div class="col-md-12">
-              {gracePeriodStarted &&
-                gracePeriodExpired(
-                  <Typography
-                    component="h1"
-                    variant="h3"
-                    sx={{ fontWeight: "600" }}
-                  >
-                    The support subscription for plant "{formData.plantName}"
-                    expired {Math.abs(daysDifferenceTillNow)} days ago.
-                  </Typography>
-                )}
-              {gracePeriodStarted &&
-                !gracePeriodExpired(
-                  <Typography
-                    component="h1"
-                    variant="h3"
-                    sx={{ fontWeight: "600" }}
-                  >
-                    The support subscription for plant "{formData.plantName}"
-                    expired {Math.abs(daysDifferenceTillNow)} days ago, The
-                    Grace Period will end in {graceDifferenceTillNow} days.
-                  </Typography>
-                )}
+            <div
+              class="col-md-12"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              {gracePeriodStarted && gracePeriodExpired && (
+                <Typography
+                  component="h1"
+                  variant="h3"
+                  sx={{ fontWeight: "600" }}
+                  color={"error"}
+                >
+                  The support subscription for plant "{formData.plantName}"
+                  expired {Math.abs(daysDifferenceTillNow)} days ago.
+                </Typography>
+              )}
+              {gracePeriodStarted && !gracePeriodExpired && (
+                <Typography
+                  component="h1"
+                  variant="h3"
+                  sx={{ fontWeight: "600" }}
+                  color={"error"}
+                >
+                  The support subscription for plant "{formData.plantName}"
+                  expired {Math.abs(daysDifferenceTillNow)} days ago, The Grace
+                  Period will end in {graceDifferenceTillNow} days.
+                </Typography>
+              )}
             </div>
             <div class="col-md-7">
               {divIsVisibleList && divIsVisibleList.includes("trend") && (

@@ -76,6 +76,7 @@ import { useMemo } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { fetchApplicationNames, fetchCurrentDivs, fetchCurrentUser, fetchTabData, fetchTabNames, postDatainDB } from "./ApplicationUserApi";
 import { RotatingLines } from 'react-loader-spinner'
+import RenewMessageComponent from "../../../components/renew/renew.component";
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -163,10 +164,18 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const abortControllerRef=React.useRef();
 
+  const [isUserUnderSupport,setIsUserUnderSupport]= useState(false);
+
   // const [currentLoaderModule,setCurrentLoaderModule]=useState("");
 
   /**************************************    useEffect()   ******************************* */
   useEffect(() => {
+
+
+
+
+
+
     extendTokenExpiration();
     sendUrllist(urllist);
     console.log("useEffect() called ");
@@ -483,6 +492,28 @@ export default function ApplicationUser({ sendUrllist }) {
       setCurrentUserData(userData);
       console.log("userData : ", userData);
       let role =userData.role;
+
+      //Check for Support Expiration Time 
+     
+      // const dayjs = require("dayjs");
+      const isSameOrBefore = require("dayjs/plugin/isSameOrBefore");
+      dayjs.extend(isSameOrBefore);
+      console.log('Support End date : ',userData.supportEndDate)
+       const supportExpiryDate=dayjs(userData.supportEndDate).add(30,'day');
+      console.log("Current User Support End Date , after adding grace period :", supportExpiryDate.format("YYYY-MM-DD"));
+      
+      const currentDate = dayjs();
+      console.log("Current Date:", currentDate.format("YYYY-MM-DD"));
+      
+      const isUnderSupport = currentDate.isSameOrBefore(supportExpiryDate, 'day');
+      console.log("Is under Support?", isUnderSupport);
+      setIsUserUnderSupport(isUnderSupport)
+      
+
+      //Will give a grace period of one month 
+     
+
+
       const currentDivs= await fetchCurrentDivs(role,currentPageLocation)
       if(currentDivs)
         {
@@ -2092,7 +2123,7 @@ export default function ApplicationUser({ sendUrllist }) {
           <br></br>
           <center>
             {divIsVisibleList &&
-              divIsVisibleList.includes("app-dropdown-selection") && (
+              divIsVisibleList.includes("app-dropdown-selection") && isUserUnderSupport&& (
                 <div id="app-dropdown-selection">
                   <Dropdown
                     style={{ width: "200px" }}
@@ -2104,6 +2135,7 @@ export default function ApplicationUser({ sendUrllist }) {
                   ></Dropdown>
                 </div>
               )}
+            { !isUserUnderSupport&&<RenewMessageComponent/> }
           </center>
           <br />
           <center>

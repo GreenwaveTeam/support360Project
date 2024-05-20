@@ -228,4 +228,42 @@ export const fetchApplicationNames = async (plantID) => {
               // return 0;
             }
           };
+
+
+
+          
+export const fetchPlantDetailsByPlantId = async (plantID) => {
+  const currentIP = process.env.REACT_APP_SERVERIP;
+  console.log("env : ", currentIP);
+  // console.log("Current user : ", userData);
+  try {
+    const response = await fetch(
+      `http://${DB_IP}/plants/plant?plantId=${plantID}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!response.ok) {
+      // if (response.status === 403) {
+      // //   navigate("/*");
+      // return 403;
+      // }
+      throw new Error("Failed to fetch data,forbidden");
+    }
+    const data = await response.json();
+    if (data) {
+      console.log("Data from Database : ", data);
+      // data.unshift("Select an application");
+      // setAppDropdown(data);
+      // setDropdownValue("Select an application");
+      return data;
+    }
+  } catch (error) {
+    console.log("Error fetching data ", error);
+  }
+  // setTabsModuleNames([]);
+};
         

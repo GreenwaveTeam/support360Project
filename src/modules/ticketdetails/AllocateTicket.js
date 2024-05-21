@@ -215,3 +215,73 @@ export const fetchStatusFromJob = async (ticketNo) => {
     console.error("Error fetching user list:", error);
   }
 };
+
+export const fetchTicketResponseTime = async (plantId) => {
+  try {
+    const response = await fetch(
+      `http://${DB_IP}/ticket/responseTime?plantId=${plantId}`,
+      {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      console.log("fetchTicketResponseTime : ", data);
+      console.log("fetchTicketResponseTime : ", Array.isArray(data));
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+};
+
+export const fetchTicketResolveTime = async (plantId) => {
+  try {
+    const response = await fetch(
+      `http://${DB_IP}/ticket/resolveTime?plantId=${plantId}`,
+      {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      console.log("fetchTicketResolveTime : ", data);
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+};
+
+export const fetchTicketCloseTime = async (plantId) => {
+  try {
+    const response = await fetch(
+      `http://${DB_IP}/ticket/closeTime?plantId=${plantId}`,
+      {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      console.log("fetchTicketCloseTime : ", data);
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetching user list:", error);
+  }
+};

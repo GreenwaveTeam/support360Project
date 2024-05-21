@@ -56,6 +56,9 @@ import "bootstrap/dist/css/bootstrap.css";
 import { ColorModeContext, tokens } from "../../theme";
 import CounterAnimation from "./CounterAnimation";
 import {
+  fetchTicketCloseTime,
+  fetchTicketResolveTime,
+  fetchTicketResponseTime,
   getAllClosedTicketDetails,
   getAllOpenTicketDetails,
   updateStatus,
@@ -200,6 +203,10 @@ function UserHome({ sendUrllist }) {
   const [viewMode, setViewMode] = useState("all");
   const [selectedRow, setSelectedRow] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const [responseTime, setResponseTime] = useState([]);
+  const [resolveTime, setResolveTime] = useState([]);
+  const [closeTime, setCloseTime] = useState([]);
 
   const handleToggleView = () => {
     setViewMode((prevMode) => (prevMode === "all" ? "open" : "all"));
@@ -361,6 +368,18 @@ function UserHome({ sendUrllist }) {
 
   const showAlert = async (plantId) => {
     // alert(`Time remaining until token expiry: ${timeRemaining}`);
+    const tempResponseTime = await fetchTicketResponseTime(plantId);
+    const tempResolveTime = await fetchTicketResolveTime(plantId);
+    const tempCloseTime = await fetchTicketCloseTime(plantId);
+
+    console.log("tempResponseTime : ", tempResponseTime);
+    console.log("tempResolveTime : ", tempResolveTime);
+    console.log("tempCloseTime : ", tempCloseTime);
+
+    setResponseTime(tempResponseTime);
+    setResolveTime(tempResolveTime);
+    setCloseTime(tempCloseTime);
+
     const details = await getAllOpenTicketDetails();
     const closedDetails = await getAllClosedTicketDetails(plantId);
     console.log("formData.plantID : ", plantId);
@@ -1045,28 +1064,32 @@ function UserHome({ sendUrllist }) {
               }}
             >
               {gracePeriodStarted && gracePeriodExpired && (
-                <Typography
-                  component="h1"
-                  variant="h5"
-                  sx={{ fontWeight: "600" }}
-                  color={"error"}
-                >
-                  The support subscription for the plant "{formData.plantName}"
-                  expired {Math.abs(daysDifferenceTillNow)} days ago. Please
-                  renew it to continue receiving support.
-                </Typography>
+                <Alert severity="info">
+                  <Typography
+                    component="h1"
+                    variant="h5"
+                    sx={{ fontWeight: "600" }}
+                    color={"error"}
+                  >
+                    The support subscription for the plant {formData.plantName}{" "}
+                    expired {Math.abs(daysDifferenceTillNow)} days ago. Please
+                    renew it to continue receiving support.
+                  </Typography>
+                </Alert>
               )}
               {gracePeriodStarted && !gracePeriodExpired && (
-                <Typography
-                  component="h1"
-                  variant="h5"
-                  sx={{ fontWeight: "600" }}
-                  color={"error"}
-                >
-                  "The support subscription for plant "{formData.plantName}"
-                  expired {Math.abs(daysDifferenceTillNow)} days ago. The grace
-                  period will end in {graceDifferenceTillNow} days."
-                </Typography>
+                <Alert severity="info">
+                  <Typography
+                    component="h1"
+                    variant="h5"
+                    sx={{ fontWeight: "600" }}
+                    color={"error"}
+                  >
+                    The support subscription for plant {formData.plantName}{" "}
+                    expired {Math.abs(daysDifferenceTillNow)} days ago. The
+                    grace period will end in {graceDifferenceTillNow} days.
+                  </Typography>
+                </Alert>
               )}
             </div>
             <div class="col-md-7">
@@ -1075,11 +1098,18 @@ function UserHome({ sendUrllist }) {
                   <div class="row">
                     <div class="col-md-4">
                       <Card
-                        onClick={(e) => {
-                          navigate("/user/ReportDevice", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
+                        // onClick={(e) => {
+                        //   navigate("/user/ReportDevice", {
+                        //     state: { plantID: formData.plantID },
+                        //   });
+                        // }}
+                        onClick={
+                          gracePeriodStarted && gracePeriodExpired
+                            ? navigate("/user/ReportDevice", {
+                                state: { plantID: formData.plantID },
+                              })
+                            : null
+                        }
                         sx={{ borderRadius: 1 }}
                       >
                         <CardContent sx={{ paddingBottom: "16px !important" }}>
@@ -1218,11 +1248,18 @@ function UserHome({ sendUrllist }) {
                     </div>
                     <div class="col-md-4">
                       <Card
-                        onClick={(e) => {
-                          navigate("/user/ReportApplication", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
+                        // onClick={(e) => {
+                        //   navigate("/user/ReportApplication", {
+                        //     state: { plantID: formData.plantID },
+                        //   });
+                        // }}
+                        onClick={
+                          gracePeriodStarted && gracePeriodExpired
+                            ? navigate("/user/ReportApplication", {
+                                state: { plantID: formData.plantID },
+                              })
+                            : null
+                        }
                       >
                         <CardContent sx={{ paddingBottom: "16px !important" }}>
                           <div className="row">
@@ -1313,11 +1350,18 @@ function UserHome({ sendUrllist }) {
                     </div>
                     <div class="col-md-4">
                       <Card
-                        onClick={(e) => {
-                          navigate("/user/ReportInfrastructure", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
+                        // onClick={(e) => {
+                        //   navigate("/user/ReportInfrastructure", {
+                        //     state: { plantID: formData.plantID },
+                        //   });
+                        // }}
+                        onClick={
+                          gracePeriodStarted && gracePeriodExpired
+                            ? navigate("/user/ReportInfrastructure", {
+                                state: { plantID: formData.plantID },
+                              })
+                            : null
+                        }
                       >
                         <CardContent sx={{ paddingBottom: "16px !important" }}>
                           <div className="row">
@@ -1478,9 +1522,16 @@ function UserHome({ sendUrllist }) {
                   </div>
                 </div>
               )}
+              {/* <div>
+                <Typography>
+                  {Array.isArray([responseTime]) ? 1 : 0},
+                  {Array.isArray([resolveTime]) ? 1 : 0},
+                  {Array.isArray([closeTime]) ? 1 : 0}
+                </Typography>
+              </div> */}
               {divIsVisibleList && divIsVisibleList.includes("spark-line") && (
                 <div class="row" style={{ marginTop: "1rem" }}>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <Card>
                       <CardContent
                         sx={{
@@ -1495,15 +1546,11 @@ function UserHome({ sendUrllist }) {
                           color="info"
                           label="Response Time (AVG)"
                         />
-
-                        <SparkLineChart
-                          data={[3, 4, 2, 5, 4, 2, 4, 0, 5, 4, 2, 4, 6]}
-                          height={35}
-                        />
+                        <SparkLineChart data={responseTime} height={35} />
                       </CardContent>
                     </Card>
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <Card>
                       <CardContent
                         sx={{
@@ -1518,12 +1565,26 @@ function UserHome({ sendUrllist }) {
                           color="info"
                           label="Resolved Time (AVG)"
                         />
-                        <SparkLineChart
-                          data={[
-                            1, 4, 2, 5, 7, 2, 4, 6, 1, 4, 2, 5, 7, 2, 4, 6,
-                          ]}
-                          height={35}
+                        <SparkLineChart data={resolveTime} height={35} />
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <div class="col-md-4">
+                    <Card>
+                      <CardContent
+                        sx={{
+                          paddingBottom: "16px !important",
+                          display: "grid",
+                          justifyItems: "center",
+                        }}
+                      >
+                        <Chip
+                          variant="outlined"
+                          component="div"
+                          color="info"
+                          label="Close Time (AVG)"
                         />
+                        <SparkLineChart data={closeTime} height={35} />
                       </CardContent>
                     </Card>
                   </div>

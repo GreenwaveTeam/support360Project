@@ -459,7 +459,7 @@ export default function AllocateTicket() {
     const ticketNo = selectedRow.ticketNo;
     const tikcetStatus = selectedRow.status;
     console.log(
-      "Current final From Date : ",
+      "Current final From Date :  ",
       dayjs(fromDate).format("YYYYMMDDTHHmmssSSS")
     );
     // Handle submit logic here

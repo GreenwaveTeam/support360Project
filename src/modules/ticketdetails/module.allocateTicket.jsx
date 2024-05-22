@@ -368,7 +368,7 @@ export default function AllocateTicket() {
 
   const fetchAllTicketsDetails = async () => {
     try {
-      console.log("fetchAllTicketsDetails() called");
+      console.log("fetchAllTicketsDetails() called ");
 
       // Fetch open ticket details and admin list concurrently
       const [response, adminList] = await Promise.all([

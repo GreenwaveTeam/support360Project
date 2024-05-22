@@ -22,9 +22,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Divider,
   FormControl,
-  Grid,
   InputLabel,
   MenuItem,
   Paper,
@@ -48,9 +46,11 @@ import {
 } from "../application/user/ApplicationUserApi";
 // import { useLocation } from "react-router-dom";
 import { useLocation, useNavigate } from "react-router-dom";
-import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
+import { ColorModeContext, tokens } from "../../theme";
+import { useTheme } from "@mui/material";
+
+
 
 export default function AllocateTicket() {
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
@@ -73,7 +73,6 @@ export default function AllocateTicket() {
   const [infrastructureTickets, setInfrastructureTickets] = useState([]);
   const currentPageLocation = useLocation().pathname;
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
-  const [fromDate, setFromDate] = useState(dayjs());
   // const [tikcetStatus, setTicketStatus] = React.useState("");
 
   //   const application=1;
@@ -160,18 +159,16 @@ export default function AllocateTicket() {
             // if (row.status === "WIP") return true;
             // else
             //const status = handleFetchJobStatus(row.ticketNo);
-            if (row.job_status.toLowerCase() === "Finished".toLowerCase()) {
+            if (row.job_status === "Completed".toLowerCase()) {
               return false;
             } else {
               return true;
             }
           },
           function: async (row) => {
-            // console.log(ro)
-            const plantId = row.plantId;
-
-            const ticketNo = row.ticketNo;
-            const tikcetStatus = row.status;
+            const plantId = selectedRow.plantId;
+            const ticketNo = selectedRow.ticketNo;
+            const tikcetStatus = selectedRow.status;
             await updateStatus(plantId, ticketNo, tikcetStatus);
             console.log("Obj : ", row);
             setSelectedRow(row);
@@ -202,7 +199,7 @@ export default function AllocateTicket() {
           buttonlabel: "Close",
           isButtonRendered: (row) => {
             //console.log("Assign Row : ", row);
-            if (row.status === "resolve") return true;
+            if (row.status === "resolved") return true;
             else return false;
           },
           isButtonDisabled: (row) => {
@@ -212,10 +209,9 @@ export default function AllocateTicket() {
             return false;
           },
           function: async (row) => {
-            const plantId = row.plantId;
-
-            const ticketNo = row.ticketNo;
-            const tikcetStatus = row.status;
+            const plantId = selectedRow.plantId;
+            const ticketNo = selectedRow.ticketNo;
+            const tikcetStatus = selectedRow.status;
             await updateStatus(plantId, ticketNo, tikcetStatus);
             console.log("Obj : ", row);
             setSelectedRow(row);
@@ -245,10 +241,8 @@ export default function AllocateTicket() {
   ];
   React.useEffect(() => {
     fetchUser1();
-
+    setUserData(fetchUser);
     fetchAllTicketsDetails();
-    console.log("Use effect called");
-
     // const status = handleFetchJobStatus(row.ticketNo);
   }, []);
 
@@ -277,7 +271,7 @@ export default function AllocateTicket() {
 
     const userData = await fetchCurrentUser();
     if (userData) {
-      setUserData(userData);
+      // setCurrentUserData(userData);
       console.log("userData : ", userData);
       let role = userData.role;
       console.log("Role in Ticket  : ", role);
@@ -286,26 +280,6 @@ export default function AllocateTicket() {
         console.log("currentDivs : ", currentDivs);
         if (currentDivs.length === 0) {
           navigate("/*");
-          return;
-        }
-        if (
-          currentDivs.components &&
-          currentDivs.components.includes("Application_Ticket_Tab")
-        ) {
-          setValue("1");
-          console.log("Application_Ticket_Tab");
-        } else if (
-          currentDivs.components &&
-          currentDivs.components.includes("Device_Ticket_Tab")
-        ) {
-          setValue("2");
-          console.log("Device_Ticket_Tab");
-        } else if (
-          currentDivs.components &&
-          currentDivs.components.includes("Infrastructure_Ticket_Tab")
-        ) {
-          setValue("3");
-          console.log("Infrastructure_Ticket_Tab");
         }
         setDivIsVisibleList(currentDivs.components);
       }
@@ -458,10 +432,6 @@ export default function AllocateTicket() {
     const plantId = selectedRow.plantId;
     const ticketNo = selectedRow.ticketNo;
     const tikcetStatus = selectedRow.status;
-    console.log(
-      "Current final From Date : ",
-      dayjs(fromDate).format("YYYYMMDDTHHmmssSSS")
-    );
     // Handle submit logic here
     if (selectedApprover && selectedPerformer) {
       console.log("palnt id and ticket ", plantId, ticketNo);
@@ -473,16 +443,9 @@ export default function AllocateTicket() {
       const currentAsset_Activity = allAssetData.filter(
         (item) => item.taskId === "T202405171323492349"
       ); //Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented
-
-      let current_starttime = dayjs(fromDate);
-      if (!currentAsset_Activity[0]?.activityList) {
-        setSnackbarText("Task Not Found!");
-        setsnackbarSeverity("error");
-        setSnackbarOpen(true);
-        return;
-      }
       console.log("Current Activity : ", currentAsset_Activity);
-      let finalDuration = 0;
+      let current_starttime = dayjs().add(1, "day");
+
       const finalActivityList = currentAsset_Activity[0].activityList.map(
         (obj) => {
           // Apply the function constructor to create a new Activity object
@@ -495,7 +458,6 @@ export default function AllocateTicket() {
           current_starttime = current_starttime.add(obj.duration, "minute");
 
           //const duration = endTime.diff(startTime, 'millisecond');
-          finalDuration += obj.duration;
           return createActivity(
             obj.taskId || null,
             obj.taskName || null,
@@ -559,10 +521,100 @@ export default function AllocateTicket() {
         }
       );
 
+      //   const demoActivity = createActivity(
+      //     "A202405141329292929",  // activityId
+      //     "COMPLETE",  // activityName
+      //     false,  // actvityBtnDisableOnCompletion
+      //     false,  // actvityBtnDisbleForActvtOrder
+      //     0,  // actvtCount
+      //     true,  // assetAvailable
+      //     [],  // assetAvlReasons
+      //     ['A08042024112657985', 'A08042024112657985', 'A08042024112657985', 'A08042024112657985'],  // assetIDList
+      //     ['Weighing Scale', 'Weighing Scale', 'Weighing Scale', 'Weighing Scale'],  // assetNameList
+      //     true,  // available
+      //     false,  // booleanForActivityStatus
+      //     0,  // buffer
+      //     0,  // completedActivity
+      //     false,  // disable
+      //     false,  // disableForAction
+      //     20,  // duration
+      //     false,  // enforce
+      //     true,  // groupOrDept
+      //     "72053 Vivel BW Mint Cucumber",  // logbook
+      //     false,  // notBelongToApprover
+      //     false,  // notBelongToPerformer
+      //     0,  // pendingActivity
+      //     [],  // performerAvlReasons
+      //     0,  // rejectedActivity
+      //     1,  // sequence
+      //     "T20240408115606566",  // taskId
+      //     null,  // actAbrv
+      //     null,  // actFile
+      //     null,  // actualActivityEndTime
+      //     null,  // actualActivityStartTime
+      //     null,  // actualActvtEnd
+      //     null,  // actualActvtyStrt
+      //     "Not Started",  // actvityStatus
+      //     "avrajit.roy@greenwave.co.in",  // approver
+      //     "",  // assetId
+      //     "",  // assetName
+      //     null,  // date
+      //     null,  // delayDueToBuffer
+      //     null,  // getGroupOrDeptWisePerformer
+      //     "Administrator",  // groupOrDeptName
+      //     false,  // isActvityBtnDisableOnCompletion
+      //     false,  // isActvityBtnDisbleForActvtOrder
+      //     null,  // jobId
+      //     "",  // performer
+      //     "Department",  // performerType
+      //     null,  // remarks
+      //     null,  // reviewerActivityStartTime
+      //     null,  // reviewerActivityStopTime
+      //     "2024-05-15T00:20:00.000+05:30",  // scheduledActivityEndTime
+      //     "2024-05-15T00:00:00.000+05:30",  // scheduledActivityStartTime
+      //     null,  // selectedAssetIdsList
+      //     null,  // selectedAssetList
+      //     null,  // xPos
+      //     null   // yPos
+      // );
+
+      // console.log(demoActivity);
+
+      //   const activity = [
+      //     createActivity(
+      //       "A202405141317511751",
+      //       "Ticket Resolve",
+      //       false,
+      //       false,
+      //       0,
+      //       true,
+      //       null,
+      //       null,
+      //       null,
+      //       true,
+      //       false,
+      //       0,
+      //       0,
+      //       false,
+      //       false,
+      //       10,
+      //       false,
+      //       false,
+      //       "SupportTicket",
+      //       false,
+      //       false,
+      //       0,
+      //       null,
+      //       0,
+      //       2,
+      //       "T202405141316501650"
+      //     ),
+      //   ];
+
       const task = createTask(
         null,
         ticketNo,
-        "T202405171323492349",
+        "T202405141316501650",
         null,
         null,
         null,
@@ -579,14 +631,12 @@ export default function AllocateTicket() {
         null,
         userData.email,
         selectedApprover,
-        dayjs(fromDate).format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-        dayjs(fromDate)
-          .add(finalDuration, "minute")
-          .format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
         null,
         null,
         selectedRow.ticket_priority,
-        selectedRow.plantId,
+        userData.plantId,
         null
       );
 
@@ -608,265 +658,238 @@ export default function AllocateTicket() {
       return;
     }
   };
-
-  const handleFromDateChange = (newValue) => {
-    console.log("handleFromDateChange() called => ", newValue);
-    const currentTime = dayjs();
-    const selectedTime = dayjs(newValue);
-
-    const currentYear = currentTime.year();
-    const currentMonth = currentTime.month() + 1; //index starts from 0 for month count
-    const currentDay = currentTime.date();
-    const currentHour = currentTime.hour();
-    const currentMinute = currentTime.minute();
-
-    const selectedYear = selectedTime.year();
-    const selectedMonth = selectedTime.month() + 1;
-    const selectedDay = selectedTime.date();
-    const selectedHour = selectedTime.hour();
-    const selectedMinute = selectedTime.minute();
-
-    console.log("Current Date and Time:");
-    console.log(
-      `Year: ${currentYear}, Month: ${currentMonth}, Day: ${currentDay}, Hour: ${currentHour}, Minute: ${currentMinute}`
-    );
-
-    console.log("Selected Date and Time:");
-    console.log(
-      `Year: ${selectedYear}, Month: ${selectedMonth}, Day: ${selectedDay}, Hour: ${selectedHour}, Minute: ${selectedMinute}`
-    );
-
-    if (
-      selectedYear < currentYear ||
-      (selectedYear === currentYear &&
-        (selectedMonth < currentMonth ||
-          (selectedMonth === currentMonth &&
-            (selectedDay < currentDay ||
-              (selectedDay === currentDay &&
-                (selectedHour < currentHour ||
-                  (selectedHour === currentHour &&
-                    selectedMinute < currentMinute)))))))
-    ) {
-      console.log("Past Time selected !");
-      setSnackbarText("Past time cannot be selected");
-      setsnackbarSeverity("error");
-      setSnackbarOpen(true);
-      setFromDate(dayjs());
-      return;
-    }
-    setFromDate(newValue);
-  };
-
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  
   return (
     <>
-      <Box sx={{ width: "100%", typography: "body1" }}>
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList onChange={handleChange} aria-label="lab API tabs example">
-              {divIsVisibleList &&
-                divIsVisibleList.includes("Application_Ticket_Tab") && (
-                  <Tab
-                    id="Application_Ticket_Tab"
-                    label={
-                      <>
-                        <Badge
-                          color="secondary"
-                          badgeContent={allTickets?.application?.length}
-                        >
-                          <div style={{ marginRight: "15px" }}>Application</div>
-                        </Badge>
-                      </>
-                    }
-                    value="1"
-                  />
-                )}
-              {divIsVisibleList &&
-                divIsVisibleList.includes("Device_Ticket_Tab") && (
-                  <Tab
-                    id="Device_Ticket_Tab"
-                    label={
-                      <>
-                        <Badge
-                          color="secondary"
-                          badgeContent={allTickets?.device?.length}
-                        >
-                          <div style={{ marginRight: "15px" }}>Device</div>
-                        </Badge>
-                      </>
-                    }
-                    value="2"
-                  />
-                )}
-              {divIsVisibleList &&
-                divIsVisibleList.includes("Infrastructure_Ticket_Tab") && (
-                  <Tab
-                    id="Infrastructure_Ticket_Tab"
-                    label={
-                      <>
-                        <Badge
-                          color="secondary"
-                          badgeContent={allTickets?.infrastructure?.length}
-                        >
-                          <div style={{ marginRight: "15px" }}>
-                            Infrastructure
-                          </div>
-                        </Badge>
-                      </>
-                    }
-                    value="3"
-                  />
-                )}
-            </TabList>
-          </Box>
-          <TabPanel value="1">
-            {applicationTickets && (
-              <CustomTable
-                columns={Columns}
-                rows={applicationTickets}
-                isNotDeletable={true}
-                setRows={setApplicationTickets}
-                tablename={"Application Tickets"}
-              ></CustomTable>
-            )}
-          </TabPanel>
-
-          <TabPanel value="2">
-            {deviceTickets && (
-              <CustomTable
-                columns={Columns}
-                rows={deviceTickets}
-                isNotDeletable={true}
-                setRows={setDeviceTickets}
-                tablename={"Device Tickets"}
-              ></CustomTable>
-            )}
-          </TabPanel>
-
-          <TabPanel value="3">
-            {infrastructureTickets && (
-              <CustomTable
-                columns={Columns}
-                rows={infrastructureTickets}
-                isNotDeletable={true}
-                setRows={setInfrastructureTickets}
-                tablename={"Infrastructure Tickets"}
-              ></CustomTable>
-            )}
-          </TabPanel>
-        </TabContext>
-      </Box>
-      <div>
-        <Dialog
-          open={dialogOpen}
-          onClose={handleClose}
-          fullWidth
-          maxWidth="100%"
+      <div className="mainDiv" style={{ position: "relative" }}>
+      
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            zIndex: 2,
+            top: 0,
+            background:colors.primary[400],
+          }}
+          // Note : Don't disturb the inline styling because then the click even is not getting triggered
+          //className="main-image-div"
+          // ref={screenshotRef}
         >
-          <div>
-            <DialogTitle>
-              <h6>
-                {jobStatus
-                  ? "Job Status : " + jobStatus
-                  : "Ticket Not Assigned"}
-              </h6>
-            </DialogTitle>
-            <DialogContent>
-              {selectedRow && (
-                <div>
-                  <DataTableByCatagory
-                    plantId={selectedRow.plantId}
-                    ticketNo={selectedRow.ticketNo}
-                  ></DataTableByCatagory>
-                </div>
-              )}
-            </DialogContent>
-          </div>
-        </Dialog>
-      </div>
-      <div>
-        <Dialog open={dialogOpenAssign} onClose={handleAssignClose} fullWidth>
-          <DialogTitle>Assign Ticket</DialogTitle>
-          <Divider sx={{ opacity: "0.8" }} />
-          <DialogContent sx={{ pt: 0 }}>
-            {/* <Typography>Select Admin ID:</Typography> */}
-            <div style={{ display: "grid" }}>
-              {performers && (
-                <FormControl sx={{ m: 1, minWidth: 150 }}>
-                  <InputLabel id="user-dropdown-label">
-                    Select Performer
-                  </InputLabel>
-                  <Select
-                    labelId="user-dropdown-label"
-                    id="user-dropdown"
-                    value={selectedPerformer}
-                    onChange={handleChangePerformer}
-                    label="Select User"
-                  >
-                    {performers.map((admin) => (
-                      <MenuItem key={admin.userId} value={admin.userId}>
-                        {admin.name + " ( " + admin.userId + " )"}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-              {approvers && (
-                <FormControl sx={{ m: 1, minWidth: 150 }}>
-                  <InputLabel id="user-dropdown-label">
-                    Select Approver
-                  </InputLabel>
-                  <Select
-                    labelId="user-dropdown-label"
-                    id="user-dropdown"
-                    value={selectedApprover}
-                    onChange={handleChangeApprover}
-                    label="Select User"
-                  >
-                    {approvers.map((admin) => (
-                      <MenuItem key={admin.userId} value={admin.userId}>
-                        {admin.name + " ( " + admin.userId + " )"}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-              <div style={{ marginTop: "1rem" }}></div>
-              <LocalizationProvider
-                style={{ mt: "1rem" }}
-                dateAdapter={AdapterDayjs}
-              >
-                <MobileDateTimePicker
-                  //   defaultValue={dayjs(elem.date) || null}
-
-                  label="From Date"
-                  value={fromDate}
-                  onChange={(newValue) => handleFromDateChange(newValue)}
-                  // renderInput={(params) => <TextField {...params} />}
-                  //   disabled={!elem.editable || elem.disabled}
-                  format="DD-MM-YYYY HH:mm"
-                  sx={{ width: "98%", margin: "auto" }}
-                  minDate={dayjs()}
-                ></MobileDateTimePicker>
-              </LocalizationProvider>
-              {selectedRow && (
-                <Button
-                  sx={{ mt: "1rem" }}
-                  variant="contained"
-                  onClick={() => handleSubmit(selectedRow)}
+          <Box sx={{ width: "100%", typography: "body1" }}>
+            <TabContext value={value}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <TabList
+                  onChange={handleChange}
+                  aria-label="lab API tabs example"
                 >
-                  Allocate
-                </Button>
-              )}
-            </div>
-          </DialogContent>
-        </Dialog>
+                  {divIsVisibleList &&
+                    divIsVisibleList.includes("Application_Ticket_Tab") && (
+                      <Tab
+                        id="Application_Ticket_Tab"
+                        label={
+                          <>
+                            <Badge
+                              color="secondary"
+                              badgeContent={allTickets?.application?.length}
+                            >
+                              <div style={{ marginRight: "15px" }}>
+                                Application
+                              </div>
+                            </Badge>
+                          </>
+                        }
+                        value="1"
+                      />
+                    )}
+                  {divIsVisibleList &&
+                    divIsVisibleList.includes("Device_Ticket_Tab") && (
+                      <Tab
+                        id="Device_Ticket_Tab"
+                        label={
+                          <>
+                            <Badge
+                              color="secondary"
+                              badgeContent={allTickets?.device?.length}
+                            >
+                              <div style={{ marginRight: "15px" }}>Device</div>
+                            </Badge>
+                          </>
+                        }
+                        value="2"
+                      />
+                    )}
+                  {divIsVisibleList &&
+                    divIsVisibleList.includes("Infrastructure_Ticket_Tab") && (
+                      <Tab
+                        id="Infrastructure_Ticket_Tab"
+                        label={
+                          <>
+                            <Badge
+                              color="secondary"
+                              badgeContent={allTickets?.infrastructure?.length}
+                            >
+                              <div style={{ marginRight: "15px" }}>
+                                Infrastructure
+                              </div>
+                            </Badge>
+                          </>
+                        }
+                        value="3"
+                      />
+                    )}
+                </TabList>
+              </Box>
+              <TabPanel value="1">
+                {applicationTickets && (
+                  <CustomTable
+                    columns={Columns}
+                    rows={applicationTickets}
+                    isNotDeletable={true}
+                    setRows={setApplicationTickets}
+                    tablename={"Application Tickets"}
+                  ></CustomTable>
+                )}
+              </TabPanel>
+
+              <TabPanel value="2">
+                {deviceTickets && (
+                  <CustomTable
+                    columns={Columns}
+                    rows={deviceTickets}
+                    isNotDeletable={true}
+                    setRows={setDeviceTickets}
+                    tablename={"Device Tickets"}
+                  ></CustomTable>
+                )}
+              </TabPanel>
+
+              <TabPanel value="3">
+                {infrastructureTickets && (
+                  <CustomTable
+                    columns={Columns}
+                    rows={infrastructureTickets}
+                    isNotDeletable={true}
+                    setRows={setInfrastructureTickets}
+                    tablename={"Infrastructure Tickets"}
+                  ></CustomTable>
+                )}
+              </TabPanel>
+            </TabContext>
+          </Box>
+          <div>
+            <Dialog open={dialogOpen} onClose={handleClose} fullWidth>
+              <div>
+                <DialogTitle>
+                  <h6>
+                    {jobStatus
+                      ? "Job Status : " + jobStatus
+                      : "Ticket Not Assigned"}
+                  </h6>
+                </DialogTitle>
+                <DialogContent>
+                  {selectedRow && (
+                    <div>
+                      <DataTableByCatagory
+                        plantId={selectedRow.plantId}
+                        ticketNo={selectedRow.ticketNo}
+                      ></DataTableByCatagory>
+                    </div>
+                  )}
+                </DialogContent>
+              </div>
+            </Dialog>
+          </div>
+          <div>
+            <Dialog
+              open={dialogOpenAssign}
+              onClose={handleAssignClose}
+              fullWidth
+            >
+              <DialogTitle>Assign Ticket</DialogTitle>
+              <DialogContent>
+                {/* <Typography>Select Admin ID:</Typography> */}
+                {performers && (
+                  <FormControl sx={{ m: 1, minWidth: 150 }}>
+                    <InputLabel id="user-dropdown-label">
+                      Select Performer
+                    </InputLabel>
+                    <Select
+                      labelId="user-dropdown-label"
+                      id="user-dropdown"
+                      value={selectedPerformer}
+                      onChange={handleChangePerformer}
+                      label="Select User"
+                    >
+                      {performers.map((admin) => (
+                        <MenuItem key={admin.userId} value={admin.userId}>
+                          {admin.name + " ( " + admin.userId + " )"}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+                {approvers && (
+                  <FormControl sx={{ m: 1, minWidth: 150 }}>
+                    <InputLabel id="user-dropdown-label">
+                      Select Approver
+                    </InputLabel>
+                    <Select
+                      labelId="user-dropdown-label"
+                      id="user-dropdown"
+                      value={selectedApprover}
+                      onChange={handleChangeApprover}
+                      label="Select User"
+                    >
+                      {approvers.map((admin) => (
+                        <MenuItem key={admin.userId} value={admin.userId}>
+                          {admin.name + " ( " + admin.userId + " )"}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+                {selectedRow && (
+                  <Button
+                    variant="contained"
+                    onClick={() => handleSubmit(selectedRow)}
+                  >
+                    Allocate
+                  </Button>
+                )}
+              </DialogContent>
+            </Dialog>
+          </div>
+          <SnackbarComponent
+            openPopup={snackbarOpen}
+            setOpenPopup={setSnackbarOpen}
+            dialogMessage={snackbarText}
+            snackbarSeverity={snackbarSeverity}
+          ></SnackbarComponent>
+        </div>
+
+        <div  className="hideDiv"
+          style={{
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            top: 0,
+            zIndex: 1,
+            left:0,
+            color:"red",
+            //marginTop: "-100%"
+            //  visibility: "hidden"
+            // backgroundImage:
+            //   "url(https://t3.ftcdn.net/jpg/05/94/36/74/360_F_594367405_q8Prs6xkww5Dl46S80Cd8Nck2XBBNytO.jpg)",
+          }}>
+        <div>
+          <p>zdsfhvxkjdfhbgkxjdfhghdfkjb <br/> zsufgv jksDfbgasjdbfjdsgfjhdsbgfkjsdzbgfkjasdgfkjzsdgf</p>
+          ashfvasdufasdifasiub
+        </div>
+        </div>
       </div>
-      <SnackbarComponent
-        openPopup={snackbarOpen}
-        setOpenPopup={setSnackbarOpen}
-        dialogMessage={snackbarText}
-        snackbarSeverity={snackbarSeverity}
-      ></SnackbarComponent>
     </>
   );
 }

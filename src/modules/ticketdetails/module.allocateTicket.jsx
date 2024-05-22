@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-abcd
-=======
+
 // 5a72b5a21245ea165112a0615a678ace71d6a368
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -873,4 +871,4 @@ export default function AllocateTicket() {
     </>
   );
 }
->>>>>>> bc5a555cd218695007a1ad9c83031c182432ba55
+

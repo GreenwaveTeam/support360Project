@@ -1410,7 +1410,10 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
               data.issuesList.forEach(current_issue=>
+              
                 {
+                  if(current_issue.selected_coordinates_acronym.toLowerCase()==='miscellaneous')
+                    return;
                   const currentImageData={
 
                     module_image:currentImage,
@@ -1424,6 +1427,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
                     
                   }
+                  
                   finalTicketDetailsForImage.push(currentImageData)
 
                 }

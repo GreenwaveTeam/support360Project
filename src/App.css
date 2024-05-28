@@ -1,7 +1,9 @@
 /* .App {
   text-align: center;
 } */
-
+body{
+  /* zoom: 90%; */
+}
 
 .MuiBreadcrumbs-ol{
   padding-left: 0rem !important;
@@ -13,6 +15,10 @@
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+.p-metergroup .p-metergroup-label-list .p-metergroup-label {
+  
+  font-size: 0.9rem !important;
 }
  .MuiBreadcrumbs-root{
   color: white !important;
@@ -34,6 +40,14 @@ padding-bottom: 0 !important;
 /* .LogoutIcon{
   font-family: 900 !important;
 } */
+
+.spinner-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999; /* Ensures the spinner is on top of other content */
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

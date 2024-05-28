@@ -236,7 +236,7 @@ export const fetchTicketResponseTime = async (plantId) => {
       return data;
     }
   } catch (error) {
-    console.error("Error fetching user list:", error);
+    console.error("Error fetching fetchTicketResponseTime:", error);
   }
 };
 
@@ -259,7 +259,7 @@ export const fetchTicketResolveTime = async (plantId) => {
       return data;
     }
   } catch (error) {
-    console.error("Error fetching user list:", error);
+    console.error("Error fetching fetchTicketResolveTime:", error);
   }
 };
 
@@ -282,6 +282,55 @@ export const fetchTicketCloseTime = async (plantId) => {
       return data;
     }
   } catch (error) {
-    console.error("Error fetching user list:", error);
+    console.error("Error fetchTicketCloseTime:", error);
+  }
+};
+
+
+export const fetchModuleImageMap = async (plantId) => {
+  try {
+    const response = await fetch(
+      `http://${DB_IP}/application/moduleData/${plantId}`,
+      {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      // console.log("fetchModuleImageMap : ", data);
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetchModuleImageMap:", error);
+  }
+};
+
+
+
+export const fetchApplicationTicketDetails = async (ticketNo) => {
+  try {
+    const response = await fetch(
+      `http://${DB_IP}/application/ticketDetails/${ticketNo}`,
+      {
+        method: "GET",
+        headers: {
+          // Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      // console.log("fetchApplicationTicketDetails : ", data);
+      return data;
+    }
+  } catch (error) {
+    console.error("Error fetchApplicationTicketDetails:", error);
   }
 };

@@ -77,6 +77,13 @@ import SearchIcon from "@mui/icons-material/Search";
 import { fetchApplicationNames, fetchCurrentDivs, fetchCurrentUser, fetchTabData, fetchTabNames, postDatainDB } from "./ApplicationUserApi";
 import { RotatingLines } from 'react-loader-spinner'
 import RenewMessageComponent from "../../../components/renew/renew.component";
+import JSZip from 'jszip';
+
+// import Test12 from "../../resources/images/test12";
+
+ import html2canvas from 'html2canvas';
+import { fetchModuleImageMap } from "../../ticketdetails/AllocateTicket";
+
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -167,6 +174,19 @@ export default function ApplicationUser({ sendUrllist }) {
   const [isUserUnderSupport,setIsUserUnderSupport]= useState(false);
 
   // const [currentLoaderModule,setCurrentLoaderModule]=useState("");
+
+
+
+  const [zip] = useState(new JSZip());
+
+
+  //for hidden Image
+  const [currentDivData,setCurrentDivData]=useState({})
+  const [currentImageData,setCurrentImageData]=useState({})
+
+
+    //For Screenshot 
+    const screenshotRef = React.useRef(null)
 
   /**************************************    useEffect()   ******************************* */
   useEffect(() => {
@@ -1317,15 +1337,31 @@ export default function ApplicationUser({ sendUrllist }) {
 
     let final_Json = [];
     filter_blank_IssueList.forEach((item) => {
-      let hasNonEmptyIssue = item.issuesList.some(
+      let hasNonEmptyIssue = item.issuesList.filter(
         (element) => element.issues.length > 0
       );
+      // if(item.selected_coordinates_acronym
+      //   && item.selected_coordinates_acronym.toLowerCase()==='miscellaneous'
+      //   && item.issues.length===0
+      // )
+      //   {
+      //     return;
+      //   }
       if (hasNonEmptyIssue) {
+        console.log('The item that has been pushed : ',item) //the miscellaneous issue is blank , but still it is getting added will check later....
         final_Json.push(item);
       }
     });
 
-    console.log("Final Json for POST : ", final_Json);
+    final_Json = final_Json.map(data => {
+      const nonEmptyIssues = data.issuesList.filter(currentIssueList=>currentIssueList.issues.length>0);
+      data.issuesList = nonEmptyIssues;
+      return data;
+  });
+  
+  console.log("Final Json for POST : ", final_Json);
+  
+    // return;
     if (final_Json.length === 0) {
       setSnackbarSeverity("warning");
       setSnackbarText("Please select an issue to report !");
@@ -1333,6 +1369,113 @@ export default function ApplicationUser({ sendUrllist }) {
       setprogressVisible(false);
       return;
     }
+
+
+    //Adding the image Data here 
+    console.log('Final Json to Post : ',final_Json)
+    // return;
+
+    console.log('Current PlantID : ',final_Json[0].plantID)
+    const moduleImageMap=await fetchModuleImageMap(final_Json[0].plantID) 
+    // const currentApplicationTicketDetails= await fetchApplicationTicketDetails(ticketNo)
+
+
+
+    // final_Json.forEach(async(mainData)=>
+    //   {
+
+    //   })
+    // console.log(' Current Response for ModuleImage Map : ',moduleImageMap)
+
+    // console.log('Current Application Ticket Details : ',currentApplicationTicketDetails)
+
+    const finalMapModuleImage=new Map()
+    if(moduleImageMap)
+      {
+        for (let key in moduleImageMap) {
+          if (moduleImageMap.hasOwnProperty(key)) {
+             console.log(key, moduleImageMap[key]);
+             finalMapModuleImage.set(key, moduleImageMap[key])
+          }
+       }
+      }
+      console.log('Final Map for Module Image : ',finalMapModuleImage)
+      let finalTicketDetailsForImage=[];
+
+      if (moduleImageMap)
+         {
+           final_Json.forEach(data => {
+              const currentImage = finalMapModuleImage.get(data.application_name + "=>" + data.module_name);
+              console.log('Current key to get : ', data.application_name + "=>" + data.module_name);
+
+
+              data.issuesList.forEach(current_issue=>
+                {
+                  const currentImageData={
+
+                    module_image:currentImage,
+                    application_name:data.application_name,
+                    module_name : data.module_name,
+                    top_ :current_issue.top,
+                    left_ :current_issue.left,
+                    height_ :current_issue.height,
+                    width_ :current_issue.width,
+                    selected_coordinates_acronym:current_issue.selected_coordinates_acronym
+
+                    
+                  }
+                  finalTicketDetailsForImage.push(currentImageData)
+
+                }
+              )
+              // console.log('Current Image : ', currentImage);
+
+            //  data.issueList
+
+
+      
+              // if (currentImage) {
+              //     // If condition is met, add newProperty
+              //     return {
+              //         ...data,
+              //         module_image: currentImage
+              //     };
+              // }
+              // return data;
+          });
+      }
+
+      console.log('finalTicketDetailsForImage after modification : ',finalTicketDetailsForImage)
+
+     const finalBlobData =await processScreenshotsAndDownload(finalTicketDetailsForImage);
+     console.log('Final Blob Data : ',finalBlobData);
+     const base64Data = await blobToBase64(finalBlobData);
+
+     console.log('Final Base64 string for post in DB : ',base64Data)
+
+     const mainBlobData=base64Data.split(',')[1];
+
+
+    final_Json=final_Json.map((data)=>
+    {
+      return {...data,fileContent:mainBlobData}
+    })
+
+     console.log('Final JSON for POST with image data : ',final_Json)
+
+
+      // const returnHere=true;
+      // if(returnHere)
+      //   return;
+
+
+
+
+
+
+
+
+
 
     let json_Count = 0;
     try {
@@ -1352,7 +1495,7 @@ export default function ApplicationUser({ sendUrllist }) {
     //   )
     console.log("Number of JSON posted => ", json_Count);
 
-    if (json_Count === 0) {
+    if (json_Count !== final_Json.length) {
       setSnackbarSeverity("error");
       setSnackbarText("Error in raising the ticket !");
       setMainAlert(true);
@@ -1390,6 +1533,89 @@ export default function ApplicationUser({ sendUrllist }) {
     const randomNumber = dayjs().format("YYYYMMDDTHHmmssSSS");
     return "A" + randomNumber;
   };
+
+
+
+  //For Image Zip methods 
+  const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result); //this is the event handler which is called when reader.readAsDataURL(blob) is completed 
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const createFileName = (extension, name) => `${name}.${extension}`;
+
+  const addImageToZip = (image, { name, extension = "jpg" }) => {
+    const fileName = createFileName(extension, name);
+    zip.file(fileName, image.split(",")[1], { base64: true }); // The blob data is present in the second index
+  };
+
+  const downloadZip = () => {
+    zip.generateAsync({ type: "blob" })
+      .then((blob) => {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "images.zip";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      })
+      .catch((error) => {
+        console.error("Error generating zip:", error);
+      });
+  };
+
+  const takeScreenShot = async (element) => {
+    return html2canvas(element, {
+      useCORS: true,
+      logging: true,
+      scale: 1,
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight,
+    }).then((canvas) => {
+      return canvas.toDataURL("image/jpeg", 1.0);
+    });
+  };
+
+  const prepareScreenshot = async (imgName) => {
+    const image = await takeScreenShot(screenshotRef.current);
+    console.log("Screenshot Process started!");
+    addImageToZip(image, { name: imgName, extension: "jpg" });
+  };
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
+    try{
+      // const arr=['1','2'] //remember to replace with the appropriate name 
+      // let i=0;
+    for (const data of finalTicketDetailsForImage) {
+      console.log("Current Data:", data);
+      setCurrentImageData(data);
+      await delay(500); 
+      await prepareScreenshot([data.application_name,data.module_name,data.selected_coordinates_acronym].join('_'));
+      await delay(500);
+      // i++;
+    }
+    downloadZip();
+    const blob = await generateZipBlob();
+    console.log('Generated ZIP Blob:', blob);
+    return blob;
+  }
+  catch(error)
+  {
+      console.log('Error downloading zip : ',error)
+  }
+  };
+
+  const generateZipBlob = () => {
+    return zip.generateAsync({ type: "blob" });
+  };
+
+
+
 
   // const handleAlertClose = (event, reason) => {
   //   if (reason === "clickaway") {
@@ -2503,6 +2729,18 @@ export default function ApplicationUser({ sendUrllist }) {
                       fill: { duration: 4, ease: [1, 0, 0.8, 1] },
                     }}
                   >
+                    <div id="mainDiv" style={{ position: "relative" }}>
+                    <div id="showDiv" 
+                     style={{
+                      position: "relative",
+                      width: "100%",
+                      height: "100%",
+                      zIndex: 2,
+                      top: 0,
+                       background: colors.primary[400],
+                    }}
+                    
+                    >
                     <div
                       style={{
                         position: "relative",
@@ -2601,6 +2839,80 @@ export default function ApplicationUser({ sendUrllist }) {
                             </div>
                           </Tooltip>
                         ))}
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div
+  id="hiddenDiv" 
+  //  onLoad={prepareScreenshot} 
+  // className={
+  //   storedTheme === "light" || storedTheme == null
+  //     ? "hideSectionLightMode"
+  //     : "hideSectionDarkMode"
+  // }
+  style={{
+    position: "absolute",
+    minWidth: "100%",
+    minHeight: "100%",
+    top: 0,
+    //left: 0,
+    zIndex: 1,
+    overflow: "auto",
+    // display: "flex",
+    // justifyContent: "center",
+    // alignItems: "center",
+    //marginTop :"10rem"
+  }}
+>
+  {/* <img 
+    src={"https://img.freepik.com/free-photo/wide-angle-shot-single-tree-growing-clouded-sky-during-sunset-surrounded-by-grass_181624-22807.jpg"} 
+    alt="demoImg"
+    style={{ minWidth: "100%", minHeight: "100%",border:'1px solid red',objectFit: "contain" }}
+  /> */}
+
+
+<div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+          }}
+          ref={screenshotRef}
+        >
+          {currentImageData.module_image && (
+            <Paper
+              elevation={3}
+              // className="paper-img-style"
+            >
+              <img
+                src={`data:image/jpeg;base64,${currentImageData.module_image}`}
+                // src={demoImagetest}
+                alt={currentImageData.module_name}
+                style={{ width: "100%", height: "100%" }}
+                // onClick={(e) => checkForDialog(e)}
+              />
+            </Paper>
+          )}
+
+          <div
+            style={{
+              position: "absolute",
+              left: `${currentImageData.left_ * 100}%`,
+              top: `${currentImageData.top_ * 100}%`,
+              width: `${currentImageData.width_ * 100}%`,
+              height: `${currentImageData.height_ * 100}%`,
+              border: "2px solid #2196f3",
+              backgroundColor: "rgba(128, 128, 128, 0.5)",
+
+              cursor: "pointer",
+            }}
+          />
+        </div>
+</div>
                     </div>
                   </motion.div>
 

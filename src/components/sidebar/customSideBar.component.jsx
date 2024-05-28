@@ -137,7 +137,7 @@ const CustomPanelBar = () => {
   });
 
   const storedTheme = localStorage.getItem("theme");
-  console.log(`zdfhgzdfjg ${storedTheme}`);
+  console.log(`CurrentTheme ${storedTheme}`);
   // const [mode, setMode] = useState(storedTheme || "light");
 
   //console.log("navi role => ", formData.role);

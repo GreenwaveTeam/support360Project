@@ -32,7 +32,7 @@ import axios from "axios";
 // }
 
 
-export function createActivity(taskId, taskName, jobId, activityId, activityName, sequence, logbook, duration, xPos, yPos, performer, approver, scheduledActivityStartTime, scheduledActivityEndTime, actualActivityStartTime, actualActivityEndTime, notBelongToPerformer, notBelongToApprover, actvityStatus, isActvityBtnDisableOnCompletion, isActvityBtnDisbleForActvtOrder, actAbrv, available, performerAvlReasons, assetAvailable, assetAvlReasons, actualActvtyStrt, actualActvtEnd, reviewerActivityStartTime, reviewerActivityStopTime, remarks, assetId, assetName, assetIDList, assetNameList, groupOrDept, groupOrDeptName, performerType, getGroupOrDeptWisePerformer, completedActivity, pendingActivity, rejectedActivity, date, actvtCount, actFile, buffer, delayDueToBuffer, enforce, selectedAssetList, selectedAssetIdsList) {
+export function createActivity(taskId, taskName, jobId, activityId, activityName, sequence, logbook, duration, xPos, yPos, performer, approver, scheduledActivityStartTime, scheduledActivityEndTime, actualActivityStartTime, actualActivityEndTime, notBelongToPerformer, notBelongToApprover, actvityStatus, isActvityBtnDisableOnCompletion, isActvityBtnDisbleForActvtOrder, actAbrv, available, performerAvlReasons, assetAvailable, assetAvlReasons, actualActvtyStrt, actualActvtEnd, reviewerActivityStartTime, reviewerActivityStopTime, remarks, assetId, assetName, assetIDList, assetNameList, groupOrDept, groupOrDeptName, performerType, getGroupOrDeptWisePerformer, completedActivity, pendingActivity, rejectedActivity, date, actvtCount, actFile, buffer, delayDueToBuffer, enforce, selectedAssetList, selectedAssetIdsList,activityFileData) {
   return {
       taskId: taskId,
       taskName: taskName,
@@ -84,7 +84,8 @@ export function createActivity(taskId, taskName, jobId, activityId, activityName
       delayDueToBuffer: delayDueToBuffer,
       enforce: enforce,
       selectedAssetList: selectedAssetList,
-      selectedAssetIdsList: selectedAssetIdsList
+      selectedAssetIdsList: selectedAssetIdsList,
+      activityFileData:activityFileData
   };
 }
 

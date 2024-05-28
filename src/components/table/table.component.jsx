@@ -688,6 +688,7 @@ export default function CustomTable({
                                       (columnbutton, buttonindex) =>
                                         columnbutton.isButtonRendered(row) && (
                                           <Button
+                                            startIcon={columnbutton.startIcon}
                                             key={buttonindex}
                                             variant="contained"
                                             disabled={columnbutton.isButtonDisabled(

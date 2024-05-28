@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Alert,
   Button,
@@ -698,6 +699,28 @@ export default function CustomTable({
                                           >
                                             {columnbutton.buttonlabel}
                                           </Button>
+                                        )
+                                    )}
+                                  </div>
+                                )}
+                                {column.type === "iconButton" && (
+                                  <div>
+                                    {column.buttons.map(
+                                      (columnbutton, buttonindex) =>
+                                        columnbutton.isButtonRendered(row) && (
+                                          <IconButton
+                                            key={buttonindex}
+                                            variant="contained"
+                                            disabled={columnbutton.isButtonDisabled(
+                                              row
+                                            )}
+                                            onClick={() =>
+                                              columnbutton.function(row)
+                                            }
+                                          >
+                                            {/* {columnbutton.buttonlabel} */}
+                                            <VisibilityIcon></VisibilityIcon>
+                                          </IconButton>
                                         )
                                     )}
                                   </div>

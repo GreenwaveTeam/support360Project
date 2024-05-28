@@ -24,6 +24,8 @@ import {
   Tooltip,
   Dialog,
   DialogContent,
+  Collapse,
+  CircularProgress,
 } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
@@ -51,6 +53,7 @@ import "primeicons/primeicons.css";
 import { MeterGroup } from "primereact/metergroup";
 import { Badge } from "primereact/badge";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import CloseIcon from "@mui/icons-material/Close";
 //bootstrap
 import "bootstrap/dist/css/bootstrap.css";
 import { ColorModeContext, tokens } from "../../theme";
@@ -203,10 +206,11 @@ function UserHome({ sendUrllist }) {
   const [viewMode, setViewMode] = useState("all");
   const [selectedRow, setSelectedRow] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-
   const [responseTime, setResponseTime] = useState([]);
   const [resolveTime, setResolveTime] = useState([]);
   const [closeTime, setCloseTime] = useState([]);
+  const [openHeader, setOpenHeader] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleToggleView = () => {
     setViewMode((prevMode) => (prevMode === "all" ? "open" : "all"));
@@ -311,10 +315,12 @@ function UserHome({ sendUrllist }) {
   }, [count]);
 
   React.useEffect(() => {
+    setIsLoading(true);
     const interval = setInterval(() => {
       console.log("UseEffect called");
       // showAlert(formData.plantID);
       fetchUser();
+      setIsLoading(false);
     }, 4000);
     return () => {
       clearInterval(interval);
@@ -599,7 +605,7 @@ function UserHome({ sendUrllist }) {
       },
     ],
     //width: 500,
-    height: 250,
+    height: 265,
   };
 
   const monthwiseticketraised = async () => {
@@ -987,9 +993,15 @@ function UserHome({ sendUrllist }) {
         </Typography>
       ) : (
       */}
-      <Box>
-        <Container maxWidth="">
-          {/* <div class="row" style={{ marginBottom: "1rem" }}>
+      <div>
+        {isLoading ? (
+          <div className="spinner-container">
+            <CircularProgress size={65} color="info" />
+          </div>
+        ) : (
+          <Box>
+            <Container maxWidth="">
+              {/* <div class="row" style={{ marginBottom: "1rem" }}>
           <div class="col-md-8">
             <div class="row">
               <div class="col-md-12">
@@ -1053,1053 +1065,1015 @@ function UserHome({ sendUrllist }) {
             </div>
           </div>
         </div> */}
-          <div class="row">
-            <div
-              class="col-md-12"
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "10px",
-              }}
-            >
-              {gracePeriodStarted && gracePeriodExpired && (
-                <Alert severity="info">
-                  <Typography
-                    component="h1"
-                    variant="h5"
-                    sx={{ fontWeight: "600" }}
-                    color={"error"}
-                  >
-                    The support subscription for the plant {formData.plantName}{" "}
-                    expired {Math.abs(daysDifferenceTillNow)} days ago. Please
-                    renew it to continue receiving support.
-                  </Typography>
-                </Alert>
-              )}
-              {gracePeriodStarted && !gracePeriodExpired && (
-                <Alert severity="info">
-                  <Typography
-                    component="h1"
-                    variant="h5"
-                    sx={{ fontWeight: "600" }}
-                    color={"error"}
-                  >
-                    The support subscription for plant {formData.plantName}{" "}
-                    expired {Math.abs(daysDifferenceTillNow)} days ago. The
-                    grace period will end in {graceDifferenceTillNow} days.
-                  </Typography>
-                </Alert>
-              )}
-            </div>
-            <div class="col-md-7">
-              {divIsVisibleList && divIsVisibleList.includes("trend") && (
-                <>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <Card
-                        // onClick={(e) => {
-                        //   navigate("/user/ReportDevice", {
-                        //     state: { plantID: formData.plantID },
-                        //   });
-                        // }}
-                        onClick={
-                          gracePeriodStarted && gracePeriodExpired
-                            ? navigate("/user/ReportDevice", {
-                                state: { plantID: formData.plantID },
-                              })
-                            : null
+              <div class="row">
+                <div
+                  class="col-md-12"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    padding: "10px",
+                  }}
+                >
+                  {gracePeriodStarted && gracePeriodExpired && (
+                    <Collapse sx={{ width: "100%" }} in={openHeader}>
+                      <Alert
+                        action={
+                          <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                              setOpenHeader(false);
+                            }}
+                          >
+                            <CloseIcon fontSize="inherit" />
+                          </IconButton>
                         }
-                        sx={{ borderRadius: 1 }}
+                        severity="error"
+                        sx={{ width: "100%" }}
                       >
-                        <CardContent sx={{ paddingBottom: "16px !important" }}>
-                          <div className="row">
-                            <div
-                              className="col-md-6"
-                              style={{
-                                paddingLeft: "2rem",
-                                display: "grid",
-                                alignItems: "center",
-                                justifyItems: "center",
-                              }}
-                            >
-                              <div className="row">
-                                <Typography
-                                  sx={{ fontWeight: 600, fontSize: "1.7rem" }}
+                        <Typography
+                          component="h1"
+                          variant="h5"
+                          sx={{ fontWeight: "600", fontSize: "14px" }}
+                          color={"#f74747"}
+                        >
+                          The support subscription for the plant{" "}
+                          {formData.plantName} expired{" "}
+                          {Math.abs(daysDifferenceTillNow)} days ago. Please
+                          renew it to continue receiving support.
+                        </Typography>
+                      </Alert>
+                    </Collapse>
+                  )}
+                  {gracePeriodStarted && !gracePeriodExpired && (
+                    <Collapse sx={{ width: "100%" }} in={openHeader}>
+                      <Alert
+                        action={
+                          <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                              setOpenHeader(false);
+                            }}
+                          >
+                            <CloseIcon fontSize="inherit" />
+                          </IconButton>
+                        }
+                        severity="error"
+                        sx={{ width: "100%" }}
+                      >
+                        <Typography
+                          component="h1"
+                          variant="h5"
+                          sx={{ fontWeight: "600", fontSize: "14px" }}
+                          color={"#f74747"}
+                        >
+                          The support subscription for plant{" "}
+                          {formData.plantName} expired{" "}
+                          {Math.abs(daysDifferenceTillNow)} days ago. The grace
+                          period will end in {graceDifferenceTillNow} days.
+                        </Typography>
+                      </Alert>
+                    </Collapse>
+                  )}
+                </div>
+                <div class="col-md-7">
+                  {divIsVisibleList && divIsVisibleList.includes("trend") && (
+                    <>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <Card
+                            // onClick={(e) => {
+                            //   navigate("/user/ReportDevice", {
+                            //     state: { plantID: formData.plantID },
+                            //   });
+                            // }}
+
+                            onClick={
+                              gracePeriodStarted && gracePeriodExpired
+                                ? navigate("/user/ReportDevice", {
+                                    state: { plantID: formData.plantID },
+                                  })
+                                : null
+                            }
+                            sx={{ borderRadius: 1 }}
+                          >
+                            <CardContent sx={{ padding: "14px !important" }}>
+                              {/* <div className="row">
+                                <div
+                                  className="col-md-6"
+                                  style={{
+                                    paddingLeft: "2rem",
+                                    display: "grid",
+                                    alignItems: "center",
+                                    justifyItems: "center",
+                                  }}
                                 >
-                                  <CounterAnimation
-                                    targetValue={deviceIssuesCurrentMonth}
-                                  />
-                                </Typography>
-                              </div>
-                              <div
-                                className="row"
-                                style={{
-                                  fontSize: "0.9rem",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                Device
-                              </div>
-                            </div>
-                            <div
-                              className="col-md-6"
-                              style={{
-                                display: "grid",
-                                justifyItems: "center",
-                                alignItems: "center",
-                                rowGap: "0.6rem",
-                              }}
-                            >
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <Button
-                                    style={{ borderRadius: "50%" }}
-                                    icon={
-                                      catagoryWiseTrend[0].device_difference >
-                                      0 ? (
-                                        <TrendingDownIcon />
-                                      ) : (
-                                        <TrendingUpIcon />
-                                      )
-                                    }
-                                    rounded
-                                    //outlined
-                                    severity={
-                                      catagoryWiseTrend[0].device_difference > 0
-                                        ? "danger"
-                                        : "success"
-                                    }
-                                    aria-label="Cancel"
-                                  />
-                                </div>
-                              </div>
-                              <div className="row">
-                                <div className="col-md-12">
                                   <div
+                                    className="row"
                                     style={{
-                                      display: "flex",
-                                      columnGap: "0.5rem",
+                                      fontSize: "0.9rem",
+                                      fontWeight: 600,
+                                      opacity: "0.8",
                                     }}
                                   >
-                                    <Badge
-                                      value={criticalDeviceIssuesCurrentMonth}
-                                      severity="warning"
-                                    ></Badge>
-                                    <Badge
-                                      value={
-                                        nonCriticalDeviceIssuesCurrentMonth
-                                      }
-                                      severity="info"
-                                    ></Badge>
+                                    Device
+                                  </div>
+                                  <div className="row">
+                                    <Typography
+                                      sx={{
+                                        fontWeight: 600,
+                                        fontSize: "1.7rem",
+                                      }}
+                                    >
+                                      <CounterAnimation
+                                        targetValue={deviceIssuesCurrentMonth}
+                                      />
+                                    </Typography>
+                                  </div>
+                                </div>
+                                <div
+                                  className="col-md-6"
+                                  style={{
+                                    display: "grid",
+                                    justifyItems: "center",
+                                    alignItems: "center",
+                                    rowGap: "0.6rem",
+                                  }}
+                                >
+                                  <div className="row">
+                                    <div className="col-md-12">
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          columnGap: "0.5rem",
+                                        }}
+                                      >
+                                        <Badge
+                                          value={
+                                            criticalDeviceIssuesCurrentMonth
+                                          }
+                                          severity="warning"
+                                        ></Badge>
+                                        <Badge
+                                          value={
+                                            nonCriticalDeviceIssuesCurrentMonth
+                                          }
+                                          severity="info"
+                                        ></Badge>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-md-12">
+                                      <Button
+                                        style={{
+                                          borderRadius: "50%",
+                                          padding: 0,
+                                        }}
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .device_difference > 0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        size="small"
+                                        rounded
+                                        text
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .device_difference > 0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                        label="12%"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div
+                                    className="row"
+                                    style={{
+                                      fontSize: "0.9rem",
+                                      fontWeight: 600,
+                                      opacity: "0.8",
+                                    }}
+                                  >
+                                    Last 30 days
+                                  </div>
+                                </div>
+                              </div> */}
+                              <div className="col-md-12">
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <Typography
+                                      sx={{
+                                        textAlign: "center",
+                                        fontSize: "0.9rem",
+                                        fontWeight: "600",
+                                        opacity: "0.8",
+                                      }}
+                                    >
+                                      Device
+                                    </Typography>
+                                  </div>
+                                  <div className="col-md-6">
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.4rem",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Badge
+                                        value={criticalDeviceIssuesCurrentMonth}
+                                        severity="warning"
+                                      ></Badge>
+                                      <Badge
+                                        value={
+                                          nonCriticalDeviceIssuesCurrentMonth
+                                        }
+                                        severity="info"
+                                      ></Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <Typography
+                                      sx={{
+                                        fontWeight: 600,
+                                        fontSize: "1.8rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      <CounterAnimation
+                                        targetValue={deviceIssuesCurrentMonth}
+                                      />
+                                    </Typography>
+                                  </div>
+                                  <div
+                                    className="col-md-6"
+                                    style={{ padding: "0.2rem" }}
+                                  >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.4rem",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Button
+                                        style={{
+                                          borderRadius: "50%",
+                                          padding: 0,
+                                        }}
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .device_difference > 0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        size="small"
+                                        rounded
+                                        text
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .device_difference > 0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                        label="12%"
+                                      />
+                                    </div>
+                                    <Typography
+                                      sx={{
+                                        textAlign: "center",
+                                        fontSize: "0.6rem",
+                                        opacity: "0.8",
+                                      }}
+                                    >
+                                      Last 30 days
+                                    </Typography>
                                   </div>
                                 </div>
                               </div>
-                            </div>
-                          </div>
-
-                          {/* <div className="row">
-                      <div class="col-md-7" style={{ paddingLeft: "2rem" }}>
-                        <div className="row">
-                          <div class="col-md-12">
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                            >
-                              Device
-                            </Typography>
-                            <Chip
-                              //variant="outlined"
-                              label="10"
-                              color="error"
-                              size="small"
-                            />
-                          </div>
+                            </CardContent>
+                          </Card>
                         </div>
-                        <div className="row">
-                          <div class="col-md-12">
-                            <Avatar color="info">
-                              {ticketData.total_ticket_raised}
-                            </Avatar>
-                          </div>
+                        <div class="col-md-4">
+                          <Card
+                            // onClick={(e) => {
+                            //   navigate("/user/ReportApplication", {
+                            //     state: { plantID: formData.plantID },
+                            //   });
+                            // }}
+                            onClick={
+                              gracePeriodStarted && gracePeriodExpired
+                                ? navigate("/user/ReportApplication", {
+                                    state: { plantID: formData.plantID },
+                                  })
+                                : null
+                            }
+                          >
+                            <CardContent sx={{ padding: "14px !important" }}>
+                              {/* <div className="row">
+                                <div
+                                  className="col-md-6"
+                                  style={{
+                                    paddingLeft: "2rem",
+                                    display: "grid",
+                                    alignItems: "center",
+                                    justifyItems: "center",
+                                  }}
+                                >
+                                  <div className="row">
+                                    <CounterAnimation
+                                      targetValue={
+                                        applicationIssuesCurrentMonth
+                                      }
+                                    />
+                                  </div>
+                                  <div
+                                    className="row"
+                                    style={{
+                                      fontSize: "0.9rem",
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    Application
+                                  </div>
+                                </div>
+                                <div
+                                  className="col-md-6"
+                                  style={{
+                                    display: "grid",
+                                    justifyItems: "center",
+                                    alignItems: "center",
+                                    rowGap: "0.6rem",
+                                  }}
+                                >
+                                  <div className="row">
+                                    <div className="col-md-12">
+                                      <Button
+                                        style={{ borderRadius: "50%" }}
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .application_difference > 0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        rounded
+                                        //outlined
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .application_difference > 0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-md-12">
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          columnGap: "0.5rem",
+                                        }}
+                                      >
+                                        <Badge
+                                          value={
+                                            criticalApplicationIssuesCurrentMonth
+                                          }
+                                          severity="warning"
+                                        ></Badge>
+                                        <Badge
+                                          value={
+                                            nonCriticalApplicationIssuesCurrentMonth
+                                          }
+                                          severity="info"
+                                        ></Badge>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div> */}
+                              <div className="col-md-12">
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <Typography
+                                      sx={{
+                                        textAlign: "center",
+                                        fontSize: "0.9rem",
+                                        fontWeight: "600",
+                                        opacity: "0.8",
+                                      }}
+                                    >
+                                      Application
+                                    </Typography>
+                                  </div>
+                                  <div className="col-md-6">
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.4rem",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Badge
+                                        value={
+                                          criticalApplicationIssuesCurrentMonth
+                                        }
+                                        severity="warning"
+                                      ></Badge>
+                                      <Badge
+                                        value={
+                                          nonCriticalApplicationIssuesCurrentMonth
+                                        }
+                                        severity="info"
+                                      ></Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <Typography
+                                      sx={{
+                                        fontWeight: 600,
+                                        fontSize: "1.8rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      <CounterAnimation
+                                        targetValue={
+                                          applicationIssuesCurrentMonth
+                                        }
+                                      />
+                                    </Typography>
+                                  </div>
+                                  <div
+                                    className="col-md-6"
+                                    style={{ padding: "0.2rem" }}
+                                  >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.4rem",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Button
+                                        style={{
+                                          borderRadius: "50%",
+                                          padding: 0,
+                                        }}
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .application_difference > 0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        size="small"
+                                        rounded
+                                        text
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .application_difference > 0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                        label="12%"
+                                      />
+                                    </div>
+                                    <Typography
+                                      sx={{
+                                        textAlign: "center",
+                                        fontSize: "0.6rem",
+                                        opacity: "0.8",
+                                      }}
+                                    >
+                                      Last 30 days
+                                    </Typography>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+                        <div class="col-md-4">
+                          <Card
+                            // onClick={(e) => {
+                            //   navigate("/user/ReportInfrastructure", {
+                            //     state: { plantID: formData.plantID },
+                            //   });
+                            // }}
+                            onClick={
+                              gracePeriodStarted && gracePeriodExpired
+                                ? navigate("/user/ReportInfrastructure", {
+                                    state: { plantID: formData.plantID },
+                                  })
+                                : null
+                            }
+                          >
+                            <CardContent sx={{ padding: "14px !important" }}>
+                              {/* <div className="row">
+                                <div
+                                  className="col-md-6"
+                                  style={{
+                                    paddingLeft: "2rem",
+                                    display: "grid",
+                                    alignItems: "center",
+                                    justifyItems: "center",
+                                  }}
+                                >
+                                  <div className="row">
+                                    <Typography
+                                      sx={{
+                                        fontWeight: 600,
+                                        fontSize: "1.7rem",
+                                      }}
+                                    >
+                                      <CounterAnimation
+                                        targetValue={
+                                          infrastructureIssuesCurrentMonth
+                                        }
+                                      />
+                                    </Typography>
+                                  </div>
+                                  <div
+                                    className="row"
+                                    style={{
+                                      fontSize: "0.9rem",
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    Infrastructure
+                                  </div>
+                                </div>
+                                <div
+                                  className="col-md-6"
+                                  style={{
+                                    display: "grid",
+                                    justifyItems: "center",
+                                    alignItems: "center",
+                                    rowGap: "0.6rem",
+                                  }}
+                                >
+                                  <div className="row">
+                                    <div className="col-md-12">
+                                      <Button
+                                        style={{ borderRadius: "50%" }}
+                                        // icon={
+                                        //   catagoryWiseTrend[0]
+                                        //     .infrastructure_difference > 0
+                                        //     ? "pi pi-thumbs-down-fill"
+                                        //     : "pi pi-thumbs-up-fill"
+                                        // }
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .infrastructure_difference > 0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        rounded
+                                        //outlined
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .infrastructure_difference > 0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="row">
+                                    <div className="col-md-12">
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          columnGap: "0.5rem",
+                                        }}
+                                      >
+                                        <Badge
+                                          value={
+                                            criticalInfrastructureIssuesCurrentMonth
+                                          }
+                                          severity="warning"
+                                        ></Badge>
+                                        <Badge
+                                          value={
+                                            nonCriticalInfrastructureIssuesCurrentMonth
+                                          }
+                                          severity="info"
+                                        ></Badge>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div> */}
+                              <div className="col-md-12">
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <Typography
+                                      sx={{
+                                        textAlign: "center",
+                                        fontSize: "0.9rem",
+                                        fontWeight: "600",
+                                        opacity: "0.8",
+                                      }}
+                                    >
+                                      Infrastructure
+                                    </Typography>
+                                  </div>
+                                  <div className="col-md-6">
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.4rem",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Badge
+                                        value={
+                                          criticalInfrastructureIssuesCurrentMonth
+                                        }
+                                        severity="warning"
+                                      ></Badge>
+                                      <Badge
+                                        value={
+                                          nonCriticalInfrastructureIssuesCurrentMonth
+                                        }
+                                        severity="info"
+                                      ></Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="row">
+                                  <div className="col-md-6">
+                                    <Typography
+                                      sx={{
+                                        fontWeight: 600,
+                                        fontSize: "1.8rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      <CounterAnimation
+                                        targetValue={
+                                          infrastructureIssuesCurrentMonth
+                                        }
+                                      />
+                                    </Typography>
+                                  </div>
+                                  <div
+                                    className="col-md-6"
+                                    style={{ padding: "0.2rem" }}
+                                  >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        columnGap: "0.4rem",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <Button
+                                        style={{
+                                          borderRadius: "50%",
+                                          padding: 0,
+                                        }}
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .infrastructure_difference > 0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        size="small"
+                                        rounded
+                                        text
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .infrastructure_difference > 0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                        label="12%"
+                                      />
+                                    </div>
+                                    <Typography
+                                      sx={{
+                                        textAlign: "center",
+                                        fontSize: "0.6rem",
+                                        opacity: "0.8",
+                                      }}
+                                    >
+                                      Last 30 days
+                                    </Typography>
+                                  </div>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
                         </div>
                       </div>
-                      <div
-                        class="col-md-5"
-                        style={{
-                          display: "grid",
-                          alignItems: "center",
-                          justifyItems: "center",
-                        }}
-                      >
-                        <Button
-                          style={{ borderRadius: "50%" }}
-                          icon="pi pi-star-fill"
-                          rounded
-                          //outlined
-                          severity="info"
-                          aria-label="Cancel"
-                        />
-                      </div>
-                    </div> */}
-                        </CardContent>
-                      </Card>
-                    </div>
-                    <div class="col-md-4">
-                      <Card
-                        // onClick={(e) => {
-                        //   navigate("/user/ReportApplication", {
-                        //     state: { plantID: formData.plantID },
-                        //   });
-                        // }}
-                        onClick={
-                          gracePeriodStarted && gracePeriodExpired
-                            ? navigate("/user/ReportApplication", {
-                                state: { plantID: formData.plantID },
-                              })
-                            : null
-                        }
-                      >
-                        <CardContent sx={{ paddingBottom: "16px !important" }}>
-                          <div className="row">
-                            <div
-                              className="col-md-6"
-                              style={{
-                                paddingLeft: "2rem",
-                                display: "grid",
-                                alignItems: "center",
-                                justifyItems: "center",
-                              }}
+                      <div class="row" style={{ marginTop: "1rem" }}>
+                        <div class="col-md-12">
+                          {/* <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Last Ticket Raised
+                    </Typography>
+                  </CardContent>
+                </Card> */}
+                          <Card>
+                            <CardContent
+                              sx={{ padding: "12px 8px 2px 8px !important" }}
                             >
-                              <div className="row">
-                                <CounterAnimation
-                                  targetValue={applicationIssuesCurrentMonth}
+                              {" "}
+                              <Typography sx={{ marginBottom: "8px" }}>
+                                Last 3 Months
+                              </Typography>
+                              <div>
+                                <MeterGroup
+                                  values={matergroupvalues}
+                                  max={100}
                                 />
                               </div>
-                              <div
-                                className="row"
-                                style={{
-                                  fontSize: "0.9rem",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                Application
-                              </div>
-                            </div>
-                            <div
-                              className="col-md-6"
-                              style={{
-                                display: "grid",
-                                justifyItems: "center",
-                                alignItems: "center",
-                                rowGap: "0.6rem",
-                              }}
-                            >
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <Button
-                                    style={{ borderRadius: "50%" }}
-                                    icon={
-                                      catagoryWiseTrend[0]
-                                        .application_difference > 0 ? (
-                                        <TrendingDownIcon />
-                                      ) : (
-                                        <TrendingUpIcon />
-                                      )
-                                    }
-                                    rounded
-                                    //outlined
-                                    severity={
-                                      catagoryWiseTrend[0]
-                                        .application_difference > 0
-                                        ? "danger"
-                                        : "success"
-                                    }
-                                    aria-label="Cancel"
-                                  />
-                                </div>
-                              </div>
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      columnGap: "0.5rem",
-                                    }}
-                                  >
-                                    <Badge
-                                      value={
-                                        criticalApplicationIssuesCurrentMonth
-                                      }
-                                      severity="warning"
-                                    ></Badge>
-                                    <Badge
-                                      value={
-                                        nonCriticalApplicationIssuesCurrentMonth
-                                      }
-                                      severity="info"
-                                    ></Badge>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                    <div class="col-md-4">
-                      <Card
-                        // onClick={(e) => {
-                        //   navigate("/user/ReportInfrastructure", {
-                        //     state: { plantID: formData.plantID },
-                        //   });
-                        // }}
-                        onClick={
-                          gracePeriodStarted && gracePeriodExpired
-                            ? navigate("/user/ReportInfrastructure", {
-                                state: { plantID: formData.plantID },
-                              })
-                            : null
-                        }
-                      >
-                        <CardContent sx={{ paddingBottom: "16px !important" }}>
-                          <div className="row">
-                            <div
-                              className="col-md-6"
-                              style={{
-                                paddingLeft: "2rem",
-                                display: "grid",
-                                alignItems: "center",
-                                justifyItems: "center",
-                              }}
-                            >
-                              <div className="row">
-                                <Typography
-                                  sx={{ fontWeight: 600, fontSize: "1.7rem" }}
-                                >
-                                  <CounterAnimation
-                                    targetValue={
-                                      infrastructureIssuesCurrentMonth
-                                    }
-                                  />
-                                </Typography>
-                              </div>
-                              <div
-                                className="row"
-                                style={{
-                                  fontSize: "0.9rem",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                Infrastructure
-                              </div>
-                            </div>
-                            <div
-                              className="col-md-6"
-                              style={{
-                                display: "grid",
-                                justifyItems: "center",
-                                alignItems: "center",
-                                rowGap: "0.6rem",
-                              }}
-                            >
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <Button
-                                    style={{ borderRadius: "50%" }}
-                                    // icon={
-                                    //   catagoryWiseTrend[0]
-                                    //     .infrastructure_difference > 0
-                                    //     ? "pi pi-thumbs-down-fill"
-                                    //     : "pi pi-thumbs-up-fill"
-                                    // }
-                                    icon={
-                                      catagoryWiseTrend[0]
-                                        .infrastructure_difference > 0 ? (
-                                        <TrendingDownIcon />
-                                      ) : (
-                                        <TrendingUpIcon />
-                                      )
-                                    }
-                                    rounded
-                                    //outlined
-                                    severity={
-                                      catagoryWiseTrend[0]
-                                        .infrastructure_difference > 0
-                                        ? "danger"
-                                        : "success"
-                                    }
-                                    aria-label="Cancel"
-                                  />
-                                </div>
-                              </div>
-                              <div className="row">
-                                <div className="col-md-12">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      columnGap: "0.5rem",
-                                    }}
-                                  >
-                                    <Badge
-                                      value={
-                                        criticalInfrastructureIssuesCurrentMonth
-                                      }
-                                      severity="warning"
-                                    ></Badge>
-                                    <Badge
-                                      value={
-                                        nonCriticalInfrastructureIssuesCurrentMonth
-                                      }
-                                      severity="info"
-                                    ></Badge>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                  <div class="row" style={{ marginTop: "1rem" }}>
-                    <div class="col-md-12">
-                      {/* <Card>
-                  <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Last Ticket Raised
-                    </Typography>
-                  </CardContent>
-                </Card> */}
-                      {/* <Card>
-                  <CardContent sx={{ padding: "12px 8px 2px 8px !important" }}> */}
-
-                      <div>
-                        <MeterGroup values={matergroupvalues} max={100} />
+                            </CardContent>
+                          </Card>
+                        </div>
                       </div>
+                    </>
+                  )}
 
-                      {/* </CardContent>
-                </Card> */}
-                    </div>
-                  </div>
-                </>
-              )}
-              {divIsVisibleList && divIsVisibleList.includes("chart") && (
-                <div class="row" style={{ marginTop: "1rem" }}>
-                  <div class="col-md-12">
-                    {/* <Card>
-                  <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Last Ticket Raised
-                    </Typography>
-                  </CardContent>
-                </Card> */}
-                    <Card>
-                      <CardContent sx={{ paddingBottom: "16px !important" }}>
-                        {/* <ResponsiveChartContainer> */}
-
-                        <BarChart
-                          dataset={monthWiseTicket}
-                          xAxis={[{ scaleType: "band", dataKey: "month" }]}
-                          series={[
-                            { dataKey: "Issue_Count", label: "Issue Count" },
-                            {
-                              dataKey: "Pending_Issues",
-                              label: "Pending Issues",
-                            },
-                            {
-                              dataKey: "Resolved_Issues",
-                              label: "Resolved Issues",
-                            },
-                          ]}
-                          {...chartSetting}
-                        />
-
-                        {/* </ResponsiveChartContainer> */}
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              )}
-              {/* <div>
+                  {/* <div>
                 <Typography>
                   {Array.isArray([responseTime]) ? 1 : 0},
                   {Array.isArray([resolveTime]) ? 1 : 0},
                   {Array.isArray([closeTime]) ? 1 : 0}
                 </Typography>
               </div> */}
-              {divIsVisibleList && divIsVisibleList.includes("spark-line") && (
-                <div class="row" style={{ marginTop: "1rem" }}>
-                  <div class="col-md-4">
-                    <Card>
-                      <CardContent
-                        sx={{
-                          paddingBottom: "16px !important",
-                          display: "grid",
-                          justifyItems: "center",
-                        }}
-                      >
-                        <Chip
-                          variant="outlined"
-                          component="div"
-                          color="info"
-                          label="Response Time (AVG)"
-                        />
-                        <SparkLineChart data={responseTime} height={35} />
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div class="col-md-4">
-                    <Card>
-                      <CardContent
-                        sx={{
-                          paddingBottom: "16px !important",
-                          display: "grid",
-                          justifyItems: "center",
-                        }}
-                      >
-                        <Chip
-                          variant="outlined"
-                          component="div"
-                          color="info"
-                          label="Resolved Time (AVG)"
-                        />
-                        <SparkLineChart data={resolveTime} height={35} />
-                      </CardContent>
-                    </Card>
-                  </div>
-                  <div class="col-md-4">
-                    <Card>
-                      <CardContent
-                        sx={{
-                          paddingBottom: "16px !important",
-                          display: "grid",
-                          justifyItems: "center",
-                        }}
-                      >
-                        <Chip
-                          variant="outlined"
-                          component="div"
-                          color="info"
-                          label="Close Time (AVG)"
-                        />
-                        <SparkLineChart data={closeTime} height={35} />
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              )}
-            </div>
-            {divIsVisibleList && divIsVisibleList.includes("table") && (
-              <div class="col-md-5">
-                <Button
-                  onClick={() => {
-                    handleToggleView();
-                  }}
-                  style={{ width: "100%", borderRadius: "30px" }}
-                >
-                  {viewMode === "all"
-                    ? "Show Ticket History"
-                    : "Show All Tickets"}
-                </Button>
-                {viewMode === "all" ? (
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Card className="dashboard-rightSide-Table">
-                        <CardContent sx={{ padding: "0" }}>
-                          {/*<div
-                              style={{
-                                padding: "0.8rem",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                height: "3rem",
+                  {divIsVisibleList &&
+                    divIsVisibleList.includes("spark-line") && (
+                      <div class="row" style={{ marginTop: "1rem" }}>
+                        <div class="col-md-4">
+                          <Card>
+                            <CardContent
+                              sx={{
+                                padding: "0px !important",
                               }}
                             >
                               <Typography
-                                sx={{ mb: 0, fontWeight: 600 }}
-                                gutterBottom
-                                variant="h5"
-                                component="div"
+                                sx={{
+                                  fontWeight: 600,
+                                  padding: "10px 12px",
+                                  fontSize: "0.8rem",
+                                  textAlign: "center",
+                                  opacity: "0.8",
+                                }}
                               >
-                                All Tickets
+                                Response Time
                               </Typography>
-                              <IconButton onClick={handleToggleView}>
-                                {viewMode === "pending" ? (
-                                  <Tooltip title="Show Open Tickets">
-                                    <ToggleOffIcon />
-                                  </Tooltip>
-                                ) : (
-                                  <Tooltip title="Show Pending Tickets">
-                                    <ToggleOnIcon />
-                                  </Tooltip>
-                                )}
-                              </IconButton>
-                              {pendingTickets && (
-                                <div>
-                                  <TablePagination
-                                    rowsPerPageOptions={[5, 10, 25]}
-                                    component="div"
-                                    count={pendingTickets.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    labelRowsPerPage=""
-                                    onPageChange={(e, newPage) =>
-                                      setPage(newPage)
-                                    }
-                                    onRowsPerPageChange={(e) => {
-                                      setRowsPerPage(
-                                        parseInt(e.target.value, 10)
-                                      );
-                                      setPage(0);
-                                    }}
-                                  />
-                                </div>
-                              )}
-                            </div>
-                            <Divider sx={{ opacity: "0.8" }} />
-                            {pendingTickets && (
-                              <Grid container spacing={0}>
-                                <Grid item xs={12}>
-                                  <TableContainer sx={{ overflow: "auto" }}>
-                                    <Table>
-                                      <TableHead>
-                                        <TableRow>
-                                          <TableCell align="center">
-                                            Status
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            Category
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            Time
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            ID
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            Description
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            Severity
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            Confirm
-                                          </TableCell>
-                                        </TableRow>
-                                      </TableHead>
-                                      <TableBody>
-                                        {(rowsPerPage > 0
-                                          ? pendingTickets.slice(
-                                              page * rowsPerPage,
-                                              page * rowsPerPage + rowsPerPage
-                                            )
-                                          : pendingTickets
-                                        ).map((ticket, index) => (
-                                          <TableRow key={index}>
-                                            <TableCell align="center">
-                                              <Chip
-                                                variant="outlined"
-                                                component="div"
-                                                style={{
-                                                  borderColor:
-                                                    ticket.status === "pending"
-                                                      ? "red"
-                                                      : ticket.status === "open"
-                                                      ? "green"
-                                                      : "blue",
-                                                  color:
-                                                    ticket.status === "pending"
-                                                      ? "red"
-                                                      : ticket.status === "open"
-                                                      ? "green"
-                                                      : "blue",
-                                                }}
-                                                label={ticket.status}
-                                              />
-                                            </TableCell>
-                                            <TableCell align="center">
-                                              {ticket.type}
-                                            </TableCell>
-                                            <TableCell align="center">
-                                              {ticket.ticket_raising_time}
-                                            </TableCell>
-                                            <TableCell align="center">
-                                              {ticket.ticketNo}
-                                            </TableCell>
-                                            <TableCell align="center">
-                                              {ticket.status === "resolved" && (
-                                                <IconButton>
-                                                  <CheckCircleOutlineIcon
-                                                    onClick={() =>
-                                                      console.log("hello")
-                                                    }
-                                                  />
-                                                </IconButton>
-                                              )}
-                                            </TableCell>
-                                          </TableRow>
-                                        ))}
-                                      </TableBody>
-                                    </Table>
-                                  </TableContainer>
-                                </Grid>
-                              </Grid>
-                            )}*/}
-                          {allTickets && (
-                            <CustomTable
-                              columns={Columns}
-                              rows={allTickets}
-                              isNotDeletable={true}
-                              setRows={setAllTickets}
-                              tablename={"All Tickets"}
-                            ></CustomTable>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="row">
-                    <div className="col-md-12">
-                      <Card className="dashboard-rightSide-Table">
-                        <CardContent sx={{ padding: "0" }}>
-                          {/* <div
-                              style={{
-                                padding: "0.8rem",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                height: "3rem",
-                              }}
-                            >
-                              <Typography
-                                sx={{ mb: 0, fontWeight: 600 }}
-                                gutterBottom
-                                variant="h5"
-                                component="div"
-                              >
-                                Open Tickets
-                              </Typography>
-                              <IconButton onClick={handleToggleView}>
-                                {viewMode === "open" ? (
-                                  <Tooltip title="Show Pending Tickets">
-                                    <ToggleOnIcon />
-                                  </Tooltip>
-                                ) : (
-                                  <Tooltip title="Show Open Tickets">
-                                    <ToggleOffIcon />
-                                  </Tooltip>
-                                )}
-                              </IconButton>
-                              <div>
-                                <TablePagination
-                                  rowsPerPageOptions={[5, 10, 25]}
-                                  component="div"
-                                  count={openTickets.length}
-                                  rowsPerPage={rowsPerPage}
-                                  page={page}
-                                  labelRowsPerPage=""
-                                  onPageChange={(e, newPage) =>
-                                    setPage(newPage)
-                                  }
-                                  onRowsPerPageChange={(e) => {
-                                    setRowsPerPage(
-                                      parseInt(e.target.value, 10)
-                                    );
-                                    setPage(0);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <Divider sx={{ opacity: "0.8" }} />
-                            <Grid container spacing={0}>
-                              <Grid item xs={12}>
-                                <TableContainer sx={{ overflow: "auto" }}>
-                                  <Table>
-                                    <TableHead>
-                                      <TableRow>
-                                        <TableCell align="center">
-                                          Category
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          Time
-                                        </TableCell>
-                                        <TableCell align="center">ID</TableCell>
-                                        <TableCell align="center">
-                                          Description
-                                        </TableCell>
-                                        <TableCell align="center">
-                                          Severity
-                                        </TableCell>
-                                      </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                      {(rowsPerPage > 0
-                                        ? openTickets.slice(
-                                            page * rowsPerPage,
-                                            page * rowsPerPage + rowsPerPage
-                                          )
-                                        : openTickets
-                                      ).map((ticket, index) => (
-                                        <TableRow key={index}>
-                                          <TableCell align="center">
-                                            {ticket.category}
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            {ticket.time}
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            {ticket.id}
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            {ticket.description}
-                                          </TableCell>
-                                          <TableCell align="center">
-                                            {ticket.severity}
-                                          </TableCell>
-                                        </TableRow>
-                                      ))}
-                                    </TableBody>
-                                  </Table>
-                                </TableContainer>
-                              </Grid>
-                            </Grid> */}
-                          {closedTickets && (
-                            <CustomTable
-                              columns={ClosedTicketColumns}
-                              rows={closedTickets}
-                              isNotDeletable={true}
-                              setRows={setClosedTickets}
-                              tablename={"Ticket History"}
-                            ></CustomTable>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                )}
-                {/* <div className="row" style={{ marginTop: "1rem" }}>
-              <div className="col-md-12">
-                <Card>
-                  <CardContent sx={{ padding: "0" }}>
-                    <div style={{ padding: "0.8rem" }}>
-                      <Typography
-                        sx={{ mb: 0, fontWeight: 600 }}
-                        gutterBottom
-                        variant="h5"
-                        component="div"
-                      >
-                        Pending Ticket
-                      </Typography>
-                    </div>
-                    <Divider sx={{ opacity: "0.8" }} />
-                    <Grid container spacing={1}>
-                      <Grid item xs={12}>
-                        <TableContainer sx={tableStyle}>
-                          <Table>
-                            <TableHead>
-                              <TableRow
-                                sx={{ backgroundColor: colors.primary[400] }}
-                              >
-                                <TableCell align="center">Category</TableCell>
-                                <TableCell align="center">Time</TableCell>
-                                <TableCell align="center">ID</TableCell>
-                                <TableCell align="center">Severity</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {allTicketData.map((ticket, index) => (
-                                <TableRow key={index}>
-                                  <TableCell align="center">
-                                    {ticket.category}
-                                  </TableCell>
-                                  <TableCell align="center">
-                                    {ticket.time}
-                                  </TableCell>
-                                  <TableCell align="center">
-                                    {ticket.id}
-                                  </TableCell>
-                                  <TableCell align="center">
-                                    {ticket.severity}
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                        <TablePagination
-                          rowsPerPageOptions={[5, 10, 25]}
-                          component="div"
-                          count={allTicketData.length}
-                          rowsPerPage={rowsPerPage}
-                          page={page}
-                          onPageChange={handleChangePage}
-                          onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </div>
-            </div> */}
-              </div>
-            )}
-          </div>
+                              <Divider
+                                sx={{ opacity: "0.8", marginBottom: "0.5rem" }}
+                              />
 
-          {/* <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <TableContainer sx={tableStyle}>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ backgroundColor: colors.primary[400] }}>
-                    <TableCell align="center">Category</TableCell>
-                    <TableCell align="center">Time</TableCell>
-                    <TableCell align="center">ID</TableCell>
-                    <TableCell align="center">Description</TableCell>
-                    <TableCell align="center">Status</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {pendingTicketData.map((ticket, index) => (
-                    <TableRow key={index}>
-                      <TableCell align="center">{ticket.category}</TableCell>
-                      <TableCell align="center">{ticket.time}</TableCell>
-                      <TableCell align="center">{ticket.id}</TableCell>
-                      <TableCell align="center">{ticket.description}</TableCell>
-                      <TableCell align="center">{ticket.status}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={pendingTicketData.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TableContainer sx={tableStyle}>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ backgroundColor: colors.primary[400] }}>
-                    <TableCell align="center">Category</TableCell>
-                    <TableCell align="center">Time</TableCell>
-                    <TableCell align="center">ID</TableCell>
-                    <TableCell align="center">Severity</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {allTicketData.map((ticket, index) => (
-                    <TableRow key={index}>
-                      <TableCell align="center">{ticket.category}</TableCell>
-                      <TableCell align="center">{ticket.time}</TableCell>
-                      <TableCell align="center">{ticket.id}</TableCell>
-                      <TableCell align="center">{ticket.severity}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={allTicketData.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Grid>
-        </Grid> */}
-          {/* <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-            }}
-          >
-            {list.map((item, index) => (
-              <Box
-                key={index}
-                sx={{
-                  display: "flex",
-                  marginBottom: 2,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  border: "2px dash black",
-                  borderRadius: "5px",
-                }}
-              >
-                
-                {item === "ticket-information" && (
-                  <Box>
-                    <Typography variant="h5">
-                      Total Issue Raised: {ticketData.total_ticket_raised}
+                              <SparkLineChart data={responseTime} height={35} />
+                            </CardContent>
+                          </Card>
+                        </div>
+                        <div class="col-md-4">
+                          <Card>
+                            <CardContent
+                              sx={{
+                                padding: "0px !important",
+                              }}
+                            >
+                              <Typography
+                                sx={{
+                                  fontWeight: 600,
+                                  padding: "10px 12px",
+                                  fontSize: "0.8rem",
+                                  textAlign: "center",
+                                  opacity: "0.8",
+                                }}
+                              >
+                                Resolved Time
+                              </Typography>
+                              <Divider
+                                sx={{ opacity: "0.8", marginBottom: "0.5rem" }}
+                              />
+
+                              <SparkLineChart data={resolveTime} height={35} />
+                            </CardContent>
+                          </Card>
+                        </div>
+                        <div class="col-md-4">
+                          <Card>
+                            <CardContent
+                              sx={{
+                                padding: "0px !important",
+                              }}
+                            >
+                              <Typography
+                                sx={{
+                                  fontWeight: 600,
+                                  padding: "10px 12px",
+                                  fontSize: "0.8rem",
+                                  textAlign: "center",
+                                  opacity: "0.8",
+                                }}
+                              >
+                                Close Time
+                              </Typography>
+                              <Divider
+                                sx={{ opacity: "0.8", marginBottom: "0.5rem" }}
+                              />
+
+                              <SparkLineChart data={closeTime} height={35} />
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </div>
+                    )}
+                </div>
+                {/* {divIsVisibleList && divIsVisibleList.includes("table") && (
+                  <div class="col-md-5">
+                    <Button
+                      onClick={() => {
+                        handleToggleView();
+                      }}
+                      style={{ width: "100%", borderRadius: "30px" }}
+                    >
+                      {viewMode === "all"
+                        ? "Show Ticket History"
+                        : "Show All Tickets"}
+                    </Button>
+                    {viewMode === "all" ? (
+                      <div className="row">
+                        <div className="col-md-12">
+                          <Card className="dashboard-rightSide-Table">
+                            <CardContent sx={{ padding: "0" }}>
+                              {allTickets && (
+                                <CustomTable
+                                  columns={Columns}
+                                  rows={allTickets}
+                                  isNotDeletable={true}
+                                  setRows={setAllTickets}
+                                  tablename={"All Tickets"}
+                                ></CustomTable>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="row">
+                        <div className="col-md-12">
+                          <Card className="dashboard-rightSide-Table">
+                            <CardContent sx={{ padding: "0" }}>
+                              {closedTickets && (
+                                <CustomTable
+                                  columns={ClosedTicketColumns}
+                                  rows={closedTickets}
+                                  isNotDeletable={true}
+                                  setRows={setClosedTickets}
+                                  tablename={"Ticket History"}
+                                ></CustomTable>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )} */}
+                <div class="col-md-5">
+                  {divIsVisibleList && divIsVisibleList.includes("chart") && (
+                    <div class="row">
+                      <div class="col-md-12">
+                        {/* <Card>
+                  <CardContent sx={{ paddingBottom: "16px !important" }}>
+                    <Typography gutterBottom variant="h5" component="div">
+                      Last Ticket Raised
                     </Typography>
-                    <Typography variant="h5">
-                      Pending Tickets: {ticketData.pending_tickets}
-                    </Typography>
-                    <Typography variant="h5">
-                      Resolved Tickets: {ticketData.resolved_tickets}
-                    </Typography>
-                  </Box>
-                )}
-            
-              </Box>
-            ))}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              border: "2px dash black",
-              borderRadius: "5px",
-            }}
-          >
-            <Button
-              variant="contained"
-              style={{ margin: "10px" }}
-              onClick={(e) => {
-                navigate("/user/ReportDevice", {
-                  state: { plantID: formData.plantID },
-                });
-              }}
-            >
-              Device
-            </Button>
-            <Button
-              variant="contained"
-              style={{ margin: "10px" }}
-              onClick={(e) => {
-                navigate("/user/ReportApplication", {
-                  state: { plantID: formData.plantID },
-                });
-              }}
-            >
-              Application
-            </Button>
-          </div>
-        </div> */}
-        </Container>
-      </Box>
+                  </CardContent>
+                </Card> */}
+                        <Card>
+                          <CardContent sx={{ padding: "0px !important" }}>
+                            {/* <ResponsiveChartContainer> */}
+                            <Typography
+                              sx={{ fontWeight: 600, padding: "10px 12px" }}
+                            >
+                              Last 3 months
+                            </Typography>
+                            <Divider sx={{ opacity: "0.8" }} />
+                            <BarChart
+                              dataset={monthWiseTicket}
+                              xAxis={[{ scaleType: "band", dataKey: "month" }]}
+                              series={[
+                                {
+                                  dataKey: "Issue_Count",
+                                  label: "Issue Count",
+                                },
+                                {
+                                  dataKey: "Pending_Issues",
+                                  label: "Pending Issues",
+                                },
+                                {
+                                  dataKey: "Resolved_Issues",
+                                  label: "Resolved Issues",
+                                },
+                              ]}
+                              {...chartSetting}
+                            />
+
+                            {/* </ResponsiveChartContainer> */}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div class="row" style={{ marginTop: "1rem" }}>
+                <div class="col-md-12">
+                  {divIsVisibleList && divIsVisibleList.includes("table") && (
+                    <div class="col-md-12">
+                      <Button
+                        onClick={() => {
+                          handleToggleView();
+                        }}
+                        style={{ width: "100%", borderRadius: "30px" }}
+                      >
+                        {viewMode === "all"
+                          ? "Show Ticket History"
+                          : "Show All Tickets"}
+                      </Button>
+                      {viewMode === "all" ? (
+                        <div className="row">
+                          <div className="col-md-12">
+                            <Card className="dashboard-rightSide-Table">
+                              <CardContent sx={{ padding: "0" }}>
+                                {allTickets && (
+                                  <CustomTable
+                                    columns={Columns}
+                                    rows={allTickets}
+                                    isNotDeletable={true}
+                                    setRows={setAllTickets}
+                                    tablename={"All Tickets"}
+                                  ></CustomTable>
+                                )}
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="row">
+                          <div className="col-md-12">
+                            <Card className="dashboard-rightSide-Table">
+                              <CardContent sx={{ padding: "0" }}>
+                                {closedTickets && (
+                                  <CustomTable
+                                    columns={ClosedTicketColumns}
+                                    rows={closedTickets}
+                                    isNotDeletable={true}
+                                    setRows={setClosedTickets}
+                                    tablename={"Ticket History"}
+                                  ></CustomTable>
+                                )}
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Container>
+          </Box>
+        )}
+      </div>
       {/* )} */}
       <div>
         <Dialog open={dialogOpen} onClose={handleClose} fullWidth>

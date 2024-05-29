@@ -26,7 +26,7 @@ const DeviceIssue = ({ sendUrllist }) => {
   // if(location.state.categoryname===null)
   // navigate('/notfound');
   const categoryname = location.state.categoryname;
-
+  const [showpipispinner,setShowpipispinner]=useState(true)
   const [issueList, setIssueList] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const DB_IP = process.env.REACT_APP_SERVERIP;
@@ -135,42 +135,46 @@ const DeviceIssue = ({ sendUrllist }) => {
       // setEditValue("");
     }
   };
-
-  useEffect(() => {
-    console.log("UseEffect for Device Issue");
-    const fetchData = async () => {
-      try {
-        console.log(`userhome Bearer ${localStorage.getItem("token")}`);
-        // Make the API call to fetch data
-        const response = await axios.get(
-          `http://${DB_IP}/device/admin/${plantid}/${categoryname}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        // Extract data from the response
-        const data = await response.data;
-        console.log("data=====>", JSON.stringify(data));
-        if (data) {
-          setIssueList(data.issueList);
-          setFilteredRows(data.issueList);
+  const fetchData = async () => {
+    try {
+      console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+      // Make the API call to fetch data
+      const response = await axios.get(
+        `http://${DB_IP}/device/admin/${plantid}/${categoryname}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    extendTokenExpiration();
-    fetchData();
-    // fetchDivs();
-    fetchUser();
-    sendUrllist(urllist);
-    if (plantid === null) navigate("/notfound");
+      );
 
+      // Extract data from the response
+      const data = await response.data;
+      console.log("data=====>", JSON.stringify(data));
+      if (data) {
+        setIssueList(data.issueList);
+        setFilteredRows(data.issueList);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const functionsCalledOnUseEffect=async()=>{
+    
+    extendTokenExpiration();
+    if (plantid === null) navigate("/notfound");
+    
+    sendUrllist(urllist);
+    await fetchData();
+    // fetchDivs();
+    await fetchUser();
+    setShowpipispinner(false)
     //const issues = location.state.issuelist;
+  }
+  useEffect(() => {
+    
+    functionsCalledOnUseEffect()
   }, []);
   const addIssueCategory = async () => {
     console.log("Add Issue");
@@ -316,6 +320,11 @@ const DeviceIssue = ({ sendUrllist }) => {
   if (localStorage.getItem("token") === null) return <NotFound />;
   return (
     <Container maxWidth="lg">
+      {showpipispinner&& 
+        <div  style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+          <i className="pi pi-spin pi-spinner"  style={{ fontSize: '40px' }} />
+        </div>
+      }
       {divIsVisibleList.length !== 0 && (
         <Box>
           <Box

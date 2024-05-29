@@ -42,6 +42,7 @@ const DeviceCategory = ({ sendUrllist }) => {
   const DB_IP = process.env.REACT_APP_SERVERIP;
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
+  const [showpipispinner,setShowpipispinner]=useState(true)
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
     { pageName: "User Configure", pagelink: "/admin/configurePage" },
@@ -119,47 +120,51 @@ const DeviceCategory = ({ sendUrllist }) => {
       // setEditValue("");
     }
   };
-
-  useEffect(() => {
-    console.log("UseEffect for Device Category");
-    const fetchData = async () => {
-      try {
-        console.log(`userhome Bearer ${localStorage.getItem("token")}`);
-        // Make the API call to fetch data
-        const response = await axios.get(
-          `http://${DB_IP}/device/admin/${plantid}/categories`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        // Extract data from the response
-        const data = await response.data;
-        console.log("data=====>", JSON.stringify(data));
-        if (data) {
-          const renamedData = data.map((item) => ({
-            categoryname: item.issuecategoryname, // Use correct key
-            issuelist: item.issueList.map((issue) => ({
-              issuename: issue.issuename, // Use correct key
-              severity: issue.severity,
-            })),
-          }));
-          console.log(renamedData);
-          setCategorylist(renamedData);
-          setFilteredRows(renamedData);
+  const fetchData = async () => {
+    try {
+      console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+      // Make the API call to fetch data
+      const response = await axios.get(
+        `http://${DB_IP}/device/admin/${plantid}/categories`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      );
+
+      // Extract data from the response
+      const data = await response.data;
+      console.log("data=====>", JSON.stringify(data));
+      if (data) {
+        const renamedData = data.map((item) => ({
+          categoryname: item.issuecategoryname, // Use correct key
+          issuelist: item.issueList.map((issue) => ({
+            issuename: issue.issuename, // Use correct key
+            severity: issue.severity,
+          })),
+        }));
+        console.log(renamedData);
+        setCategorylist(renamedData);
+        setFilteredRows(renamedData);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const functionsCalledOnUseEffect=async()=>{
+    
     extendTokenExpiration();
-    fetchData();
-    // fetchDivs();
-    fetchUser();
+    
     sendUrllist(urllist);
+    await fetchData();
+    // fetchDivs();
+    await fetchUser();
+    setShowpipispinner(false)
+  }
+  useEffect(() => {
+    functionsCalledOnUseEffect()
   }, []);
 
   const handleEditClick = (rowData) => {
@@ -299,6 +304,11 @@ const DeviceCategory = ({ sendUrllist }) => {
 
   return (
     <div>
+      {showpipispinner && 
+      <div  style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+        <i className="pi pi-spin pi-spinner"  style={{ fontSize: '40px' }} />
+      </div>
+      }
       {divIsVisibleList.length !== 0 && (
         <Box>
           <div>

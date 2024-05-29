@@ -84,6 +84,7 @@ import JSZip from 'jszip';
 
  import html2canvas from 'html2canvas';
 import { fetchModuleImageMap } from "../../ticketdetails/AllocateTicket";
+import IssueListTable from "./modules.issueListTable";
 
 
 //The main export starts here....
@@ -1425,7 +1426,8 @@ export default function ApplicationUser({ sendUrllist }) {
                     left_ :current_issue.left,
                     height_ :current_issue.height,
                     width_ :current_issue.width,
-                    selected_coordinates_acronym:current_issue.selected_coordinates_acronym
+                    selected_coordinates_acronym:current_issue.selected_coordinates_acronym,
+                    issuesList:current_issue.issues //added to populate the list of issues.
 
                     
                   }
@@ -1605,7 +1607,7 @@ export default function ApplicationUser({ sendUrllist }) {
       await delay(500);
       // i++;
     }
-    // downloadZip();
+    downloadZip();
     const blob = await generateZipBlob();
     console.log('Generated ZIP Blob:', blob);
     return blob;
@@ -2241,7 +2243,7 @@ export default function ApplicationUser({ sendUrllist }) {
                   )}
                 </div>
                 <br/>
-                
+
                 <center>
                 {overviewTableData.length===0&&<Chip label="Please select an issue. " variant="outlined" />}
                 </center>
@@ -2877,6 +2879,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
                     <div
   id="hiddenDiv" 
+  ref={screenshotRef}
   //  onLoad={prepareScreenshot} 
   // className={
   //   storedTheme === "light" || storedTheme == null
@@ -2910,7 +2913,7 @@ export default function ApplicationUser({ sendUrllist }) {
             width: "100%",
             height: "100%",
           }}
-          ref={screenshotRef}
+          //  ref={screenshotRef}
         >
           {currentImageData.module_image && (
             <Paper
@@ -2937,11 +2940,17 @@ export default function ApplicationUser({ sendUrllist }) {
               border: "2px solid #2196f3",
               backgroundColor: "rgba(128, 128, 128, 0.5)",
 
-              cursor: "pointer",
+              // cursor: "pointer",
             }}
-          />
+          >
+            
+            </div>
         </div>
+
+        <IssueListTable issuesList={currentImageData.issuesList} />   
 </div>
+
+
                     </div>
                   </motion.div>
 

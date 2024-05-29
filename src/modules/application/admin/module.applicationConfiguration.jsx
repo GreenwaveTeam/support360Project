@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { Box, Button, Container, Divider, Typography } from "@mui/material";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
@@ -31,7 +31,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
   const [dialogPopup, setDialogPopup] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
-
+  const [showpipispinner,setShowpipispinner]=useState(true)
   const columns = [
     {
       id: "application_name",
@@ -72,25 +72,17 @@ export default function ModuleConfiguration({ sendUrllist }) {
         },
       });
       const data = await response.json();
-      console.log("fetchUser data : ", data);
       // setFormData(data.role);
       role = data.role;
 
-      console.log("Role Test : ", role);
       fetchDivs(role);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
   };
   const fetchDivs = async (role) => {
-    console.log("Role in Fetch Div ", role);
     try {
-      console.log("fetchDivs() called");
-      console.log("Current Page Location: ", currentPageLocation);
-      console.log(
-        "url Role ",
-        `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`
-      );
+      
       const response = await fetch(
         `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`,
         {
@@ -106,10 +98,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log("Fetch div" + JSON.stringify(data));
       if (response.ok) {
-        console.log("Current Response : ", data);
-        console.log("Current Divs : ", data.components);
         setDivIsVisibleList(data.components);
         if (data.components.length === 0) navigate("/notfound");
       }
@@ -125,32 +114,36 @@ export default function ModuleConfiguration({ sendUrllist }) {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log("Ischjscnjqnck");
-      try {
-        const response = await axios.get(
-          `http://${DB_IP}/application/admin/${plantid}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const moduleData = response.data;
-        setData(moduleData);
-        setFilteredRows(moduleData);
-        console.log(moduleData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    extendTokenExpiration();
-    fetchData();
-    fetchUser();
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://${DB_IP}/application/admin/${plantid}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const moduleData = response.data;
+      setData(moduleData);
+      setFilteredRows(moduleData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+  const functionsCalledOnUseEffect=async()=>{
     // fetchDivs();
-    sendUrllist(urllist);
+     sendUrllist(urllist);
+     extendTokenExpiration();
+
+     await fetchData();
+     await fetchUser()
+     setShowpipispinner(false)
+    }
+  useEffect(() => {
+    functionsCalledOnUseEffect()
   }, []);
 
   const [editRow, setEditRow] = useState(false);
@@ -162,7 +155,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
         application_name: rowData.application_name,
         // Add other properties from rowData if needed
       };
-      console.log("Request body=>" + JSON.stringify(requestBody));
       await axios.delete(
         `http://${DB_IP}/application/admin/plantid/applicationname`,
         {
@@ -186,7 +178,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
   };
 
   const handleSaveClick = async (prev, rowData) => {
-    console.log("applicationedit===>" + JSON.stringify(rowData));
 
     // Create a request body object
 
@@ -202,7 +193,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
           },
         }
       );
-      console.log("Posted data");
       return true;
     } catch (error) {
       console.error("Error:", error);
@@ -214,10 +204,9 @@ export default function ModuleConfiguration({ sendUrllist }) {
     }
   };
 
-  const handleEditCancel = () => {};
-
+  
   const handleRedirect = (appdata) => {
-    console.log(appdata);
+    console.log("Handle redirect method invoked")
     navigate(`/admin/ApplicationConfigure/Modules`, {
       state: { application_name: appdata.application_name },
     });
@@ -243,7 +232,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
       setDialogMessage("Special characters are not allowed");
       return true;
     }
-    console.log("Application name:" + application_name);
     navigate(`/admin/ApplicationConfigure/Module`, {
       state: { application_name: application_name, modulelist: null },
     });
@@ -252,9 +240,16 @@ export default function ModuleConfiguration({ sendUrllist }) {
 
   return (
     <Container maxWidth="lg">
+      {showpipispinner &&
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+              <i className="pi pi-spin pi-spinner"  style={{ fontSize: '40px' }} />
+              </div>
+              
+            }
       {divIsVisibleList.length !== 0 && (
         <Box>
           <Box>
+            
             {divIsVisibleList &&
               divIsVisibleList.includes("add-new-application") && (
                 <form onSubmit={handleSubmit}>

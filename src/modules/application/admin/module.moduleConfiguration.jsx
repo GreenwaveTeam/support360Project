@@ -59,7 +59,6 @@ export default function ModuleConfigure({ sendUrllist }) {
   const [issueName, setIssueName] = useState("");
   const location = useLocation();
   const application_name = location.state.application_name;
-  console.log("App==>" + application_name);
   const [severity, setSeverity] = useState("");
   const [categoryname, setCategoryname] = useState("");
   const [dialogPopup, setDialogPopup] = useState(false);
@@ -110,6 +109,8 @@ export default function ModuleConfigure({ sendUrllist }) {
   ];
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
+  const [showpipispinner,setShowpipispinner]=useState(true)
+
   const handleContextClick = (event, module) => {
     event.preventDefault();
     setContextMenuPosition({ x: event.clientX, y: event.clientY });
@@ -141,7 +142,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       setValue("1");
       setContextMenuPosition(null);
 
-      //console.log("Category name=>" + categoryName);
+      
     } catch (error) {
       // Handle errors, such as displaying an error message to the user
 
@@ -166,7 +167,6 @@ export default function ModuleConfigure({ sendUrllist }) {
     setUpdateModuleDialog(true);
   };
   const handleUpdateModuleConfirm = async () => {
-    console.log("Handle update module confirm");
     try {
       if (
         data.modulelist !== null &&
@@ -176,7 +176,6 @@ export default function ModuleConfigure({ sendUrllist }) {
             updatedModuleName.toLowerCase().trim()
         )
       ) {
-        console.log("Module name found");
         setDialogPopup(true);
         setsnackbarSeverity("error");
         setDialogMessage("Module Name is already present");
@@ -230,16 +229,13 @@ export default function ModuleConfigure({ sendUrllist }) {
           return module;
         }),
       }));
-      console.log("Update");
       setValue("1");
       setContextMenuPosition(null);
       setUpdateModuleDialog(false);
       setUpdateModuleName("");
       setOpenEditDialog(false);
       setSelectedModuleForUpdate(null);
-      console.log("handle update module");
 
-      //console.log("Category name=>" + categoryName);
     } catch (error) {
       // Handle errors, such as displaying an error message to the user
 
@@ -265,11 +261,9 @@ export default function ModuleConfigure({ sendUrllist }) {
         },
       });
       const data = await response.json();
-      console.log("fetchUser data : ", data);
       // setFormData(data.role);
       role = data.role;
 
-      console.log("Role Test : ", role);
       fetchDivs(role);
     } catch (error) {
       console.error("Error fetching user list:", error);
@@ -277,8 +271,6 @@ export default function ModuleConfigure({ sendUrllist }) {
   };
   const fetchDivs = async (role) => {
     try {
-      console.log("fetchDivs() called");
-      console.log("Current Page Location: ", currentPageLocation);
 
       const response = await fetch(
         `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure/Modules`,
@@ -295,15 +287,11 @@ export default function ModuleConfigure({ sendUrllist }) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log("Fetch div" + JSON.stringify(data));
       if (response.ok) {
-        console.log("Current Response : ", data);
-        console.log("Current Divs : ", data.components);
         setDivIsVisibleList(data.components);
         if (data.components.length === 0) navigate("/notfound");
       }
     } catch (error) {
-      console.log("Error in getting divs name :", error);
       navigate("/notfound");
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
@@ -313,45 +301,44 @@ export default function ModuleConfigure({ sendUrllist }) {
       // setEditValue("");
     }
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log(
-        "useFffect called*********************************************"
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://${DB_IP}/application/admin/${plantid}/${application_name}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
-
-      console.log("Application name====>" + application_name);
-      try {
-        const response = await axios.get(
-          `http://${DB_IP}/application/admin/${plantid}/${application_name}`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const moduleData = response.data;
-        console.log("Module data=========>" + JSON.stringify(moduleData));
-        setData(moduleData);
-        setSelectedAreas(moduleData.modulelist[0].issueslist);
-        setCurrentModule(moduleData.modulelist[0]);
-        setModule_Name(moduleData.modulelist[0].modulename);
-        setCategories(
-          moduleData.modulelist[0].issueslist.map(
-            (issueDetail) => issueDetail.categoryname
-          )
-        );
-        console.log(moduleData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    extendTokenExpiration();
-    fetchData();
-    fetchUser();
-    //fetchDivs();
+      const moduleData = response.data;
+      setData(moduleData);
+      setSelectedAreas(moduleData.modulelist[0].issueslist);
+      setCurrentModule(moduleData.modulelist[0]);
+      setModule_Name(moduleData.modulelist[0].modulename);
+      setCategories(
+        moduleData.modulelist[0].issueslist.map(
+          (issueDetail) => issueDetail.categoryname
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const functionsCalledOnUseEffect=async()=>{
+    
     sendUrllist(urllist);
+    extendTokenExpiration();
+    await fetchData();
+    await fetchUser();
+    
+    setShowpipispinner(false)
+    //fetchDivs();
+  }
+  useEffect(() => {
+    functionsCalledOnUseEffect()
+    
   }, []);
 
   useEffect(() => handleDataChange, [selectedAreas]);
@@ -467,8 +454,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       );
       setCategories((prev) =>
         prev.filter((category) => category !== categoryName)
-      );
-      console.log("Category name=>" + categoryName);
+      )
     } catch (error) {
       // Handle errors, such as displaying an error message to the user
 
@@ -545,7 +531,6 @@ export default function ModuleConfigure({ sendUrllist }) {
       };
 
       try {
-        console.log("Bearer token:" + localStorage.getItem("token"));
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
           `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
@@ -611,7 +596,6 @@ export default function ModuleConfigure({ sendUrllist }) {
     };
 
     try {
-      console.log("Bearer token:=>" + localStorage.getItem("token"));
       await axios.delete(
         `http://${DB_IP}/application/admin/plant/application/modulename/category/issue`,
         {
@@ -638,10 +622,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       ]);
       setIssues(issues.filter((row) => row !== rowdata));
     } catch (error) {
-      console.error(
-        "Error deleting issue:",
-        error.response ? error.response.data : error.message
-      );
+      
       setsnackbarSeverity("error");
       setDialogPopup(true);
       setDialogMessage("Database Error");
@@ -658,7 +639,6 @@ export default function ModuleConfigure({ sendUrllist }) {
         categoryname: categoryname,
         issuename: prev.issuename,
       };
-      console.log("Bearer===>" + localStorage.getItem("token"));
       const response = await axios.delete(
         `http://${DB_IP}/application/admin/plant/application/modulename/category/issue`,
         {
@@ -703,7 +683,6 @@ export default function ModuleConfigure({ sendUrllist }) {
               severity: rowData.severity,
             }),
         };
-        console.log("Request data===>" + requestData);
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
           `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
@@ -902,6 +881,13 @@ export default function ModuleConfigure({ sendUrllist }) {
   if (localStorage.getItem("token") === null) return <NotFound />;
   return (
     <div>
+      {showpipispinner &&
+            <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
+              <i className="pi pi-spin pi-spinner"  style={{ fontSize: '40px' }} />
+              </div>
+              
+            }
+      
       {divIsVisibleList.length !== 0 &&
         divIsVisibleList.includes("add-module-existing-issues") && (
           <Box>
@@ -989,7 +975,7 @@ export default function ModuleConfigure({ sendUrllist }) {
                         {filteredModules.map((module, index) => (
                           <Tab
                             key={index}
-                            label={<Tooltip title="Right Click to modify module">{module.modulename}</Tooltip> }
+                            label={<Tooltip title="Right Click to modify module"><div>{module.modulename}</div></Tooltip> }
                             onContextMenu={(event) =>
                               handleContextClick(event, module)
                             }

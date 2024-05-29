@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Skeleton from '@mui/material/Skeleton';
 import {
   Badge,
+  Chip,
   CircularProgress,
   Collapse,
   Container,
@@ -1288,7 +1289,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
     console.log("Miscellaneous Information : ", foundMiscellaneousInformation);
 
-    let updatedInformation = currentSuperInformation;
+    let updatedInformation = [...currentSuperInformation];
 
     updatedInformation.forEach((element) => {
       let current_module = element.module_name;
@@ -1327,39 +1328,40 @@ export default function ApplicationUser({ sendUrllist }) {
       element.issuesList.push(finalObj);
       // }
     });
-    const filter_blank_IssueList = updatedInformation.filter((item) => {
-      return item.issuesList.length > 0;
-    });
-    console.log(
-      "filtered Issues without blank issueList ",
-      filter_blank_IssueList
-    );
+    // const filter_blank_IssueList = updatedInformation.filter((item) => {
+    //   return item.issuesList.length > 0;
+    // });
+    // console.log(
+    //   "filtered Issues without blank issueList ",
+    //   filter_blank_IssueList
+    // );
 
-    let final_Json = [];
-    filter_blank_IssueList.forEach((item) => {
-      let hasNonEmptyIssue = item.issuesList.filter(
-        (element) => element.issues.length > 0
-      );
-      // if(item.selected_coordinates_acronym
-      //   && item.selected_coordinates_acronym.toLowerCase()==='miscellaneous'
-      //   && item.issues.length===0
-      // )
-      //   {
-      //     return;
-      //   }
-      if (hasNonEmptyIssue) {
-        console.log('The item that has been pushed : ',item) //the miscellaneous issue is blank , but still it is getting added will check later....
-        final_Json.push(item);
-      }
-    });
-
+    let final_Json = [...updatedInformation];
+    // filter_blank_IssueList.forEach((item) => {
+    //   let hasNonEmptyIssue = item.issuesList.filter(
+    //     (element) => element.issues.length > 0
+    //   );
+    //   // if(item.selected_coordinates_acronym
+    //   //   && item.selected_coordinates_acronym.toLowerCase()==='miscellaneous'
+    //   //   && item.issues.length===0
+    //   // )
+    //   //   {
+    //   //     return;
+    //   //   }
+    //   if (hasNonEmptyIssue) {
+    //     console.log('The item that has been pushed : ',item) 
+    //     final_Json.push(item);
+    //   }
+    // });
+    //The filteration is done multip[le times because the references are being updated successively....
     final_Json = final_Json.map(data => {
       const nonEmptyIssues = data.issuesList.filter(currentIssueList=>currentIssueList.issues.length>0);
       data.issuesList = nonEmptyIssues;
       return data;
   });
+  final_Json=final_Json.filter(item=>item.issuesList.length>0)
   
-  console.log("Final Json for POST : ", final_Json);
+  console.log("Final Json for POST in handleSubmit() : ", final_Json);
   
     // return;
     if (final_Json.length === 0) {
@@ -1603,7 +1605,7 @@ export default function ApplicationUser({ sendUrllist }) {
       await delay(500);
       // i++;
     }
-    downloadZip();
+    // downloadZip();
     const blob = await generateZipBlob();
     console.log('Generated ZIP Blob:', blob);
     return blob;
@@ -2078,9 +2080,24 @@ export default function ApplicationUser({ sendUrllist }) {
       )}
       <Dialog
         open={open}
-        onClose={(event, reason) => handleCloseDialog(event, reason)}
+        // onClose={(event, reason) => handleCloseDialog(event, reason)}
       >
         <DialogTitle>
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Tooltip title='Close' placement="left-start">
+  <IconButton
+    edge="end"
+    color="inherit"
+    onClick={() => setOpen(false)}
+    aria-label="close"
+    disabled={progressVisible}
+    
+  >
+    <CloseIcon />
+  </IconButton>
+  </Tooltip>
+</div>
+
           <div className="IssueDialog">
             {tabsmoduleNames.length !== 0 && (
               <div>
@@ -2197,7 +2214,7 @@ export default function ApplicationUser({ sendUrllist }) {
                       color={"success"}
                       onClick={handleFinalReportClick}
                       style={classes.btn}
-                      disabled={progressVisible}
+                      disabled={progressVisible||overviewTableData.length===0}
                       buttontext={
                         <div
                           style={{
@@ -2214,9 +2231,20 @@ export default function ApplicationUser({ sendUrllist }) {
                   )}
                   &nbsp;
                   {progressVisible && (
-                    <CircularProgress color="info" thickness={5} size={20} />
+                    // <CircularProgress color="info" thickness={5} size={20} />
+                    <RotatingLines  
+                            visible={true}
+                            height="20"
+                            width="20"
+                            strokeWidth="5" 
+                          />
                   )}
                 </div>
+                <br/>
+                
+                <center>
+                {overviewTableData.length===0&&<Chip label="Please select an issue. " variant="outlined" />}
+                </center>
               </div>
             )}
           </div>
@@ -2690,19 +2718,14 @@ export default function ApplicationUser({ sendUrllist }) {
                       //   animationTimingFunction: "ease-in-out",
                       // }}
                     >
-                      <span
-                        // style={{
-                        //   fontSize: "12px",
-                        //   display: "flex",
-                        //   alignItems: "center",
-                        //   justifyContent: "center",
-                        //   fontWeight: "bold",
-                        // }}
-                        className="floating-div-text"
-                      >
-                        Click on the Image below to add Issue{" "}
-                        <KeyboardDoubleArrowDownIcon />
-                      </span>
+                      <Chip label={ <span
+                     style={{color:'red'}}
+                   >
+                     
+                     Click on the Image below to add Issue{" "}
+                     <KeyboardDoubleArrowDownIcon />
+                   </span>} variant="outlined" />
+                     
                       {/* <style>
                     {`
         @keyframes floating {
@@ -2716,11 +2739,13 @@ export default function ApplicationUser({ sendUrllist }) {
                   </center>
                   <br />
                   <Paper elevation={24} square>
-                    <CheckCircleIcon
+                  <Chip label= {<div> <CheckCircleIcon
                       fontSize="small"
                       sx={{ color: "#16FF00" }}
                     />
-                    <span> - * Indicates Issues have been added </span>
+                    <span style={{fontWeight:'bold'}}> - Indicates Issues have been added </span></div>}variant="outlined" >
+                   
+                    </Chip>
                   </Paper>
                  
 

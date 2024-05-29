@@ -38,13 +38,13 @@
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
 }
-.floating-div-text{
+/* .floating-div-text{
     font-size: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-}
+} */
 
 @keyframes floating {
     0% { transform: translate(0, 0px); }

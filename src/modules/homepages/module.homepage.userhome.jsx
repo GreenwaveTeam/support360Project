@@ -982,6 +982,22 @@ function UserHome({ sendUrllist }) {
 
   const urllist = [{ pageName: "Home", pagelink: "/user/home" }];
 
+  function calculateDifferencePercentage(oldValue, newValue) {
+    if (oldValue === 0) {
+      return "No prior data";
+    }
+    const result = Math.floor((Math.abs(oldValue - newValue) * 100) / oldValue);
+    console.log(
+      "oldValue : ",
+      oldValue,
+      " newValue : ",
+      newValue,
+      " calculateDifferencePercentage : ",
+      result
+    );
+    return result;
+  }
+
   return (
     <>
       {/* 
@@ -1357,7 +1373,12 @@ function UserHome({ sendUrllist }) {
                                             : "success"
                                         }
                                         aria-label="Cancel"
-                                        label="12%"
+                                        label={`${calculateDifferencePercentage(
+                                          catagoryWiseTrend[0]
+                                            .earlier_device_period,
+                                          catagoryWiseTrend[0]
+                                            .recent_device_period
+                                        )} %`}
                                       />
                                     </div>
                                     <Typography
@@ -1569,7 +1590,12 @@ function UserHome({ sendUrllist }) {
                                             : "success"
                                         }
                                         aria-label="Cancel"
-                                        label="12%"
+                                        label={`${calculateDifferencePercentage(
+                                          catagoryWiseTrend[0]
+                                            .earlier_application_period,
+                                          catagoryWiseTrend[0]
+                                            .recent_application_period
+                                        )} %`}
                                       />
                                     </div>
                                     <Typography
@@ -1794,7 +1820,12 @@ function UserHome({ sendUrllist }) {
                                             : "success"
                                         }
                                         aria-label="Cancel"
-                                        label="12%"
+                                        label={`${calculateDifferencePercentage(
+                                          catagoryWiseTrend[0]
+                                            .earlier_infrastructure_period,
+                                          catagoryWiseTrend[0]
+                                            .recent_infrastructure_period
+                                        )} %`}
                                       />
                                     </div>
                                     <Typography

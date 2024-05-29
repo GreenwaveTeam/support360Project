@@ -2,6 +2,7 @@ import React from 'react';
 import { Chip, Typography, Box, Grid } from '@mui/material';
 
 const IssueListTable = ({ issuesList }) => {
+  console.log('Issues List for populating below the issues : ',issuesList)
   return (
     <Box sx={{ padding: 2 }}>
       <Chip label="List of Issues" style={{fontWeight:'bold'}}></Chip>

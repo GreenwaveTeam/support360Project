@@ -1397,7 +1397,7 @@ export default function ApplicationUser({ sendUrllist }) {
       {
         for (let key in moduleImageMap) {
           if (moduleImageMap.hasOwnProperty(key)) {
-             console.log(key, moduleImageMap[key]);
+            //  console.log(key, moduleImageMap[key]);
              finalMapModuleImage.set(key, moduleImageMap[key])
           }
        }
@@ -1599,16 +1599,22 @@ export default function ApplicationUser({ sendUrllist }) {
     try{
       // const arr=['1','2'] //remember to replace with the appropriate name 
       // let i=0;
+      let count=0;
     for (const data of finalTicketDetailsForImage) {
       console.log("Current Data:", data);
+
       setCurrentImageData(data);
       await delay(500); 
       await prepareScreenshot([data.application_name,data.module_name,data.selected_coordinates_acronym].join('_'));
       await delay(500);
+      count++;
       // i++;
     }
+    console.log('Number of times the loop iterated : ',count)
     downloadZip();
+    // await delay(500);
     const blob = await generateZipBlob();
+    // await delay(500);
     console.log('Generated ZIP Blob:', blob);
     return blob;
   }
@@ -1618,8 +1624,8 @@ export default function ApplicationUser({ sendUrllist }) {
   }
   };
 
-  const generateZipBlob = () => {
-    return zip.generateAsync({ type: "blob" });
+  const generateZipBlob = async() => {
+    return await zip.generateAsync({ type: "blob" });
   };
 
 

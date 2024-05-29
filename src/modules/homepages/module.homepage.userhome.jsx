@@ -1335,7 +1335,10 @@ function UserHome({ sendUrllist }) {
                                         }}
                                         icon={
                                           catagoryWiseTrend[0]
-                                            .device_difference > 0 ? (
+                                            .recent_device_period -
+                                            catagoryWiseTrend[0]
+                                              .earlier_device_period >
+                                          0 ? (
                                             <TrendingDownIcon />
                                           ) : (
                                             <TrendingUpIcon />
@@ -1346,7 +1349,10 @@ function UserHome({ sendUrllist }) {
                                         text
                                         severity={
                                           catagoryWiseTrend[0]
-                                            .device_difference > 0
+                                            .recent_device_period -
+                                            catagoryWiseTrend[0]
+                                              .earlier_device_period >
+                                          0
                                             ? "danger"
                                             : "success"
                                         }
@@ -1541,7 +1547,10 @@ function UserHome({ sendUrllist }) {
                                         }}
                                         icon={
                                           catagoryWiseTrend[0]
-                                            .application_difference > 0 ? (
+                                            .recent_application_period -
+                                            catagoryWiseTrend[0]
+                                              .earlier_application_period >
+                                          0 ? (
                                             <TrendingDownIcon />
                                           ) : (
                                             <TrendingUpIcon />
@@ -1552,7 +1561,10 @@ function UserHome({ sendUrllist }) {
                                         text
                                         severity={
                                           catagoryWiseTrend[0]
-                                            .application_difference > 0
+                                            .recent_application_period -
+                                            catagoryWiseTrend[0]
+                                              .earlier_application_period >
+                                          0
                                             ? "danger"
                                             : "success"
                                         }
@@ -1760,7 +1772,10 @@ function UserHome({ sendUrllist }) {
                                         }}
                                         icon={
                                           catagoryWiseTrend[0]
-                                            .infrastructure_difference > 0 ? (
+                                            .recent_infrastructure_period -
+                                            catagoryWiseTrend[0]
+                                              .earlier_infrastructure_period >
+                                          0 ? (
                                             <TrendingDownIcon />
                                           ) : (
                                             <TrendingUpIcon />
@@ -1771,7 +1786,10 @@ function UserHome({ sendUrllist }) {
                                         text
                                         severity={
                                           catagoryWiseTrend[0]
-                                            .infrastructure_difference > 0
+                                            .recent_infrastructure_period -
+                                            catagoryWiseTrend[0]
+                                              .earlier_infrastructure_period >
+                                          0
                                             ? "danger"
                                             : "success"
                                         }

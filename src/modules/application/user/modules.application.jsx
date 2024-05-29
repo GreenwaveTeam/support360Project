@@ -179,7 +179,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
 
-  const [zip] = useState(new JSZip());
+  const [zip, setZip] = useState(new JSZip());
 
 
   //for hidden Image
@@ -189,6 +189,9 @@ export default function ApplicationUser({ sendUrllist }) {
 
     //For Screenshot 
     const screenshotRef = React.useRef(null)
+
+    const storedTheme = localStorage.getItem("theme");
+    console.log(`CurrentTheme ${storedTheme}`);
 
   /**************************************    useEffect()   ******************************* */
   useEffect(() => {
@@ -1523,6 +1526,11 @@ export default function ApplicationUser({ sendUrllist }) {
     setSeverityError(false);
     setIssueDropDownError(false);
     setprogressVisible(false);
+
+
+    setCurrentImageData({})
+    setZip(new JSZip())
+    
     if (json_Count === final_Json.length) {
       const ticket = "Ticket raised successfully ! Ticket No - " + ticketNumber;
       setSnackbarSeverity("success");
@@ -1566,7 +1574,7 @@ export default function ApplicationUser({ sendUrllist }) {
       .then((blob) => {
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = "images.zip";
+        a.download = `images${dayjs().format("YYYYMMDDTHHmmssSSS")}.zip`;
         a.click();
         URL.revokeObjectURL(a.href);
       })
@@ -2952,8 +2960,12 @@ export default function ApplicationUser({ sendUrllist }) {
             
             </div>
         </div>
+<div
+ style={{background:'#03AED2'}}
 
+ >
         <IssueListTable issuesList={currentImageData.issuesList} />   
+        </div>
 </div>
 
 

@@ -124,7 +124,7 @@ const CustomPanelBar = () => {
   const [formData, setFormData] = useState();
   const [currentTheme, setCurrentTheme] = useState("dark");
 
-  const theme = createMuiTheme({
+  const theme = createTheme({
     palette: {
       type: "dark",
       background: {

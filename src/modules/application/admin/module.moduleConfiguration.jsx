@@ -929,7 +929,6 @@ export default function ModuleConfigure({ sendUrllist }) {
                             variant="contained"
                             onClick={handleRedirect}
                             color="primary"
-                            sx={{}}
                           >
                             Add Module
                             <AddCircleOutlineOutlinedIcon
@@ -952,11 +951,10 @@ export default function ModuleConfigure({ sendUrllist }) {
                   <Box
                     sx={{
                       backgroundColor: colors.primary[400],
-                      borderRadius: 3,
+                      borderRadius: 3, 
                     }}
                   >
-                    
-                    <Box>
+                    <Box style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
                       <TextField
                         label={"Filter Module"}
                         id="filter"

@@ -1457,22 +1457,60 @@ export default function ApplicationUser({ sendUrllist }) {
       }
 
       console.log('finalTicketDetailsForImage after modification : ',finalTicketDetailsForImage)
+      final_Json.forEach((application_module_data, index) => {
+        const current_application = application_module_data.application_name;
+        const current_module = application_module_data.module_name;
+      
+        console.log('Current Application:', current_application);
+        console.log('Current Module:', current_module);
+      
+        application_module_data?.issuesList?.forEach(issueDetails =>
+           {
+            console.log('Current Issue:', issueDetails);
+          const imageData = finalTicketDetailsForImage.find(element =>
+            element?.application_name?.toLowerCase() === current_application?.toLowerCase() &&
+            element?.module_name?.toLowerCase() === current_module?.toLowerCase() &&
+            element?.selected_coordinates_acronym?.toLowerCase() === issueDetails?.selected_coordinates_acronym?.toLowerCase()
+          );
+          console.log('Found Image Data : ',imageData)
+      
+          if (imageData) {
+            issueDetails.fileContent = imageData.module_image;
+            console.log('Updated Issue Details:', issueDetails);
+          } else {
+            console.log('Image Data not found for issue:', issueDetails);
+          }
+        });
+      });
+      
 
-     const finalBlobData =await processScreenshotsAndDownload(finalTicketDetailsForImage);
-     console.log('Final Blob Data : ',finalBlobData);
-     const base64Data = await blobToBase64(finalBlobData);
-
-     console.log('Final Base64 string for post in DB : ',base64Data)
-
-     const mainBlobData=base64Data.split(',')[1];
+      console.log('Final Ticket with image in each Issue : ',final_Json)
 
 
-    final_Json=final_Json.map((data)=>
-    {
-      return {...data,fileContent:mainBlobData}
-    })
 
-     console.log('Final JSON for POST with image data : ',final_Json)
+      // if(true)
+      //   {
+       //  const finalBlobData =await processScreenshotsAndDownload(finalTicketDetailsForImage);
+    //  console.log('Final Blob Data : ',finalBlobData);
+    //  const base64Data = await blobToBase64(finalBlobData);
+
+    //  console.log('Final Base64 string for post in DB : ',base64Data)
+
+    //  const mainBlobData=base64Data.split(',')[1];
+
+
+    // final_Json=final_Json.map((data)=>
+    // {
+    //   return {...data,fileContent:mainBlobData}
+    // })
+
+    //  console.log('Final JSON for POST with image data : ',final_Json)//     return;
+      //   }
+
+
+
+
+   
 
 
       // const returnHere=true;
@@ -1500,6 +1538,10 @@ export default function ApplicationUser({ sendUrllist }) {
       // The rest of your code
     } catch (error) {
       console.error("Error:", error.message);
+      setSnackbarSeverity('error')
+      setSnackbarText('Error !')
+      setMainAlert(true)
+      return;
     }
     
     
@@ -2960,12 +3002,13 @@ export default function ApplicationUser({ sendUrllist }) {
             
             </div>
         </div>
+        {/*}
 <div
  style={{background:'#03AED2'}}
 
  >
         <IssueListTable issuesList={currentImageData.issuesList} />   
-        </div>
+          </div>*/}
 </div>
 
 

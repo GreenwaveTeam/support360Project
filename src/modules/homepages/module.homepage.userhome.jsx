@@ -26,7 +26,12 @@ import {
   DialogContent,
   Collapse,
   CircularProgress,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
+import DoneIcon from "@mui/icons-material/Done";
+import AlarmIcon from "@mui/icons-material/Alarm";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ToggleOffIcon from "@mui/icons-material/ToggleOff";
@@ -157,7 +162,7 @@ function UserHome({ sendUrllist }) {
 
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("catagory");
-
+  const [isChecked, setIsChecked] = useState(false);
   function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
@@ -486,6 +491,7 @@ function UserHome({ sendUrllist }) {
       buttons: [
         {
           buttonlabel: "View",
+          icon: <VisibilityIcon />,
           isButtonDisabled: (row) => {
             // console.log("view Row : ", row);
             return false;
@@ -503,7 +509,7 @@ function UserHome({ sendUrllist }) {
           },
         },
       ],
-      type: "button",
+      type: "iconButton",
       id: "viewDetails",
       label: "View Details",
     },
@@ -511,6 +517,7 @@ function UserHome({ sendUrllist }) {
       buttons: [
         {
           buttonlabel: "✔",
+          icon: <DoneIcon />,
           isButtonDisabled: (row) => {
             // console.log("view Row : ", row);
             if (row.status === "resolve") {
@@ -540,7 +547,7 @@ function UserHome({ sendUrllist }) {
           },
         },
       ],
-      type: "button",
+      type: "iconButton",
       id: "confirm",
       label: "Confirm",
     },
@@ -575,6 +582,7 @@ function UserHome({ sendUrllist }) {
       buttons: [
         {
           buttonlabel: "View",
+          icon: <VisibilityIcon />,
           isButtonDisabled: (row) => {
             // console.log("view Row : ", row);
             return false;
@@ -592,7 +600,7 @@ function UserHome({ sendUrllist }) {
           },
         },
       ],
-      type: "button",
+      type: "iconButton",
       id: "viewDetails",
       label: "View Details",
     },
@@ -979,7 +987,9 @@ function UserHome({ sendUrllist }) {
       console.error("Error fetching user list:", error);
     }
   };
-
+  const handleChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
   const urllist = [{ pageName: "Home", pagelink: "/user/home" }];
 
   function calculateDifferencePercentage(oldValue, newValue) {
@@ -2068,7 +2078,7 @@ function UserHome({ sendUrllist }) {
                 <div class="col-md-12">
                   {divIsVisibleList && divIsVisibleList.includes("table") && (
                     <div class="col-md-12">
-                      <Button
+                      {/* <Button
                         onClick={() => {
                           handleToggleView();
                         }}
@@ -2077,8 +2087,8 @@ function UserHome({ sendUrllist }) {
                         {viewMode === "all"
                           ? "Show Ticket History"
                           : "Show All Tickets"}
-                      </Button>
-                      {viewMode === "all" ? (
+                      </Button> */}
+                      {!isChecked ? (
                         <div className="row">
                           <div className="col-md-12">
                             <Card className="dashboard-rightSide-Table">
@@ -2089,7 +2099,25 @@ function UserHome({ sendUrllist }) {
                                     rows={allTickets}
                                     isNotDeletable={true}
                                     setRows={setAllTickets}
-                                    tablename={"All Tickets"}
+                                    tablename={
+                                      <div>
+                                        {/* All Tickets{" "}
+                                        <Switch
+                                          checked={checked}
+                                          onChange={(e) => setChecked(e.value)}
+                                        /> */}
+                                        <FormControlLabel
+                                          style={{
+                                            flexDirection: "row-reverse",
+                                            marginLeft: "1rem",
+                                          }}
+                                          label="All Tickets"
+                                          checked={isChecked}
+                                          onChange={handleChange}
+                                          control={<Switch defaultChecked />}
+                                        />
+                                      </div>
+                                    }
                                   ></CustomTable>
                                 )}
                               </CardContent>
@@ -2107,7 +2135,25 @@ function UserHome({ sendUrllist }) {
                                     rows={closedTickets}
                                     isNotDeletable={true}
                                     setRows={setClosedTickets}
-                                    tablename={"Ticket History"}
+                                    tablename={
+                                      <div>
+                                        {/* All Tickets{" "}
+                                      <Switch
+                                        checked={checked}
+                                        onChange={(e) => setChecked(e.value)}
+                                      /> */}
+                                        <FormControlLabel
+                                          style={{
+                                            flexDirection: "row-reverse",
+                                            marginLeft: "1rem",
+                                          }}
+                                          label="Ticket History"
+                                          checked={isChecked}
+                                          onChange={handleChange}
+                                          control={<Switch defaultChecked />}
+                                        />
+                                      </div>
+                                    }
                                   ></CustomTable>
                                 )}
                               </CardContent>

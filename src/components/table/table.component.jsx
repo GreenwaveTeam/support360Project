@@ -720,7 +720,7 @@ export default function CustomTable({
                                             }
                                           >
                                             {/* {columnbutton.buttonlabel} */}
-                                            <VisibilityIcon></VisibilityIcon>
+                                            {columnbutton.isButtonRendered}
                                           </IconButton>
                                         )
                                     )}

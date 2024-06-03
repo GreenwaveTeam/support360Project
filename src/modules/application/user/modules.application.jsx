@@ -971,6 +971,15 @@ export default function ApplicationUser({ sendUrllist }) {
     console.log("handleAddUserIssues() called");
     setIssueDropDownError(false);
     setSeverityError(false);
+
+    if(overviewTableData.length===5)
+      {
+        setSnackbarText("At most 5 Issues can be added ! ");
+      setSnackbarSeverity("warning");
+      setModalAlertOpen(true)
+      return;
+      }
+
     if (checkForValidations()) {
       return;
     }
@@ -1457,6 +1466,9 @@ export default function ApplicationUser({ sendUrllist }) {
       }
 
       console.log('finalTicketDetailsForImage after modification : ',finalTicketDetailsForImage)
+
+      let blankImageFill=[]; //* This is used to keep track that respective Images was found and inserted as object property
+
       final_Json.forEach((application_module_data, index) => {
         const current_application = application_module_data.application_name;
         const current_module = application_module_data.module_name;
@@ -1477,14 +1489,29 @@ export default function ApplicationUser({ sendUrllist }) {
           if (imageData) {
             issueDetails.fileContent = imageData.module_image;
             console.log('Updated Issue Details:', issueDetails);
+            blankImageFill.push(true)
           } else {
             console.log('Image Data not found for issue:', issueDetails);
+            issueDetails.fileContent=null // * In case the selected_coordinates_acronym is of type ' Miscellaneous '
+            if(issueDetails?.selected_coordinates_acronym?.toLowerCase() === 'miscellaneous')
+              return;
+
+            blankImageFill.push(false)
           }
         });
       });
       
 
       console.log('Final Ticket with image in each Issue : ',final_Json)
+
+      if(blankImageFill.includes(false))
+        {
+          console.error("Error:", 'One or more Image was not inserted!');
+      setSnackbarSeverity('error')
+      setSnackbarText('Error !')
+      setMainAlert(true)
+      return;
+        }
 
 
 
@@ -1899,6 +1926,16 @@ export default function ApplicationUser({ sendUrllist }) {
     console.log("handleAdditionalMiscellaneous() called");
     console.log("Current overview Table : ", overviewTableData);
     console.log("Current Module : ", value);
+
+    //! At most 5 issues will be added
+
+    if(overviewTableData.length===5)
+      {
+      setSnackbarSeverity("warning");
+      setSnackbarText("At most 5 issues can be added ! ");
+      setMainAlert(true);
+      return;
+      }
     //Check for validations
     setAdditionalMiscellaneousError(false);
     setAdditionallMiscellaneousSeverityError(false);

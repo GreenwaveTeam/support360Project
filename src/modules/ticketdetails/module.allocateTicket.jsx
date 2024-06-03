@@ -1,4 +1,3 @@
-
 // 5a72b5a21245ea165112a0615a678ace71d6a368
 import * as React from "react";
 import Box from "@mui/material/Box";
@@ -18,6 +17,7 @@ import {
 } from "./AllocateTicket";
 import Badge from "@mui/material/Badge";
 import CustomTable from "../../components/table/table.component";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Button,
   Dialog,
@@ -52,9 +52,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { ColorModeContext, tokens } from "../../theme";
-import { useTheme } from "@mui/material"
-
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import TaskIcon from "@mui/icons-material/Task";
+import CancelIcon from "@mui/icons-material/Cancel";
 export default function AllocateTicket() {
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState("");
@@ -95,12 +95,12 @@ export default function AllocateTicket() {
       type: "textbox",
       canRepeatSameValue: false,
     },
-    {
-      id: "ticket_raising_time",
-      label: "Raising Time",
-      type: "textbox",
-      canRepeatSameValue: false,
-    },
+    // {
+    //   id: "ticket_raising_time",
+    //   label: "Raising Time",
+    //   type: "textbox",
+    //   canRepeatSameValue: false,
+    // },
 
     {
       id: "user",
@@ -127,7 +127,7 @@ export default function AllocateTicket() {
       canRepeatSameValue: false,
     },
     {
-      type: "button",
+      type: "iconButton",
       id: "view",
       label: "Details",
       buttons: [
@@ -153,6 +153,7 @@ export default function AllocateTicket() {
       buttons: [
         {
           buttonlabel: "Resolve",
+          startIcon: <TaskIcon />,
           isButtonRendered: (row) => {
             // console.log("view Row : ", row);
             if (row.status === "WIP") return true;
@@ -184,6 +185,7 @@ export default function AllocateTicket() {
 
         {
           buttonlabel: "Assign",
+          startIcon: <AssignmentIndIcon />,
           isButtonRendered: (row) => {
             //console.log("Assign Row : ", row);
             if (row.status === "open") return true;
@@ -203,6 +205,7 @@ export default function AllocateTicket() {
         },
         {
           buttonlabel: "Close",
+          startIcon: <CancelIcon />,
           isButtonRendered: (row) => {
             //console.log("Assign Row : ", row);
             if (row.status === "resolve") return true;
@@ -659,24 +662,9 @@ export default function AllocateTicket() {
     }
     setFromDate(newValue);
   };
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+
   return (
     <>
-     <div className="mainDiv" style={{ position: "relative" }}>
-     <div
-          style={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-            zIndex: 2,
-            top: 0,
-            background:colors.primary[400],
-          }}
-          // Note : Don't disturb the inline styling because then the click even is not getting triggered
-          //className="main-image-div"
-          // ref={screenshotRef}
-        >
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -885,28 +873,6 @@ export default function AllocateTicket() {
         dialogMessage={snackbarText}
         snackbarSeverity={snackbarSeverity}
       ></SnackbarComponent>
-      </div>
-      <div  className="hideDiv"
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            top: 0,
-            zIndex: 1,
-            left:0,
-            color:"red",
-            //marginTop: "-100%"
-            //  visibility: "hidden"
-            // backgroundImage:
-            //   "url(https://t3.ftcdn.net/jpg/05/94/36/74/360_F_594367405_q8Prs6xkww5Dl46S80Cd8Nck2XBBNytO.jpg)",
-          }}>
-        <div>
-          <p>zdsfhvxkjdfhbgkxjdfhghdfkjb <br/> zsufgv jksDfbgasjdbfjdsgfjhdsbgfkjsdzbgfkjasdgfkjzsdgf</p>
-          ashfvasdufasdifasiub
-        </div>
-        </div>
-      </div>
     </>
   );
 }
-

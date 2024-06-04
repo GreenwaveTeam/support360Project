@@ -149,17 +149,17 @@ export function createJobDetails(
     };
   }
 
-  export const saveJobDetails = async (job) => {
+  export const saveJobDetails = async (job,token) => {
     console.log("Job Details : ",job)
     try {
       const response = await axios.put(`http://localhost:8084/tasks/${job.task.taskId}/${job.jobID}/activities/activity`,
         job,
         {
-            headers: {
-                // Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
+          headers: {
+            Authorization: `Bearer ${token}`,
+           "Content-Type": "application/json",
+           // Authorization: `Bearer ${localStorage.getItem("token")}`,
+         },
         }
       );
    

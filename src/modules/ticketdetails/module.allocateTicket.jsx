@@ -17,6 +17,8 @@ import {
   updateStatus,
 } from "./AllocateTicket";
 import Badge from "@mui/material/Badge";
+
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import CustomTable from "../../components/table/table.component";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -78,7 +80,7 @@ export default function AllocateTicket({ sendUrllist }) {
   const currentPageLocation = useLocation().pathname;
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const [fromDate, setFromDate] = useState(dayjs());
-  let token;
+  const [token, setToken] = React.useState("");
   // const [tikcetStatus, setTicketStatus] = React.useState("");
 
   //   const application=1;
@@ -106,12 +108,12 @@ export default function AllocateTicket({ sendUrllist }) {
       type: "textbox",
       canRepeatSameValue: false,
     },
-    // {
-    //   id: "ticket_raising_time",
-    //   label: "Raising Time",
-    //   type: "textbox",
-    //   canRepeatSameValue: false,
-    // },
+    {
+      id: "ticket_raising_time",
+      label: "Raising Time",
+      type: "textbox",
+      canRepeatSameValue: false,
+    },
 
     {
       id: "user",
@@ -140,10 +142,12 @@ export default function AllocateTicket({ sendUrllist }) {
     {
       type: "iconButton",
       id: "view",
+
       label: "Details",
       buttons: [
         {
           buttonlabel: "View",
+          icon: <VisibilityIcon />,
           isButtonRendered: (row) => {
             // //console.log("view Row : ", row);
             return true;
@@ -264,14 +268,19 @@ export default function AllocateTicket({ sendUrllist }) {
     fetchUser1();
 
     fetchAllTicketsDetails();
-    fetchOp30Token();
+    // fetchOp30Token();
     //console.log("Use effect called");
     sendUrllist(urllist);
     // const status = handleFetchJobStatus(row.ticketNo);
   }, []);
+
+  React.useLayoutEffect(() => {
+    fetchOp30Token();
+  });
   const fetchOp30Token = async () => {
-    token = await login();
-    //console.log("New ", token);
+    const OpToken = await login();
+    setToken(OpToken);
+    console.log("New ", token);
   };
 
   const fetchUser1 = async () => {
@@ -335,8 +344,8 @@ export default function AllocateTicket({ sendUrllist }) {
   };
 
   const handleFetchJobStatus = async (ticketNo) => {
-    //console.log("Before Call ", token);
-    const data = await fetchStatusFromJob(ticketNo, token);
+    console.log("Before Call ", token);
+    const data = await fetchStatusFromJob(ticketNo);
     //console.log("status ", data);
     if (data) {
       setJobStatus(data);
@@ -412,7 +421,7 @@ export default function AllocateTicket({ sendUrllist }) {
       for (const element of response) {
         if (!element?.ticketNo) continue;
         const firstChar = element.ticketNo.charAt(0).toLowerCase();
-        const jobStatus = await fetchStatusFromJob(element.ticketNo, token);
+        const jobStatus = await fetchStatusFromJob(element.ticketNo);
         //console.log("Ticket and Status : ", element.ticketNo, " : ", jobStatus);
         const ticketWithStatus = {
           ...element,
@@ -460,7 +469,7 @@ export default function AllocateTicket({ sendUrllist }) {
     const interval = setInterval(() => {
       //console.log("UseEffect called");
       fetchAllTicketsDetails();
-    }, 4000000);
+    }, 2000000000000000000);
 
     return () => {
       clearInterval(interval);
@@ -492,9 +501,9 @@ export default function AllocateTicket({ sendUrllist }) {
 
       const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
 
-      const allAssetData = await getSelectedOptionTask("Green Plant");
+      const allAssetData = await getSelectedOptionTask("Green Plant", token);
       const currentAsset_Activity = allAssetData.filter(
-        (item) => item.taskId === "T202405171323492349"
+        (item) => item.taskId === "T20240514130854854"
       ); //Currently the database is itc_itd_op360 , make sure to change it to OP360_PCPB_Development in UserGroups API & in the TaskAPI the check for published tasks is commented
 
       let current_starttime = dayjs(fromDate);
@@ -585,7 +594,7 @@ export default function AllocateTicket({ sendUrllist }) {
       const task = createTask(
         null,
         ticketNo,
-        "T202405171323492349",
+        "T20240514130854854",
         null,
         null,
         null,
@@ -613,7 +622,7 @@ export default function AllocateTicket({ sendUrllist }) {
         null
       );
 
-      const success = await saveJobDetails(job);
+      const success = await saveJobDetails(job, token);
       //console.log("Succces ", job);
       await updateStatus(plantId, ticketNo, tikcetStatus);
 

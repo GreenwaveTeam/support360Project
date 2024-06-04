@@ -154,6 +154,7 @@ const password = "pass123";
 const encoded = btoa(username + ":" + password);
 
 export const getSelectedOptionTask = async (selected_asset) => {
+  const token = await login();
   console.log(
     "getSelectedOptionTask : ",
     `http://localhost:8086/usergroup/jobAssetGroup/${selected_asset} `
@@ -164,8 +165,11 @@ export const getSelectedOptionTask = async (selected_asset) => {
     const response = await axios.get(
       `http://localhost:8086/usergroup/jobAssetGroup/${selected_asset} `,
       {
+        method: "GET",
         headers: {
-          Authorization: "Basic " + encoded,
+           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
@@ -225,9 +229,9 @@ export const login = async () => {
   }
 };
 
-export const fetchStatusFromJob = async (ticketNo,token) => {
-  
-
+export const fetchStatusFromJob = async (ticketNo) => {
+  const token = await login();
+  // console.log("New Tocken :")
   try {
     const response = await fetch(
       // console.log("URL : ",`http://localhost:8090/dashboard/jobStatus?ticketNo=${ticketNo}`),

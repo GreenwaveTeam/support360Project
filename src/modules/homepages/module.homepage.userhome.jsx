@@ -516,7 +516,7 @@ function UserHome({ sendUrllist }) {
     {
       buttons: [
         {
-          buttonlabel: "✔",
+          buttonlabel: "",
           icon: <DoneIcon />,
           isButtonDisabled: (row) => {
             // console.log("view Row : ", row);
@@ -994,7 +994,7 @@ function UserHome({ sendUrllist }) {
 
   function calculateDifferencePercentage(oldValue, newValue) {
     if (oldValue === 0) {
-      return "No prior data";
+      return "";
     }
     const result = Math.floor((Math.abs(oldValue - newValue) * 100) / oldValue);
     console.log(
@@ -1005,7 +1005,7 @@ function UserHome({ sendUrllist }) {
       " calculateDifferencePercentage : ",
       result
     );
-    return result;
+    return result + " %";
   }
 
   return (
@@ -1388,7 +1388,7 @@ function UserHome({ sendUrllist }) {
                                             .earlier_device_period,
                                           catagoryWiseTrend[0]
                                             .recent_device_period
-                                        )} %`}
+                                        )}`}
                                       />
                                     </div>
                                     <Typography
@@ -1605,7 +1605,7 @@ function UserHome({ sendUrllist }) {
                                             .earlier_application_period,
                                           catagoryWiseTrend[0]
                                             .recent_application_period
-                                        )} %`}
+                                        )}`}
                                       />
                                     </div>
                                     <Typography
@@ -1835,7 +1835,7 @@ function UserHome({ sendUrllist }) {
                                             .earlier_infrastructure_period,
                                           catagoryWiseTrend[0]
                                             .recent_infrastructure_period
-                                        )} %`}
+                                        )}`}
                                       />
                                     </div>
                                     <Typography
@@ -1883,7 +1883,6 @@ function UserHome({ sendUrllist }) {
                       </div>
                     </>
                   )}
-
                   {/* <div>
                 <Typography>
                   {Array.isArray([responseTime]) ? 1 : 0},
@@ -1915,7 +1914,6 @@ function UserHome({ sendUrllist }) {
                               <Divider
                                 sx={{ opacity: "0.8", marginBottom: "0.5rem" }}
                               />
-
                               <SparkLineChart data={responseTime} height={35} />
                             </CardContent>
                           </Card>
@@ -1967,7 +1965,6 @@ function UserHome({ sendUrllist }) {
                               <Divider
                                 sx={{ opacity: "0.8", marginBottom: "0.5rem" }}
                               />
-
                               <SparkLineChart data={closeTime} height={35} />
                             </CardContent>
                           </Card>

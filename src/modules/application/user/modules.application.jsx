@@ -1493,6 +1493,7 @@ export default function ApplicationUser({ sendUrllist }) {
           } else {
             console.log('Image Data not found for issue:', issueDetails);
             issueDetails.fileContent=null // * In case the selected_coordinates_acronym is of type ' Miscellaneous '
+            console.log('Current Selected Coordinates Acronym : ',issueDetails?.selected_coordinates_acronym?.toLowerCase())
             if(issueDetails?.selected_coordinates_acronym?.toLowerCase() === 'miscellaneous')
               return;
 

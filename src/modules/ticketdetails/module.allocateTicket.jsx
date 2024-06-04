@@ -13,6 +13,7 @@ import {
   getAllAssetGroups,
   getAllOpenTicketDetails,
   getSelectedOptionTask,
+  login,
   updateStatus,
 } from "./AllocateTicket";
 import Badge from "@mui/material/Badge";
@@ -55,7 +56,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import TaskIcon from "@mui/icons-material/Task";
 import CancelIcon from "@mui/icons-material/Cancel";
-export default function AllocateTicket() {
+export default function AllocateTicket({ sendUrllist }) {
   const [snackbarOpen, setSnackbarOpen] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState("");
   const [snackbarSeverity, setsnackbarSeverity] = React.useState("");
@@ -77,11 +78,21 @@ export default function AllocateTicket() {
   const currentPageLocation = useLocation().pathname;
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const [fromDate, setFromDate] = useState(dayjs());
+  let token;
   // const [tikcetStatus, setTicketStatus] = React.useState("");
 
   //   const application=1;
   //   const device=-2;
   //   const infrastructure=3;
+  const urllist = [
+    { pageName: "Home", pagelink: "/admin/home" },
+    // { pageName: "User Configure", pagelink: "/admin/configurePage" },
+    {
+      pageName: "Ticket Allocate",
+      pagelink: "/admin/allocateTicket",
+    },
+  ];
+
   const Columns = [
     {
       id: "plantId",
@@ -134,14 +145,14 @@ export default function AllocateTicket() {
         {
           buttonlabel: "View",
           isButtonRendered: (row) => {
-            // console.log("view Row : ", row);
+            // //console.log("view Row : ", row);
             return true;
           },
           isButtonDisabled: (row) => {
             return false;
           },
           function: (row) => {
-            console.log("Obj : ", row);
+            // //console.log("Obj : ", row);
             handleFetchJobStatus(row.ticketNo);
             setSelectedRow(row);
             setDialogOpen(true);
@@ -155,7 +166,7 @@ export default function AllocateTicket() {
           buttonlabel: "Resolve",
           startIcon: <TaskIcon />,
           isButtonRendered: (row) => {
-            // console.log("view Row : ", row);
+            // //console.log("view Row : ", row);
             if (row.status === "WIP") return true;
             else return false;
           },
@@ -171,13 +182,13 @@ export default function AllocateTicket() {
             }
           },
           function: async (row) => {
-            // console.log(ro)
+            // //console.log(ro)
             const plantId = row.plantId;
 
             const ticketNo = row.ticketNo;
             const tikcetStatus = row.status;
             await updateStatus(plantId, ticketNo, tikcetStatus);
-            console.log("Obj : ", row);
+            //console.log("Obj : ", row);
             setSelectedRow(row);
             // setDialogOpen(true);
           },
@@ -223,7 +234,7 @@ export default function AllocateTicket() {
             const ticketNo = row.ticketNo;
             const tikcetStatus = row.status;
             await updateStatus(plantId, ticketNo, tikcetStatus);
-            console.log("Obj : ", row);
+            //console.log("Obj : ", row);
             setSelectedRow(row);
           },
         },
@@ -253,10 +264,15 @@ export default function AllocateTicket() {
     fetchUser1();
 
     fetchAllTicketsDetails();
-    console.log("Use effect called");
-
+    fetchOp30Token();
+    //console.log("Use effect called");
+    sendUrllist(urllist);
     // const status = handleFetchJobStatus(row.ticketNo);
   }, []);
+  const fetchOp30Token = async () => {
+    token = await login();
+    //console.log("New ", token);
+  };
 
   const fetchUser1 = async () => {
     // let role = "";
@@ -270,12 +286,12 @@ export default function AllocateTicket() {
     //     },
     //   });
     //   const data = await response.json();
-    //   console.log("fetchUser data : ", data);
+    //   //console.log("fetchUser data : ", data);
     //   // setFormData(data.role);
     //   role = data.role;
     //   setCurrentUserData(data);
 
-    //   console.log("Role Test : ", role);
+    //   //console.log("Role Test : ", role);
     //   fetchDivs(role);
     // } catch (error) {
     //   console.error("Error fetching user list:", error);
@@ -284,12 +300,12 @@ export default function AllocateTicket() {
     const userData = await fetchCurrentUser();
     if (userData) {
       setUserData(userData);
-      console.log("userData : ", userData);
+      //console.log("userData : ", userData);
       let role = userData.role;
-      console.log("Role in Ticket  : ", role);
+      //console.log("Role in Ticket  : ", role);
       const currentDivs = await fetchCurrentDivs(role, currentPageLocation);
       if (currentDivs) {
-        console.log("currentDivs : ", currentDivs);
+        //console.log("currentDivs : ", currentDivs);
         if (currentDivs.length === 0) {
           navigate("/*");
           return;
@@ -299,19 +315,19 @@ export default function AllocateTicket() {
           currentDivs.components.includes("Application_Ticket_Tab")
         ) {
           setValue("1");
-          console.log("Application_Ticket_Tab");
+          //console.log("Application_Ticket_Tab");
         } else if (
           currentDivs.components &&
           currentDivs.components.includes("Device_Ticket_Tab")
         ) {
           setValue("2");
-          console.log("Device_Ticket_Tab");
+          //console.log("Device_Ticket_Tab");
         } else if (
           currentDivs.components &&
           currentDivs.components.includes("Infrastructure_Ticket_Tab")
         ) {
           setValue("3");
-          console.log("Infrastructure_Ticket_Tab");
+          //console.log("Infrastructure_Ticket_Tab");
         }
         setDivIsVisibleList(currentDivs.components);
       }
@@ -319,8 +335,9 @@ export default function AllocateTicket() {
   };
 
   const handleFetchJobStatus = async (ticketNo) => {
-    const data = await fetchStatusFromJob(ticketNo);
-    console.log("status ", data);
+    //console.log("Before Call ", token);
+    const data = await fetchStatusFromJob(ticketNo, token);
+    //console.log("status ", data);
     if (data) {
       setJobStatus(data);
       return data;
@@ -328,7 +345,7 @@ export default function AllocateTicket() {
   };
   const handleAddAssignment = () => {
     // Here you can implement the logic to add the assignment with the selected Admin ID
-    // console.log("Assigning to Admin ID:", selectedAdminId);
+    // //console.log("Assigning to Admin ID:", selectedAdminId);
     handleAssignClose();
   };
   const handleAssignClose = () => {
@@ -341,11 +358,11 @@ export default function AllocateTicket() {
     setSelectedRow(null);
   };
   // const fetchAllTicketsDetails = async () => {
-  //   console.log("fetchAllTicketsDetails() called ");
+  //   //console.log("fetchAllTicketsDetails() called ");
 
   //   const response = await getAllOpenTicketDetails();
   //   setAdmins(await fetchAdminList());
-  //   console.log(response);
+  //   //console.log(response);
   //   let applicationTicketArray = [];
   //   let deviceTicketArray = [];
   //   let infrastructureTicketArray = [];
@@ -360,21 +377,21 @@ export default function AllocateTicket() {
   //     });
   //   }
 
-  //   console.log("Application Tickets : ", applicationTicketArray);
-  //   console.log("Device Tickets : ", deviceTicketArray);
-  //   console.log("Infrastructure Tickets : ", infrastructureTicketArray);
+  //   //console.log("Application Tickets : ", applicationTicketArray);
+  //   //console.log("Device Tickets : ", deviceTicketArray);
+  //   //console.log("Infrastructure Tickets : ", infrastructureTicketArray);
   //   let finalTicket = {
   //     application: applicationTicketArray,
   //     device: deviceTicketArray,
   //     infrastructure: infrastructureTicketArray,
   //   };
-  //   console.log("Final Ticket : ", finalTicket);
+  //   //console.log("Final Ticket : ", finalTicket);
   //   setAllTickets(finalTicket);
   // };
 
   const fetchAllTicketsDetails = async () => {
     try {
-      console.log("fetchAllTicketsDetails() called ");
+      //console.log("fetchAllTicketsDetails() called ");
 
       // Fetch open ticket details and admin list concurrently
       const [response, adminList] = await Promise.all([
@@ -384,7 +401,7 @@ export default function AllocateTicket() {
 
       setPerformers(adminList);
       setApprovers(adminList);
-      console.log(response);
+      //console.log(response);
 
       // Initialize arrays for different ticket categories
       const applicationTicketArray = [];
@@ -395,8 +412,8 @@ export default function AllocateTicket() {
       for (const element of response) {
         if (!element?.ticketNo) continue;
         const firstChar = element.ticketNo.charAt(0).toLowerCase();
-        const jobStatus = await fetchStatusFromJob(element.ticketNo);
-        console.log("Ticket and Status : ", element.ticketNo, " : ", jobStatus);
+        const jobStatus = await fetchStatusFromJob(element.ticketNo, token);
+        //console.log("Ticket and Status : ", element.ticketNo, " : ", jobStatus);
         const ticketWithStatus = {
           ...element,
           job_status: jobStatus || "Not Assigned",
@@ -415,9 +432,9 @@ export default function AllocateTicket() {
       }
 
       // Log categorized tickets
-      console.log("Application Tickets:", applicationTicketArray);
-      console.log("Device Tickets:", deviceTicketArray);
-      console.log("Infrastructure Tickets:", infrastructureTicketArray);
+      //console.log("Application Tickets:", applicationTicketArray);
+      //console.log("Device Tickets:", deviceTicketArray);
+      //console.log("Infrastructure Tickets:", infrastructureTicketArray);
 
       // Update state variables with categorized tickets
       setApplicationTickets(applicationTicketArray);
@@ -432,7 +449,7 @@ export default function AllocateTicket() {
       };
 
       // Log final tickets object and update state
-      console.log("Final Ticket:", finalTicket);
+      //console.log("Final Ticket:", finalTicket);
       setAllTickets(finalTicket);
     } catch (error) {
       console.error("Error fetching ticket details:", error);
@@ -441,7 +458,7 @@ export default function AllocateTicket() {
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      console.log("UseEffect called");
+      //console.log("UseEffect called");
       fetchAllTicketsDetails();
     }, 4000000);
 
@@ -464,14 +481,14 @@ export default function AllocateTicket() {
     const plantId = selectedRow.plantId;
     const ticketNo = selectedRow.ticketNo;
     const tikcetStatus = selectedRow.status;
-    console.log(
-      "Current final From Date :  ",
-      dayjs(fromDate).format("YYYYMMDDTHHmmssSSS")
-    );
+    //console.log(
+    //   "Current final From Date :  ",
+    //   dayjs(fromDate).format("YYYYMMDDTHHmmssSSS")
+    // );
     // Handle submit logic here
     if (selectedApprover && selectedPerformer) {
-      console.log("palnt id and ticket ", plantId, ticketNo);
-      // console.log("Selected User:", selectedAdmin);
+      //console.log("palnt id and ticket ", plantId, ticketNo);
+      // //console.log("Selected User:", selectedAdmin);
 
       const jobId = "J" + dayjs().format("YYYYMMDDTHHmmssSSS");
 
@@ -487,7 +504,7 @@ export default function AllocateTicket() {
         setSnackbarOpen(true);
         return;
       }
-      console.log("Current Activity : ", currentAsset_Activity);
+      //console.log("Current Activity : ", currentAsset_Activity);
       let finalDuration = 0;
       const finalActivityList = currentAsset_Activity[0].activityList.map(
         (obj) => {
@@ -597,7 +614,7 @@ export default function AllocateTicket() {
       );
 
       const success = await saveJobDetails(job);
-      console.log("Succces ", job);
+      //console.log("Succces ", job);
       await updateStatus(plantId, ticketNo, tikcetStatus);
 
       setSelectedRow(null);
@@ -616,7 +633,7 @@ export default function AllocateTicket() {
   };
 
   const handleFromDateChange = (newValue) => {
-    console.log("handleFromDateChange() called => ", newValue);
+    //console.log("handleFromDateChange() called => ", newValue);
     const currentTime = dayjs();
     const selectedTime = dayjs(newValue);
 
@@ -632,15 +649,15 @@ export default function AllocateTicket() {
     const selectedHour = selectedTime.hour();
     const selectedMinute = selectedTime.minute();
 
-    console.log("Current Date and Time:");
-    console.log(
-      `Year: ${currentYear}, Month: ${currentMonth}, Day: ${currentDay}, Hour: ${currentHour}, Minute: ${currentMinute}`
-    );
+    //console.log("Current Date and Time:");
+    //console.log(
+    //   `Year: ${currentYear}, Month: ${currentMonth}, Day: ${currentDay}, Hour: ${currentHour}, Minute: ${currentMinute}`
+    // );
 
-    console.log("Selected Date and Time:");
-    console.log(
-      `Year: ${selectedYear}, Month: ${selectedMonth}, Day: ${selectedDay}, Hour: ${selectedHour}, Minute: ${selectedMinute}`
-    );
+    //console.log("Selected Date and Time:");
+    //console.log(
+    //   `Year: ${selectedYear}, Month: ${selectedMonth}, Day: ${selectedDay}, Hour: ${selectedHour}, Minute: ${selectedMinute}`
+    // );
 
     if (
       selectedYear < currentYear ||
@@ -653,7 +670,7 @@ export default function AllocateTicket() {
                   (selectedHour === currentHour &&
                     selectedMinute < currentMinute)))))))
     ) {
-      console.log("Past Time selected !");
+      //console.log("Past Time selected !");
       setSnackbarText("Past time cannot be selected");
       setsnackbarSeverity("error");
       setSnackbarOpen(true);

@@ -187,7 +187,47 @@ export const getSelectedOptionTask = async (selected_asset) => {
   }
 };
 
-export const fetchStatusFromJob = async (ticketNo) => {
+const AUTH_API = "localhost:8097";
+
+export const login = async () => {
+  // if (localStorage.getItem("token") !== null) {
+  //   localStorage.removeItem("token");
+  // }
+  console.log(`http://${AUTH_API}/auth/signin`);
+  try {
+    const response = await fetch(
+      // `http://${DB_IP}/auth/signin`
+      `http://${AUTH_API}/auth/signin`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username:"info@greenwave.co.in", password:"user_123" }),
+      }
+    );
+
+    if (response.ok) {
+      const res = await response.json();
+
+      console.log("token : ", res);
+      // await sessionStorage.setItem("token", res.token);
+      // await sessionStorage.setItem("username", username);
+      // sessionStorage.setItem("expire", res.expire);
+      return res.token;
+    } else {
+      const errorResponse = await response.json();
+      throw new Error(errorResponse.message || "Failed to login");
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    return false;
+  }
+};
+
+export const fetchStatusFromJob = async (ticketNo,token) => {
+  
+
   try {
     const response = await fetch(
       // console.log("URL : ",`http://localhost:8090/dashboard/jobStatus?ticketNo=${ticketNo}`),
@@ -195,9 +235,9 @@ export const fetchStatusFromJob = async (ticketNo) => {
       {
         method: "GET",
         headers: {
-          // Authorization: `Bearer ${token}`,
+           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          // Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );

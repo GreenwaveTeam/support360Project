@@ -166,7 +166,7 @@ function AdminRoutes() {
             />
              <Route
               path="/allocateticket"
-              element={<AllocateTicket/>}
+              element={<AllocateTicket sendUrllist={receiveUrllist}/>}
             />
 
             <Route

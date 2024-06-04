@@ -1467,6 +1467,13 @@ export default function ApplicationUser({ sendUrllist }) {
 
       console.log('finalTicketDetailsForImage after modification : ',finalTicketDetailsForImage)
 
+
+         const finalBlobDataMap =await processScreenshotsAndDownload(finalTicketDetailsForImage);
+
+    //  console.log('Final Base64 string for post in DB : ',base64Data)
+
+    //  const mainBlobData=base64Data.split(',')[1];
+
       let blankImageFill=[]; //* This is used to keep track that respective Images was found and inserted as object property
 
       final_Json.forEach((application_module_data, index) => {
@@ -1479,15 +1486,18 @@ export default function ApplicationUser({ sendUrllist }) {
         application_module_data?.issuesList?.forEach(issueDetails =>
            {
             console.log('Current Issue:', issueDetails);
-          const imageData = finalTicketDetailsForImage.find(element =>
-            element?.application_name?.toLowerCase() === current_application?.toLowerCase() &&
-            element?.module_name?.toLowerCase() === current_module?.toLowerCase() &&
-            element?.selected_coordinates_acronym?.toLowerCase() === issueDetails?.selected_coordinates_acronym?.toLowerCase()
-          );
+          // const imageData = finalTicketDetailsForImage.find(element =>
+          //   element?.application_name?.toLowerCase() === current_application?.toLowerCase() &&
+          //   element?.module_name?.toLowerCase() === current_module?.toLowerCase() &&
+          //   element?.selected_coordinates_acronym?.toLowerCase() === issueDetails?.selected_coordinates_acronym?.toLowerCase()
+          // );
+          const imageKey=[current_application,current_module,issueDetails.selected_coordinates_acronym].join('=>')
+          console.log('Current Key to find : ',imageKey)
+          const imageData=finalBlobDataMap.get(imageKey)
           console.log('Found Image Data : ',imageData)
       
           if (imageData) {
-            issueDetails.fileContent = imageData.module_image;
+            issueDetails.fileContent = imageData;
             console.log('Updated Issue Details:', issueDetails);
             blankImageFill.push(true)
           } else {
@@ -1634,9 +1644,15 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const createFileName = (extension, name) => `${name}.${extension}`;
 
-  const addImageToZip = (image, { name, extension = "jpg" }) => {
-    const fileName = createFileName(extension, name);
-    zip.file(fileName, image.split(",")[1], { base64: true }); // The blob data is present in the second index
+  // const addImageToZip = (image, { name, extension = "jpg" }) => {
+  //   const fileName = createFileName(extension, name);
+  //   zip.file(fileName, image.split(",")[1], { base64: true }); // The blob data is present in the second index
+  // };
+
+  const returnMainBlob = (image, { name, extension = "jpg" }) => {
+    // const fileName = createFileName(extension, name);
+    // zip.file(fileName, image.split(",")[1], { base64: true }); // The blob data is present in the second index
+    return image.split(",")[1];
   };
 
   const downloadZip = () => {
@@ -1668,7 +1684,8 @@ export default function ApplicationUser({ sendUrllist }) {
   const prepareScreenshot = async (imgName) => {
     const image = await takeScreenShot(screenshotRef.current);
     console.log("Screenshot Process started!");
-    addImageToZip(image, { name: imgName, extension: "jpg" });
+    return returnMainBlob(image, { name: imgName, extension: "jpg" });
+    // addImageToZip(image, { name: imgName, extension: "jpg" });
   };
 
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -1677,24 +1694,29 @@ export default function ApplicationUser({ sendUrllist }) {
     try{
       // const arr=['1','2'] //remember to replace with the appropriate name 
       // let i=0;
+      const blobDataMasterMap=new Map();
       let count=0;
     for (const data of finalTicketDetailsForImage) {
       console.log("Current Data:", data);
 
       setCurrentImageData(data);
       await delay(500); 
-      await prepareScreenshot([data.application_name,data.module_name,data.selected_coordinates_acronym].join('_'));
+     const imageData= await prepareScreenshot([data.application_name,data.module_name,data.selected_coordinates_acronym].join('_'));
+     blobDataMasterMap.set(data.application_name+"=>"+data.module_name+"=>"+data.selected_coordinates_acronym,
+      imageData
+     )
       await delay(500);
       count++;
       // i++;
     }
     console.log('Number of times the loop iterated : ',count)
-    downloadZip();
+    // downloadZip();
     // await delay(500);
-    const blob = await generateZipBlob();
+    // const blob = await generateZipBlob();
     // await delay(500);
-    console.log('Generated ZIP Blob:', blob);
-    return blob;
+    // console.log('Generated ZIP Blob:', blob);
+    // return blob;
+    return blobDataMasterMap;
   }
   catch(error)
   {
@@ -1940,6 +1962,16 @@ export default function ApplicationUser({ sendUrllist }) {
     //Check for validations
     setAdditionalMiscellaneousError(false);
     setAdditionallMiscellaneousSeverityError(false);
+
+    if(overviewTableData.some(issue=>issue?.toLowerCase()===miscellaneousInput?.trim().toLowerCase()))
+      {
+        setAdditionalMiscellaneousError(true);
+        setAdditionallMiscellaneousSeverityError(true);
+        setSnackbarSeverity("error");
+        setSnackbarText("This issue is already added ! ");
+        setMainAlert(true);
+        return;
+      }
     if (miscellaneousInput === "" && miscellaneousSeverity === "") {
       setAdditionalMiscellaneousError(true);
       setAdditionallMiscellaneousSeverityError(true);

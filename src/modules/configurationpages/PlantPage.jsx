@@ -205,8 +205,23 @@ export default function PlantPage({ sendUrllist }) {
       console.log("plantList : 1 : ", plantList);
     } else {
       const updatedPlantRows = [...plantList];
-      const filteredPlantRows = updatedPlantRows.filter((plant) =>
-        plant.plantID.toLowerCase().includes(currentSearch.trim().toLowerCase())
+      const filteredPlantRows = updatedPlantRows.filter(
+        (plant) =>
+          plant.plantID
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase()) ||
+          plant.plantName
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase()) ||
+          plant.address
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase()) ||
+          plant.customerName
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase()) ||
+          plant.division
+            .toLowerCase()
+            .includes(currentSearch.trim().toLowerCase())
       );
       console.log("Filtered Rows => ", filteredPlantRows);
       setFilteredPlantRows(filteredPlantRows);

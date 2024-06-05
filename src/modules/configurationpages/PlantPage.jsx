@@ -202,6 +202,7 @@ export default function PlantPage({ sendUrllist }) {
     console.log("Search => ", plantSearch);
     if (currentSearch === "" || currentSearch.length === 0) {
       setFilteredPlantRows(plantList);
+      console.log("plantList : 1 : ", plantList);
     } else {
       const updatedPlantRows = [...plantList];
       const filteredPlantRows = updatedPlantRows.filter((plant) =>
@@ -209,12 +210,14 @@ export default function PlantPage({ sendUrllist }) {
       );
       console.log("Filtered Rows => ", filteredPlantRows);
       setFilteredPlantRows(filteredPlantRows);
+      console.log("plantList : 2 : ", filteredPlantRows);
     }
   };
 
   const fetchPlantData = async () => {
+    console.log("filteredPlantList : ", `http://${DB_IP}/plants/`);
     try {
-      const response = await fetch(`http:${DB_IP}/plants/`, {
+      const response = await fetch(`http://${DB_IP}/plants/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -232,6 +235,7 @@ export default function PlantPage({ sendUrllist }) {
       console.log("filteredPlantList : ", filteredPlantList);
       setPlantList(filteredPlantList);
       setFilteredPlantRows(filteredPlantList);
+      console.log("plantList : 3 : ", filteredPlantList);
     } catch (error) {
       console.log(error);
     }
@@ -257,6 +261,7 @@ export default function PlantPage({ sendUrllist }) {
       setFilteredPlantRows((prevList) =>
         prevList.filter((item) => item.plantID !== e)
       );
+
       // if (data) {
       //   navigate("/Plant/home");
       // }
@@ -296,7 +301,8 @@ export default function PlantPage({ sendUrllist }) {
     }
 
     try {
-      const response = await fetch(`http://${DB_IP}/plants/`, {
+      console.log("JSON.stringify(newPlant) : ", JSON.stringify(newPlant));
+      const response = await fetch(`http://${DB_IP}/plants/plant`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -592,6 +598,10 @@ export default function PlantPage({ sendUrllist }) {
                                         onClick={() => {
                                           setPlantSearch("");
                                           setFilteredPlantRows(plantList);
+                                          console.log(
+                                            "plantList : 5 : ",
+                                            plantList
+                                          );
                                         }}
                                       >
                                         <CloseIcon fontSize="inherit" />

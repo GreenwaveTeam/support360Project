@@ -30,6 +30,7 @@ import RoleConfiguration from "./modules/roleconfiguration/module.roleConfigurat
 import AdminRoutes from "./AdminRoutes";
 import DeviceCategory from "./modules/device/admin/module.deviceIssueCategoryUpload";
 import UserRoutes from "./UserRoutes";
+import ImageTest from "./modules/application/user/ImageTest";
 
 function App() {
   // const [darkMode, setDarkMode] = React.useState(false);
@@ -68,6 +69,7 @@ function App() {
           <Router>
             <div className="App">
               <Routes>
+              {/* <Route path="/user/test" element={<ImageTest />} /> */}
                 <Route path="/" element={<UserLogin />} />
                 {/* <Route path="/xyz" element={<AddInfrastructureIssue />} /> */}
                 <Route path="/device" element={<Device />} />

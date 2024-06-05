@@ -85,6 +85,7 @@ import JSZip from 'jszip';
  import html2canvas from 'html2canvas';
 import { fetchModuleImageMap } from "../../ticketdetails/AllocateTicket";
 import IssueListTable from "./modules.issueListTable";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 
 //The main export starts here....
@@ -186,6 +187,7 @@ export default function ApplicationUser({ sendUrllist }) {
   const [currentDivData,setCurrentDivData]=useState({})
   const [currentImageData,setCurrentImageData]=useState({})
 
+  const[testImgList,setTestImgList]=useState([]);
 
     //For Screenshot 
     const screenshotRef = React.useRef(null)
@@ -1469,21 +1471,25 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
          const finalBlobDataMap =await processScreenshotsAndDownload(finalTicketDetailsForImage);
-
+         console.log('Final Blob Map : ',finalBlobDataMap)
+        // if (true)
+        //   return;
     //  console.log('Final Base64 string for post in DB : ',base64Data)
 
     //  const mainBlobData=base64Data.split(',')[1];
 
       let blankImageFill=[]; //* This is used to keep track that respective Images was found and inserted as object property
 
-      final_Json.forEach((application_module_data, index) => {
+      let test=[]
+
+      final_Json.forEach(async(application_module_data, index) => {
         const current_application = application_module_data.application_name;
         const current_module = application_module_data.module_name;
       
         console.log('Current Application:', current_application);
         console.log('Current Module:', current_module);
       
-        application_module_data?.issuesList?.forEach(issueDetails =>
+        application_module_data?.issuesList?.forEach(async(issueDetails) =>
            {
             console.log('Current Issue:', issueDetails);
           // const imageData = finalTicketDetailsForImage.find(element =>
@@ -1495,7 +1501,11 @@ export default function ApplicationUser({ sendUrllist }) {
           console.log('Current Key to find : ',imageKey)
           const imageData=finalBlobDataMap.get(imageKey)
           console.log('Found Image Data : ',imageData)
-      
+          // test.push(imageData)
+
+
+        // setTestImg(imageData)
+        // await delay(000)
           if (imageData) {
             issueDetails.fileContent = imageData;
             console.log('Updated Issue Details:', issueDetails);
@@ -1514,6 +1524,7 @@ export default function ApplicationUser({ sendUrllist }) {
       
 
       console.log('Final Ticket with image in each Issue : ',final_Json)
+      // setTestImgList(test)
 
       if(blankImageFill.includes(false))
         {
@@ -1525,6 +1536,17 @@ export default function ApplicationUser({ sendUrllist }) {
         }
 
 
+
+        final_Json.forEach(element=>
+          {
+              element.issuesList.forEach(data=>
+                {
+                  test.push(data.fileContent)
+                }
+              )
+          }
+        )
+        setTestImgList(test)
 
       // if(true)
       //   {
@@ -1633,29 +1655,28 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
   //For Image Zip methods 
-  const blobToBase64 = (blob) => {
+  const blobToBase64 = (blobData) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result); //this is the event handler which is called when reader.readAsDataURL(blob) is completed 
+      reader.onloadend = () => resolve(reader.result);
       reader.onerror = reject;
-      reader.readAsDataURL(blob);
+      reader.readAsDataURL(blobData);
     });
   };
-
+  
   const createFileName = (extension, name) => `${name}.${extension}`;
-
-  // const addImageToZip = (image, { name, extension = "jpg" }) => {
-  //   const fileName = createFileName(extension, name);
-  //   zip.file(fileName, image.split(",")[1], { base64: true }); // The blob data is present in the second index
-  // };
-
+  
+  const addImageToZip = (zip, image, { name, extension = "jpg" }) => {
+    const fileName = createFileName(extension, name);
+    zip.file(fileName, image.split(",")[1], { base64: true }); // The blob data is present in the second index
+  };
+  
   const returnMainBlob = (image, { name, extension = "jpg" }) => {
-    // const fileName = createFileName(extension, name);
-    // zip.file(fileName, image.split(",")[1], { base64: true }); // The blob data is present in the second index
+    console.log('Image Data at 2nd Index : ', image.split(",")[1]);
     return image.split(",")[1];
   };
-
-  const downloadZip = () => {
+  
+  const downloadZip = (zip) => {
     zip.generateAsync({ type: "blob" })
       .then((blob) => {
         const a = document.createElement("a");
@@ -1668,66 +1689,65 @@ export default function ApplicationUser({ sendUrllist }) {
         console.error("Error generating zip:", error);
       });
   };
+  
+  
+const takeScreenShot = async (element) => {
+  return html2canvas(element, {
+    useCORS: true,
+    logging: true,
+    scale: 5,
+    windowWidth: document.documentElement.scrollWidth,
+    windowHeight: document.documentElement.scrollHeight,
+  }).then((canvas) => {
+    return canvas.toDataURL("image/jpeg", 1.0);
+  });
+};
 
-  const takeScreenShot = async (element) => {
-    return html2canvas(element, {
-      useCORS: true,
-      logging: true,
-      scale: 1,
-      windowWidth: document.documentElement.scrollWidth,
-      windowHeight: document.documentElement.scrollHeight,
-    }).then((canvas) => {
-      return canvas.toDataURL("image/jpeg", 1.0);
-    });
-  };
+const prepareScreenshot = async () => {
+  // await delay(500);
+  const image = await takeScreenShot(screenshotRef.current);
+  console.log("Screenshot Process started!");
+  // await delay(500);
+  return image;
+};
 
-  const prepareScreenshot = async (imgName) => {
-    const image = await takeScreenShot(screenshotRef.current);
-    console.log("Screenshot Process started!");
-    return returnMainBlob(image, { name: imgName, extension: "jpg" });
-    // addImageToZip(image, { name: imgName, extension: "jpg" });
-  };
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
+  try {
+    const blobDataMasterMap = new Map();
+    // const testList=[]
+    let count = 0;
 
-  const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
-    try{
-      // const arr=['1','2'] //remember to replace with the appropriate name 
-      // let i=0;
-      const blobDataMasterMap=new Map();
-      let count=0;
     for (const data of finalTicketDetailsForImage) {
       console.log("Current Data:", data);
 
       setCurrentImageData(data);
-      await delay(500); 
-     const imageData= await prepareScreenshot([data.application_name,data.module_name,data.selected_coordinates_acronym].join('_'));
-     blobDataMasterMap.set(data.application_name+"=>"+data.module_name+"=>"+data.selected_coordinates_acronym,
-      imageData
-     )
-      await delay(500);
+
+      await delay(500); // Give time for the DOM to update with the new data
+
+      const image = await prepareScreenshot();
+      // await delay(500); // Ensure the screenshot is fully captured
+
+      const base64Data = image.split(',')[1]; // Extract base64 image data directly
+
+      blobDataMasterMap.set(
+        `${data.application_name}=>${data.module_name}=>${data.selected_coordinates_acronym}`,
+        base64Data
+      );
+      // testList.push(base64Data)
+
+      // await delay(1000);
       count++;
-      // i++;
     }
-    console.log('Number of times the loop iterated : ',count)
-    // downloadZip();
-    // await delay(500);
-    // const blob = await generateZipBlob();
-    // await delay(500);
-    // console.log('Generated ZIP Blob:', blob);
-    // return blob;
+
+    console.log('Number of times the loop iterated : ', count);
+    // setTestImgList(testList)
     return blobDataMasterMap;
+  } catch (error) {
+    console.log('Error : ', error);
   }
-  catch(error)
-  {
-      console.log('Error downloading zip : ',error)
-  }
-  };
-
-  const generateZipBlob = async() => {
-    return await zip.generateAsync({ type: "blob" });
-  };
-
+};
 
 
 
@@ -1962,16 +1982,15 @@ export default function ApplicationUser({ sendUrllist }) {
     //Check for validations
     setAdditionalMiscellaneousError(false);
     setAdditionallMiscellaneousSeverityError(false);
-
-    if(overviewTableData.some(issue=>issue?.toLowerCase()===miscellaneousInput?.trim().toLowerCase()))
-      {
-        setAdditionalMiscellaneousError(true);
-        setAdditionallMiscellaneousSeverityError(true);
-        setSnackbarSeverity("error");
-        setSnackbarText("This issue is already added ! ");
-        setMainAlert(true);
-        return;
-      }
+      console.log('OverviewRableData : ',overviewTableData)
+    if (overviewTableData.some(issue =>issue.issue_name?.toLowerCase() === miscellaneousInput?.trim().toLowerCase())) {
+      setAdditionalMiscellaneousError(true);
+      setSnackbarSeverity("error");
+      setSnackbarText("This issue is already added!");
+      setMainAlert(true);
+      return;
+    }
+    
     if (miscellaneousInput === "" && miscellaneousSeverity === "") {
       setAdditionalMiscellaneousError(true);
       setAdditionallMiscellaneousSeverityError(true);
@@ -2510,6 +2529,7 @@ export default function ApplicationUser({ sendUrllist }) {
           <center>
             {divIsVisibleList &&
               divIsVisibleList.includes("app-dropdown-selection") && isUserUnderSupport&& (
+                <>
                 <div id="app-dropdown-selection">
                   <Dropdown
                     style={{ width: "200px" }}
@@ -2520,8 +2540,12 @@ export default function ApplicationUser({ sendUrllist }) {
                     onChange={handleAppDropdownChange}
                   ></Dropdown>
                 </div>
+                
+               
+                </>
               )}
             { !isUserUnderSupport&&<RenewMessageComponent/> }
+            {tabsmoduleNames.length === 0 && <div style={{paddingTop:'10px'}}> <Chip label={<div><InfoOutlinedIcon fontSize="small"/> Please select an Application from the above dropdown </div>}/></div>}
           </center>
           <br />
           <center>
@@ -2866,15 +2890,16 @@ export default function ApplicationUser({ sendUrllist }) {
                     </div>
                   </center>
                   <br />
-                  <Paper elevation={24} square>
-                  <Chip label= {<div> <CheckCircleIcon
+                  {/* <Paper elevation={24} square> */}
+                  <Chip  label= {<div> <CheckCircleIcon
                       fontSize="small"
-                      sx={{ color: "#16FF00" }}
+                      sx={{ color: "#16FF00",border:"none" }}
+                      
                     />
                     <span style={{fontWeight:'bold'}}> - Indicates Issues have been added </span></div>}variant="outlined" >
                    
                     </Chip>
-                  </Paper>
+                  {/* </Paper> */}
                  
 
                   <motion.div
@@ -3005,7 +3030,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
                     <div
   id="hiddenDiv" 
-  ref={screenshotRef}
+  // ref={screenshotRef}
   //  onLoad={prepareScreenshot} 
   // className={
   //   storedTheme === "light" || storedTheme == null
@@ -3016,7 +3041,7 @@ export default function ApplicationUser({ sendUrllist }) {
     position: "absolute",
     minWidth: "100%",
     minHeight: "100%",
-    top: 0,
+     top: 0,
     //left: 0,
     zIndex: 1,
     overflow: "auto",
@@ -3039,7 +3064,7 @@ export default function ApplicationUser({ sendUrllist }) {
             width: "100%",
             height: "100%",
           }}
-          //  ref={screenshotRef}
+            ref={screenshotRef}
         >
           {currentImageData.module_image && (
             <Paper
@@ -3167,10 +3192,10 @@ export default function ApplicationUser({ sendUrllist }) {
                                   value={miscellaneousInput}
                                   onChange={(e) => {
                                     setMiscellaneousInput(e.target.value);
-                                    console.log(
-                                      "Miscellaneous Issue:",
-                                      e.target.value
-                                    );
+                                    // console.log(
+                                    //   "Miscellaneous Issue:",
+                                    //   e.target.value
+                                    // );
                                   }}
                                   error={additionalMiscellaneousError}
                                 />
@@ -3500,9 +3525,9 @@ export default function ApplicationUser({ sendUrllist }) {
                   <Textfield
                     id="user-remarks"
                     label={
-                      <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-                        Remarks
-                      </span>
+                      // <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+                        'Remarks'
+                      // </span>
                     }
                     // multiline
                     // rows={3}
@@ -3513,7 +3538,7 @@ export default function ApplicationUser({ sendUrllist }) {
                       setRemarksInput(e.target.value);
                     }}
                     multiline={true}
-                    rows={1}
+                    rows={2}
                   />
                   &nbsp;&nbsp;
                   <Button

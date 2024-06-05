@@ -2545,7 +2545,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                 </>
               )}
             { !isUserUnderSupport&&<RenewMessageComponent/> }
-            {tabsmoduleNames.length === 0 && <div style={{paddingTop:'10px'}}> <Chip label={<div><InfoOutlinedIcon fontSize="small"/> Please select an Application from the above dropdown </div>}/></div>}
+            {isUserUnderSupport&&tabsmoduleNames.length === 0 && <div style={{paddingTop:'10px'}}> <Chip label={<div><InfoOutlinedIcon fontSize="small"/> Please select an Application from the above dropdown </div>}/></div>}
           </center>
           <br />
           <center>

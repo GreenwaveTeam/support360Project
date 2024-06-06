@@ -34,7 +34,7 @@ import RolePageConfiguration from "./modules/roleconfiguration/module.rolePageCo
 import AdminPage from "./modules/configurationpages/AdminPage";
 import PlantPage from "./modules/configurationpages/PlantPage";
 import AllocateTicket from "./modules/ticketdetails/module.allocateTicket";
-
+import PlantProjectComponent from "./modules/configurationpages/PlantProjectComponent";
 
 function AdminRoutes() {
   const [urllist, setUrllist] = useState([]);
@@ -164,16 +164,20 @@ function AdminRoutes() {
               path="/configurePage"
               element={<AdminPage sendUrllist={receiveUrllist} />}
             />
-             <Route
+            <Route
               path="/allocateticket"
-              element={<AllocateTicket sendUrllist={receiveUrllist}/>}
+              element={<AllocateTicket sendUrllist={receiveUrllist} />}
+            />
+
+            <Route
+              path="/xyz"
+              element={<PlantProjectComponent setIsNotFound={setIsNotFound} />}
             />
 
             <Route
               path="/*"
               element={<NotfoundComponent setIsNotFound={setIsNotFound} />}
             />
-            
           </Routes>
         </Box>
       </Main>

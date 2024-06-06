@@ -28,6 +28,8 @@ import {
   MenuItem,
   FormHelperText,
   Divider,
+  ListItemText,
+  Chip,
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import Dropdown from "../../components/dropdown/dropdown.component";
@@ -41,6 +43,7 @@ import {
   extendTokenExpiration,
   fetchPagesByRole,
 } from "../helper/Support360Api";
+import axios from "axios";
 
 export default function UserRegistration({ sendUrllist }) {
   const [newPlantName, setNewPlantName] = useState({
@@ -51,6 +54,7 @@ export default function UserRegistration({ sendUrllist }) {
     division: "",
     supportStartDate: dayjs(),
     supportEndDate: dayjs(),
+    projectName: "",
   });
 
   const [formData, setFormData] = useState({
@@ -73,6 +77,7 @@ export default function UserRegistration({ sendUrllist }) {
     accountOwnerGW: "",
     role: "",
     homepage: "",
+    projectName: [],
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -97,6 +102,7 @@ export default function UserRegistration({ sendUrllist }) {
     phoneNumberLength: false,
     passwordNotMatch: false,
     weakPassword: false,
+    projectName: false,
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -118,6 +124,7 @@ export default function UserRegistration({ sendUrllist }) {
     accountOwnerGW: "",
     role: "",
     homepage: "",
+    projectName: "",
   });
 
   const [updateFormErrors, setUpdateFormErrors] = useState({
@@ -141,6 +148,7 @@ export default function UserRegistration({ sendUrllist }) {
     confirmPassword: false,
     phoneNumberLength: false,
     passwordNotMatch: false,
+    projectName: false,
   });
 
   const [cnfpass, setCnfpass] = useState("");
@@ -216,6 +224,7 @@ export default function UserRegistration({ sendUrllist }) {
   const [allCustomerAccountEmailList, setAllCustomerAccountEmailList] =
     useState([]);
   const [allGWAccountEmailList, setAllGWAccountEmailList] = useState([]);
+  const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     // console.log("user : ", state.user);
@@ -233,6 +242,7 @@ export default function UserRegistration({ sendUrllist }) {
     fetchData();
     fetchUser();
     fetchAllEmails();
+    fetchProjects();
   }, [formData.role]);
 
   const fetchAllEmails = async () => {
@@ -467,6 +477,7 @@ export default function UserRegistration({ sendUrllist }) {
       division: newPlantName.division,
       supportStartDate: newPlantName.supportStartDate,
       supportEndDate: newPlantName.supportEndDate,
+      projectName: newPlantName.projectName,
     });
     setFormData({
       ...formData,
@@ -477,6 +488,7 @@ export default function UserRegistration({ sendUrllist }) {
       division: newPlantName.division,
       supportStartDate: newPlantName.supportStartDate,
       supportEndDate: newPlantName.supportEndDate,
+      projectName: newPlantName.projectName,
     });
   };
 
@@ -500,16 +512,17 @@ export default function UserRegistration({ sendUrllist }) {
   };
 
   const convertToInitials = (name) => {
-    const parts = name.split(" ");
-    if (parts.length >= 2) {
-      return (
-        parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
-      );
-    } else if (parts.length === 1) {
-      return parts[0].charAt(0).toUpperCase();
-    } else {
-      return "";
-    }
+    // const parts = name.split(" ");
+    // if (parts.length >= 2) {
+    //   return (
+    //     parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
+    //   );
+    // } else if (parts.length === 1) {
+    //   return parts[0].charAt(0).toUpperCase();
+    // } else {
+    //   return "";
+    // }
+    return name;
   };
 
   function convertDateFormat(dateString) {
@@ -817,6 +830,27 @@ export default function UserRegistration({ sendUrllist }) {
       }
     } catch (error) {
       console.error("Error : ", error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get(
+        `http://${DB_IP}/plants/projectDetails`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("fetchProjects : ", response.data);
+      const projectNames = response.data.map((project) => project.project_name);
+      console.log("projectNames : ", projectNames);
+      setProjects(projectNames);
+      // setProjects(response.data);
+    } catch (error) {
+      console.error("Error fetching project details:", error);
     }
   };
 
@@ -1519,6 +1553,25 @@ export default function UserRegistration({ sendUrllist }) {
                                 updateFormErrors.customerName &&
                                 "Customer Name must be filled"
                               }
+                            />
+                          </Grid>
+                          <Grid item xs={6}>
+                            <TextField
+                              label="Project Name"
+                              fullWidth
+                              value={updateFormData.projectName}
+                              onChange={(e) => {
+                                setUpdateFormData({
+                                  ...updateFormErrors,
+                                  projectName: removeAllSpecialChar(
+                                    e.target.value
+                                  ),
+                                });
+                                setUpdateFormErrors({
+                                  ...updateFormErrors,
+                                  projectName: e.target.value.trim() === "",
+                                });
+                              }}
                             />
                           </Grid>
                           <Grid item xs={6}>
@@ -2690,6 +2743,57 @@ export default function UserRegistration({ sendUrllist }) {
                               }
                             />
                           </Grid>
+                          {/* <Grid item xs={6}>
+                            <TextField
+                              label="Project Name"
+                              fullWidth
+                              value={formData.projectName}
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  projectName: removeAllSpecialChar(
+                                    e.target.value
+                                  ),
+                                });
+                                setFormErrors({
+                                  ...formErrors,
+                                  projectName: e.target.value.trim() === "",
+                                });
+                              }}
+                            />
+                          </Grid> */}
+                          <Grid item xs={6}>
+                            <FormControl fullWidth>
+                              <InputLabel id="project-select-label">
+                                Project Name
+                              </InputLabel>
+                              <Select
+                                labelId="project-select-label"
+                                label="Project Name"
+                                multiple
+                                value={formData.projectName || []}
+                                onChange={(event) => {
+                                  setFormData({
+                                    ...formData,
+                                    projectName: event.target.value,
+                                  });
+                                }}
+                                renderValue={(selected) => selected.join(", ")}
+                              >
+                                {projects.map((project) => (
+                                  <MenuItem key={project} value={project}>
+                                    <Checkbox
+                                      checked={
+                                        formData.projectName.indexOf(project) >
+                                        -1
+                                      }
+                                    />
+                                    <ListItemText primary={project} />
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </Grid>
                           <Grid item xs={6}>
                             {/* <Datepicker
                         label="Support Start Date"
@@ -2805,7 +2909,9 @@ export default function UserRegistration({ sendUrllist }) {
                             onChange={(e) => {
                               setNewPlantName({
                                 ...newPlantName,
-                                plantID: removeAllSpecialChar(e.target.value),
+                                plantID: removeAllSpecialChar(
+                                  e.target.value.trim()
+                                ),
                               });
                             }}
                           />

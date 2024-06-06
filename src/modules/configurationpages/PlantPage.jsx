@@ -350,6 +350,15 @@ export default function PlantPage({ sendUrllist }) {
     setSelectedplantId(plantId);
   };
 
+  function removeAllSpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z\s]/g, "");
+    var stringWithoutExtraSpaces = stringWithoutSpecialChars.replace(
+      /\s+/g,
+      " "
+    );
+    return stringWithoutExtraSpaces;
+  }
+
   return (
     <>
       {divIsVisibleList && divIsVisibleList.includes("plant-configure") && (
@@ -386,7 +395,10 @@ export default function PlantPage({ sendUrllist }) {
                     id="plantName"
                     value={newPlant.plantName}
                     onChange={(e) => {
-                      setNewPlant({ ...newPlant, plantName: e.target.value });
+                      setNewPlant({
+                        ...newPlant,
+                        plantName: removeAllSpecialChar(e.target.value),
+                      });
                       setFormErrors({
                         ...formErrors,
                         plantName: e.target.value.trim() === "",
@@ -407,7 +419,10 @@ export default function PlantPage({ sendUrllist }) {
                     id="plantId"
                     value={newPlant.plantID}
                     onChange={(e) => {
-                      setNewPlant({ ...newPlant, plantID: e.target.value });
+                      setNewPlant({
+                        ...newPlant,
+                        plantID: removeAllSpecialChar(e.target.value.trim()),
+                      });
                       setFormErrors({
                         ...formErrors,
                         plantID: e.target.value.trim() === "",
@@ -447,7 +462,7 @@ export default function PlantPage({ sendUrllist }) {
                     onChange={(e) => {
                       setNewPlant({
                         ...newPlant,
-                        customerName: e.target.value,
+                        customerName: removeAllSpecialChar(e.target.value),
                       });
                       setFormErrors({
                         ...formErrors,
@@ -495,7 +510,10 @@ export default function PlantPage({ sendUrllist }) {
                     id="division"
                     value={newPlant.division}
                     onChange={(e) => {
-                      setNewPlant({ ...newPlant, division: e.target.value });
+                      setNewPlant({
+                        ...newPlant,
+                        division: removeAllSpecialChar(e.target.value),
+                      });
                       setFormErrors({
                         ...formErrors,
                         division: e.target.value.trim() === "",

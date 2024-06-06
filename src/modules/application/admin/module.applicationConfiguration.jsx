@@ -148,7 +148,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
      extendTokenExpiration();
     const projects=await fetchAllProjectDetails()
     setProjectDetails(projects)
-    setPlantDetails(projects.map((plant)=>plant.plant_id))
+    setPlantDetails(projects.map((plant)=>plant.plant_name))
      //await fetchData();
      await fetchUser()
      setShowpipispinner(false)
@@ -157,9 +157,12 @@ export default function ModuleConfiguration({ sendUrllist }) {
     functionsCalledOnUseEffect()
   }, []);
   useEffect(() => {
-    const selectedprojects=projectDetails.filter((plant)=>(plant.plant_id===selectedPlant))
+    const selectedprojects=projectDetails.filter((plant)=>(plant.plant_name===selectedPlant))
     setProjects(selectedprojects.map((project)=>project.project_name))
-   
+    console.log("Selected plant:",selectedPlant)
+    const plant = projectDetails.find((plant) => plant.plant_name.trim() === selectedPlant.trim())?.plant_id;
+    console.log("Plant:",plant)
+      setPlantid(plant)
   }, [selectedPlant]);
   useEffect(()=>{
      fetchData();

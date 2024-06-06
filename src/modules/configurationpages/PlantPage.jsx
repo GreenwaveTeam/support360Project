@@ -36,6 +36,8 @@ import ArrowDropUpOutlinedIcon from "@mui/icons-material/ArrowDropUpOutlined";
 import dayjs from "dayjs";
 import { tokens } from "../../theme";
 import { useLocation, useNavigate } from "react-router-dom";
+import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
+import PlantProjectComponent from "./PlantProjectComponent";
 
 export default function PlantPage({ sendUrllist }) {
   const navigate = useNavigate();
@@ -53,8 +55,8 @@ export default function PlantPage({ sendUrllist }) {
     address: "",
     customerName: "",
     division: "",
-    supportStartDate: dayjs(),
-    supportEndDate: dayjs(),
+    // supportStartDate: dayjs(),
+    // supportEndDate: dayjs(),
   });
   const [formErrors, setFormErrors] = useState({
     plantName: false,
@@ -77,6 +79,9 @@ export default function PlantPage({ sendUrllist }) {
 
   const [showForm, setShowForm] = useState(true);
 
+  const [showPlantProjectComponent, setShowPlantProjectComponent] =
+    useState(false);
+
   const toggleFormVisibility = () => {
     setShowForm(!showForm);
   };
@@ -90,6 +95,9 @@ export default function PlantPage({ sendUrllist }) {
   const currentPageLocation = useLocation().pathname;
 
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+
+  const [selectedPlantID, setSelectedPlantID] = useState("");
+  const [selectedPlantName, setselectedPlantName] = useState("");
 
   useEffect(() => {
     fetchPlantData();
@@ -359,6 +367,17 @@ export default function PlantPage({ sendUrllist }) {
     return stringWithoutExtraSpaces;
   }
 
+  const handleViewProjects = (name, id) => {
+    console.log(`View projects for plant with name : ${name} and id : ${id}`);
+    setselectedPlantName(name);
+    setSelectedPlantID(id);
+    setShowPlantProjectComponent(true);
+  };
+
+  const handleCloseDialog = () => {
+    setShowPlantProjectComponent(false);
+  };
+
   return (
     <>
       {divIsVisibleList && divIsVisibleList.includes("plant-configure") && (
@@ -475,7 +494,7 @@ export default function PlantPage({ sendUrllist }) {
                     }
                   />
                 </Grid>
-                <Grid item xs={6}>
+                {/* <Grid item xs={6}>
                   <Datepicker
                     label="Support Start Date"
                     value={dayjs(newPlant.supportStartDate)}
@@ -500,7 +519,7 @@ export default function PlantPage({ sendUrllist }) {
                     }
                     slotProps={{ textField: { fullWidth: true } }}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12}>
                   <Textfield
                     required
@@ -697,7 +716,7 @@ export default function PlantPage({ sendUrllist }) {
                     >
                       Division
                     </TableCell>
-                    <TableCell
+                    {/* <TableCell
                       sx={{
                         fontWeight: "bold",
                         fontSize: "14px",
@@ -714,7 +733,7 @@ export default function PlantPage({ sendUrllist }) {
                       align="center"
                     >
                       Support End Date
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell
                       sx={{
                         fontWeight: "bold",
@@ -723,6 +742,12 @@ export default function PlantPage({ sendUrllist }) {
                       align="center"
                     >
                       Delete
+                    </TableCell>
+                    <TableCell
+                      sx={{ fontWeight: "bold", fontSize: "14px" }}
+                      align="center"
+                    >
+                      View Projects
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -744,12 +769,12 @@ export default function PlantPage({ sendUrllist }) {
                       <TableCell align="center">{item.address}</TableCell>
                       <TableCell align="center">{item.customerName}</TableCell>
                       <TableCell align="center">{item.division}</TableCell>
-                      <TableCell align="center">
+                      {/* <TableCell align="center">
                         {item.supportStartDate}
                       </TableCell>
                       <TableCell align="center">
                         {item.supportEndDate}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell align="center">
                         <DeleteIcon
                           color="error"
@@ -791,12 +816,37 @@ export default function PlantPage({ sendUrllist }) {
                           </DialogActions>
                         </Dialog>
                       </TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          color="primary"
+                          onClick={() => {
+                            handleViewProjects(item.plantName, item.plantID);
+                          }}
+                        >
+                          <VisibilityRoundedIcon />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </TableContainer>
           </Grid>
+          {/* {showPlantProjectComponent && ( */}
+          <Dialog open={showPlantProjectComponent} onClose={handleCloseDialog}>
+            <DialogContent>
+              <PlantProjectComponent
+                plant_name={selectedPlantName}
+                plant_id={selectedPlantID}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog} color="primary">
+                Close
+              </Button>
+            </DialogActions>
+          </Dialog>
+          {/* )} */}
           <Snackbar
             open={plantErrorOpen}
             autoHideDuration={3000}

@@ -52,8 +52,8 @@ export default function UserRegistration({ sendUrllist }) {
     address: "",
     customerName: "",
     division: "",
-    supportStartDate: dayjs(),
-    supportEndDate: dayjs(),
+    // supportStartDate: dayjs(),
+    // supportEndDate: dayjs(),
     projectName: "",
   });
 
@@ -71,8 +71,8 @@ export default function UserRegistration({ sendUrllist }) {
     customerName: "",
     // supportStartDate: dayjs(),
     // supportEndDate: dayjs(),
-    supportStartDate: "",
-    supportEndDate: "",
+    // supportStartDate: "",
+    // supportEndDate: "",
     accountOwnerCustomer: "",
     accountOwnerGW: "",
     role: "",
@@ -92,8 +92,8 @@ export default function UserRegistration({ sendUrllist }) {
     address: false,
     division: false,
     customerName: false,
-    supportStartDate: false,
-    supportEndDate: false,
+    // supportStartDate: false,
+    // supportEndDate: false,
     accountOwnerCustomer: false,
     accountOwnerGW: false,
     role: false,
@@ -118,13 +118,13 @@ export default function UserRegistration({ sendUrllist }) {
     customerName: "",
     // supportStartDate: dayjs(),
     // supportEndDate: dayjs(),
-    supportStartDate: "",
-    supportEndDate: "",
+    // supportStartDate: "",
+    // supportEndDate: "",
     accountOwnerCustomer: "",
     accountOwnerGW: "",
     role: "",
     homepage: "",
-    projectName: "",
+    projectName: [],
   });
 
   const [updateFormErrors, setUpdateFormErrors] = useState({
@@ -139,8 +139,8 @@ export default function UserRegistration({ sendUrllist }) {
     address: false,
     division: false,
     customerName: false,
-    supportStartDate: false,
-    supportEndDate: false,
+    // supportStartDate: false,
+    // supportEndDate: false,
     accountOwnerCustomer: false,
     accountOwnerGW: false,
     role: false,
@@ -206,13 +206,15 @@ export default function UserRegistration({ sendUrllist }) {
         address: state.user.address,
         division: state.user.division,
         customerName: state.user.customerName,
-        supportStartDate: state.user.supportStartDate,
-        supportEndDate: state.user.supportEndDate,
+        // supportStartDate: state.user.supportStartDate,
+        // supportEndDate: state.user.supportEndDate,
         accountOwnerCustomer: state.user.accountOwnerCustomer,
         accountOwnerGW: state.user.accountOwnerGW,
         role: state.user.role,
         homepage: state.user.homepage,
+        projectName: state.user.projectName,
       });
+      fetchProjects(state.user.plantID);
     }
   };
 
@@ -242,7 +244,7 @@ export default function UserRegistration({ sendUrllist }) {
     fetchData();
     fetchUser();
     fetchAllEmails();
-    fetchProjects();
+    // fetchProjects();
   }, [formData.role]);
 
   const fetchAllEmails = async () => {
@@ -475,8 +477,8 @@ export default function UserRegistration({ sendUrllist }) {
       address: newPlantName.address,
       customerName: newPlantName.customerName,
       division: newPlantName.division,
-      supportStartDate: newPlantName.supportStartDate,
-      supportEndDate: newPlantName.supportEndDate,
+      // supportStartDate: newPlantName.supportStartDate,
+      // supportEndDate: newPlantName.supportEndDate,
       projectName: newPlantName.projectName,
     });
     setFormData({
@@ -486,8 +488,8 @@ export default function UserRegistration({ sendUrllist }) {
       address: newPlantName.address,
       customerName: newPlantName.customerName,
       division: newPlantName.division,
-      supportStartDate: newPlantName.supportStartDate,
-      supportEndDate: newPlantName.supportEndDate,
+      // supportStartDate: newPlantName.supportStartDate,
+      // supportEndDate: newPlantName.supportEndDate,
       projectName: newPlantName.projectName,
     });
   };
@@ -512,17 +514,16 @@ export default function UserRegistration({ sendUrllist }) {
   };
 
   const convertToInitials = (name) => {
-    // const parts = name.split(" ");
-    // if (parts.length >= 2) {
-    //   return (
-    //     parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
-    //   );
-    // } else if (parts.length === 1) {
-    //   return parts[0].charAt(0).toUpperCase();
-    // } else {
-    //   return "";
-    // }
-    return name;
+    const parts = name.split(" ");
+    if (parts.length >= 2) {
+      return (
+        parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
+      );
+    } else if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    } else {
+      return "";
+    }
   };
 
   function convertDateFormat(dateString) {
@@ -610,6 +611,7 @@ export default function UserRegistration({ sendUrllist }) {
         (plant) => plant.plantName === newValue
       );
       console.log("selectedPlant : ", selectedPlant);
+      fetchProjects(selectedPlant.plantID);
       setFormData({
         ...formData,
         plantID: selectedPlant ? selectedPlant.plantID : "",
@@ -617,8 +619,8 @@ export default function UserRegistration({ sendUrllist }) {
         address: selectedPlant ? selectedPlant.address : "",
         customerName: selectedPlant ? selectedPlant.customerName : "",
         division: selectedPlant ? selectedPlant.division : "",
-        supportStartDate: selectedPlant ? selectedPlant.supportStartDate : "",
-        supportEndDate: selectedPlant ? selectedPlant.supportEndDate : "",
+        // supportStartDate: selectedPlant ? selectedPlant.supportStartDate : "",
+        // supportEndDate: selectedPlant ? selectedPlant.supportEndDate : "",
       });
       setUpdateFormData({
         ...updateFormData,
@@ -627,8 +629,8 @@ export default function UserRegistration({ sendUrllist }) {
         address: selectedPlant ? selectedPlant.address : "",
         customerName: selectedPlant ? selectedPlant.customerName : "",
         division: selectedPlant ? selectedPlant.division : "",
-        supportStartDate: selectedPlant ? selectedPlant.supportStartDate : "",
-        supportEndDate: selectedPlant ? selectedPlant.supportEndDate : "",
+        // supportStartDate: selectedPlant ? selectedPlant.supportStartDate : "",
+        // supportEndDate: selectedPlant ? selectedPlant.supportEndDate : "",
       });
     } else {
       setFormData({
@@ -638,8 +640,9 @@ export default function UserRegistration({ sendUrllist }) {
         address: "",
         customerName: "",
         division: "",
-        supportStartDate: "",
-        supportEndDate: "",
+        projectName: [],
+        // supportStartDate: "",
+        // supportEndDate: "",
       });
       setUpdateFormData({
         ...updateFormData,
@@ -648,8 +651,9 @@ export default function UserRegistration({ sendUrllist }) {
         address: "",
         customerName: "",
         division: "",
-        supportStartDate: "",
-        supportEndDate: "",
+        projectName: [],
+        // supportStartDate: "",
+        // supportEndDate: "",
       });
     }
   };
@@ -666,11 +670,17 @@ export default function UserRegistration({ sendUrllist }) {
         return;
       }
     }
-    if (updateFormData.supportStartDate > updateFormData.supportEndDate) {
+    // if (updateFormData.supportStartDate > updateFormData.supportEndDate) {
+    //   handleClick();
+    //   setSnackbarText(
+    //     "Support Start Date should not be Greater than Support End Date !"
+    //   );
+    //   setsnackbarSeverity("error");
+    //   return;
+    // }
+    if (updateFormData.projectName.length === 0) {
       handleClick();
-      setSnackbarText(
-        "Support Start Date should not be Greater than Support End Date !"
-      );
+      setSnackbarText("ProjectName must be filled");
       setsnackbarSeverity("error");
       return;
     }
@@ -797,14 +807,21 @@ export default function UserRegistration({ sendUrllist }) {
       return;
     }
 
-    if (formData.supportStartDate > formData.supportEndDate) {
+    if (formData.projectName.length === 0) {
       handleClick();
-      setSnackbarText(
-        "Support Start Date should not be Greater than Support End Date !"
-      );
+      setSnackbarText("ProjectName must be filled");
       setsnackbarSeverity("error");
       return;
     }
+
+    // if (formData.supportStartDate > formData.supportEndDate) {
+    //   handleClick();
+    //   setSnackbarText(
+    //     "Support Start Date should not be Greater than Support End Date !"
+    //   );
+    //   setsnackbarSeverity("error");
+    //   return;
+    // }
 
     console.log("formData : : ", formData);
     try {
@@ -833,7 +850,9 @@ export default function UserRegistration({ sendUrllist }) {
     }
   };
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (selectedPlantid) => {
+    console.log("fetchProjects selectedPlantid : ", selectedPlantid);
+
     try {
       const response = await axios.get(
         `http://${DB_IP}/plants/projectDetails`,
@@ -844,11 +863,17 @@ export default function UserRegistration({ sendUrllist }) {
           },
         }
       );
+
+      const filteredProjects = response.data.filter(
+        (project) => project.plant_id === selectedPlantid
+      );
+
       console.log("fetchProjects : ", response.data);
-      const projectNames = response.data.map((project) => project.project_name);
+      const projectNames = filteredProjects.map(
+        (project) => project.project_name
+      );
       console.log("projectNames : ", projectNames);
       setProjects(projectNames);
-      // setProjects(response.data);
     } catch (error) {
       console.error("Error fetching project details:", error);
     }
@@ -1556,6 +1581,39 @@ export default function UserRegistration({ sendUrllist }) {
                             />
                           </Grid>
                           <Grid item xs={6}>
+                            <FormControl fullWidth>
+                              <InputLabel id="project-select-label">
+                                Project Name
+                              </InputLabel>
+                              <Select
+                                labelId="project-select-label"
+                                label="Project Name"
+                                multiple
+                                value={updateFormData.projectName || []}
+                                onChange={(event) => {
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    projectName: event.target.value,
+                                  });
+                                }}
+                                renderValue={(selected) => selected.join(", ")}
+                              >
+                                {projects.map((project) => (
+                                  <MenuItem key={project} value={project}>
+                                    <Checkbox
+                                      checked={
+                                        updateFormData.projectName.indexOf(
+                                          project
+                                        ) > -1
+                                      }
+                                    />
+                                    <ListItemText primary={project} />
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </Grid>
+                          {/* <Grid item xs={6}>
                             <TextField
                               label="Project Name"
                               fullWidth
@@ -1573,9 +1631,9 @@ export default function UserRegistration({ sendUrllist }) {
                                 });
                               }}
                             />
-                          </Grid>
-                          <Grid item xs={6}>
-                            {/* <Datepicker
+                          </Grid> */}
+                          {/*<Grid item xs={6}>
+                             <Datepicker
                         label="Support Start Date"
                         value={dayjs(updateFormData.supportStartDate)}
                         onChange={(startDate) =>
@@ -1586,7 +1644,7 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                         slotProps={{ textField: { fullWidth: true } }}
                       /> */}
-                            <TextField
+                          {/* <TextField
                               inputProps={{
                                 readOnly: true,
                               }}
@@ -1603,9 +1661,9 @@ export default function UserRegistration({ sendUrllist }) {
                                 "Support Start Date must be filled"
                               }
                             />
-                          </Grid>
-                          <Grid item xs={6}>
-                            {/* <Datepicker
+                          </Grid> */}
+                          {/* <Grid item xs={6}> */}
+                          {/* <Datepicker
                         label="Support End Date"
                         value={dayjs(updateFormData.supportEndDate)}
                         onChange={(endDate) =>
@@ -1616,7 +1674,7 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                         slotProps={{ textField: { fullWidth: true } }}
                       /> */}
-                            <TextField
+                          {/* <TextField
                               inputProps={{
                                 readOnly: true,
                               }}
@@ -1633,7 +1691,7 @@ export default function UserRegistration({ sendUrllist }) {
                                 "Support End Date must be filled"
                               }
                             />
-                          </Grid>
+                          </Grid> */}
                         </Grid>
                         <Button
                           type="submit"
@@ -2794,8 +2852,8 @@ export default function UserRegistration({ sendUrllist }) {
                               </Select>
                             </FormControl>
                           </Grid>
-                          <Grid item xs={6}>
-                            {/* <Datepicker
+                          {/* <Grid item xs={6}> */}
+                          {/* <Datepicker
                         label="Support Start Date"
                         value={dayjs(formData.supportStartDate)}
                         onChange={(startDate) =>
@@ -2806,7 +2864,7 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                         slotProps={{ textField: { fullWidth: true } }}
                       /> */}
-                            <TextField
+                          {/* <TextField
                               inputProps={{
                                 readOnly: true,
                               }}
@@ -2823,9 +2881,9 @@ export default function UserRegistration({ sendUrllist }) {
                                 "Support Start Date must be filled"
                               }
                             />
-                          </Grid>
-                          <Grid item xs={6}>
-                            {/* <Datepicker
+                          </Grid> */}
+                          {/* <Grid item xs={6}> */}
+                          {/* <Datepicker
                         label="Support End Date"
                         value={dayjs(formData.supportEndDate)}
                         onChange={(endDate) =>
@@ -2836,7 +2894,7 @@ export default function UserRegistration({ sendUrllist }) {
                         }
                         slotProps={{ textField: { fullWidth: true } }}
                       /> */}
-                            <TextField
+                          {/* <TextField
                               inputProps={{
                                 readOnly: true,
                               }}
@@ -2853,7 +2911,7 @@ export default function UserRegistration({ sendUrllist }) {
                                 "Support End Date must be filled"
                               }
                             />
-                          </Grid>
+                          </Grid> */}
                         </Grid>
                         <Button
                           type="submit"

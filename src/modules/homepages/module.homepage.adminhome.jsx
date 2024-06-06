@@ -234,7 +234,7 @@ export default function AdminHome({ sendUrllist }) {
         return;
       }
       const data = await response.json();
-      console.log("response : ", data);
+      console.log("fetchUserData response : ", data);
 
       const filteredData = data.filter((item) => item.plantID !== "NA");
 

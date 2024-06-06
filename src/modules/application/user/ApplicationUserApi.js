@@ -36,7 +36,7 @@ export const fetchApplicationNames = async (plantID) => {
     // setTabsModuleNames([]);
   };
 
-  export const fetchTabNames=async(dropdownvalue,userData)=>
+  export const fetchTabNames=async(dropdownvalue,userData,selectedProject)=>
     {
         try {
             console.log("Current Dropdown selection : ", dropdownvalue);
@@ -47,7 +47,7 @@ export const fetchApplicationNames = async (plantID) => {
               throw new Error("PlantID not found ! ");
             }
             const response = await fetch(
-              `http://${DB_IP}/application/user/${plantID}/${dropdownvalue}`,
+              `http://${DB_IP}/application/user/${plantID}/${dropdownvalue}/${selectedProject}`,
               {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -75,7 +75,7 @@ export const fetchApplicationNames = async (plantID) => {
         }
 
 
-        export const fetchTabData = async (module, application,userData,abortControllerRef) => {
+        export const fetchTabData = async (module, application,userData,abortControllerRef,project) => {
             abortControllerRef.current?.abort();
             abortControllerRef.current=new AbortController();
 
@@ -95,9 +95,9 @@ export const fetchApplicationNames = async (plantID) => {
               }
               console.log(
                 "Current API call : ",
-                `http://${DB_IP}/application/user/${plantID}/${application}/${module}`
+                `http://${DB_IP}/application/user/${plantID}/${application}/${module}/${project}`
               );
-              const API = `http://${DB_IP}/application/user/${plantID}/${application}/${module}`;
+              const API = `http://${DB_IP}/application/user/${plantID}/${application}/${module}/${project}`;
               const response = await fetch(API, {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -198,11 +198,11 @@ export const fetchApplicationNames = async (plantID) => {
           };
 
 
-          export const postDatainDB = async (json_data) => {
+          export const postDatainDB = async (json_data,project) => {
             console.log("postDatainDB() called");
             console.log("current JSON_data is => ", JSON.stringify(json_data));
             try {
-              const response = await fetch(`http://${DB_IP}/application/user`, {
+              const response = await fetch(`http://${DB_IP}/application/user/${project}`, {
                 method: "POST",
         
                 headers: {

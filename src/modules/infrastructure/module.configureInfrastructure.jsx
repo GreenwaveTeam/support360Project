@@ -153,7 +153,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     //   navigate("/admin/infrastructure/addIssues", { state: data });
     // }
    
-    if (userData.plantID) {
+    if (selectedPlantAndProject.plantId&&selectedPlantAndProject.project) {
       const data = { infrastructure: newCateogry, plantID: selectedPlantAndProject.plantId,project:selectedPlantAndProject.project };
       console.log("Data sent is => ", data);
       navigate("/admin/infrastructure/addIssues", { state: data });

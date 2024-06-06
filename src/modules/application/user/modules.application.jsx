@@ -86,6 +86,7 @@ import JSZip from 'jszip';
 import { fetchModuleImageMap } from "../../ticketdetails/AllocateTicket";
 import IssueListTable from "./modules.issueListTable";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
 
 
 //The main export starts here....
@@ -189,6 +190,14 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const[testImgList,setTestImgList]=useState([]);
 
+
+
+  
+  const [selectedProject,setSelectedProject]=useState('Select a Project')
+
+  const [plantIdList,setPlantIdList]=useState([])
+  const [projectList,setProjectList]=useState([])
+
     //For Screenshot 
     const screenshotRef = React.useRef(null)
 
@@ -204,6 +213,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
     extendTokenExpiration();
+    fetchProjectAndPlantDetails();
     sendUrllist(urllist);
     console.log("useEffect() called ");
     console.log("USER from context : ", userData);
@@ -268,6 +278,21 @@ export default function ApplicationUser({ sendUrllist }) {
         });
       });
   }, [mainData, finalUserInput]);
+
+
+
+  useEffect(()=>
+  {
+    if(dropdownValue==='Select an application'||dropdownValue==='Select a Project')
+      {
+        console.log('Both fields need to be filled ! ')
+        return;
+      }
+      else
+      {
+        fetchTabs(dropdownValue)
+      }
+  },[dropdownValue,selectedProject])
 
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
@@ -491,6 +516,35 @@ export default function ApplicationUser({ sendUrllist }) {
 
   /* ********************** API ************************** */
 
+
+
+  const fetchProjectAndPlantDetails=async()=>
+    {
+      console.log('fetchProjectAndPlantDetails() called')
+      const projectDetails=await fetchAllProjectDetails();
+      console.log('Project Details : ',projectDetails)
+      const plantIdList=[]
+      const projectList=[]
+      if(projectDetails)
+       {
+         projectDetails.forEach(data=>
+           {
+             const currentPlant=data.plant_id;
+             const currentProject=data.project_name;
+             plantIdList.push(currentPlant)
+             projectList.push(currentProject)
+           }
+         )
+       }
+       projectList.unshift('Select a Project')
+       console.log('Final PlantList : ',plantIdList)
+       console.log('Final ProjectList : ',projectList)
+       setPlantIdList(plantIdList)
+       setProjectList(projectList)
+
+       
+    }
+
   const fetchUser = async () => {
     // let role = "";
     // try {
@@ -646,13 +700,13 @@ export default function ApplicationUser({ sendUrllist }) {
   // };
 
   const fetchTabs = async (dropdownvalue) => {
-    if (dropdownvalue === "Select an application") {
-      setTabsModuleNames([]);
-      return;
-    }
+    // if (dropdownvalue === "Select an application") {
+    //   setTabsModuleNames([]);
+    //   return;
+    // }
     // setDisableTabSelection(true)
 
-    const tabData= await fetchTabNames(dropdownvalue,userData)
+    const tabData= await fetchTabNames(dropdownvalue,userData,selectedProject)
     if (tabData) {
       console.log("Data from Database : ", tabData);
       setTabsModuleNames(tabData);
@@ -660,18 +714,19 @@ export default function ApplicationUser({ sendUrllist }) {
       // setCurrentLoaderModule(tabData[0])
       //further a function will be called to set the image data here
       console.log('UserData : ',userData)
-      const moduleData=await fetchTabData(tabData[0], dropdownvalue,userData,abortControllerRef);
+      const moduleData=await fetchTabData(tabData[0], dropdownvalue,userData,abortControllerRef,selectedProject);
       console.log('Current Module Data :  ',moduleData)
       if(moduleData)
         setMainData(moduleData);
+    }
 
       // setDisableTabSelection(false)
-    }
-    else
-    {
-      setTabsModuleNames([]);
-      navigate("/notfound");
-    }
+    // }
+    // else
+    // {
+    //   setTabsModuleNames([]);
+    //   navigate("/notfound");
+    // }
   } 
 
 
@@ -1584,12 +1639,16 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
 
-
+      // final_Json = final_Json.map(data => ({
+      //   ...data,
+      //   project_name: selectedProject
+      // }));
+      
 
     let json_Count = 0;
     try {
       const results = await Promise.all(final_Json.map(async json_data => {
-        const success = await postDatainDB(json_data);
+        const success = await postDatainDB(json_data,selectedProject);
         if (success) {
           json_Count++;
         }
@@ -1628,6 +1687,7 @@ export default function ApplicationUser({ sendUrllist }) {
     setSeverityError(false);
     setIssueDropDownError(false);
     setprogressVisible(false);
+    setSelectedProject('Select a Project')
 
 
     setCurrentImageData({})
@@ -2529,7 +2589,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
           <center>
             {divIsVisibleList &&
               divIsVisibleList.includes("app-dropdown-selection") && isUserUnderSupport&& (
-                <>
+                <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
                 <div id="app-dropdown-selection">
                   <Dropdown
                     style={{ width: "200px" }}
@@ -2540,9 +2600,19 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                     onChange={handleAppDropdownChange}
                   ></Dropdown>
                 </div>
+
+                <Dropdown
+                id={"project-dropdown"}
+                value={selectedProject}
+                onChange={(event) =>setSelectedProject(event.target.value)}
+                list={projectList}
+                label={"Project"}
+                // error={dropDownError}
+                style={{ width: "200px",marginLeft:'10px' }}
+              ></Dropdown>
                 
                
-                </>
+                </div>
               )}
             { !isUserUnderSupport&&<RenewMessageComponent/> }
             {isUserUnderSupport&&tabsmoduleNames.length === 0 && <div style={{paddingTop:'10px'}}> <Chip label={<div><InfoOutlinedIcon fontSize="small"/> Please select an Application from the above dropdown </div>}/></div>}

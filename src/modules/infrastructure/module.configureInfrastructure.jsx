@@ -194,8 +194,11 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
            {
              const currentPlant=data.plant_id;
              const currentProject=data.project_name;
+             if(data.plant_id===userData.plantID)
+              {
              plantIdList.push(currentPlant)
              projectList.push(currentProject)
+              }
            }
          )
        }

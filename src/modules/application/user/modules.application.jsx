@@ -283,7 +283,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
   useEffect(()=>
   {
-    if(dropdownValue==='Select an application'||dropdownValue==='Select a Project')
+    if(dropdownValue==='Select an application'||selectedProject==='Select a Project')
       {
         console.log('Both fields need to be filled ! ')
         return;
@@ -495,7 +495,7 @@ export default function ApplicationUser({ sendUrllist }) {
     setmiscellaneousSeverity("");
     setValue(newValue);
     //Now feed with new data
-    const moduleData=await fetchTabData(newValue, dropdownValue,userData,abortControllerRef);
+    const moduleData=await fetchTabData(newValue, dropdownValue,userData,abortControllerRef,selectedProject);
     // if (!mainData) {
     //   setSnackbarSeverity('error')
     //   setSnackbarText('Error ! ')
@@ -899,7 +899,7 @@ export default function ApplicationUser({ sendUrllist }) {
     } else {
       //Will review it once again
       setDropdownValue(e.target.value);
-      fetchTabs(e.target.value);
+      // fetchTabs(e.target.value);
       setTicketNumber(generateRandomNumber());
       //Resetting Data
       setTabsModuleNames([]);

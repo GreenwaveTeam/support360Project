@@ -148,8 +148,9 @@ export default function ModuleConfiguration({ sendUrllist }) {
      extendTokenExpiration();
     const projects=await fetchAllProjectDetails()
     setProjectDetails(projects)
-    setPlantDetails(projects.map((plant)=>plant.plant_name))
-     //await fetchData();
+    const uniquePlantNames = Array.from(new Set(projects.map(plant => plant.plant_name)));
+    setPlantDetails(uniquePlantNames);
+ //await fetchData();
      await fetchUser()
      setShowpipispinner(false)
     }

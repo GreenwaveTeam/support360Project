@@ -1,7 +1,7 @@
 /***********************  Configure Infrastructure  ************************* */
 const DB_IP=process.env.REACT_APP_SERVERIP;
 export const fetchDivs = async (
-  userData,
+  // userData,
   location,
   currentPageLocation,
   role
@@ -10,7 +10,7 @@ export const fetchDivs = async (
     console.log("fetchDivs() called");
     console.log("Current Page Location: ", currentPageLocation);
     console.log("Currently passed Data : ", location.state);
-    console.log("Current UserData in fetchDivs() : ", userData);
+    // console.log("Current UserData in fetchDivs() : ", userData);
     console.log('IP from env : ',DB_IP)
     // let role = "";
     // if (userData.role) {
@@ -20,7 +20,7 @@ export const fetchDivs = async (
     // }
     console.log(
       "Current URL : ",
-      `http://localhost:8081/role/roledetails?role=${role}&pagename=${currentPageLocation}`
+      `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`
     );
     const response = await fetch(
       `http://${DB_IP}/role/roledetails?role=${role}&pagename=${currentPageLocation}`,
@@ -57,18 +57,19 @@ export const fetchDivs = async (
 export const updateInfraNameDB = async (
   prev_infra,
   new_infraname,
-  userData
+  project,
+  plantId
 ) => {
   console.log("updateInfraNameDB() called");
   console.log("Previous Infrastructure : ", prev_infra);
   console.log("New Infrastucture : ", new_infraname);
   let plantID = "";
   try {
-    if (userData.plantID) {
-      plantID = userData.plantID;
-    } else {
-      throw new Error("PlantID not found ! ");
-    }
+    // if (userData.plantID) {
+    //   plantID = userData.plantID;
+    // } else {
+    //   throw new Error("PlantID not found ! ");
+    // }
     const response = await fetch(`http://${DB_IP}/infrastructure/admin`, {
       method: "PUT",
       headers: {
@@ -78,7 +79,8 @@ export const updateInfraNameDB = async (
       body: JSON.stringify({
         prev_infra: prev_infra,
         new_infraname: new_infraname,
-        plantID: plantID,
+        project_name:project,
+        plantID: plantId,
       }),
     });
     if (!response.ok) {
@@ -125,18 +127,18 @@ export const fetchUser = async () => {
 };
 
 
-export const getAllInfrastructure=async(userData)=>
+export const getAllInfrastructure=async(plantId,project)=>
   {
     console.log('getAllInfrastructure() called ')
-    let plantID = "";
+    // let plantID = "";
     try {
-      if (userData.plantID) {
-        plantID = userData.plantID;
-      } else {
-        throw new Error("PlantID not found ! ");
-      }
+      // if (userData.plantID) {
+      //   plantID = userData.plantID;
+      // } else {
+      //   throw new Error("PlantID not found ! ");
+      // }
       const response = await fetch(
-        `http://${DB_IP}/infrastructure/admin/${plantID}`,
+        `http://${DB_IP}/infrastructure/admin/${plantId}/${project}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -166,16 +168,16 @@ export const getAllInfrastructure=async(userData)=>
     }
   };
 
-  export const deleteInfrastructureFromDb=async(userData,infra_name)=>
+  export const deleteInfrastructureFromDb=async(plantId,infra_name,project)=>
     {
       console.log('deleteInfrastructureFromDb() called')
-      let plantID = "";
+      // let plantID = "";
       try {
-        if (userData.plantID) {
-          plantID = userData.plantID;
-        } else {
-          throw new Error("PlantID not found ! ");
-        }
+        // if (userData.plantID) {
+        //   plantID = userData.plantID;
+        // } else {
+        //   throw new Error("PlantID not found ! ");
+        // }
         const response = await fetch(
           `http://${DB_IP}/infrastructure/admin`,
           {
@@ -186,7 +188,8 @@ export const getAllInfrastructure=async(userData)=>
             },
             body: JSON.stringify({
               infrastructureName: infra_name,
-              plantID: plantID,
+              plantID: plantId,
+              project_name:project
             }),
           }
         );
@@ -205,7 +208,7 @@ export const getAllInfrastructure=async(userData)=>
 
 
     /***********************  Add Infrastructure  ************************* */
-    export const fecthCurrentInfrastructureDetails = async(plantId,inf) => 
+    export const fecthCurrentInfrastructureDetails = async(plantId,inf,project) => 
     {
       console.log("fecthCurrentInfrastructureDetails() called ! ");
       try {
@@ -213,7 +216,7 @@ export const getAllInfrastructure=async(userData)=>
         console.log("plant ID => ", plantId);
         console.log("infrastructure => ", inf);
         const response = await fetch(
-          `http://${DB_IP}/infrastructure/admin/${plantId}/${inf}/issues`,
+          `http://${DB_IP}/infrastructure/admin/${plantId}/${inf}/${project}/issues`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -232,7 +235,7 @@ export const getAllInfrastructure=async(userData)=>
       }
     };
 
-   export const deleteCurrentInfrastructure=async(plantID,inf,issue)=>
+   export const deleteCurrentInfrastructure=async(plantID,inf,issue,project)=>
       {
         console.log('deleteCurrentInfrastructure() called')
         try {
@@ -251,6 +254,7 @@ export const getAllInfrastructure=async(userData)=>
                 plantID: plantID,
                 infrastructureName: inf,
                 issue: issue,
+                project_name:project
               }),
             }
           );
@@ -328,12 +332,12 @@ export const getAllInfrastructure=async(userData)=>
         }
 
 
-        export const saveNewInfrastructure=async(json_data)=>
+        export const saveNewInfrastructure=async(json_data,project)=>
           {
             console.log('saveInfrastructureDetails() called ')
             try{
             const response = await fetch(
-              `http://${DB_IP}/infrastructure/admin`,
+              `http://${DB_IP}/infrastructure/admin/${project}`,
               {
                 method: "POST",
                 headers: {

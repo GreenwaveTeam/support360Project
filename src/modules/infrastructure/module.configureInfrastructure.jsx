@@ -1,6 +1,6 @@
-import { Box } from "@mui/material";
+import { Box, Chip } from "@mui/material";
 import { Container } from "@mui/system";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, {  useEffect, useLayoutEffect, useState } from "react";
 
 import Swal from "sweetalert2";
 
@@ -17,6 +17,9 @@ import Textfield from "../../components/textfield/textfield.component";
 import { useUserContext } from "../contexts/UserContext";
 import { extendTokenExpiration } from "../helper/Support360Api";
 import { deleteInfrastructureFromDb, fetchDivs, fetchUser, getAllInfrastructure, updateInfraNameDB } from "./infrastructureAdminAPI";
+import Dropdown from "../../components/dropdown/dropdown.component";
+import { fetchAllProjectDetails } from "../helper/AllProjectDetails";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 export default function ConfigureInfrastructure({ sendUrllist }) {
   // const [search, setSearch] = useState("");
@@ -59,16 +62,37 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
   const  [booleanProgressVisible,setBooleanProgressVisible]=useState(false)
 
+  //new change added project
+
+  const [selectedPlantAndProject,setSelectedPlantAndProject]=useState({plantId:'',project:''})
+
+  const [plantIdList,setPlantIdList]=useState([])
+  const [projectList,setProjectList]=useState([])
+
   /******************************* useEffect()********************************/
 
   useEffect(() => {
     //fetchDivsForCurrentPage();
     fetchUserAndRole();
     extendTokenExpiration();
-    fetchInfraFromDb();
+    fetchProjectAndPlantDetails();
+
+    // fetchInfraFromDb();
     // fetchDivsForCurrentPage(userData);
     sendUrllist(urllist);
   }, []);
+
+  useEffect(() => {
+    console.log('useEffect triggered:', selectedPlantAndProject);
+  
+    if (selectedPlantAndProject.plantId && selectedPlantAndProject.project) {
+      console.log('Plant Id:', selectedPlantAndProject.plantId, 'Project:', selectedPlantAndProject.project);
+      fetchInfraFromDb(selectedPlantAndProject.plantId, selectedPlantAndProject.project);
+    } else {
+      console.log('Plant ID or Project is missing:', selectedPlantAndProject);
+    }
+  }, [selectedPlantAndProject]);
+  
 
   //Will include id later on to implement the same to identify the list item .....
   //Will include plantID too..
@@ -123,9 +147,14 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
       return;
     }
-    //plantID here is harcoded
+    // if (selectedPlantAndProject.plantId&&selectedPlantAndProject.project) {
+    //   const data = { infrastructure: categoryname, plantID: selectedPlantAndProject.plantId,project:selectedPlantAndProject.project };
+    //   console.log("Data sent is => ", data);
+    //   navigate("/admin/infrastructure/addIssues", { state: data });
+    // }
+   
     if (userData.plantID) {
-      const data = { infrastructure: newCateogry, plantID: userData.plantID };
+      const data = { infrastructure: newCateogry, plantID: selectedPlantAndProject.plantId,project:selectedPlantAndProject.project };
       console.log("Data sent is => ", data);
       navigate("/admin/infrastructure/addIssues", { state: data });
     } else {
@@ -151,6 +180,34 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
   /**************************************************   API    **************************************************** */
 
+
+  const fetchProjectAndPlantDetails=async()=>
+    {
+      console.log('fetchProjectAndPlantDetails() called')
+      const projectDetails=await fetchAllProjectDetails();
+      console.log('Project Details : ',projectDetails)
+      const plantIdList=[]
+      const projectList=[]
+      if(projectDetails)
+       {
+         projectDetails.forEach(data=>
+           {
+             const currentPlant=data.plant_id;
+             const currentProject=data.project_name;
+             plantIdList.push(currentPlant)
+             projectList.push(currentProject)
+           }
+         )
+       }
+       console.log('Final PlantList : ',plantIdList)
+       console.log('Final ProjectList : ',projectList)
+       setPlantIdList(plantIdList)
+       setProjectList(projectList)
+
+       const indexAtZeroPlantId=plantIdList[0]
+       const indexAtZeroProject=projectList[0]
+       setSelectedPlantAndProject({...selectedPlantAndProject,plantId:indexAtZeroPlantId,project:indexAtZeroProject})
+    }
 
   const fetchUserAndRole=async()=>
     {
@@ -187,7 +244,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   const fetchDivsForCurrentPage = async (role) => {
     console.log("fetchDivsForCurrentPage() called ! ");
     //fetchDivs(userData,location,currentPageLocation);
-    const divs = await fetchDivs(userData, location, currentPageLocation, role);
+    const divs = await fetchDivs( location, currentPageLocation, role);
     console.log("Response for divs : ", divs);
     if (divs) {
       setDivIsVisibleList(divs);
@@ -268,7 +325,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     //   if (!response.ok) {
     //     throw new Error(`HTTP error! status: ${response.status}`);
     //   }
-    const success=await deleteInfrastructureFromDb(userData,infra_name)
+    const success=await deleteInfrastructureFromDb(selectedPlantAndProject.plantId,infra_name,selectedPlantAndProject.project)
       if (success) {
         const rowCopy = [...infraList];
         const filterArray = rowCopy.filter(
@@ -287,24 +344,27 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     }
   };
 
-  const fetchInfraFromDb = async () => {
+  const fetchInfraFromDb = async (plantId,project) => {
     // setProgressVisible(true);
     console.log("fetchInfraFromDb() called");
     console.log("Current Pager Location : ", currentPageLocation);
-    console.log("PlantID for InfrafromDb  : ");
-    console.log("Context value :  ", userData.plantID);
+    console.log('Current Plant Id : ',plantId,' Current Project : ',project)
+    // console.log("PlantID for InfrafromDb  : ");
+    // console.log("Context value :  ", userData.plantID);
     //  const plantID = "P009";
     //  console.log(
     //    "Fetched Token from LS=>  ",
     //    `Bearer ${localStorage.getItem("token")}`
     //  );
-    let plantID = "";
+    // let plantId = "";
+    // let project="";
     try {
-      if (userData.plantID) {
-        plantID = userData.plantID;
-      } else {
-        throw new Error("PlantID not found ! ");
-      }
+      // if (selectedPlantAndProject.plantId&&selectedPlantAndProject.project) {
+      //   plantId = selectedPlantAndProject.plantId;
+      //   project= selectedPlantAndProject.project;
+      // } else {
+      //   throw new Error("PlantID and project not found ! ");
+      // }
       // const response = await fetch(
       //   `http://localhost:8081/infrastructure/admin/${plantID}`,
       //   {
@@ -319,20 +379,21 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
       //   throw new Error("HTTP error " + response.status);
       // }
       // const data = await response.json();
-      const data = await getAllInfrastructure(userData);
+      const data = await getAllInfrastructure(plantId,project);
       console.log("Data from DB => ", data);
-      let infrastructure = [];
+      let infrastructureList = [];
       if (data.infraDetails) {
         console.log("infraDetails from Db => ", data.infraDetails);
         data.infraDetails.map((item) => {
           console.log("inf name => ", item.infrastructure_name);
           let tempItem = { categoryname: item.infrastructure_name };
-          infrastructure.push(tempItem);
-          console.log("infrastructure array => ", infrastructure);
+          infrastructureList.push(tempItem);
+          console.log("infrastructure array => ", infrastructureList);
         });
       }
-      setInfraList(infrastructure);
-      setoriginalInfraRows(infrastructure);
+      setInfraList(infrastructureList);
+      setoriginalInfraRows(infrastructureList);
+     
       //setProgressVisible(false);
       // setsnackbarSeverity("success")
       // setSnackbarText("Data refereshed successfully !")
@@ -343,7 +404,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
       setSnackbarText(error.toString());
       setOpen(true);
       console.log("Error fetching data from database !");
-      navigate("/notfound");
+      // navigate("/notfound");
     }
   };
 
@@ -413,6 +474,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     console.log("handleSaveClick() props called");
     console.log("The category to update => ", selected_category.categoryname);
     console.log("The updated category => ", updated_category.categoryname);
+    console.log("Current Project : ",selectedPlantAndProject.project)
 
     // let plantID = "";
     try {
@@ -424,7 +486,8 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
       const success = await updateInfraNameDB(
         selected_category.categoryname,
         updated_category.categoryname,
-        userData
+        selectedPlantAndProject.project,
+        selectedPlantAndProject.plantId
       );
       console.log("The success returned handleSaveClick() => ", success);
 
@@ -497,11 +560,18 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     //   }
   ];
 
-  const addIssueCategory = (selectedCategory, updatedCategory) => {
+  const addIssueCategory = async(selectedCategory, updatedCategory) => {
     console.log("Save to database method called");
     console.log("Selected category : ", selectedCategory);
     console.log("Updated Category : ", updatedCategory);
-    const success = handleSaveClick(selectedCategory, updatedCategory);
+    const success = await handleSaveClick(selectedCategory, updatedCategory);
+    console.log('addIssueCategory : ',success)
+    if(success===false)
+      {
+        setsnackbarSeverity('error')
+        setSnackbarText('Error !')
+        setOpen(true)
+      }
     return success;
     // if (updatedCategory.issuelist !== null) {
     //   const requestData = {
@@ -526,13 +596,13 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     console.log("Redirected Catefory : ", categoryname);
     //         const paramIssue = infrastructure.trim();
     // console.log("Category is => ", paramIssue);
-    if (userData.plantID) {
-      const data = { infrastructure: categoryname, plantID: userData.plantID };
+    if (selectedPlantAndProject.plantId&&selectedPlantAndProject.project) {
+      const data = { infrastructure: categoryname, plantID: selectedPlantAndProject.plantId,project:selectedPlantAndProject.project };
       console.log("Data sent is => ", data);
       navigate("/admin/infrastructure/addIssues", { state: data });
     } else {
       setsnackbarSeverity("error");
-      setSnackbarText("PlantID not found ! ");
+      setSnackbarText("Error ! ");
       setOpen(true);
     }
     //history.push({pathname:"/"})
@@ -566,6 +636,38 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
       <div>
         <center>
           <Container sx={classes.conatiner}>
+            <div style={{display:'flex',justifyContent:'space-between'}}>
+
+            {
+              <>
+                <div style={{display:'flex'}}>
+                  <Dropdown
+                  id={"plantId-dropdown"}
+                  value={selectedPlantAndProject.plantId ? selectedPlantAndProject.plantId : ''}
+                  onChange={(event) =>setSelectedPlantAndProject({...selectedPlantAndProject,plantId:event.target.value})}
+                  list={plantIdList}
+                  label={"Plant-ID"}
+                  // error={dropDownError}
+                  style={{ width: "110px" }}
+                ></Dropdown>
+
+                <Dropdown
+                id={"project-dropdown"}
+                value={selectedPlantAndProject.project ? selectedPlantAndProject.project : ''}
+                onChange={(event) =>setSelectedPlantAndProject({...selectedPlantAndProject,project:event.target.value})}
+                list={projectList}
+                label={"Project"}
+                // error={dropDownError}
+                style={{ width: "110px",marginLeft:'10px' }}
+              ></Dropdown>
+               </div>
+           
+          </>
+             
+              }
+
+
+
             {divIsVisibleList &&
               divIsVisibleList.includes("add-new-infrastructure-category") && (
                 <div id="add-new-infrastructure-category" style={{display:'flex'}}>
@@ -590,6 +692,20 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                   ></CustomButton>
                 </div>
               )}
+
+             
+              </div>
+              { <div style={{ paddingTop: '14px',    display: "grid",
+                justifyContent: "start" }}>
+            <Chip
+              label={
+                <div>
+                  <InfoOutlinedIcon fontSize="small" /> 
+                  Please select Plant-ID and Project from the above dropdown
+                </div>
+              }
+            />
+          </div>}
               <br/>
             {/* <br />
             <br />
@@ -636,3 +752,4 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     </AnimatedPage>
   );
 }
+

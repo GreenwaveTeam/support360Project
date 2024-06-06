@@ -45,7 +45,7 @@ const Application = ({ sendUrllist }) => {
   const [categories, setCategories] = useState([]);
   const { userData, setUserData } = useUserContext();
 
-  const plantid = userData.plantID;
+  // const plantid = userData.plantID;
   //const role = userData.role;
   const columns = [
     {
@@ -66,6 +66,9 @@ const Application = ({ sendUrllist }) => {
   const [categoryname, setCategoryname] = useState("");
   const location = useLocation();
   const application_name = location.state.application_name;
+  const plantid=location.state.plantid;
+  const selectedProject=location.state.selectedProject
+  console.log("Plant id:"+plantid)
   const modulelist = location.state.modulelist;
   //console.log("Module list====>"+JSON.stringify(modulelist))
   const [module_Name, setModule_Name] = useState(application_name + "_Module_");
@@ -192,10 +195,11 @@ const Application = ({ sendUrllist }) => {
         moduleName: module_Name,
         categoryname: categoryname,
         issuename: prev.issuename,
+        project_name:selectedProject
       };
       console.log("Rowdata=====>" + JSON.stringify(rowData));
       await axios.delete(
-        `http://${DB_IP}/application/admin/plant/application/modulename/category/issue`,
+        `http://${DB_IP}/application/admin/deleteApplicationIssue`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -241,10 +245,10 @@ const Application = ({ sendUrllist }) => {
               severity: rowData.severity,
             }),
         };
-
+        console.log("Module Upload")
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
-          `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
+          `http://${DB_IP}/application/admin/addApplicationModuleDetails/${selectedProject}`,
           requestData,
           {
             headers: {
@@ -277,12 +281,13 @@ const Application = ({ sendUrllist }) => {
         moduleName: module_Name,
         categoryname: categoryname,
         issuename: rowData.issuename,
+        project_name:selectedProject
       };
 
       console.log("Handle delete==>", requestBody);
 
       await axios.delete(
-        `http://${DB_IP}/application/admin/plant/application/modulename/category/issue`,
+        `http://${DB_IP}/application/admin/deleteApplicationIssue`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -389,7 +394,7 @@ const Application = ({ sendUrllist }) => {
 
     try {
       const response = await axios.delete(
-        `http://${DB_IP}/application/admin/plant_id/application/module/category`,
+        `http://${DB_IP}/application/admin/deleteApplicationCategory/${selectedProject}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -608,7 +613,7 @@ const Application = ({ sendUrllist }) => {
       try {
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
-          `http://${DB_IP}/application/admin/plant_id/application_name/moduleName`,
+          `http://${DB_IP}/application/admin/addApplicationModuleDetails/${selectedProject}`,
           requestData,
           {
             headers: {

@@ -19,19 +19,28 @@ import Swal from "sweetalert2";
 import NotFound from "../../../components/notfound/notfound.component";
 import { useUserContext } from "../../contexts/UserContext";
 import { extendTokenExpiration } from "../../helper/Support360Api";
+import Dropdown from "../../../components/dropdown/dropdown.component";
+import { display, padding } from "@mui/system";
+import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
 
 const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function ModuleConfiguration({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
 
-  const plantid = userData.plantID;
+  // const plantid = userData.plantID;
   // const [role,setRole] = useState("")
+  const [plantid,setPlantid]=useState(null)
   const [open, setOpen] = useState(false);
   const [application_name, setApplication_name] = useState("");
   const [dialogPopup, setDialogPopup] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
   const [showpipispinner,setShowpipispinner]=useState(true)
+  const [projectDetails,setProjectDetails]=useState([])
+  const [plantDetails,setPlantDetails]=useState([])
+  const [projects,setProjects]=useState([])
+  const [selectedPlant,setSelectedPlant]=useState(null)
+  const [selectedProject,setSelectedProject]=useState(null)
   const columns = [
     {
       id: "application_name",
@@ -117,7 +126,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://${DB_IP}/application/admin/${plantid}`,
+        `http://${DB_IP}/application/admin/${plantid}/${selectedProject}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -137,22 +146,31 @@ export default function ModuleConfiguration({ sendUrllist }) {
     // fetchDivs();
      sendUrllist(urllist);
      extendTokenExpiration();
-
-     await fetchData();
+    const projects=await fetchAllProjectDetails()
+    setProjectDetails(projects)
+    setPlantDetails(projects.map((plant)=>plant.plant_id))
+     //await fetchData();
      await fetchUser()
      setShowpipispinner(false)
     }
   useEffect(() => {
     functionsCalledOnUseEffect()
   }, []);
+  useEffect(() => {
+    const selectedprojects=projectDetails.filter((plant)=>(plant.plant_id===selectedPlant))
+    setProjects(selectedprojects.map((project)=>project.project_name))
+   
+  }, [selectedPlant]);
+  useEffect(()=>{
+     fetchData();
+  },[selectedProject])
 
-  const [editRow, setEditRow] = useState(false);
-  const handleEditSave = () => {};
   const handleDeleteClick = async (rowData) => {
     try {
       const requestBody = {
         plant_id: plantid,
         application_name: rowData.application_name,
+        project_name:selectedProject
         // Add other properties from rowData if needed
       };
       await axios.delete(
@@ -184,7 +202,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
     try {
       // Send requestBody as request body in the PUT request
       const response = await axios.put(
-        `http://${DB_IP}/application/admin/${plantid}/${prev.application_name}`,
+        `http://${DB_IP}/application/admin/${plantid}/${selectedProject}/${prev.application_name}`,
         rowData,
         {
           headers: {
@@ -208,7 +226,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
   const handleRedirect = (appdata) => {
     console.log("Handle redirect method invoked")
     navigate(`/admin/ApplicationConfigure/Modules`, {
-      state: { application_name: appdata.application_name },
+      state: { application_name: appdata.application_name , plantid:plantid, selectedProject:selectedProject},
     });
   };
   const handleSubmit = (event) => {
@@ -233,7 +251,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
       return true;
     }
     navigate(`/admin/ApplicationConfigure/Module`, {
-      state: { application_name: application_name, modulelist: null },
+      state: { application_name: application_name, modulelist: null ,plantid: plantid ,selectedProject:selectedProject},
     });
   };
   if (localStorage.getItem("token") === null) return <NotFound />;
@@ -249,10 +267,20 @@ export default function ModuleConfiguration({ sendUrllist }) {
       {divIsVisibleList.length !== 0 && (
         <Box>
           <Box>
-            
+            <Box style={{display:'flex', flexDirection:'row'}}>
+            <Box style={{display:'flex', flexDirection:'row'}}>
+              
+              <div style={{padding:'10px'}}>
+                <Dropdown list={plantDetails} label={"Select Plant"} value={selectedPlant} onChange={(event)=>{setSelectedPlant(event.target.value);setPlantid(event.target.value)}}  style={{width:"100px"}} />
+              </div>
+              <div style={{padding:'10px'}}>
+                <Dropdown  list={projects} label={"Select Project"} style={{width:"100px"}}  onChange={(event)=>{setSelectedProject(event.target.value)}} />
+              </div>
+            </Box>
             {divIsVisibleList &&
               divIsVisibleList.includes("add-new-application") && (
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} 
+                style={{marginLeft:'40%'}}>
                   <TextField
                     label={"Application Name"}
                     id="issuecategory"
@@ -285,6 +313,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
                   </Button>
                 </form>
               )}
+              </Box>
             {/* <Box boxShadow={3} p={3} borderRadius={10}  
             sx={{backgroundColor: "#B5C0D0",display: 'flex',flexDirection:'column',width:'40%',
             justifyContent: 'center',}}alignItems={'center'} marginTop={'10px'}>

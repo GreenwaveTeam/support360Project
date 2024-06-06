@@ -212,6 +212,10 @@ export default function UserRegistration({ sendUrllist }) {
   const currentPageLocation = useLocation().pathname;
 
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+  const [isRoleChanged, setIsRoleChanged] = useState(false);
+  const [allCustomerAccountEmailList, setAllCustomerAccountEmailList] =
+    useState([]);
+  const [allGWAccountEmailList, setAllGWAccountEmailList] = useState([]);
 
   useEffect(() => {
     // console.log("user : ", state.user);
@@ -228,7 +232,40 @@ export default function UserRegistration({ sendUrllist }) {
     };
     fetchData();
     fetchUser();
+    fetchAllEmails();
   }, [formData.role]);
+
+  const fetchAllEmails = async () => {
+    try {
+      const response = await fetch(`http://${DB_IP}/users/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status === 403) {
+        localStorage.clear();
+        navigate("/login");
+        return;
+      }
+      const data = await response.json();
+      console.log("fetchAllEmails data : ", data);
+      // setAllAccountEmailList(data.map((user) => user.email));
+      setAllCustomerAccountEmailList(
+        data
+          .map((user) => user.email)
+          .filter((email) => !email.endsWith("@greenwave.co.in"))
+      );
+      setAllGWAccountEmailList(
+        data
+          .map((user) => user.email)
+          .filter((email) => email.endsWith("@greenwave.co.in"))
+      );
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
 
   const fetchUser = async () => {
     console.log("expire : ", localStorage.getItem("expire"));
@@ -359,7 +396,7 @@ export default function UserRegistration({ sendUrllist }) {
       .join(" ");
   }
 
-  function removeOnlySpecialChar(str) {
+  function removeOnlySpecialCharExceptAtTheRate(str) {
     var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9@.]/g, "");
     var atIndex = stringWithoutSpecialChars.indexOf("@");
     if (atIndex !== -1) {
@@ -371,6 +408,11 @@ export default function UserRegistration({ sendUrllist }) {
         );
       }
     }
+    return stringWithoutSpecialChars;
+  }
+
+  function removeOnlySpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
     return stringWithoutSpecialChars;
   }
 
@@ -1057,7 +1099,7 @@ export default function UserRegistration({ sendUrllist }) {
                               }
                             />
                           </Grid>
-                          <Grid item xs={6}>
+                          {/* <Grid item xs={6}>
                             <Textfield
                               required
                               fullWidth
@@ -1092,6 +1134,88 @@ export default function UserRegistration({ sendUrllist }) {
                               }}
                               onChange={updateHandleFormdataInputChange}
                             />
+                          </Grid> */}
+                          <Grid item xs={6}>
+                            <FormControl
+                              fullWidth
+                              error={updateFormErrors.accountOwnerCustomer}
+                            >
+                              <Autocomplete
+                                id="updateAccountOwnerCustomer"
+                                options={allCustomerAccountEmailList}
+                                value={updateFormData.accountOwnerCustomer}
+                                onChange={(event, newValue) => {
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    accountOwnerCustomer: newValue,
+                                  });
+                                  if (newValue !== null && newValue !== "") {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      accountOwnerCustomer: false,
+                                    });
+                                  } else {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      accountOwnerCustomer: true,
+                                    });
+                                  }
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Account Owner Customer"
+                                    error={
+                                      updateFormErrors.accountOwnerCustomer
+                                    }
+                                    helperText={
+                                      updateFormErrors.accountOwnerCustomer &&
+                                      "Account Owner Customer must be filled"
+                                    }
+                                  />
+                                )}
+                              />
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <FormControl
+                              fullWidth
+                              error={updateFormErrors.accountOwnerGW}
+                            >
+                              <Autocomplete
+                                id="updateAccountOwnerGW"
+                                options={allGWAccountEmailList}
+                                value={updateFormData.accountOwnerGW}
+                                onChange={(event, newValue) => {
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    accountOwnerGW: newValue,
+                                  });
+                                  if (newValue !== null && newValue !== "") {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      accountOwnerGW: false,
+                                    });
+                                  } else {
+                                    setUpdateFormErrors({
+                                      ...updateFormErrors,
+                                      accountOwnerGW: true,
+                                    });
+                                  }
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Account Owner GW"
+                                    error={updateFormErrors.accountOwnerGW}
+                                    helperText={
+                                      updateFormErrors.accountOwnerGW &&
+                                      "Account Owner GW must be filled"
+                                    }
+                                  />
+                                )}
+                              />
+                            </FormControl>
                           </Grid>
                           <Grid item xs={6}>
                             {/* <Dropdown
@@ -1124,11 +1248,17 @@ export default function UserRegistration({ sendUrllist }) {
                                 id="role"
                                 value={updateFormData.role}
                                 onChange={(e) => {
+                                  setIsRoleChanged(true);
                                   const selectedRole = e.target.value;
                                   setUpdateFormData({
                                     ...updateFormData,
                                     role: selectedRole,
+                                    homepage: "",
                                   });
+                                  console.log(
+                                    "updateFormData.homepage : : : ",
+                                    updateFormData.homepage
+                                  );
                                   if (selectedRole !== "") {
                                     setUpdateFormErrors({
                                       ...updateFormErrors,
@@ -1156,8 +1286,27 @@ export default function UserRegistration({ sendUrllist }) {
                               )}
                             </FormControl>
                           </Grid>
-                          <Grid item xs={6}>
-                            {/* <Dropdown
+                          {!isRoleChanged ? (
+                            <>
+                              <Grid item xs={6}>
+                                <Tooltip title="change the role first">
+                                  <TextField
+                                    name="homepage"
+                                    required
+                                    fullWidth
+                                    id="homepage"
+                                    label="Homepage"
+                                    autoFocus
+                                    value={updateFormData.homepage}
+                                    InputProps={{ readOnly: true }}
+                                  />
+                                </Tooltip>
+                              </Grid>
+                            </>
+                          ) : (
+                            <>
+                              <Grid item xs={6}>
+                                {/* <Dropdown
                         fullWidth
                         id="homepage"
                         value={updateFormData.homepage}
@@ -1165,55 +1314,67 @@ export default function UserRegistration({ sendUrllist }) {
                         onChange={updateHandleHomepageChange}
                         list={["admin/home", "user/home"]}
                       /> */}
-                            <FormControl
-                              fullWidth
-                              error={updateFormErrors.homepage}
-                            >
-                              <InputLabel id="homepage-label">
-                                Homepage
-                              </InputLabel>
-                              <Select
-                                labelId="homepage-label"
-                                label="Homepage"
-                                id="homepage"
-                                value={updateFormData.homepage}
-                                onChange={(e) => {
-                                  const selectedHomepage = e.target.value;
-                                  setUpdateFormData({
-                                    ...updateFormData,
-                                    homepage: selectedHomepage,
-                                  });
-                                  if (selectedHomepage !== "") {
-                                    setUpdateFormErrors({
-                                      ...updateFormErrors,
-                                      homepage: false,
-                                    });
-                                  } else {
-                                    setUpdateFormErrors({
-                                      ...updateFormErrors,
-                                      homepage: true,
-                                    });
-                                  }
-                                }}
-                              >
-                                {/* <MenuItem value="admin/home">admin/home</MenuItem>
-                          <MenuItem value="user/home">user/home</MenuItem> */}
-                                {updateHomePageNames.map((page) => (
-                                  <MenuItem
-                                    key={page}
-                                    value={removeLeadingSlash(page)}
+                                <FormControl
+                                  fullWidth
+                                  error={updateFormErrors.homepage}
+                                >
+                                  <InputLabel id="homepage-label">
+                                    Homepage
+                                  </InputLabel>
+                                  <Select
+                                    labelId="homepage-label"
+                                    label="Homepage"
+                                    id="homepage"
+                                    value={updateFormData.homepage}
+                                    onChange={(e) => {
+                                      const selectedHomepage = e.target.value;
+                                      setUpdateFormData({
+                                        ...updateFormData,
+                                        homepage: selectedHomepage,
+                                      });
+                                      console.log(
+                                        "homepage updated to : ",
+                                        selectedHomepage
+                                      );
+                                      if (
+                                        selectedHomepage !== "" ||
+                                        updateFormData.homepage !== ""
+                                      ) {
+                                        setUpdateFormErrors({
+                                          ...updateFormErrors,
+                                          homepage: false,
+                                        });
+                                      } else {
+                                        setUpdateFormErrors({
+                                          ...updateFormErrors,
+                                          homepage: true,
+                                        });
+                                      }
+                                    }}
                                   >
-                                    {removeLeadingSlash(page)}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                              {updateFormErrors.homepage && (
-                                <FormHelperText>
-                                  Homepage must be filled
-                                </FormHelperText>
-                              )}
-                            </FormControl>
-                          </Grid>
+                                    {/* <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem> */}
+                                    {updateHomePageNames.map((page) => (
+                                      <MenuItem
+                                        defaultValue={removeLeadingSlash(
+                                          updateHomePageNames[0]
+                                        )}
+                                        key={page}
+                                        value={removeLeadingSlash(page)}
+                                      >
+                                        {removeLeadingSlash(page)}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                  {updateFormErrors.homepage && (
+                                    <FormHelperText>
+                                      Homepage must be filled
+                                    </FormHelperText>
+                                  )}
+                                </FormControl>
+                              </Grid>
+                            </>
+                          )}
                           <Grid item xs={6}>
                             <Autocomplete
                               value={updateFormData.plantName}
@@ -1648,9 +1809,10 @@ export default function UserRegistration({ sendUrllist }) {
                                 onChange={(e) => {
                                   setFormData({
                                     ...formData,
-                                    userId: removeOnlySpecialChar(
-                                      e.target.value.toLocaleLowerCase()
-                                    ),
+                                    userId:
+                                      removeOnlySpecialCharExceptAtTheRate(
+                                        e.target.value.toLocaleLowerCase()
+                                      ),
                                   });
                                   setUnchangedUserID(e.target.value);
                                   setFormErrors({
@@ -1849,7 +2011,7 @@ export default function UserRegistration({ sendUrllist }) {
                             />
                           </Grid>
                           <Grid item xs={6}>
-                            <Textfield
+                            {/* <Textfield
                               required
                               fullWidth
                               name="accountOwnerCustomer"
@@ -1883,10 +2045,91 @@ export default function UserRegistration({ sendUrllist }) {
                                 formErrors.accountOwnerCustomer &&
                                 "Account Owner Customer must be filled"
                               }
-                            />
+                            /> */}
+
+                            <FormControl
+                              fullWidth
+                              error={formErrors.accountOwnerCustomer}
+                            >
+                              {/* <InputLabel id="account-owner-customer-label">
+                                Account Owner Customer
+                              </InputLabel>
+                              <Select
+                                labelId="account-owner-customer-label"
+                                label="Account Owner Customer"
+                                id="accountOwnerCustomer"
+                                value={formData.accountOwnerCustomer}
+                                onChange={(e) => {
+                                  const selectedAccount = e.target.value;
+                                  setFormData({
+                                    ...formData,
+                                    accountOwnerCustomer: selectedAccount,
+                                  });
+                                  console.log(
+                                    "formData.accountOwnerCustomer : : : ",
+                                    formData.accountOwnerCustomer
+                                  );
+                                  if (selectedAccount !== "") {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      accountOwnerCustomer: false,
+                                    });
+                                  } else {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      accountOwnerCustomer: true,
+                                    });
+                                  }
+                                }}
+                              >
+                                {allCustomerAccountEmailList.map((email) => (
+                                  <MenuItem key={email} value={email}>
+                                    {email}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {formErrors.accountOwnerCustomer && (
+                                <FormHelperText>
+                                  Account Owner Customer must be filled
+                                </FormHelperText>
+                              )} */}
+                              <Autocomplete
+                                id="accountOwnerCustomer"
+                                options={allCustomerAccountEmailList}
+                                value={formData.accountOwnerCustomer}
+                                onChange={(event, newValue) => {
+                                  setFormData({
+                                    ...formData,
+                                    accountOwnerCustomer: newValue,
+                                  });
+                                  if (newValue !== null && newValue !== "") {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      accountOwnerCustomer: false,
+                                    });
+                                  } else {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      accountOwnerCustomer: true,
+                                    });
+                                  }
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Account Owner Customer"
+                                    error={formErrors.accountOwnerCustomer}
+                                    helperText={
+                                      formErrors.accountOwnerCustomer &&
+                                      "Account Owner Customer must be filled"
+                                    }
+                                  />
+                                )}
+                              />
+                            </FormControl>
                           </Grid>
                           <Grid item xs={6}>
-                            <Textfield
+                            {/* <Textfield
                               required
                               fullWidth
                               name="accountOwnerGW"
@@ -1919,7 +2162,87 @@ export default function UserRegistration({ sendUrllist }) {
                                 formErrors.accountOwnerGW &&
                                 "Account Owner GW must be filled"
                               }
-                            />
+                            /> */}
+                            <FormControl
+                              fullWidth
+                              error={formErrors.accountOwnerGW}
+                            >
+                              {/* <InputLabel id="account-owner-GW-label">
+                                Account Owner GW
+                              </InputLabel>
+                              <Select
+                                labelId="account-owner-GW-label"
+                                label="Account Owner GW"
+                                id="accountOwnerGW"
+                                value={formData.accountOwnerGW}
+                                onChange={(e) => {
+                                  const selectedAccount = e.target.value;
+                                  setFormData({
+                                    ...formData,
+                                    accountOwnerGW: selectedAccount,
+                                  });
+                                  console.log(
+                                    "formData.accountOwnerGW : : : ",
+                                    formData.accountOwnerGW
+                                  );
+                                  if (selectedAccount !== "") {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      accountOwnerGW: false,
+                                    });
+                                  } else {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      accountOwnerGW: true,
+                                    });
+                                  }
+                                }}
+                              >
+                                {allGWAccountEmailList.map((email) => (
+                                  <MenuItem key={email} value={email}>
+                                    {email}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {formErrors.accountOwnerGW && (
+                                <FormHelperText>
+                                  Account Owner GW must be filled
+                                </FormHelperText>
+                              )} */}
+                              <Autocomplete
+                                id="accountOwnerGW"
+                                options={allGWAccountEmailList}
+                                value={formData.accountOwnerGW}
+                                onChange={(event, newValue) => {
+                                  setFormData({
+                                    ...formData,
+                                    accountOwnerGW: newValue,
+                                  });
+                                  if (newValue !== null && newValue !== "") {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      accountOwnerGW: false,
+                                    });
+                                  } else {
+                                    setFormErrors({
+                                      ...formErrors,
+                                      accountOwnerGW: true,
+                                    });
+                                  }
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Account Owner GW"
+                                    error={formErrors.accountOwnerGW}
+                                    helperText={
+                                      formErrors.accountOwnerGW &&
+                                      "Account Owner GW must be filled"
+                                    }
+                                  />
+                                )}
+                              />
+                            </FormControl>
                           </Grid>
                           <Grid item xs={6}>
                             <FormControl fullWidth error={formErrors.role}>
@@ -2462,7 +2785,12 @@ export default function UserRegistration({ sendUrllist }) {
                             id="plantName"
                             autoComplete="plantName"
                             value={newPlantName.plantName}
-                            onChange={handlenewPlantNameInputChange}
+                            onChange={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                plantName: removeAllSpecialChar(e.target.value),
+                              });
+                            }}
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -2474,7 +2802,12 @@ export default function UserRegistration({ sendUrllist }) {
                             id="plantID"
                             autoComplete="plantID"
                             value={newPlantName.plantID}
-                            onChange={handlenewPlantNameInputChange}
+                            onChange={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                plantID: removeAllSpecialChar(e.target.value),
+                              });
+                            }}
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -2498,10 +2831,17 @@ export default function UserRegistration({ sendUrllist }) {
                             id="customer"
                             autoComplete="customer"
                             value={newPlantName.customerName}
-                            onChange={handlenewPlantNameInputChange}
+                            onChange={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                customerName: removeAllSpecialChar(
+                                  e.target.value
+                                ),
+                              });
+                            }}
                           />
                         </Grid>
-                        <Grid item xs={6}>
+                        {/* <Grid item xs={6}>
                           <Datepicker
                             label="Support Start Date"
                             value={dayjs(newPlantName.supportStartDate)}
@@ -2527,7 +2867,7 @@ export default function UserRegistration({ sendUrllist }) {
                             }
                             slotProps={{ textField: { fullWidth: true } }}
                           />
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={12}>
                           <Textfield
                             required
@@ -2537,7 +2877,12 @@ export default function UserRegistration({ sendUrllist }) {
                             id="division"
                             autoComplete="division"
                             value={newPlantName.division}
-                            onChange={handlenewPlantNameInputChange}
+                            onChange={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                division: removeAllSpecialChar(e.target.value),
+                              });
+                            }}
                           />
                         </Grid>
                       </Grid>
@@ -2549,7 +2894,6 @@ export default function UserRegistration({ sendUrllist }) {
                       >
                         Cancel
                       </Button>
-
                       <Button
                         onClick={() => {
                           setOpenDeleteDialog(false);
@@ -2560,13 +2904,14 @@ export default function UserRegistration({ sendUrllist }) {
                         color="error"
                         autoFocus
                         disabled={
-                          newPlantName.plantName === "" ||
-                          newPlantName.plantID === "" ||
-                          newPlantName.address === "" ||
-                          newPlantName.customerName === "" ||
-                          newPlantName.division === "" ||
-                          newPlantName.supportStartDate === "" ||
-                          newPlantName.supportEndDate === ""
+                          newPlantName.plantName.trim() === "" ||
+                          newPlantName.plantID.trim() === "" ||
+                          newPlantName.address.trim() === "" ||
+                          newPlantName.customerName.trim() === "" ||
+                          newPlantName.division.trim() === ""
+                          // ||
+                          // newPlantName.supportStartDate === "" ||
+                          // newPlantName.supportEndDate === ""
                         }
                       >
                         Save

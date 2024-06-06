@@ -21,6 +21,7 @@ import {
   Tooltip,
   FormControlLabel,
   Checkbox,
+  TextField,
 } from "@mui/material";
 import Textfield from "../../components/textfield/textfield.component";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -94,6 +95,7 @@ export default function AdminRegistration({ sendUrllist }) {
   const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
   const [unchangedAdminID, setUnchangedAdminID] = useState("");
+  const [isRoleChanged, setIsRoleChanged] = useState(false);
 
   const { state } = useLocation();
 
@@ -220,7 +222,14 @@ export default function AdminRegistration({ sendUrllist }) {
     console.log("fetchUpdateData called");
     const pages = await fetchPagesByRole(selectedRole);
     console.log("updateFormData.role : ", selectedRole);
-    setUpdateHomePageNames(pages);
+    console.log("updateFormData.pages : ", pages);
+
+    const updatedPages = pages.map((page) =>
+      page.startsWith("/") ? page.substring(1) : page
+    );
+    console.log("Updated pages without leading slash: ", updatedPages);
+    setUpdateHomePageNames(updatedPages);
+    // setUpdateHomePageNames(pages);
   };
 
   const urllist =
@@ -704,11 +713,17 @@ export default function AdminRegistration({ sendUrllist }) {
                               id="role"
                               value={updateFormData.role}
                               onChange={(e) => {
+                                setIsRoleChanged(true);
                                 const selectedRole = e.target.value;
                                 setUpdateFormData({
                                   ...updateFormData,
                                   role: selectedRole,
+                                  homepage: "",
                                 });
+                                console.log(
+                                  "updateFormData.homepage : : : ",
+                                  updateFormData.homepage
+                                );
                                 if (selectedRole !== "") {
                                   setUpdateFormErrors({
                                     ...updateFormErrors,
@@ -736,8 +751,27 @@ export default function AdminRegistration({ sendUrllist }) {
                             )}
                           </FormControl>
                         </Grid>
-                        <Grid item xs={6}>
-                          {/* <Dropdown
+                        {!isRoleChanged ? (
+                          <>
+                            <Grid item xs={6}>
+                              <Tooltip title="change the role first">
+                                <TextField
+                                  name="homepage"
+                                  required
+                                  fullWidth
+                                  id="homepage"
+                                  label="Homepage"
+                                  autoFocus
+                                  value={updateFormData.homepage}
+                                  InputProps={{ readOnly: true }}
+                                />
+                              </Tooltip>
+                            </Grid>
+                          </>
+                        ) : (
+                          <>
+                            <Grid item xs={6}>
+                              {/* <Dropdown
                         fullWidth
                         id="homepage"
                         value={updateFormData.homepage}
@@ -745,55 +779,67 @@ export default function AdminRegistration({ sendUrllist }) {
                         onChange={updateHandleHomepageChange}
                         list={["admin/home", "user/home"]}
                       /> */}
-                          <FormControl
-                            fullWidth
-                            error={updateFormErrors.homepage}
-                          >
-                            <InputLabel id="homepage-label">
-                              Homepage
-                            </InputLabel>
-                            <Select
-                              labelId="homepage-label"
-                              label="Homepage"
-                              id="homepage"
-                              value={updateFormData.homepage}
-                              onChange={(e) => {
-                                const selectedHomepage = e.target.value;
-                                setUpdateFormData({
-                                  ...updateFormData,
-                                  homepage: selectedHomepage,
-                                });
-                                if (selectedHomepage !== "") {
-                                  setUpdateFormErrors({
-                                    ...updateFormErrors,
-                                    homepage: false,
-                                  });
-                                } else {
-                                  setUpdateFormErrors({
-                                    ...updateFormErrors,
-                                    homepage: true,
-                                  });
-                                }
-                              }}
-                            >
-                              {/* <MenuItem value="admin/home">admin/home</MenuItem>
-                          <MenuItem value="user/home">user/home</MenuItem> */}
-                              {updateHomePageNames.map((page) => (
-                                <MenuItem
-                                  key={page}
-                                  value={removeLeadingSlash(page)}
+                              <FormControl
+                                fullWidth
+                                error={updateFormErrors.homepage}
+                              >
+                                <InputLabel id="homepage-label">
+                                  Homepage
+                                </InputLabel>
+                                <Select
+                                  labelId="homepage-label"
+                                  label="Homepage"
+                                  id="homepage"
+                                  value={updateFormData.homepage}
+                                  onChange={(e) => {
+                                    const selectedHomepage = e.target.value;
+                                    setUpdateFormData({
+                                      ...updateFormData,
+                                      homepage: selectedHomepage,
+                                    });
+                                    console.log(
+                                      "homepage updated to : ",
+                                      selectedHomepage
+                                    );
+                                    if (
+                                      selectedHomepage !== "" ||
+                                      updateFormData.homepage !== ""
+                                    ) {
+                                      setUpdateFormErrors({
+                                        ...updateFormErrors,
+                                        homepage: false,
+                                      });
+                                    } else {
+                                      setUpdateFormErrors({
+                                        ...updateFormErrors,
+                                        homepage: true,
+                                      });
+                                    }
+                                  }}
                                 >
-                                  {removeLeadingSlash(page)}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {updateFormErrors.homepage && (
-                              <FormHelperText>
-                                Homepage must be filled
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Grid>
+                                  {/* <MenuItem value="admin/home">admin/home</MenuItem>
+                          <MenuItem value="user/home">user/home</MenuItem> */}
+                                  {updateHomePageNames.map((page) => (
+                                    <MenuItem
+                                      defaultValue={removeLeadingSlash(
+                                        updateHomePageNames[0]
+                                      )}
+                                      key={page}
+                                      value={removeLeadingSlash(page)}
+                                    >
+                                      {removeLeadingSlash(page)}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                                {updateFormErrors.homepage && (
+                                  <FormHelperText>
+                                    Homepage must be filled
+                                  </FormHelperText>
+                                )}
+                              </FormControl>
+                            </Grid>
+                          </>
+                        )}
                       </Grid>
                       <Button
                         type="submit"

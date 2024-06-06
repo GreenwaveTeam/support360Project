@@ -26,7 +26,7 @@ import { useUserContext } from "../../contexts/UserContext";
 const DeviceCategory = ({ sendUrllist }) => {
   const { userData, setUserData } = useUserContext();
 
-  const plantid = userData.plantID;
+  const plantid = 'NA';
   //const role = userData.role;
   console.log(userData);
   const [open, setOpen] = useState(false);
@@ -201,7 +201,7 @@ const DeviceCategory = ({ sendUrllist }) => {
 
     try {
       // Send requestBody as request body in the DELETE request
-      await axios.delete("http://${DB_IP}/device/admin/categories", {
+      await axios.delete(`http://${DB_IP}/device/admin/categories`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
           "Content-Type": "application/json",

@@ -271,16 +271,16 @@ export default function ModuleConfiguration({ sendUrllist }) {
             <Box style={{display:'flex', flexDirection:'row'}}>
               
               <div style={{padding:'10px'}}>
-                <Dropdown list={plantDetails} label={"Select Plant"} value={selectedPlant} onChange={(event)=>{setSelectedPlant(event.target.value);setPlantid(event.target.value)}}  style={{width:"100px"}} />
+                <Dropdown list={plantDetails} label={"Select Plant"} value={selectedPlant} onChange={(event)=>{setSelectedPlant(event.target.value);setPlantid(event.target.value)}}  style={{width:"200px"}} />
               </div>
               <div style={{padding:'10px'}}>
-                <Dropdown  list={projects} label={"Select Project"} style={{width:"100px"}}  onChange={(event)=>{setSelectedProject(event.target.value)}} />
+                <Dropdown  list={projects} label={"Select Project"} style={{width:"200px"}}  onChange={(event)=>{setSelectedProject(event.target.value)}} />
               </div>
             </Box>
             {divIsVisibleList &&
               divIsVisibleList.includes("add-new-application") && (
                 <form onSubmit={handleSubmit} 
-                style={{marginLeft:'40%'}}>
+                style={{marginLeft:'20%'}}>
                   <TextField
                     label={"Application Name"}
                     id="issuecategory"

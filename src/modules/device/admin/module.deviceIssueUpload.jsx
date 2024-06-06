@@ -19,7 +19,7 @@ const DeviceIssue = ({ sendUrllist }) => {
   const [open, setOpen] = useState(false);
   const { userData, setUserData } = useUserContext();
 
-  const plantid = userData.plantID;
+  const plantid = 'NA';
   const role = userData.role;
   //const history=useHis
   const location = useLocation();

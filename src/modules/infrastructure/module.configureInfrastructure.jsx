@@ -64,10 +64,12 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
   //new change added project
 
-  const [selectedPlantAndProject,setSelectedPlantAndProject]=useState({plantId:'',project:''})
+  const [selectedPlantAndProject,setSelectedPlantAndProject]=useState({plantName:'',project:''})
 
-  const [plantIdList,setPlantIdList]=useState([])
+  const [plantNameList,setPlantNameList]=useState([])
   const [projectList,setProjectList]=useState([])
+
+  const [masterAllProjectDetailsList,setMasterAllDetailsProjectList]=useState([])
 
   /******************************* useEffect()********************************/
 
@@ -87,11 +89,13 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   
     if (selectedPlantAndProject.plantId && selectedPlantAndProject.project) {
       console.log('Plant Id:', selectedPlantAndProject.plantId, 'Project:', selectedPlantAndProject.project);
-      fetchInfraFromDb(selectedPlantAndProject.plantId, selectedPlantAndProject.project);
+      const foundPlantId=masterAllProjectDetailsList.find(element=>element.plant_name===selectedPlantAndProject.plantName).plant_id
+      if(foundPlantId&&masterAllProjectDetailsList?.length>0)
+        fetchInfraFromDb(foundPlantId, selectedPlantAndProject.project);
     } else {
       console.log('Plant ID or Project is missing:', selectedPlantAndProject);
     }
-  }, [selectedPlantAndProject]);
+  }, [selectedPlantAndProject,masterAllProjectDetailsList]);
   
 
   //Will include id later on to implement the same to identify the list item .....
@@ -186,30 +190,47 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
       console.log('fetchProjectAndPlantDetails() called')
       const projectDetails=await fetchAllProjectDetails();
       console.log('Project Details : ',projectDetails)
-      const plantIdList=[]
+      const plantNameList=[]
       const projectList=[]
+      // let uniqueplantId=new Set();
+      // const selectedPlantIdProjects=[];
+      let plantNameAtIndexZero=''
       if(projectDetails)
        {
+         plantNameAtIndexZero=projectDetails[0].plant_name
          projectDetails.forEach(data=>
            {
-             const currentPlant=data.plant_id;
-             const currentProject=data.project_name;
-             if(data.plant_id===userData.plantID)
+            //  const currentPlant=data.plant_id;
+            //  const currentProject=data.project_name;
+            //  if(data.plant_id===userData.plantID)
+            //   {
+             plantNameList.push(data.plant_name)
+            // projectList.push(data)
+               if(data.plant_name===plantNameAtIndexZero)
               {
-             plantIdList.push(currentPlant)
-             projectList.push(currentProject)
+                projectList.push(data.project_name)
               }
            }
          )
        }
-       console.log('Final PlantList : ',plantIdList)
-       console.log('Final ProjectList : ',projectList)
-       setPlantIdList(plantIdList)
+       console.log('Final PlantList : ',plantNameList)
+       console.log('All ProjectList : ',projectList)
+       const finalPlantIDList=Array.from(new Set(plantNameList))
+       console.log('Final PlantId List :',finalPlantIDList)
+       setPlantNameList(finalPlantIDList)
        setProjectList(projectList)
+      //  const projectAtIndexZeroByPlantId=[];
+      //  const selectedprojects=projectList.filter((plant)=>(plant===plantIdList[0]))
+      // const selectedprojects=projectList.filter(data=>{
+      //  return  data===projectList[0]
+      // })
+      //  setProjectList(selectedprojects)
+      //  setPlantIdList(Array.from(new Set(selectedprojects)))
 
-       const indexAtZeroPlantId=plantIdList[0]
+       const indexAtZeroPlantName=finalPlantIDList[0]
        const indexAtZeroProject=projectList[0]
-       setSelectedPlantAndProject({...selectedPlantAndProject,plantId:indexAtZeroPlantId,project:indexAtZeroProject})
+       setSelectedPlantAndProject({...selectedPlantAndProject,plantName:indexAtZeroPlantName,project:indexAtZeroProject})
+      //  await fetchInfraFromDb(indexAtZeroPlantName, indexAtZeroProject);
     }
 
   const fetchUserAndRole=async()=>
@@ -599,10 +620,14 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     console.log("Redirected Catefory : ", categoryname);
     //         const paramIssue = infrastructure.trim();
     // console.log("Category is => ", paramIssue);
-    if (selectedPlantAndProject.plantId&&selectedPlantAndProject.project) {
-      const data = { infrastructure: categoryname, plantID: selectedPlantAndProject.plantId,project:selectedPlantAndProject.project };
+    if (selectedPlantAndProject.plantName&&selectedPlantAndProject.project) {
+      const foundPlantId=masterAllProjectDetailsList.find(element=>element.plant_name===selectedPlantAndProject.plantName).plant_id
+      if(foundPlantId)
+        {
+      const data = { infrastructure: categoryname, plantID: foundPlantId,project:selectedPlantAndProject.project };
       console.log("Data sent is => ", data);
       navigate("/admin/infrastructure/addIssues", { state: data });
+        }
     } else {
       setsnackbarSeverity("error");
       setSnackbarText("Error ! ");
@@ -646,10 +671,10 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                 <div style={{display:'flex'}}>
                   <Dropdown
                   id={"plantId-dropdown"}
-                  value={selectedPlantAndProject.plantId ? selectedPlantAndProject.plantId : ''}
-                  onChange={(event) =>setSelectedPlantAndProject({...selectedPlantAndProject,plantId:event.target.value})}
-                  list={plantIdList}
-                  label={"Plant-ID"}
+                  value={selectedPlantAndProject.plantName ? selectedPlantAndProject.plantName : ''}
+                  onChange={(event) =>setSelectedPlantAndProject({...selectedPlantAndProject,plantName:event.target.value})}
+                  list={plantNameList}
+                  label={"Plant-Name"}
                   // error={dropDownError}
                   style={{ width: "110px" }}
                 ></Dropdown>

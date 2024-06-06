@@ -114,6 +114,11 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
 
   const [daysDifference, setDaysDifference] = useState(null);
   const [daysDifferenceTillNow, setDaysDifferenceTillNow] = useState(null);
+  const [projectList, setProjectList] = useState([]);
+  const [
+    projectNameWithSupportExpitedate,
+    setProjectNameWithSupportExpitedate,
+  ] = useState([]);
 
   const differenceInDays = async (startDate, endDate) => {
     // const startDate = formData.supportStartDate;
@@ -125,11 +130,26 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     const differenceInDay = Math.floor(
       differenceInMilliseconds / (1000 * 60 * 60 * 24)
     );
-    setDaysDifference(differenceInDay);
+    // setDaysDifference(differenceInDay);
     console.log("DaysDifference : ", differenceInDay);
+    // differenceInDaysTillNow(new Date(), endDate);
   };
 
-  const differenceInDaysTillNow = async (startDate, endDate) => {
+  const daysdiffinloop = async (projectList) => {
+    const SupportExpitedateList = await Promise.all(
+      projectList.map(async (project) => ({
+        support_end_date: await differenceInDaysTillNow(
+          project.support_end_date
+        ),
+        project_name: project.project_name,
+      }))
+    );
+    setProjectNameWithSupportExpitedate(SupportExpitedateList);
+    console.log("abc : ", SupportExpitedateList);
+  };
+
+  const differenceInDaysTillNow = async (endDate) => {
+    let startDate = new Date();
     console.log("differenceInDaysTillNow  startDate : ", startDate);
     console.log("differenceInDaysTillNow  endDate : ", endDate);
     const startDateObj = new Date(startDate);
@@ -139,8 +159,9 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     const differenceInDay = Math.floor(
       differenceInMilliseconds / (1000 * 60 * 60 * 24)
     );
-    setDaysDifferenceTillNow(differenceInDay);
+    // setDaysDifferenceTillNow(differenceInDay);
     console.log("DaysDifferenceTillNow : ", differenceInDay);
+    return differenceInDay;
   };
 
   const handleMouseDownPassword = (e) => {
@@ -198,6 +219,28 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     }
   };
 
+  const fetchAllProjects = async (userId) => {
+    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+    try {
+      const response = await fetch(
+        `http://${DB_IP}/plants/projectDetails/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("fetchAllProjects data : ", data);
+      setProjectList(data);
+      daysdiffinloop(data);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
   const fetchUser = async () => {
     console.log(`userhome Bearer ${localStorage.getItem("token")}`);
     try {
@@ -219,8 +262,8 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       setUser(data);
       setUserName(data.name);
       setUserplantID(data.plantID);
-      differenceInDays(data.supportStartDate, data.supportEndDate);
-      differenceInDaysTillNow(new Date(), data.supportEndDate);
+      // differenceInDays(data.supportStartDate, data.supportEndDate);
+      fetchAllProjects(data.userId);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }
@@ -507,8 +550,18 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                       {userName}
                     </MenuItem>
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
-                    {userplantID !== "NA" && (
-                      <MenuItem>
+                    {/* {userplantID !== "NA" && ( 
+                       <MenuItem>
+                         <>
+                           <TimelapseIcon
+                             sx={{ marginRight: "0.4rem" }}
+                             fontSize="small"
+                           />
+                         </>
+                         {daysDifferenceTillNow} Support Days Left
+                       </MenuItem>*/}
+                    {projectNameWithSupportExpitedate.map((project, index) => (
+                      <MenuItem key={index} value={project.project_name}>
                         <>
                           <TimelapseIcon
                             sx={{ marginRight: "0.4rem" }}
@@ -516,9 +569,12 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                           />
                         </>
                         {/* {daysDifferenceTillNow} Support Days Left */}
-                        {daysDifferenceTillNow} Support Days Left
+                        {/* {differenceInDaysTillNow(project.support_end_date)} */}
+                        {project.project_name} has {project.support_end_date}{" "}
+                        support days left
                       </MenuItem>
-                    )}
+                    ))}
+                    {/* )}*/}
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                     <MenuItem onClick={ChangePasswordClickOpen}>
                       <>

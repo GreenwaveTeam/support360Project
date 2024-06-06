@@ -243,35 +243,38 @@ function UserHome({ sendUrllist }) {
     {
       label: "Device",
       color: "#34d399",
-      value: Math.ceil(
-        (deviceIssuesCurrentMonth /
-          (deviceIssuesCurrentMonth +
-            applicationIssuesCurrentMonth +
-            infrastructureIssuesCurrentMonth)) *
-          100
-      ),
+      value:
+        Math.ceil(
+          (deviceIssuesCurrentMonth /
+            (deviceIssuesCurrentMonth +
+              applicationIssuesCurrentMonth +
+              infrastructureIssuesCurrentMonth)) *
+            100
+        ) || 0,
     },
     {
       label: "Application",
       color: "#fbbf24",
-      value: Math.ceil(
-        (applicationIssuesCurrentMonth /
-          (deviceIssuesCurrentMonth +
-            applicationIssuesCurrentMonth +
-            infrastructureIssuesCurrentMonth)) *
-          100
-      ),
+      value:
+        Math.ceil(
+          (applicationIssuesCurrentMonth /
+            (deviceIssuesCurrentMonth +
+              applicationIssuesCurrentMonth +
+              infrastructureIssuesCurrentMonth)) *
+            100
+        ) || 0,
     },
     {
       label: "Infrastructure",
       color: "#60a5fa",
-      value: Math.ceil(
-        (infrastructureIssuesCurrentMonth /
-          (deviceIssuesCurrentMonth +
-            applicationIssuesCurrentMonth +
-            infrastructureIssuesCurrentMonth)) *
-          100
-      ),
+      value:
+        Math.ceil(
+          (infrastructureIssuesCurrentMonth /
+            (deviceIssuesCurrentMonth +
+              applicationIssuesCurrentMonth +
+              infrastructureIssuesCurrentMonth)) *
+            100
+        ) || 0,
     },
   ];
 
@@ -378,26 +381,31 @@ function UserHome({ sendUrllist }) {
   // };
 
   const showAlert = async (plantId) => {
-    // alert(`Time remaining until token expiry: ${timeRemaining}`);
-    const tempResponseTime = await fetchTicketResponseTime(plantId);
-    const tempResolveTime = await fetchTicketResolveTime(plantId);
-    const tempCloseTime = await fetchTicketCloseTime(plantId);
+    try {
+      // alert(`Time remaining until token expiry: ${timeRemaining}`);
+      const tempResponseTime = await fetchTicketResponseTime(plantId);
+      const tempResolveTime = await fetchTicketResolveTime(plantId);
+      const tempCloseTime = await fetchTicketCloseTime(plantId);
 
-    console.log("tempResponseTime : ", tempResponseTime);
-    console.log("tempResolveTime : ", tempResolveTime);
-    console.log("tempCloseTime : ", tempCloseTime);
+      console.log("tempResponseTime : ", tempResponseTime);
+      console.log("tempResolveTime : ", tempResolveTime);
+      console.log("tempCloseTime : ", tempCloseTime);
 
-    setResponseTime(tempResponseTime);
-    setResolveTime(tempResolveTime);
-    setCloseTime(tempCloseTime);
+      setResponseTime(tempResponseTime);
+      setResolveTime(tempResolveTime);
+      setCloseTime(tempCloseTime);
 
-    const details = await getAllOpenTicketDetails();
-    const closedDetails = await getAllClosedTicketDetails(plantId);
-    console.log("formData.plantID : ", plantId);
-    setAllTickets(details.filter((ticket) => ticket.plantId === plantId));
-    console.log("closedDetails : ", closedDetails);
-    console.log("closedTickets : ", closedTickets);
-    setClosedTickets(closedDetails);
+      const details = await getAllOpenTicketDetails();
+      const closedDetails = await getAllClosedTicketDetails(plantId);
+      console.log("formData.plantID : ", plantId);
+      setAllTickets(details.filter((ticket) => ticket.plantId === plantId));
+      console.log("closedDetails : ", closedDetails);
+      console.log("closedTickets : ", closedTickets);
+      setClosedTickets(closedDetails);
+    } catch (error) {
+      console.error("Error in showAlert:", error);
+      // Handle the error here, such as displaying an error message to the user
+    }
   };
 
   const fetchDivs = async (role) => {
@@ -419,7 +427,7 @@ function UserHome({ sendUrllist }) {
       );
 
       if (!response.ok) {
-        navigate("/*");
+        navigate("/");
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
@@ -690,7 +698,6 @@ function UserHome({ sendUrllist }) {
       }
       console.log("catagory Numbers List:", numbersList);
       setMonthAndCatagoryWiseTicket(outputList);
-
       const currentDate = new Date();
       const currentMonthYear =
         currentDate.toLocaleString("default", { month: "long" }) +
@@ -1361,9 +1368,9 @@ function UserHome({ sendUrllist }) {
                                         }}
                                         icon={
                                           catagoryWiseTrend[0]
-                                            .recent_device_period -
+                                            .recentDevicePeriod -
                                             catagoryWiseTrend[0]
-                                              .earlier_device_period >
+                                              .earlierDevicePeriod >
                                           0 ? (
                                             <TrendingDownIcon />
                                           ) : (
@@ -1375,9 +1382,9 @@ function UserHome({ sendUrllist }) {
                                         text
                                         severity={
                                           catagoryWiseTrend[0]
-                                            .recent_device_period -
+                                            .recentDevicePeriod -
                                             catagoryWiseTrend[0]
-                                              .earlier_device_period >
+                                              .earlierDevicePeriod >
                                           0
                                             ? "danger"
                                             : "success"
@@ -1385,9 +1392,9 @@ function UserHome({ sendUrllist }) {
                                         aria-label="Cancel"
                                         label={`${calculateDifferencePercentage(
                                           catagoryWiseTrend[0]
-                                            .earlier_device_period,
+                                            .earlierDevicePeriod,
                                           catagoryWiseTrend[0]
-                                            .recent_device_period
+                                            .recentDevicePeriod
                                         )}`}
                                       />
                                     </div>
@@ -1578,9 +1585,9 @@ function UserHome({ sendUrllist }) {
                                         }}
                                         icon={
                                           catagoryWiseTrend[0]
-                                            .recent_application_period -
+                                            .recentApplicationPeriod -
                                             catagoryWiseTrend[0]
-                                              .earlier_application_period >
+                                              .earlierApplicationPeriod >
                                           0 ? (
                                             <TrendingDownIcon />
                                           ) : (
@@ -1592,9 +1599,9 @@ function UserHome({ sendUrllist }) {
                                         text
                                         severity={
                                           catagoryWiseTrend[0]
-                                            .recent_application_period -
+                                            .recentApplicationPeriod -
                                             catagoryWiseTrend[0]
-                                              .earlier_application_period >
+                                              .earlierApplicationPeriod >
                                           0
                                             ? "danger"
                                             : "success"
@@ -1602,9 +1609,9 @@ function UserHome({ sendUrllist }) {
                                         aria-label="Cancel"
                                         label={`${calculateDifferencePercentage(
                                           catagoryWiseTrend[0]
-                                            .earlier_application_period,
+                                            .earlierApplicationPeriod,
                                           catagoryWiseTrend[0]
-                                            .recent_application_period
+                                            .recentApplicationPeriod
                                         )}`}
                                       />
                                     </div>
@@ -1808,9 +1815,9 @@ function UserHome({ sendUrllist }) {
                                         }}
                                         icon={
                                           catagoryWiseTrend[0]
-                                            .recent_infrastructure_period -
+                                            .recentInfrastructurePeriod -
                                             catagoryWiseTrend[0]
-                                              .earlier_infrastructure_period >
+                                              .earlierInfrastructurePeriod >
                                           0 ? (
                                             <TrendingDownIcon />
                                           ) : (
@@ -1822,9 +1829,9 @@ function UserHome({ sendUrllist }) {
                                         text
                                         severity={
                                           catagoryWiseTrend[0]
-                                            .recent_infrastructure_period -
+                                            .recentInfrastructurePeriod -
                                             catagoryWiseTrend[0]
-                                              .earlier_infrastructure_period >
+                                              .earlierInfrastructurePeriod >
                                           0
                                             ? "danger"
                                             : "success"
@@ -1832,9 +1839,9 @@ function UserHome({ sendUrllist }) {
                                         aria-label="Cancel"
                                         label={`${calculateDifferencePercentage(
                                           catagoryWiseTrend[0]
-                                            .earlier_infrastructure_period,
+                                            .earlierInfrastructurePeriod,
                                           catagoryWiseTrend[0]
-                                            .recent_infrastructure_period
+                                            .recentInfrastructurePeriod
                                         )}`}
                                       />
                                     </div>

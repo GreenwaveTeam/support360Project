@@ -64,7 +64,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [categoryError, setCategoryError] = useState(false);
-
+  const [selectedProject, setSelectedProject] = useState(null);
   const [isError, setIsError] = useState(false);
   const [selectedNode, setSelectedNode] = useState(null);
   const [childNodeName, setChildNodeName] = useState("");
@@ -81,12 +81,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
   const [selectedImageBytes, setSelectedImageBytes] = useState(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [plantId, setPlantId] = useState("P009");
+  // const [plantId, setPlantId] = useState("P009");
+  const [plantid, setPlantid] = useState(null);
   const [showAddItemButton, setShowAddItemButton] = useState(false);
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [clickedNode, setClickedNode] = useState(null);
   const [visible, setVisible] = useState(false);
-
+  const [selectedPlant, setSelectedPlant] = useState(null);
   const [isEditing, setIsEditing] = useState(false); // To track if the node is being edited
   const [isEditingMake, setIsEditingMake] = useState(false); // To track if the node is being edited
   const [isEditingModel, setIsEditingModel] = useState(false); // To track if the node is being edited
@@ -96,7 +97,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
   const [isEditingSupportDate, setIsEditingSupportDate] = useState(false); // To track if the node is being edited
   const [isEditingImageFile, setIsEditingImageFile] = useState(false); // To track if the node is being edited
   const [isEditingCatagory, setIsEditingCatagory] = useState(false); // To track if the node is being edited
-
+  const [plantDetails, setPlantDetails] = useState([]);
   const [editedName, setEditedName] = useState("");
   const [editedMake, setEditedMake] = useState("");
   const [editedModel, setEditedModel] = useState("");
@@ -111,11 +112,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
   const [delOpen, setDelOpen] = useState(false);
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const { userData, setUserData } = useUserContext();
-
-  const [selectedPlantId, setSelectedPlantId] = useState("Plant Demo 1");
-  const [selectedProject, setselectedProject] = useState("Project Demo 1");
-
+  // const [plantid, setPlantid] = useState(null);
+  const [projectDetails, setProjectDetails] = useState([]);
+  // const [selectedPlantId, setSelectedPlantId] = useState("Plant Demo 1");
+  // const [selectedProject, setselectedProject] = useState("Project Demo 1");
+  // const [plantDetails, setPlantDetails] = useState([]);
   const navigate = useNavigate();
+  const [projects, setProjects] = useState([]);
   const currentPageLocation = useLocation().pathname;
 
   const handleDrawerOpen = () => {
@@ -133,15 +136,29 @@ export default function RichObjectTreeView({ sendUrllist }) {
     sendUrllist(urllist);
   }, []);
 
+  useEffect(() => {
+    const selectedprojects = projectDetails.filter(
+      (plant) => plant.plant_name === selectedPlant
+    );
+    setProjects(selectedprojects.map((project) => project.project_name));
+    console.log("Selected plant:", selectedPlant);
+    const plant = projectDetails.find(
+      (plant) => plant.plant_name.trim() === selectedPlant.trim()
+    )?.plant_id;
+    console.log("Plant:", plant);
+    setPlantid(plant);
+    setData(null);
+  }, [selectedPlant]);
+
   React.useEffect(() => {
     const fetchData = async () => {
       console.log(
         "Fetch : ",
-        `http://${DB_IP}/device/admin/getTree/${selectedPlantAndProject.plantId}/${selectedPlantAndProject.project}`
+        `http://${DB_IP}/device/admin/getTree/${plantid}/${selectedProject}`
       );
       try {
         const response = await fetch(
-          `http://${DB_IP}/device/admin/getTree/${selectedPlantAndProject.plantId}/${selectedPlantAndProject.project}`,
+          `http://${DB_IP}/device/admin/getTree/${plantid}/${selectedProject}`,
           {
             method: "GET",
             headers: {
@@ -166,7 +183,8 @@ export default function RichObjectTreeView({ sendUrllist }) {
     };
 
     fetchData();
-  }, [selectedPlantAndProject]);
+  }, [selectedProject]);
+
   const fetchProjectAndPlantDetails = async () => {
     console.log("fetchProjectAndPlantDetails() called");
     const projectDetails = await fetchAllProjectDetails();
@@ -194,12 +212,28 @@ export default function RichObjectTreeView({ sendUrllist }) {
       project: indexAtZeroProject,
     });
   };
-
+  const functionsCalledOnUseEffect = async () => {
+    // fetchDivs();
+    sendUrllist(urllist);
+    extendTokenExpiration();
+    const projects = await fetchAllProjectDetails();
+    setProjectDetails(projects);
+    const uniquePlantNames = Array.from(
+      new Set(projects.map((plant) => plant.plant_name))
+    );
+    setPlantDetails(uniquePlantNames);
+    //await fetchData();
+    await fetchUser();
+    // setShowpipispinner(false);
+  };
+  useEffect(() => {
+    functionsCalledOnUseEffect();
+  }, []);
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://${DB_IP}/device/admin/${selectedPlantAndProject.plantId}/categories`,
+          `http://${DB_IP}/device/admin/${plantid}/categories`,
           {
             method: "GET",
             headers: {
@@ -220,7 +254,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     };
 
     fetchData();
-  }, [selectedPlantAndProject]);
+  }, [plantid, selectedProject]);
   // useEffect(() => {
   //   console.log('useEffect triggered:', selectedPlantAndProject);
 
@@ -768,7 +802,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     console.log("data for post ", dataLocal);
     try {
       const response = await fetch(
-        `http://${DB_IP}/device/admin/saveTree/${selectedPlantAndProject.plantId}/${selectedPlantAndProject.project}`,
+        `http://${DB_IP}/device/admin/saveTree/${plantid}/${selectedProject}`,
         {
           method: "POST",
           headers: {
@@ -795,7 +829,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     console.log("handle Delete call");
     try {
       const response = await fetch(
-        `http://${DB_IP}/device/admin/delete/${selectedPlantAndProject.plantId}/${selectedPlantAndProject.project}`,
+        `http://${DB_IP}/device/admin/delete/${plantid}/${selectedProject}`,
         {
           method: "DELETE",
           headers: {
@@ -887,46 +921,48 @@ export default function RichObjectTreeView({ sendUrllist }) {
                   style={{ display: "flex", marginTop: "3%", marginLeft: "2%" }}
                 >
                   <Dropdown
-                    id={"plantId-dropdown"}
-                    value={
-                      selectedPlantAndProject.plantId
-                        ? selectedPlantAndProject.plantId
-                        : ""
-                    }
-                    onChange={(event) =>
-                      setSelectedPlantAndProject({
-                        ...selectedPlantAndProject,
-                        plantId: event.target.value,
-                      })
-                    }
-                    list={plantIdList}
-                    label={"Plant-ID"}
+                    // id={"plantId-dropdown"}
+                    // value={
+                    //   selectedPlantAndProject.plantId
+                    //     ? selectedPlantAndProject.plantId
+                    //     : ""
+                    // }
+                    // onChange={(event) =>
+                    //   setSelectedPlantAndProject({
+                    //     ...selectedPlantAndProject,
+                    //     plantId: event.target.value,
+                    //   })
+                    // }
+                    // list={plantIdList}
+                    // label={"Plant-ID"}
+                    list={plantDetails}
+                    label={"Select Plant"}
+                    value={selectedPlant}
+                    onChange={(event) => {
+                      setSelectedPlant(event.target.value);
+                      setPlantid(event.target.value);
+                    }}
                     // error={dropDownError}
                     style={{ width: "170px" }}
                   ></Dropdown>
-
-                  <Dropdown
-                    id={"project-dropdown"}
-                    value={
-                      selectedPlantAndProject.project
-                        ? selectedPlantAndProject.project
-                        : ""
-                    }
-                    onChange={(event) =>
-                      setSelectedPlantAndProject({
-                        ...selectedPlantAndProject,
-                        project: event.target.value,
-                      })
-                    }
-                    list={projectList}
-                    label={"Project"}
-                    // error={dropDownError}
-                    style={{ width: "170px", marginLeft: "20px" }}
-                  ></Dropdown>
+                  <div style={{ marginLeft: "20px" }}>
+                    {""}
+                    {plantid && (
+                      <Dropdown
+                        list={projects}
+                        label={"Select Project"}
+                        style={{ width: "170px" }}
+                        onChange={(event) => {
+                          setSelectedProject(event.target.value);
+                        }}
+                        // error={dropDownError}
+                      ></Dropdown>
+                    )}
+                  </div>
                 </div>
               </>
 
-              {data === null && (
+              {selectedProject && data === null && (
                 <>
                   <Textfield
                     className="textInput"

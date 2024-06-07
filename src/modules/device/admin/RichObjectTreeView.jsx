@@ -415,7 +415,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
       localData = updatedData;
       setData(updatedData);
-      handlePostData(localData, selectedPlantAndProject);
+      handlePostData(localData);
 
       setIsEditing(false);
       setIsEditingMake(false);
@@ -727,7 +727,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
       setSelectedImage(null);
       setSelectedImageBytes();
       setDescription("");
-      await handlePostData(dataLocal, selectedPlantAndProject);
+      await handlePostData(dataLocal);
       setVisible(false);
 
       setsnackbarSeverity();
@@ -798,7 +798,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
       console.log("No data available to print.");
     }
   };
-  const handlePostData = async (dataLocal, selectedPlantAndProject) => {
+  const handlePostData = async (dataLocal) => {
     console.log("data for post ", dataLocal);
     try {
       const response = await fetch(

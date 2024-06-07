@@ -170,9 +170,12 @@ export default function ModuleConfiguration({ sendUrllist }) {
     console.log("Plant:", plant);
     setPlantid(plant);
     setData([]);
-      setFilteredRows([]);
+    setFilteredRows([]);
   }, [selectedPlant]);
   useEffect(() => {
+    setData([]);
+    setFilteredRows([]);
+
     fetchData();
   }, [selectedProject]);
 

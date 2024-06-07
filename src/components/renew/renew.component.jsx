@@ -4,7 +4,7 @@ import React from 'react'
 export default function RenewMessageComponent() {
   return (
     <div>
-<Chip  label="Please renew the subscription to raise issue." variant="outlined" />
+<Chip color='warning'  label="Please renew the subscription to raise issue." variant="outlined" />
         </div>
   )
 }

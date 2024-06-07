@@ -462,6 +462,9 @@ export default function ModuleConfigure({ sendUrllist }) {
 
   const handleAddIssue = (event, moduleData) => {
     event.preventDefault();
+    console.log("Handle add issue:",issueName)
+    console.log("Severity:",severity)
+      
     const newIssue = { issuename: issueName, severity: severity };
     const issueExists = (issues, issuename, issueName) => {
       // Use some() to iterate over each object in the list
@@ -480,8 +483,9 @@ export default function ModuleConfigure({ sendUrllist }) {
       issueName === null ||
       severity === null ||
       issueName.trim() === "" ||
-      severity.trim === ""
+      severity.trim() === ""
     ) {
+      console.log("Issue severity not present")
       setsnackbarSeverity("error");
       setDialogPopup(true);
       setDialogMessage("Please provide both issue name and severity.");
@@ -550,6 +554,7 @@ export default function ModuleConfigure({ sendUrllist }) {
         !categories.includes(categoryname) &&
           setCategories([...categories, categoryname]);
           setIssueName("");setSeverity("");
+          console.log("Post adding")
       } catch (error) {
         console.error("Error:", error);
         setsnackbarSeverity("error");

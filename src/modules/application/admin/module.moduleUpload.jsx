@@ -562,7 +562,7 @@ const Application = ({ sendUrllist }) => {
       issueName === null ||
       severity === null ||
       issueName.trim() === "" ||
-      severity.trim === ""
+      severity.trim() === ""
     ) {
       setsnackbarSeverity("error");
       setDialogPopup(true);

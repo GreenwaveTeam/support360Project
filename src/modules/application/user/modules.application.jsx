@@ -286,20 +286,20 @@ export default function ApplicationUser({ sendUrllist }) {
   useEffect(() => {
     console.log('Current Selected Project : ',selectedProject)
     if (
-      isUserUnderSupport && 
-      (
+      // isUserUnderSupport && 
+      // (
         dropdownValue === 'Select an application' || 
         selectedProject === 'Select a Project' || 
         dropdownValue === '' || 
         selectedProject === ''
-      )
+      // )
     ) {
       console.log('Both fields need to be filled!');
       setAppDropdown([]);
     } else {
       fetchTabs(dropdownValue);
     }
-  }, [dropdownValue, selectedProject, isUserUnderSupport]);
+  }, [dropdownValue, selectedProject]);
   
 
   //On Closing the Dialog would update the Overview Table
@@ -1749,7 +1749,7 @@ export default function ApplicationUser({ sendUrllist }) {
       return;
     }
     //Resetting Data
-    setDropdownValue("Select an application");
+    setDropdownValue("");
     setTabsModuleNames([]);
     setFinalUserInput([]);
     setMiscellaneousInput("");

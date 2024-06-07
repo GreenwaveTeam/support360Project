@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import {
   Box,
+  Chip,
   Container,
   DialogTitle,
   Divider,
@@ -820,20 +821,8 @@ const Application = ({ sendUrllist }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Typography
-                    variant="h6"
-                    color="#333"
-                    component="h2"
-                    gutterBottom
-                    fontWeight={700} // Set the fontWeight to match Material-UI tab
-                    sx={{
-                      fontFamily: "Roboto", // Use Roboto font family for Material-UI tabs
-                      letterSpacing: "0.01071em", // Set the letterSpacing to match Material-UI tab
-                      lineHeight: "1.75", // Set the lineHeight to match Material-UI tab
-                    }}
-                  >
-                    {module_Name}
-                  </Typography>
+                  <Chip variant="outlined" label={module_Name} color="primary"/>
+                  
                 </Box>
                 <Divider
                   sx={{

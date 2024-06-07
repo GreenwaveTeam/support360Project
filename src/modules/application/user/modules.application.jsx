@@ -167,7 +167,7 @@ export default function ApplicationUser({ sendUrllist }) {
   const navigate = useNavigate();
   const currentPageLocation = useLocation().pathname;
 
-  const { userData, setUserData } = useUserContext();
+  const [ userData, setUserData ] = useState({})
 
   const [currentUserData,setCurrentUserData]= useState({})
 
@@ -573,6 +573,11 @@ export default function ApplicationUser({ sendUrllist }) {
       const masterDetails=[]
       const plantIdList=[]
       const projectList=[]
+      const currentUserData=await fetchCurrentUser()
+      if(currentUserData)//!setting the userdata here
+        {
+          setUserData(currentUserData)
+        }
       if(projectDetails)
        {
          projectDetails.forEach(data=>
@@ -580,7 +585,7 @@ export default function ApplicationUser({ sendUrllist }) {
             masterDetails.push(data)
              const currentPlant=data.plant_id;
              const currentProject=data.project_name;
-             if(data.plant_id===userData.plantID)
+             if(data.plant_id===currentUserData.plantID)
               {
              plantIdList.push(currentPlant)
              projectList.push(currentProject)

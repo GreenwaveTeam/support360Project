@@ -549,6 +549,7 @@ export default function ModuleConfigure({ sendUrllist }) {
         setSelectedAreas([...selectedAreas, detail]);
         !categories.includes(categoryname) &&
           setCategories([...categories, categoryname]);
+          setIssueName("");setSeverity("");
       } catch (error) {
         console.error("Error:", error);
         setsnackbarSeverity("error");
@@ -580,6 +581,7 @@ export default function ModuleConfigure({ sendUrllist }) {
     setSelection(null);
     setCategorySubmitted(false);
     setIssues([]);
+    setIssueName("");setSeverity("");
   };
   const handleDeleteIssue = async (rowdata) => {
     const requestBody = {
@@ -1122,6 +1124,7 @@ export default function ModuleConfigure({ sendUrllist }) {
                                   <form
                                     onSubmit={(event) => {
                                       handleAddIssue(event, module);
+                                      
                                     }}
                                   >
                                     {!categorySubmitted && (

@@ -169,6 +169,8 @@ export default function ModuleConfiguration({ sendUrllist }) {
     )?.plant_id;
     console.log("Plant:", plant);
     setPlantid(plant);
+    setData([]);
+      setFilteredRows([]);
   }, [selectedPlant]);
   useEffect(() => {
     fetchData();

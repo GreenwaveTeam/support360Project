@@ -222,20 +222,20 @@ export default function ApplicationUser({ sendUrllist }) {
     // {
     //   plantID=userData.plantID
     // }
-    if (userData.plantID) {
-      plantID = userData.plantID;
-      console.log("Current plantID : ", plantID);
-      console.log("useEffect() for fetching data for first time....");
-      fetchCurrentApplicationNames(plantID);
-      //fetchDivs();
+    // if (userData.plantID) {
+    //   plantID = userData.plantID;
+    //   console.log("Current plantID : ", plantID);
+    //   console.log("useEffect() for fetching data for first time....");
+    //   fetchCurrentApplicationNames(plantID);
+    //   //fetchDivs();
       fetchUser();
-      setTicketNumber(generateRandomNumber());
-    } else {
-      console.log('Error in fetching plantId ! ')
-      setSnackbarSeverity("error");
-      setSnackbarText("Error in fetching details !");
-      setMainAlert(true);
-    }
+     setTicketNumber(generateRandomNumber());
+    // } else {
+    //   console.log('Error in fetching plantId ! ')
+    //   setSnackbarSeverity("error");
+    //   setSnackbarText("Error in fetching details !");
+    //   setMainAlert(true);
+    // }
   }, []);
 
   //This useEffect is used to restore the checks in the Image while Tab change
@@ -283,7 +283,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
   useEffect(()=>
   {
-    if(dropdownValue==='Select an application'||selectedProject==='Select a Project')
+    if(dropdownValue==='Select an application'||selectedProject==='Select a Project'||dropdownValue===''||selectedProject==='')
       {
         console.log('Both fields need to be filled ! ')
         return;
@@ -518,6 +518,19 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
 
+  const handleProjectChange=async(event)=>
+    {
+      setSelectedProject(event.target.value)
+      setDropdownValue('')
+      const currentProject=event.target.value
+      const currentProjectAppicationNames= await fetchApplicationNames(userData.plantID,currentProject)
+      if(currentProjectAppicationNames)
+        {
+      setAppDropdown(currentProjectAppicationNames)
+        }
+    }
+
+
   const fetchProjectAndPlantDetails=async()=>
     {
       console.log('fetchProjectAndPlantDetails() called')
@@ -605,6 +618,7 @@ export default function ApplicationUser({ sendUrllist }) {
              if (currentDivs.length === 0) {
                 navigate("/*");
               }
+              console.log('Current Divs Components : ',currentDivs.components)
         setDivIsVisibleList(currentDivs.components);
       }
     }
@@ -893,7 +907,7 @@ export default function ApplicationUser({ sendUrllist }) {
     console.log("Changed value in Dropdown => ", e.target.value);
     if (e.target.value === "Select an application") {
       setDropdownValue(e.target.value);
-      setTabsModuleNames([]);
+      // setTabsModuleNames([]);
 
       return;
     } else {
@@ -2591,11 +2605,28 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
           <br></br>
           <center>
             {divIsVisibleList &&
-              divIsVisibleList.includes("app-dropdown-selection") && isUserUnderSupport&& (
+              divIsVisibleList.includes("app-dropdown-selection") && (
                 <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+
+              <Dropdown
+                id={"project-dropdown"}
+                value={selectedProject}
+                onChange={(event) =>{
+                  // setSelectedProject(event.target.value)
+                  handleProjectChange(event)
+                }
+                
+                }
+                list={projectList}
+                label={"Project"}
+                // error={dropDownError}
+                style={{ width: "200px" }}
+              ></Dropdown>
+
+
                 <div id="app-dropdown-selection">
                   <Dropdown
-                    style={{ width: "200px" }}
+                    style={{ width: "200px" ,marginLeft:'10px'}}
                     id={"app-dropdown"}
                     list={appDropdown}
                     label={"Application Name"}
@@ -2604,7 +2635,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                   ></Dropdown>
                 </div>
 
-                <Dropdown
+                {/* <Dropdown
                 id={"project-dropdown"}
                 value={selectedProject}
                 onChange={(event) =>setSelectedProject(event.target.value)}
@@ -2612,13 +2643,13 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                 label={"Project"}
                 // error={dropDownError}
                 style={{ width: "200px",marginLeft:'10px' }}
-              ></Dropdown>
+              ></Dropdown> */}
                 
                
                 </div>
               )}
-            { !isUserUnderSupport&&<RenewMessageComponent/> }
-            {isUserUnderSupport&&tabsmoduleNames.length === 0 && <div style={{paddingTop:'10px'}}> <Chip label={<div><InfoOutlinedIcon fontSize="small"/> Please select an Application from the above dropdown </div>}/></div>}
+            {/* { !isUserUnderSupport&&<RenewMessageComponent/> } */}
+            {/* {isUserUnderSupport&&tabsmoduleNames.length === 0 && <div style={{paddingTop:'10px'}}> <Chip label={<div><InfoOutlinedIcon fontSize="small"/> Please select an Application from the above dropdown </div>}/></div>} */}
           </center>
           <br />
           <center>

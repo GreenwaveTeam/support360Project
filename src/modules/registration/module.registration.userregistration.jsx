@@ -410,7 +410,7 @@ export default function UserRegistration({ sendUrllist }) {
   }
 
   function removeOnlySpecialCharExceptAtTheRate(str) {
-    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9@.]/g, "");
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z@.]/g, "");
     var atIndex = stringWithoutSpecialChars.indexOf("@");
     if (atIndex !== -1) {
       var nextAtIndex = stringWithoutSpecialChars.indexOf("@", atIndex + 1);
@@ -425,7 +425,17 @@ export default function UserRegistration({ sendUrllist }) {
   }
 
   function removeOnlySpecialChar(str) {
-    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9@.]/g, "");
+    var atIndex = stringWithoutSpecialChars.indexOf("@");
+    if (atIndex !== -1) {
+      var nextAtIndex = stringWithoutSpecialChars.indexOf("@", atIndex + 1);
+      if (nextAtIndex !== -1) {
+        stringWithoutSpecialChars = stringWithoutSpecialChars.slice(
+          0,
+          nextAtIndex
+        );
+      }
+    }
     return stringWithoutSpecialChars;
   }
 

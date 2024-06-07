@@ -54,6 +54,7 @@ export default function AdminRegistration({ sendUrllist }) {
     phoneNumberLength: false,
     passwordNotMatch: false,
     weakPassword: false,
+    validEmail: false,
   });
 
   const [updateFormErrors, setUpdateFormErrors] = useState({
@@ -510,6 +511,11 @@ export default function AdminRegistration({ sendUrllist }) {
       console.error("Error : ", error);
     }
   };
+
+  function isValidEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
 
   return (
     <>
@@ -970,10 +976,17 @@ export default function AdminRegistration({ sendUrllist }) {
                                 ...formErrors,
                                 email: e.target.value.trim() === "",
                               });
+                              setFormErrors({
+                                ...formErrors,
+                                validEmail: !isValidEmail(
+                                  e.target.value.trim()
+                                ),
+                              });
                             }}
-                            error={formErrors.email}
+                            error={formErrors.email || formErrors.validEmail}
                             helperText={
-                              formErrors.email && "Email must be filled"
+                              (formErrors.email && "Email must be filled") ||
+                              (formErrors.validEmail && "Email is not valid")
                             }
                           />
                         </Grid>
@@ -1023,7 +1036,7 @@ export default function AdminRegistration({ sendUrllist }) {
                                 setFormData({
                                   ...formData,
                                   adminId: removeOnlySpecialChar(
-                                    e.target.value.toLocaleLowerCase()
+                                    e.target.value.trim()
                                   ),
                                 });
                                 setUnchangedAdminID(e.target.value);

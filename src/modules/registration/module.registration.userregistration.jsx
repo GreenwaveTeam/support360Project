@@ -439,6 +439,12 @@ export default function UserRegistration({ sendUrllist }) {
     return stringWithoutSpecialChars;
   }
 
+  function removeOnlySpecialCharforplantid(str) {
+    // var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
+    return stringWithoutSpecialChars;
+  }
+
   function removeNumberAndSpecialChar(str) {
     var stringWithoutSpecialChars = str.replace(/[^a-zA-Z@.]/g, "");
     var atIndex = stringWithoutSpecialChars.indexOf("@");
@@ -2981,6 +2987,14 @@ export default function UserRegistration({ sendUrllist }) {
                                 plantName: removeAllSpecialChar(e.target.value),
                               });
                             }}
+                            onBlur={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                plantName: removeAllSpecialChar(
+                                  e.target.value.trim()
+                                ),
+                              });
+                            }}
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -2995,7 +3009,15 @@ export default function UserRegistration({ sendUrllist }) {
                             onChange={(e) => {
                               setNewPlantName({
                                 ...newPlantName,
-                                plantID: removeAllSpecialChar(
+                                plantID: removeOnlySpecialCharforplantid(
+                                  e.target.value
+                                ),
+                              });
+                            }}
+                            onBlur={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                plantID: removeOnlySpecialCharforplantid(
                                   e.target.value.trim()
                                 ),
                               });
@@ -3028,6 +3050,14 @@ export default function UserRegistration({ sendUrllist }) {
                                 ...newPlantName,
                                 customerName: removeAllSpecialChar(
                                   e.target.value
+                                ),
+                              });
+                            }}
+                            onBlur={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                customerName: removeAllSpecialChar(
+                                  e.target.value.trim()
                                 ),
                               });
                             }}
@@ -3073,6 +3103,14 @@ export default function UserRegistration({ sendUrllist }) {
                               setNewPlantName({
                                 ...newPlantName,
                                 division: removeAllSpecialChar(e.target.value),
+                              });
+                            }}
+                            onBlur={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                division: removeAllSpecialChar(
+                                  e.target.value.trim()
+                                ),
                               });
                             }}
                           />

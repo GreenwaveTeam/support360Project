@@ -10,7 +10,7 @@ import TopbarPage from "../../../components/navigation/topbar/topbar";
 import SidebarPage from "../../../components/navigation/sidebar/sidebar";
 import Main from "../../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../../components/navigation/drawerheader/drawerheader.component";
-
+import RenewMessageComponent from "../../../components/renew/renew.component";
 import {
   Badge,
   IconButton,
@@ -52,6 +52,7 @@ import Slide from "@mui/material/Slide";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CustomButton from "../../../components/button/button.component";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
+import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
 const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function InfrastructureUser({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -70,6 +71,8 @@ export default function InfrastructureUser({ sendUrllist }) {
   const [filteredDeviceIssueDetails, setFilteredDeviceIssueDetails] = useState(
     []
   );
+  const [projectList, setProjectList] = useState([]);
+  const [selectedProject, setSelectedProject] = useState("Select a Project");
   const [snackbarText, setSnackbarText] = useState("Data saved !");
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -80,10 +83,12 @@ export default function InfrastructureUser({ sendUrllist }) {
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const { userData, setUserData } = useUserContext();
   const currentPageLocation = useLocation().pathname;
+  const [isUserUnderSupport, setIsUserUnderSupport] = useState(false);
 
   const [plantID, setPlantId] = useState();
   const [userName, setUserName] = useState();
   const [userEmailId, setUserEmailId] = useState();
+  const [plantIdList, setPlantIdList] = useState([]);
 
   const [currentUserData, setCurrentUserData] = useState();
 
@@ -169,6 +174,7 @@ export default function InfrastructureUser({ sendUrllist }) {
   useEffect(() => {
     extendTokenExpiration();
     fetchUser();
+    fetchProjectAndPlantDetails();
     // fetchDivs();
   }, []);
   const fetchUser = async () => {
@@ -247,13 +253,20 @@ export default function InfrastructureUser({ sendUrllist }) {
     console.log(`Bearer ${localStorage.getItem("token")}`);
     console.log("User Data plant : ", userData.plantID);
     // Fetch data from the API
-    fetch(`http://${DB_IP}/infrastructure/admin/${userData.plantID}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    })
+    console.log(
+      "infra : ",
+      `http://${DB_IP}/infrastructure/admin/${userData.plantID}/${selectedProject}`
+    );
+    fetch(
+      `http://${DB_IP}/infrastructure/admin/${userData.plantID}/${selectedProject}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         // Set the fetched infrastructure names
@@ -261,16 +274,19 @@ export default function InfrastructureUser({ sendUrllist }) {
           data.infraDetails.map((item) => item.infrastructure_name)
         );
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch(
+        (error) => console.error("Error fetching data:", error),
+        setInfrastructures([])
+      );
     setTicketNumber(generateRandomNumber);
     sendUrllist(urllist);
-  }, []); // Empty dependency array to run effect only once on component mount
+  }, [selectedProject]); // Empty dependency array to run effect only once on component mount
 
   useEffect(() => {
     // Fetch issues for the selected infrastructure
     if (selectedInfrastructure) {
       fetch(
-        `http://${DB_IP}/infrastructure/admin/${userData.plantID}/${selectedInfrastructure}/issues`,
+        `http://${DB_IP}/infrastructure/admin/${userData.plantID}/${selectedInfrastructure}/${selectedProject}/issues`,
         {
           method: "GET",
           headers: {
@@ -334,6 +350,28 @@ export default function InfrastructureUser({ sendUrllist }) {
     setVisible(true);
     setTableData([]);
     // setSelectedInfrastructure("");
+  };
+  const fetchProjectAndPlantDetails = async () => {
+    console.log("fetchProjectAndPlantDetails() called");
+    const projectDetails = await fetchAllProjectDetails();
+    console.log("Project Details : ", projectDetails);
+    const plantIdList = [];
+    const projectList = [];
+    if (projectDetails) {
+      projectDetails.forEach((data) => {
+        const currentPlant = data.plant_id;
+        const currentProject = data.project_name;
+        if (data.plant_id === userData.plantID) {
+          plantIdList.push(currentPlant);
+          projectList.push(currentProject);
+        }
+      });
+    }
+    projectList.unshift("Select a Project");
+    console.log("Final PlantList : ", plantIdList);
+    console.log("Final ProjectList : ", projectList);
+    setPlantIdList(plantIdList);
+    setProjectList(projectList);
   };
   const onHideDialog = () => {
     setVisible(false);
@@ -518,23 +556,48 @@ export default function InfrastructureUser({ sendUrllist }) {
                         marginTop: "20px",
                       }}
                     >
-                      <InputLabel id="infrastructureDropdownLabel">
+                      <Dropdown
+                        id={"project-dropdown"}
+                        value={selectedProject}
+                        onChange={(event) =>
+                          setSelectedProject(event.target.value)
+                        }
+                        list={projectList}
+                        label={"Project"}
+                        // error={dropDownError}
+                        style={{ width: "200px" }}
+                      ></Dropdown>
+                      <br></br>
+                      {/* <InputLabel id="infrastructureDropdownLabel">
                         Select Infrastructure
-                      </InputLabel>
-
-                      <Select
-                        labelId="infrastructureDropdownLabel"
-                        id="infrastructureDropdown"
-                        value={selectedInfrastructure}
-                        onChange={handleInfrastructureChange}
-                        label="Select Infrastructure"
-                      >
-                        {infrastructures.map((infra, index) => (
-                          <MenuItem key={index} value={infra}>
-                            {infra}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                      </InputLabel> */}
+                      {/* {isUserUnderSupport === false &&
+                        selectedProject !== "Select a Project" && (
+                          <RenewMessageComponent />
+                        )} */}
+                      {selectedProject !== "Select a Project" && (
+                        <>
+                          <InputLabel
+                            id="infrastructure-label"
+                            style={{ marginTop: "37%" }}
+                          >
+                            Select Infrastructure
+                          </InputLabel>
+                          <Select
+                            labelId="infrastructure-label"
+                            id="infrastructureDropdown"
+                            value={selectedInfrastructure}
+                            onChange={handleInfrastructureChange}
+                            label="Select Infrastructure"
+                          >
+                            {infrastructures.map((infra, index) => (
+                              <MenuItem key={index} value={infra}>
+                                {infra}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </>
+                      )}
                     </FormControl>
                   </center>
                   <br />

@@ -65,6 +65,7 @@ import Fab from "@mui/material/Fab";
 import CustomButton from "../../../components/button/button.component";
 import { ArrowRightIcon } from "@mui/x-date-pickers";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
+import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
 const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function UserDeviceTree({ sendUrllist }) {
   const [snackbarText, setSnackbarText] = useState("Data saved !");
@@ -92,6 +93,9 @@ export default function UserDeviceTree({ sendUrllist }) {
   const [filteredDeviceIssueDetails, setFilteredDeviceIssueDetails] = useState(
     []
   );
+  const [projectList, setProjectList] = useState([]);
+  const [plantIdList, setPlantIdList] = useState([]);
+
   const [expanded, setExpanded] = useState(false);
   const [otherIssue, setOtherIssue] = useState("");
   const [ticketNumber, setTicketNumber] = useState("Ticket101");
@@ -101,7 +105,7 @@ export default function UserDeviceTree({ sendUrllist }) {
   const [plantID, setPlantId] = useState();
   const [userName, setUserName] = useState();
   const [userEmailId, setUserEmailId] = useState();
-
+  const [selectedProject, setSelectedProject] = useState("Select a Project");
   const toast = useRef(null);
 
   const handleDrawerOpen = () => {
@@ -150,6 +154,9 @@ export default function UserDeviceTree({ sendUrllist }) {
   useEffect(() => {
     extendTokenExpiration();
     fetchUser();
+    fetchProjectAndPlantDetails();
+    setTicketNumber(generateRandomNumber);
+    sendUrllist(urllist);
     // fetchDivs();
   }, []);
 
@@ -196,6 +203,28 @@ export default function UserDeviceTree({ sendUrllist }) {
       console.error("Error fetching user list:", error);
     }
   };
+  const fetchProjectAndPlantDetails = async () => {
+    console.log("fetchProjectAndPlantDetails() called");
+    const projectDetails = await fetchAllProjectDetails();
+    console.log("Project Details : ", projectDetails);
+    const plantIdList = [];
+    const projectList = [];
+    if (projectDetails) {
+      projectDetails.forEach((data) => {
+        const currentPlant = data.plant_id;
+        const currentProject = data.project_name;
+        if (data.plant_id === userData.plantID) {
+          plantIdList.push(currentPlant);
+          projectList.push(currentProject);
+        }
+      });
+    }
+    projectList.unshift("Select a Project");
+    console.log("Final PlantList : ", plantIdList);
+    console.log("Final ProjectList : ", projectList);
+    setPlantIdList(plantIdList);
+    setProjectList(projectList);
+  };
   const fetchDivs = async (role) => {
     try {
       console.log("fetchDivs() called");
@@ -234,9 +263,13 @@ export default function UserDeviceTree({ sendUrllist }) {
 
   React.useEffect(() => {
     const fetchData = async () => {
+      console.log(
+        "Fetch : ",
+        `http://${DB_IP}/device/admin/getTree/${userData.plantID}/${selectedProject}`
+      );
       try {
         const response = await fetch(
-          `http://${DB_IP}/device/admin/getTree/${userData.plantID}`,
+          `http://${DB_IP}/device/admin/getTree/${userData.plantID}/${selectedProject}`,
           {
             method: "GET",
             headers: {
@@ -251,17 +284,17 @@ export default function UserDeviceTree({ sendUrllist }) {
           setData(devData);
           console.log("data");
         } else {
+          setData(null);
           console.error("Error fetching data:", response.statusText);
         }
       } catch (error) {
+        setData(null);
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-    setTicketNumber(generateRandomNumber);
-    sendUrllist(urllist);
-  }, []);
+  }, [selectedProject]);
 
   const generateRandomNumber = () => {
     const randomNumber = dayjs().format("YYYYMMDDTHHmmssSSS");
@@ -379,6 +412,13 @@ export default function UserDeviceTree({ sendUrllist }) {
     // setRemarks("");
     // setSelectedIssue("");
     // setSelectedPriority("");
+
+    if (deviceIssueDetails.length === 5) {
+      setSnackbarText("At most 5 Issues can be added ! ");
+      setsnackbarSeverity("warning");
+      setSnackbarOpen(true);
+      return;
+    }
 
     if (selectedIssue && selectedPriority) {
       const existingIssue = tableData.find(
@@ -1004,6 +1044,20 @@ export default function UserDeviceTree({ sendUrllist }) {
               onClick={handleClickOutsideNode}
             >
               <div className="left-panel">
+                <div
+                  style={{ width: "170px", marginLeft: "3%", marginTop: "3%" }}
+                >
+                  <Dropdown
+                    id={"project-dropdown"}
+                    value={selectedProject}
+                    onChange={(event) => setSelectedProject(event.target.value)}
+                    list={projectList}
+                    label={"Project"}
+                    // error={dropDownError}
+                    style={{ width: "200px" }}
+                  ></Dropdown>
+                </div>
+                <br></br>
                 {data !== null && (
                   <div className="treeViewContainer">
                     <Chip

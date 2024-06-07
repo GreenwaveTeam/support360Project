@@ -25,15 +25,15 @@ const DeviceIssue = ({ sendUrllist }) => {
   const location = useLocation();
   // if(location.state.categoryname===null)
   // navigate('/notfound');
-  const plantid=location.state.plantid
+  const plantid = location.state.plantid;
   const categoryname = location.state.categoryname;
-  const [showpipispinner,setShowpipispinner]=useState(true)
+  const [showpipispinner, setShowpipispinner] = useState(true);
   const [issueList, setIssueList] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
-    { pageName: "User Configure", pagelink: "/admin/configurePage" },
+    { pageName: "Configuration", pagelink: "/admin/configurePage" },
     {
       pageName: "Device Issue Category",
       pagelink: "/admin/Device/CategoryConfigure",
@@ -161,21 +161,19 @@ const DeviceIssue = ({ sendUrllist }) => {
       console.error("Error fetching data:", error);
     }
   };
-  const functionsCalledOnUseEffect=async()=>{
-    
+  const functionsCalledOnUseEffect = async () => {
     extendTokenExpiration();
     if (plantid === null) navigate("/notfound");
-    
+
     sendUrllist(urllist);
     await fetchData();
     // fetchDivs();
     await fetchUser();
-    setShowpipispinner(false)
+    setShowpipispinner(false);
     //const issues = location.state.issuelist;
-  }
+  };
   useEffect(() => {
-    
-    functionsCalledOnUseEffect()
+    functionsCalledOnUseEffect();
   }, []);
   const addIssueCategory = async () => {
     console.log("Add Issue");
@@ -321,11 +319,17 @@ const DeviceIssue = ({ sendUrllist }) => {
   if (localStorage.getItem("token") === null) return <NotFound />;
   return (
     <Container maxWidth="lg">
-      {showpipispinner&& 
-        <div  style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-          <i className="pi pi-spin pi-spinner"  style={{ fontSize: '40px' }} />
+      {showpipispinner && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <i className="pi pi-spin pi-spinner" style={{ fontSize: "40px" }} />
         </div>
-      }
+      )}
       {divIsVisibleList.length !== 0 && (
         <Box>
           <Box
@@ -366,7 +370,8 @@ const DeviceIssue = ({ sendUrllist }) => {
                     style={{ width: "200px", paddingBottom: "1rem" }}
                     value={issueName}
                     onChange={(e) => setIssueName(e.target.value)}
-                  />&nbsp;&nbsp;
+                  />
+                  &nbsp;&nbsp;
                   <Dropdown
                     label={"Severity"}
                     value={severity}
@@ -378,10 +383,9 @@ const DeviceIssue = ({ sendUrllist }) => {
                   <Button
                     color="primary"
                     variant="contained"
-                     style={{ height: "55px" }}
+                    style={{ height: "55px" }}
                     type="submit"
                     size="small"
-                    
                     sx={{
                       backgroundImage:
                         "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",

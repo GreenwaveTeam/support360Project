@@ -21,7 +21,14 @@ import Textfield from "../../components/textfield/textfield.component";
 import { useLayoutEffect } from "react";
 import { useUserContext } from "../contexts/UserContext";
 import { extendTokenExpiration } from "../helper/Support360Api";
-import { deleteCurrentInfrastructure, fecthCurrentInfrastructureDetails, fetchDivs, fetchUser, saveCurrentModifiedData, saveNewInfrastructure } from "./infrastructureAdminAPI";
+import {
+  deleteCurrentInfrastructure,
+  fecthCurrentInfrastructureDetails,
+  fetchDivs,
+  fetchUser,
+  saveCurrentModifiedData,
+  saveNewInfrastructure,
+} from "./infrastructureAdminAPI";
 
 export default function AddInfrastructureIssue({ sendUrllist }) {
   //********************* Data ********************
@@ -56,7 +63,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
   console.log("location state values are => ", location.state);
   const plantId = location.state.plantID;
   const inf = location.state.infrastructure;
-  const current_project= location.state.project;
+  const current_project = location.state.project;
   const [addSeverity, setAddSeverity] = useState("");
   const [addIssueError, setAddissueError] = useState(false);
   const [dropDownError, setDropdownError] = useState(false);
@@ -94,7 +101,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
     console.log("Current Project :  ", current_project);
     extendTokenExpiration();
 
-    fetchDBdata(plantId, inf,current_project);
+    fetchDBdata(plantId, inf, current_project);
     // fetchDivs();
     // fetchUser();
     fetchUserAndRole();
@@ -203,40 +210,36 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
   //   }
   // };
 
-  const fetchUserAndRole=async()=>
-    {
-      console.log('fetchUserAndRole() called')
-      const user= await fetchUser();
-      if(user)
-        {
-          fetchDivsForCurrentPage(user.role)
-        }
+  const fetchUserAndRole = async () => {
+    console.log("fetchUserAndRole() called");
+    const user = await fetchUser();
+    if (user) {
+      fetchDivsForCurrentPage(user.role);
     }
+  };
 
-    const fetchDivsForCurrentPage = async (role) => {
-      console.log("fetchDivsForCurrentPage() called ! ");
-      //fetchDivs(userData,location,currentPageLocation);
-      const divs = await fetchDivs(location, currentPageLocation, role);
-      console.log("Response for divs : ", divs);
-      if (divs) {
-        setDivIsVisibleList(divs);
-        if(divs.length===0)
-          navigate('/*')
-        return;
-      }
-      console.log("Components not found ! ");
-      navigate("/*");
-    };
+  const fetchDivsForCurrentPage = async (role) => {
+    console.log("fetchDivsForCurrentPage() called ! ");
+    //fetchDivs(userData,location,currentPageLocation);
+    const divs = await fetchDivs(location, currentPageLocation, role);
+    console.log("Response for divs : ", divs);
+    if (divs) {
+      setDivIsVisibleList(divs);
+      if (divs.length === 0) navigate("/*");
+      return;
+    }
+    console.log("Components not found ! ");
+    navigate("/*");
+  };
 
   //Database functions  for CRUD operations
 
-
-  const fetchDBdata = async (plantId, inf,project) => {
+  const fetchDBdata = async (plantId, inf, project) => {
     console.log("fetchDBdata() called ");
     console.log("plantID => ", plantId);
     console.log("Infrastructure => ", inf);
     console.log("Project => ", project);
-    if (plantId && inf&&project) {
+    if (plantId && inf && project) {
       try {
         console.log("fetchDBdata() called ");
         console.log("plant ID => ", plantId);
@@ -253,7 +256,11 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         // if (!response.ok) {
         //   throw new Error("Failed to fetch data");
         // }
-        const data = await fecthCurrentInfrastructureDetails(plantId,inf,project);
+        const data = await fecthCurrentInfrastructureDetails(
+          plantId,
+          inf,
+          project
+        );
         if (data.infraDetails) {
           console.log("issues are => ", data.infraDetails[0].issues);
           setRows(data.infraDetails[0].issues);
@@ -297,8 +304,13 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
     //       }),
     //     }
     //   );
-    const success=await deleteCurrentInfrastructure(plantId,inf,issue,current_project)
-    try{
+    const success = await deleteCurrentInfrastructure(
+      plantId,
+      inf,
+      issue,
+      current_project
+    );
+    try {
       if (success) {
         console.log("Data deleted successfully from DB");
 
@@ -310,8 +322,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         setsnackbarSeverity("success");
         setOpen(true);
         return true;
-      }
-     else {
+      } else {
         throw new Error("Failed to delete data");
       }
     } catch (error) {
@@ -341,7 +352,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         prev_issue: prev_issue,
         new_issue: editedValue.trim(),
         new_severity: editedSeverity,
-        project_name:current_project
+        project_name: current_project,
       };
 
       // const response = await fetch(
@@ -356,7 +367,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
       //   }
       // );
 
-      const success=await saveCurrentModifiedData(json_data)
+      const success = await saveCurrentModifiedData(json_data);
       if (success) {
         console.log("Data has been updated successfully ! ");
         foundRow.issue_name = editedValue;
@@ -372,8 +383,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         setEditRowIndex(null);
         setEditValue("");
         return true;
-      }
-      else {
+      } else {
         throw new Error("Failed to fetch data");
       }
     } catch (error) {
@@ -421,7 +431,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
       //     body: JSON.stringify(json_data),
       //   }
       // );
-      const success= await saveNewInfrastructure(json_data,current_project)
+      const success = await saveNewInfrastructure(json_data, current_project);
       if (success) {
         console.log("Data has been successfully saved !");
         const updatedRows = [
@@ -439,12 +449,11 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
         setAddSeverity("");
         // setAddissueError(false);
         // setAddissueError(false);
-      }
-      else {
+      } else {
         throw new Error("Failed to fetch data");
       }
     } catch (error) {
-      console.log('Error saving Data ',error)
+      console.log("Error saving Data ", error);
       setSnackbarText("Database Error !");
       setsnackbarSeverity("error");
       setOpen(true);
@@ -742,7 +751,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
 
   const urllist = [
     { pageName: "Home", pagelink: "/admin/home" },
-    { pageName: "User Configure", pagelink: "/admin/configurePage" },
+    { pageName: "Configuration", pagelink: "/admin/configurePage" },
     {
       pageName: "Configure Infrastructure",
       pagelink: "/admin/InfrastructureConfigure",

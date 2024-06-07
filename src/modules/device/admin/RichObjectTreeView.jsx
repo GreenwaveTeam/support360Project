@@ -42,16 +42,24 @@ import CustomDialog from "../../../components/dialog/dialog.component";
 import Textfield from "../../../components/textfield/textfield.component";
 import CustomButton from "../../../components/button/button.component";
 import { useLocation, useNavigate } from "react-router-dom";
-import { display, fontWeight } from "@mui/system";
+import { display, fontWeight, margin, width } from "@mui/system";
 import { useUserContext } from "../../contexts/UserContext";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Visibility } from "@mui/icons-material";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
 import { extendTokenExpiration } from "../../helper/Support360Api";
+import Dropdown from "../../../components/dropdown/dropdown.component";
+import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
 
 const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function RichObjectTreeView({ sendUrllist }) {
   const toast = useRef(null);
+  const [selectedPlantAndProject, setSelectedPlantAndProject] = useState({
+    plantId: "",
+    project: "",
+  });
+  const [plantIdList, setPlantIdList] = useState([]);
+  const [projectList, setProjectList] = useState([]);
   const [snackbarText, setSnackbarText] = useState("Data saved !");
   const [snackbarSeverity, setsnackbarSeverity] = useState("success");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -104,6 +112,9 @@ export default function RichObjectTreeView({ sendUrllist }) {
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const { userData, setUserData } = useUserContext();
 
+  const [selectedPlantId, setSelectedPlantId] = useState("Plant Demo 1");
+  const [selectedProject, setselectedProject] = useState("Project Demo 1");
+
   const navigate = useNavigate();
   const currentPageLocation = useLocation().pathname;
 
@@ -118,13 +129,19 @@ export default function RichObjectTreeView({ sendUrllist }) {
     extendTokenExpiration();
     fetchUser();
     // fetchDivs();
+    fetchProjectAndPlantDetails();
+    sendUrllist(urllist);
   }, []);
 
   React.useEffect(() => {
     const fetchData = async () => {
+      console.log(
+        "Fetch : ",
+        `http://${DB_IP}/device/admin/getTree/${selectedPlantAndProject.plantId}/${selectedPlantAndProject.project}`
+      );
       try {
         const response = await fetch(
-          `http://${DB_IP}/device/admin/getTree/${userData.plantID}`,
+          `http://${DB_IP}/device/admin/getTree/${selectedPlantAndProject.plantId}/${selectedPlantAndProject.project}`,
           {
             method: "GET",
             headers: {
@@ -139,22 +156,50 @@ export default function RichObjectTreeView({ sendUrllist }) {
           setData(devData);
           console.log("data");
         } else {
+          setData(null);
           console.error("Error fetching data:", response.statusText);
         }
       } catch (error) {
+        setData(null);
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-    sendUrllist(urllist);
-  }, []);
+  }, [selectedPlantAndProject]);
+  const fetchProjectAndPlantDetails = async () => {
+    console.log("fetchProjectAndPlantDetails() called");
+    const projectDetails = await fetchAllProjectDetails();
+    console.log("Project Details : ", projectDetails);
+    const plantIdList = [];
+    const projectList = [];
+    if (projectDetails) {
+      projectDetails.forEach((data) => {
+        const currentPlant = data.plant_id;
+        const currentProject = data.project_name;
+        plantIdList.push(currentPlant);
+        projectList.push(currentProject);
+      });
+    }
+    console.log("Final PlantList : ", plantIdList);
+    console.log("Final ProjectList : ", projectList);
+    setPlantIdList(plantIdList);
+    setProjectList(projectList);
+
+    const indexAtZeroPlantId = plantIdList[0];
+    const indexAtZeroProject = projectList[0];
+    setSelectedPlantAndProject({
+      ...selectedPlantAndProject,
+      plantId: indexAtZeroPlantId,
+      project: indexAtZeroProject,
+    });
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://${DB_IP}/device/admin/${userData.plantID}/categories`,
+          `http://${DB_IP}/device/admin/${selectedPlantAndProject.plantId}/categories`,
           {
             method: "GET",
             headers: {
@@ -175,8 +220,17 @@ export default function RichObjectTreeView({ sendUrllist }) {
     };
 
     fetchData();
-  }, []);
+  }, [selectedPlantAndProject]);
+  // useEffect(() => {
+  //   console.log('useEffect triggered:', selectedPlantAndProject);
 
+  //   if (selectedPlantAndProject.plantId && selectedPlantAndProject.project) {
+  //     console.log('Plant Id:', selectedPlantAndProject.plantId, 'Project:', selectedPlantAndProject.project);
+  //     fetchInfraFromDb(selectedPlantAndProject.plantId, selectedPlantAndProject.project);
+  //   } else {
+  //     console.log('Plant ID or Project is missing:', selectedPlantAndProject);
+  //   }
+  // }, [selectedPlantAndProject]);
   React.useEffect(() => {
     console.log("useEffect called ");
     console.log("Data => ", data);
@@ -327,7 +381,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
       localData = updatedData;
       setData(updatedData);
-      handlePostData(localData);
+      handlePostData(localData, selectedPlantAndProject);
 
       setIsEditing(false);
       setIsEditingMake(false);
@@ -539,7 +593,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     }
   };
 
-  const handleChildNodeAdd = () => {
+  const handleChildNodeAdd = async () => {
     if (childNodeName.trim() === "") {
       // toast.current.show({
       //   severity: "error",
@@ -639,7 +693,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
       setSelectedImage(null);
       setSelectedImageBytes();
       setDescription("");
-      handlePostData(dataLocal);
+      await handlePostData(dataLocal, selectedPlantAndProject);
       setVisible(false);
 
       setsnackbarSeverity();
@@ -710,11 +764,11 @@ export default function RichObjectTreeView({ sendUrllist }) {
       console.log("No data available to print.");
     }
   };
-  const handlePostData = async (dataLocal) => {
+  const handlePostData = async (dataLocal, selectedPlantAndProject) => {
     console.log("data for post ", dataLocal);
     try {
       const response = await fetch(
-        `http://${DB_IP}/device/admin/saveTree/${userData.plantID}`,
+        `http://${DB_IP}/device/admin/saveTree/${selectedPlantAndProject.plantId}/${selectedPlantAndProject.project}`,
         {
           method: "POST",
           headers: {
@@ -741,7 +795,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     console.log("handle Delete call");
     try {
       const response = await fetch(
-        `http://${DB_IP}/device/admin/delete/${userData.plantID}`,
+        `http://${DB_IP}/device/admin/delete/${selectedPlantAndProject.plantId}/${selectedPlantAndProject.project}`,
         {
           method: "DELETE",
           headers: {
@@ -789,7 +843,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
       setDataPromise.then(() => {
         // Now you can safely use localData
-        handlePostData(localData);
+        handlePostData(localData, selectedPlantAndProject);
       });
 
       setSelectedNode(null);
@@ -816,7 +870,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
   };
   const urllist = [
     { pageName: "Home", pagelink: "/admin/home" },
-    { pageName: "User Configure", pagelink: "/admin/configurePage" },
+    { pageName: "Configuration", pagelink: "/admin/configurePage" },
     {
       pageName: "Configure Device",
       pagelink: "/admin/DeviceConfigure",
@@ -828,26 +882,79 @@ export default function RichObjectTreeView({ sendUrllist }) {
         <div className="split-screen" onClick={handleClickOutsideNode}>
           <div className="left-panel">
             <div id="create-device-tree">
+              <>
+                <div
+                  style={{ display: "flex", marginTop: "3%", marginLeft: "2%" }}
+                >
+                  <Dropdown
+                    id={"plantId-dropdown"}
+                    value={
+                      selectedPlantAndProject.plantId
+                        ? selectedPlantAndProject.plantId
+                        : ""
+                    }
+                    onChange={(event) =>
+                      setSelectedPlantAndProject({
+                        ...selectedPlantAndProject,
+                        plantId: event.target.value,
+                      })
+                    }
+                    list={plantIdList}
+                    label={"Plant-ID"}
+                    // error={dropDownError}
+                    style={{ width: "170px" }}
+                  ></Dropdown>
+
+                  <Dropdown
+                    id={"project-dropdown"}
+                    value={
+                      selectedPlantAndProject.project
+                        ? selectedPlantAndProject.project
+                        : ""
+                    }
+                    onChange={(event) =>
+                      setSelectedPlantAndProject({
+                        ...selectedPlantAndProject,
+                        project: event.target.value,
+                      })
+                    }
+                    list={projectList}
+                    label={"Project"}
+                    // error={dropDownError}
+                    style={{ width: "170px", marginLeft: "20px" }}
+                  ></Dropdown>
+                </div>
+              </>
+
               {data === null && (
                 <>
                   <Textfield
                     className="textInput"
                     label="Enter Parent Asset Name"
                     variant="outlined"
-                    fullWidth
                     value={rootNodeName}
                     onChange={(e) => setRootNodeName(e.target.value)}
-                    style={{ marginTop: "0.5rem" }}
+                    style={{
+                      marginTop: "0.6rem",
+                      marginLeft: "2%",
+                      width: "360px",
+                    }}
                   />
                   <CustomButton
+                    style={{
+                      marginLeft: "2%",
+                      width: "360px",
+                      marginTop: "0.2rem",
+                    }}
                     className="button"
                     variant="contained"
                     color="primary"
                     onClick={handleRootNodeCreate}
-                    buttontext={"Create Parent Device"}
+                    buttontext={"Create Parent Asset"}
                   ></CustomButton>
                 </>
               )}
+
               {data !== null && (
                 <div className="treeViewContainer">
                   <Chip

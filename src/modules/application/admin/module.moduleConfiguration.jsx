@@ -59,8 +59,8 @@ export default function ModuleConfigure({ sendUrllist }) {
   const [issueName, setIssueName] = useState("");
   const location = useLocation();
   const application_name = location.state.application_name;
-  const plantid=location.state.plantid;
-  const selectedProject=location.state.selectedProject;
+  const plantid = location.state.plantid;
+  const selectedProject = location.state.selectedProject;
   const [severity, setSeverity] = useState("");
   const [categoryname, setCategoryname] = useState("");
   const [dialogPopup, setDialogPopup] = useState(false);
@@ -90,7 +90,7 @@ export default function ModuleConfigure({ sendUrllist }) {
   const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
-    { pageName: "User Configure", pagelink: "/admin/configurePage" },
+    { pageName: "Configuration", pagelink: "/admin/configurePage" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
   ];
 
@@ -111,7 +111,7 @@ export default function ModuleConfigure({ sendUrllist }) {
   ];
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
-  const [showpipispinner,setShowpipispinner]=useState(true)
+  const [showpipispinner, setShowpipispinner] = useState(true);
 
   const handleContextClick = (event, module) => {
     event.preventDefault();
@@ -143,8 +143,6 @@ export default function ModuleConfigure({ sendUrllist }) {
       }));
       setValue("1");
       setContextMenuPosition(null);
-
-      
     } catch (error) {
       // Handle errors, such as displaying an error message to the user
 
@@ -159,12 +157,11 @@ export default function ModuleConfigure({ sendUrllist }) {
     setOpenEditDialog(true);
     setContextMenuPosition(null);
   };
-  const handleEditDialogClose=async()=>{
-      setUpdateModuleDialog(false);
-      setUpdateModuleName("");
-      setOpenEditDialog(false);
-      
-  }
+  const handleEditDialogClose = async () => {
+    setUpdateModuleDialog(false);
+    setUpdateModuleName("");
+    setOpenEditDialog(false);
+  };
   const handleModuleProceed = () => {
     setUpdateModuleDialog(true);
   };
@@ -237,7 +234,6 @@ export default function ModuleConfigure({ sendUrllist }) {
       setUpdateModuleName("");
       setOpenEditDialog(false);
       setSelectedModuleForUpdate(null);
-
     } catch (error) {
       // Handle errors, such as displaying an error message to the user
 
@@ -273,7 +269,6 @@ export default function ModuleConfigure({ sendUrllist }) {
   };
   const fetchDivs = async (role) => {
     try {
-
       const response = await fetch(
         `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure/Modules`,
         {
@@ -328,19 +323,17 @@ export default function ModuleConfigure({ sendUrllist }) {
       console.error("Error fetching data:", error);
     }
   };
-  const functionsCalledOnUseEffect=async()=>{
-    
+  const functionsCalledOnUseEffect = async () => {
     sendUrllist(urllist);
     extendTokenExpiration();
     await fetchData();
     await fetchUser();
-    
-    setShowpipispinner(false)
+
+    setShowpipispinner(false);
     //fetchDivs();
-  }
+  };
   useEffect(() => {
-    functionsCalledOnUseEffect()
-    
+    functionsCalledOnUseEffect();
   }, []);
 
   useEffect(() => handleDataChange, [selectedAreas]);
@@ -456,7 +449,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       );
       setCategories((prev) =>
         prev.filter((category) => category !== categoryName)
-      )
+      );
     } catch (error) {
       // Handle errors, such as displaying an error message to the user
 
@@ -595,7 +588,7 @@ export default function ModuleConfigure({ sendUrllist }) {
       moduleName: module_Name,
       categoryname: categoryname,
       issuename: rowdata.issuename,
-      project_name:selectedProject
+      project_name: selectedProject,
     };
 
     try {
@@ -625,7 +618,6 @@ export default function ModuleConfigure({ sendUrllist }) {
       ]);
       setIssues(issues.filter((row) => row !== rowdata));
     } catch (error) {
-      
       setsnackbarSeverity("error");
       setDialogPopup(true);
       setDialogMessage("Database Error");
@@ -641,7 +633,7 @@ export default function ModuleConfigure({ sendUrllist }) {
         moduleName: module_Name,
         categoryname: categoryname,
         issuename: prev.issuename,
-        project_name:selectedProject
+        project_name: selectedProject,
       };
       const response = await axios.delete(
         `http://${DB_IP}/application/admin/deleteApplicationIssue`,
@@ -879,20 +871,26 @@ export default function ModuleConfigure({ sendUrllist }) {
       state: {
         application_name: data.application_name,
         modulelist: data.modulelist,
-        plantid: plantid ,selectedProject:selectedProject
+        plantid: plantid,
+        selectedProject: selectedProject,
       },
     });
   };
   if (localStorage.getItem("token") === null) return <NotFound />;
   return (
     <div>
-      {showpipispinner &&
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-              <i className="pi pi-spin pi-spinner"  style={{ fontSize: '40px' }} />
-              </div>
-              
-            }
-      
+      {showpipispinner && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <i className="pi pi-spin pi-spinner" style={{ fontSize: "40px" }} />
+        </div>
+      )}
+
       {divIsVisibleList.length !== 0 &&
         divIsVisibleList.includes("add-module-existing-issues") && (
           <Box>
@@ -956,16 +954,22 @@ export default function ModuleConfigure({ sendUrllist }) {
                   <Box
                     sx={{
                       backgroundColor: colors.primary[400],
-                      borderRadius: 3, 
+                      borderRadius: 3,
                     }}
                   >
-                    <Box style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
+                    <Box
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
                       <TextField
                         label={"Filter Module"}
                         id="filter"
                         onChange={handleFilterChange}
                       />
-                      
+
                       <TabList
                         onChange={handleChange}
                         // sx={{ backgroundColor: "red" }}
@@ -978,7 +982,11 @@ export default function ModuleConfigure({ sendUrllist }) {
                         {filteredModules.map((module, index) => (
                           <Tab
                             key={index}
-                            label={<Tooltip title="Right Click to modify module"><div>{module.modulename}</div></Tooltip> }
+                            label={
+                              <Tooltip title="Right Click to modify module">
+                                <div>{module.modulename}</div>
+                              </Tooltip>
+                            }
                             onContextMenu={(event) =>
                               handleContextClick(event, module)
                             }

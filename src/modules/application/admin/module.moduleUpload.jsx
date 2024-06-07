@@ -66,9 +66,9 @@ const Application = ({ sendUrllist }) => {
   const [categoryname, setCategoryname] = useState("");
   const location = useLocation();
   const application_name = location.state.application_name;
-  const plantid=location.state.plantid;
-  const selectedProject=location.state.selectedProject
-  console.log("Plant id:"+plantid)
+  const plantid = location.state.plantid;
+  const selectedProject = location.state.selectedProject;
+  console.log("Plant id:" + plantid);
   const modulelist = location.state.modulelist;
   //console.log("Module list====>"+JSON.stringify(modulelist))
   const [module_Name, setModule_Name] = useState(application_name + "_Module_");
@@ -81,7 +81,7 @@ const Application = ({ sendUrllist }) => {
   const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
-    { pageName: "User Configure", pagelink: "/admin/configurePage" },
+    { pageName: "Configuration", pagelink: "/admin/configurePage" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
   ];
 
@@ -195,7 +195,7 @@ const Application = ({ sendUrllist }) => {
         moduleName: module_Name,
         categoryname: categoryname,
         issuename: prev.issuename,
-        project_name:selectedProject
+        project_name: selectedProject,
       };
       console.log("Rowdata=====>" + JSON.stringify(rowData));
       await axios.delete(
@@ -245,7 +245,7 @@ const Application = ({ sendUrllist }) => {
               severity: rowData.severity,
             }),
         };
-        console.log("Module Upload")
+        console.log("Module Upload");
         // Here requestData contains entire module data including module_image
         const response = await axios.post(
           `http://${DB_IP}/application/admin/addApplicationModuleDetails/${selectedProject}`,
@@ -281,7 +281,7 @@ const Application = ({ sendUrllist }) => {
         moduleName: module_Name,
         categoryname: categoryname,
         issuename: rowData.issuename,
-        project_name:selectedProject
+        project_name: selectedProject,
       };
 
       console.log("Handle delete==>", requestBody);

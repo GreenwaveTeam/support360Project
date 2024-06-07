@@ -89,7 +89,7 @@ const AdminPage = ({ sendUrllist }) => {
 
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
-    { pageName: "User Configure", pagelink: "/admin/configurePage" },
+    { pageName: "Configuration", pagelink: "/admin/configurePage" },
   ];
 
   const theme = useTheme();
@@ -110,12 +110,13 @@ const AdminPage = ({ sendUrllist }) => {
                 columnGap: "0.5rem",
               }}
             >
-              Configure for:{" "}
+              {/* Configure for:{" "} */}
               <Chip
                 sx={{ fontWeight: "bold" }}
-                label={userData.userId}
-                size="medium"
+                label={"Configuration"}
+                size="large"
                 color="info"
+                variant="outlined"
               />
             </Typography>
           </Box>

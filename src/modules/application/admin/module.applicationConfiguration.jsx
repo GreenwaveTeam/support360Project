@@ -29,18 +29,18 @@ export default function ModuleConfiguration({ sendUrllist }) {
 
   // const plantid = userData.plantID;
   // const [role,setRole] = useState("")
-  const [plantid,setPlantid]=useState(null)
+  const [plantid, setPlantid] = useState(null);
   const [open, setOpen] = useState(false);
   const [application_name, setApplication_name] = useState("");
   const [dialogPopup, setDialogPopup] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
-  const [showpipispinner,setShowpipispinner]=useState(true)
-  const [projectDetails,setProjectDetails]=useState([])
-  const [plantDetails,setPlantDetails]=useState([])
-  const [projects,setProjects]=useState([])
-  const [selectedPlant,setSelectedPlant]=useState(null)
-  const [selectedProject,setSelectedProject]=useState(null)
+  const [showpipispinner, setShowpipispinner] = useState(true);
+  const [projectDetails, setProjectDetails] = useState([]);
+  const [plantDetails, setPlantDetails] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [selectedPlant, setSelectedPlant] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
   const columns = [
     {
       id: "application_name",
@@ -62,7 +62,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
 
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
-    { pageName: "User Configure", pagelink: "/admin/configurePage" },
+    { pageName: "Configuration", pagelink: "/admin/configurePage" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
   ];
 
@@ -91,7 +91,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
   };
   const fetchDivs = async (role) => {
     try {
-      
       const response = await fetch(
         `http://${DB_IP}/role/roledetails?role=${role}&pagename=/admin/ApplicationConfigure`,
         {
@@ -141,40 +140,46 @@ export default function ModuleConfiguration({ sendUrllist }) {
       console.error("Error fetching data:", error);
     }
   };
-  
-  const functionsCalledOnUseEffect=async()=>{
+
+  const functionsCalledOnUseEffect = async () => {
     // fetchDivs();
-     sendUrllist(urllist);
-     extendTokenExpiration();
-    const projects=await fetchAllProjectDetails()
-    setProjectDetails(projects)
-    const uniquePlantNames = Array.from(new Set(projects.map(plant => plant.plant_name)));
+    sendUrllist(urllist);
+    extendTokenExpiration();
+    const projects = await fetchAllProjectDetails();
+    setProjectDetails(projects);
+    const uniquePlantNames = Array.from(
+      new Set(projects.map((plant) => plant.plant_name))
+    );
     setPlantDetails(uniquePlantNames);
- //await fetchData();
-     await fetchUser()
-     setShowpipispinner(false)
-    }
+    //await fetchData();
+    await fetchUser();
+    setShowpipispinner(false);
+  };
   useEffect(() => {
-    functionsCalledOnUseEffect()
+    functionsCalledOnUseEffect();
   }, []);
   useEffect(() => {
-    const selectedprojects=projectDetails.filter((plant)=>(plant.plant_name===selectedPlant))
-    setProjects(selectedprojects.map((project)=>project.project_name))
-    console.log("Selected plant:",selectedPlant)
-    const plant = projectDetails.find((plant) => plant.plant_name.trim() === selectedPlant.trim())?.plant_id;
-    console.log("Plant:",plant)
-      setPlantid(plant)
+    const selectedprojects = projectDetails.filter(
+      (plant) => plant.plant_name === selectedPlant
+    );
+    setProjects(selectedprojects.map((project) => project.project_name));
+    console.log("Selected plant:", selectedPlant);
+    const plant = projectDetails.find(
+      (plant) => plant.plant_name.trim() === selectedPlant.trim()
+    )?.plant_id;
+    console.log("Plant:", plant);
+    setPlantid(plant);
   }, [selectedPlant]);
-  useEffect(()=>{
-     fetchData();
-  },[selectedProject])
+  useEffect(() => {
+    fetchData();
+  }, [selectedProject]);
 
   const handleDeleteClick = async (rowData) => {
     try {
       const requestBody = {
         plant_id: plantid,
         application_name: rowData.application_name,
-        project_name:selectedProject
+        project_name: selectedProject,
         // Add other properties from rowData if needed
       };
       await axios.delete(
@@ -200,7 +205,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
   };
 
   const handleSaveClick = async (prev, rowData) => {
-
     // Create a request body object
 
     try {
@@ -226,11 +230,14 @@ export default function ModuleConfiguration({ sendUrllist }) {
     }
   };
 
-  
   const handleRedirect = (appdata) => {
-    console.log("Handle redirect method invoked")
+    console.log("Handle redirect method invoked");
     navigate(`/admin/ApplicationConfigure/Modules`, {
-      state: { application_name: appdata.application_name , plantid:plantid, selectedProject:selectedProject},
+      state: {
+        application_name: appdata.application_name,
+        plantid: plantid,
+        selectedProject: selectedProject,
+      },
     });
   };
   const handleSubmit = (event) => {
@@ -255,69 +262,93 @@ export default function ModuleConfiguration({ sendUrllist }) {
       return true;
     }
     navigate(`/admin/ApplicationConfigure/Module`, {
-      state: { application_name: application_name, modulelist: null ,plantid: plantid ,selectedProject:selectedProject},
+      state: {
+        application_name: application_name,
+        modulelist: null,
+        plantid: plantid,
+        selectedProject: selectedProject,
+      },
     });
   };
   if (localStorage.getItem("token") === null) return <NotFound />;
 
   return (
     <Container maxWidth="lg">
-      {showpipispinner &&
-            <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-              <i className="pi pi-spin pi-spinner"  style={{ fontSize: '40px' }} />
-              </div>
-              
-            }
+      {showpipispinner && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <i className="pi pi-spin pi-spinner" style={{ fontSize: "40px" }} />
+        </div>
+      )}
       {divIsVisibleList.length !== 0 && (
         <Box>
           <Box>
-            <Box style={{display:'flex', flexDirection:'row'}}>
-            <Box style={{display:'flex', flexDirection:'row'}}>
-              
-              <div style={{padding:'10px'}}>
-                <Dropdown list={plantDetails} label={"Select Plant"} value={selectedPlant} onChange={(event)=>{setSelectedPlant(event.target.value);setPlantid(event.target.value)}}  style={{width:"200px"}} />
-              </div>
-              <div style={{padding:'10px'}}>
-                <Dropdown  list={projects} label={"Select Project"} style={{width:"200px"}}  onChange={(event)=>{setSelectedProject(event.target.value)}} />
-              </div>
-            </Box>
-            {divIsVisibleList &&
-              divIsVisibleList.includes("add-new-application") && (
-                <form onSubmit={handleSubmit} 
-                style={{marginLeft:'20%'}}>
-                  <TextField
-                    label={"Application Name"}
-                    id="issuecategory"
-                    size="medium"
-                    onChange={(e) => {
-                      setApplication_name(e.target.value);
+            <Box style={{ display: "flex", flexDirection: "row" }}>
+              <Box style={{ display: "flex", flexDirection: "row" }}>
+                <div style={{ padding: "10px" }}>
+                  <Dropdown
+                    list={plantDetails}
+                    label={"Select Plant"}
+                    value={selectedPlant}
+                    onChange={(event) => {
+                      setSelectedPlant(event.target.value);
+                      setPlantid(event.target.value);
+                    }}
+                    style={{ width: "200px" }}
+                  />
+                </div>
+                <div style={{ padding: "10px" }}>
+                  <Dropdown
+                    list={projects}
+                    label={"Select Project"}
+                    style={{ width: "200px" }}
+                    onChange={(event) => {
+                      setSelectedProject(event.target.value);
                     }}
                   />
-                  &nbsp; &nbsp;
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    type="submit"
-                    size="medium"
-                    sx={{
-                      padding: "15px 18px",
-                      backgroundImage:
-                        "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
-                    }}
-                  >
-                    Add&nbsp;
-                    <AddCircleOutlineOutlinedIcon
-                      fontSize="medium"
-                      sx={
-                        {
-                          //color: "white",
-                        }
-                      }
-                    ></AddCircleOutlineOutlinedIcon>
-                  </Button>
-                </form>
-              )}
+                </div>
               </Box>
+              {divIsVisibleList &&
+                divIsVisibleList.includes("add-new-application") && (
+                  <form onSubmit={handleSubmit} style={{ marginLeft: "20%" }}>
+                    <TextField
+                      label={"Application Name"}
+                      id="issuecategory"
+                      size="medium"
+                      onChange={(e) => {
+                        setApplication_name(e.target.value);
+                      }}
+                    />
+                    &nbsp; &nbsp;
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      type="submit"
+                      size="medium"
+                      sx={{
+                        padding: "15px 18px",
+                        backgroundImage:
+                          "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                      }}
+                    >
+                      Add&nbsp;
+                      <AddCircleOutlineOutlinedIcon
+                        fontSize="medium"
+                        sx={
+                          {
+                            //color: "white",
+                          }
+                        }
+                      ></AddCircleOutlineOutlinedIcon>
+                    </Button>
+                  </form>
+                )}
+            </Box>
             {/* <Box boxShadow={3} p={3} borderRadius={10}  
             sx={{backgroundColor: "#B5C0D0",display: 'flex',flexDirection:'column',width:'40%',
             justifyContent: 'center',}}alignItems={'center'} marginTop={'10px'}>

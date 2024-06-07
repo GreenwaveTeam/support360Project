@@ -198,6 +198,8 @@ export default function ApplicationUser({ sendUrllist }) {
   const [plantIdList,setPlantIdList]=useState([])
   const [projectList,setProjectList]=useState([])
 
+  const[masterAllProjectDetails,setMasterAllProjectDetails]=useState([])
+
     //For Screenshot 
     const screenshotRef = React.useRef(null)
 
@@ -522,6 +524,38 @@ export default function ApplicationUser({ sendUrllist }) {
     {
       setSelectedProject(event.target.value)
       setDropdownValue('')
+      setTabsModuleNames([])
+
+      //Will get a grace period of 30 days 
+      
+      const currentPlantId=userData.plantID
+      const currentselectedProject=event.target.value
+
+      const finalPlantDetails=masterAllProjectDetails.find(data=>data.plant_id===userData.plantID&&data.project_name===currentselectedProject)
+      if(finalPlantDetails)
+        {
+      const supportEndData=finalPlantDetails.support_end_date;
+      const isSameOrBefore = require("dayjs/plugin/isSameOrBefore");
+      dayjs.extend(isSameOrBefore);
+      console.log('Support End date : ',supportEndData)
+      const supportExpiryDate=dayjs(supportEndData).add(30,'day');
+      console.log("Current User Support End Date , after adding grace period :", supportExpiryDate.format("YYYY-MM-DD"));
+      
+      const currentDate = dayjs();
+      console.log("Current Date:", currentDate.format("YYYY-MM-DD"));
+      
+      const isUnderSupport = currentDate.isSameOrBefore(supportExpiryDate, 'day');
+      console.log("Is under Support?", isUnderSupport);
+      setIsUserUnderSupport(isUnderSupport)
+        }
+        else{
+              setDropdownValue('')
+              setAppDropdown([])
+        }
+      
+
+
+
       const currentProject=event.target.value
       const currentProjectAppicationNames= await fetchApplicationNames(userData.plantID,currentProject)
       if(currentProjectAppicationNames)
@@ -536,12 +570,14 @@ export default function ApplicationUser({ sendUrllist }) {
       console.log('fetchProjectAndPlantDetails() called')
       const projectDetails=await fetchAllProjectDetails();
       console.log('Project Details : ',projectDetails)
+      const masterDetails=[]
       const plantIdList=[]
       const projectList=[]
       if(projectDetails)
        {
          projectDetails.forEach(data=>
            {
+            masterDetails.push(data)
              const currentPlant=data.plant_id;
              const currentProject=data.project_name;
              if(data.plant_id===userData.plantID)
@@ -557,6 +593,8 @@ export default function ApplicationUser({ sendUrllist }) {
        console.log('Final ProjectList : ',projectList)
        setPlantIdList(plantIdList)
        setProjectList(projectList)
+
+       setMasterAllProjectDetails(masterDetails)
 
        
     }
@@ -593,18 +631,20 @@ export default function ApplicationUser({ sendUrllist }) {
       //Check for Support Expiration Time 
      
       // const dayjs = require("dayjs");
-      const isSameOrBefore = require("dayjs/plugin/isSameOrBefore");
-      dayjs.extend(isSameOrBefore);
-      console.log('Support End date : ',userData.supportEndDate)
-       const supportExpiryDate=dayjs(userData.supportEndDate).add(30,'day');
-      console.log("Current User Support End Date , after adding grace period :", supportExpiryDate.format("YYYY-MM-DD"));
+
+
+      // const isSameOrBefore = require("dayjs/plugin/isSameOrBefore");
+      // dayjs.extend(isSameOrBefore);
+      // console.log('Support End date : ',userData.supportEndDate)
+      //  const supportExpiryDate=dayjs(userData.supportEndDate).add(30,'day');
+      // console.log("Current User Support End Date , after adding grace period :", supportExpiryDate.format("YYYY-MM-DD"));
       
-      const currentDate = dayjs();
-      console.log("Current Date:", currentDate.format("YYYY-MM-DD"));
+      // const currentDate = dayjs();
+      // console.log("Current Date:", currentDate.format("YYYY-MM-DD"));
       
-      const isUnderSupport = currentDate.isSameOrBefore(supportExpiryDate, 'day');
-      console.log("Is under Support?", isUnderSupport);
-      setIsUserUnderSupport(isUnderSupport)
+      // const isUnderSupport = currentDate.isSameOrBefore(supportExpiryDate, 'day');
+      // console.log("Is under Support?", isUnderSupport);
+      // setIsUserUnderSupport(isUnderSupport)
       
 
       //Will give a grace period of one month 
@@ -667,7 +707,7 @@ export default function ApplicationUser({ sendUrllist }) {
   //     // setEditValue("");
   //   }
   // };
-
+//!used previously
   const fetchCurrentApplicationNames = async (PlantID) => {
     console.log("fetchCurrentApplicationNames() called");
     const data = await fetchApplicationNames(PlantID);
@@ -2648,8 +2688,8 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                
                 </div>
               )}
-            {/* { !isUserUnderSupport&&<RenewMessageComponent/> } */}
-            {/* {isUserUnderSupport&&tabsmoduleNames.length === 0 && <div style={{paddingTop:'10px'}}> <Chip label={<div><InfoOutlinedIcon fontSize="small"/> Please select an Application from the above dropdown </div>}/></div>} */}
+            { isUserUnderSupport===false&&selectedProject!=='Select a Project'&&<RenewMessageComponent/> }
+            {tabsmoduleNames.length===0&& <div style={{paddingTop:'10px'}}> <Chip label={<div><InfoOutlinedIcon fontSize="small"/> Please select a Project and an Application from the above dropdown </div>}/></div>}
           </center>
           <br />
           <center>

@@ -619,6 +619,7 @@ export default function UserRegistration({ sendUrllist }) {
         address: selectedPlant ? selectedPlant.address : "",
         customerName: selectedPlant ? selectedPlant.customerName : "",
         division: selectedPlant ? selectedPlant.division : "",
+        projectName: [],
         // supportStartDate: selectedPlant ? selectedPlant.supportStartDate : "",
         // supportEndDate: selectedPlant ? selectedPlant.supportEndDate : "",
       });
@@ -629,6 +630,7 @@ export default function UserRegistration({ sendUrllist }) {
         address: selectedPlant ? selectedPlant.address : "",
         customerName: selectedPlant ? selectedPlant.customerName : "",
         division: selectedPlant ? selectedPlant.division : "",
+        projectName: [],
         // supportStartDate: selectedPlant ? selectedPlant.supportStartDate : "",
         // supportEndDate: selectedPlant ? selectedPlant.supportEndDate : "",
       });
@@ -1580,7 +1582,7 @@ export default function UserRegistration({ sendUrllist }) {
                               }
                             />
                           </Grid>
-                          <Grid item xs={6}>
+                          <Grid item xs={12}>
                             <FormControl fullWidth>
                               <InputLabel id="project-select-label">
                                 Project Name
@@ -2820,7 +2822,7 @@ export default function UserRegistration({ sendUrllist }) {
                               }}
                             />
                           </Grid> */}
-                          <Grid item xs={6}>
+                          <Grid item xs={12}>
                             <FormControl fullWidth>
                               <InputLabel id="project-select-label">
                                 Project Name

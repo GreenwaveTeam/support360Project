@@ -108,9 +108,19 @@ export default function AdminHome({ sendUrllist }) {
   // }
 
   const convertToInitials = (name) => {
+    // const parts = name.split(" ");
+    // const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
+    // return initials;
     const parts = name.split(" ");
-    const initials = parts.map((part) => part.charAt(0).toUpperCase()).join("");
-    return initials;
+    if (parts.length >= 2) {
+      return (
+        parts[0].charAt(0).toUpperCase() + parts[1].charAt(0).toUpperCase()
+      );
+    } else if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    } else {
+      return "";
+    }
   };
 
   const newColors = ["#ff7043", "#7e57c2", "#81c784"];
@@ -1055,7 +1065,7 @@ export default function AdminHome({ sendUrllist }) {
                                             />
                                           </IconButton>
                                         )}
-                                        <Dialog
+                                        {/* <Dialog
                                           open={openAdminDeleteDialog}
                                           onClose={() =>
                                             setOpenAdminDeleteDialog(false)
@@ -1094,7 +1104,7 @@ export default function AdminHome({ sendUrllist }) {
                                               Delete
                                             </Button>
                                           </DialogActions>
-                                        </Dialog>
+                                        </Dialog> */}
                                       </TableCell>
                                       <TableCell align="center">
                                         {/* <DeleteIcon
@@ -1119,7 +1129,7 @@ export default function AdminHome({ sendUrllist }) {
                                             }
                                           />
                                         </IconButton>
-                                        <Dialog
+                                        {/* <Dialog
                                           open={openAdminResetPasswordDialog}
                                           onClose={() =>
                                             setOpenAdminResetPasswordDialog(
@@ -1137,6 +1147,11 @@ export default function AdminHome({ sendUrllist }) {
                                               Are you sure you want to reset
                                               password for admin:{" "}
                                               {selectedAdminID} ?
+                                              <p>
+                                                {" "}
+                                                The new Password will be{" "}
+                                                {defaultPassword}
+                                              </p>
                                             </DialogContentText>
                                           </DialogContent>
                                           <DialogActions>
@@ -1166,7 +1181,7 @@ export default function AdminHome({ sendUrllist }) {
                                               Reset
                                             </Button>
                                           </DialogActions>
-                                        </Dialog>
+                                        </Dialog> */}
                                       </TableCell>
                                     </TableRow>
                                   ))}
@@ -1604,7 +1619,7 @@ export default function AdminHome({ sendUrllist }) {
                                             />
                                           </IconButton>
                                         )}
-                                        <Dialog
+                                        {/* <Dialog
                                           open={openDeleteDialog}
                                           onClose={() =>
                                             setOpenDeleteDialog(false)
@@ -1643,7 +1658,7 @@ export default function AdminHome({ sendUrllist }) {
                                               Delete
                                             </Button>
                                           </DialogActions>
-                                        </Dialog>
+                                        </Dialog> */}
                                       </TableCell>
                                       <TableCell align="center">
                                         <IconButton
@@ -1661,7 +1676,7 @@ export default function AdminHome({ sendUrllist }) {
                                             }
                                           />
                                         </IconButton>
-                                        <Dialog
+                                        {/* <Dialog
                                           open={openUserResetPasswordDialog}
                                           onClose={() =>
                                             setOpenUserResetPasswordDialog(
@@ -1679,6 +1694,11 @@ export default function AdminHome({ sendUrllist }) {
                                               Are you sure you want to reset
                                               password for user:{" "}
                                               {selectedUserID} ?
+                                              <p>
+                                                {" "}
+                                                The new Password will be{" "}
+                                                {defaultPassword}
+                                              </p>
                                             </DialogContentText>
                                           </DialogContent>
                                           <DialogActions>
@@ -1708,7 +1728,7 @@ export default function AdminHome({ sendUrllist }) {
                                               Reset
                                             </Button>
                                           </DialogActions>
-                                        </Dialog>
+                                        </Dialog> */}
                                       </TableCell>
                                     </TableRow>
                                   ))}
@@ -2261,6 +2281,136 @@ export default function AdminHome({ sendUrllist }) {
         )} */}
           </div>
         </Box>
+        <Dialog
+          open={openUserResetPasswordDialog}
+          onClose={() => setOpenUserResetPasswordDialog(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Reset Password ?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to reset password for user: {selectedUserID}{" "}
+              ?<p> The new Password will be {defaultPassword}</p>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setOpenUserResetPasswordDialog(false)}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                // deleteAdminByAdminID(deleteAdminID);
+                resetPasswordByAdminID(selectedUserID);
+                setOpenUserResetPasswordDialog(false);
+              }}
+              color="error"
+              autoFocus
+            >
+              Reset
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openAdminResetPasswordDialog}
+          onClose={() => setOpenAdminResetPasswordDialog(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Reset Password ?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to reset password for admin:{" "}
+              {selectedAdminID} ?
+              <p> The new Password will be {defaultPassword}</p>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setOpenAdminResetPasswordDialog(false)}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                // deleteAdminByAdminID(deleteAdminID);
+                resetPasswordByAdminID(selectedAdminID);
+                setOpenAdminResetPasswordDialog(false);
+              }}
+              color="error"
+              autoFocus
+            >
+              Reset
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openAdminDeleteDialog}
+          onClose={() => setOpenAdminDeleteDialog(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete Admin ?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete this admin: {selectedAdminID} ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setOpenAdminDeleteDialog(false)}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                deleteAdminByAdminID(selectedAdminID);
+                setOpenAdminDeleteDialog(false);
+              }}
+              color="error"
+              autoFocus
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openDeleteDialog}
+          onClose={() => setOpenDeleteDialog(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete User ?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete this user : {selectedUserID} ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setOpenDeleteDialog(false)} color="primary">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                deleteUserByUserID(selectedUserID);
+                setOpenDeleteDialog(false);
+              }}
+              color="error"
+              autoFocus
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
       <Snackbar
         open={snackBarOpen}

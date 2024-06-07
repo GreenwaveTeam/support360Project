@@ -87,9 +87,10 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   useEffect(() => {
     console.log('useEffect triggered:', selectedPlantAndProject);
   
-    if (selectedPlantAndProject.plantId && selectedPlantAndProject.project) {
+    if (selectedPlantAndProject.plantName && selectedPlantAndProject.project) {
       console.log('Plant Id:', selectedPlantAndProject.plantId, 'Project:', selectedPlantAndProject.project);
-      const foundPlantId=masterAllProjectDetailsList.find(element=>element.plant_name===selectedPlantAndProject.plantName).plant_id
+      console.log('masterAllProjectDetailsList : ',masterAllProjectDetailsList)
+      const foundPlantId=masterAllProjectDetailsList.find(element=>element.plant_name===selectedPlantAndProject.plantName)?.plant_id
       if(foundPlantId&&masterAllProjectDetailsList?.length>0)
         fetchInfraFromDb(foundPlantId, selectedPlantAndProject.project);
     } else {
@@ -156,12 +157,23 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     //   console.log("Data sent is => ", data);
     //   navigate("/admin/infrastructure/addIssues", { state: data });
     // }
+
+    // if (selectedPlantAndProject.plantName&&selectedPlantAndProject.project) {
+    //   const foundPlantId=masterAllProjectDetailsList.find(element=>element.plant_name===selectedPlantAndProject.plantName).plant_id
+    //   if(foundPlantId)
+    //     {
+    //   const data = { infrastructure: categoryname, plantID: foundPlantId,project:selectedPlantAndProject.project };
+    //   console.log("Data sent is => ", data);
+    //   navigate("/admin/infrastructure/addIssues", { state: data });
+    //     }
    
-    if (selectedPlantAndProject.plantId&&selectedPlantAndProject.project) {
-      const data = { infrastructure: newCateogry, plantID: selectedPlantAndProject.plantId,project:selectedPlantAndProject.project };
+    if (selectedPlantAndProject.plantName&&selectedPlantAndProject.project) {
+      const foundPlantId=masterAllProjectDetailsList.find(element=>element.plant_name===selectedPlantAndProject.plantName)?.plant_id
+      const data = { infrastructure: newCateogry, plantID: foundPlantId,project:selectedPlantAndProject.project };
       console.log("Data sent is => ", data);
       navigate("/admin/infrastructure/addIssues", { state: data });
-    } else {
+    } 
+    else {
       setsnackbarSeverity("error");
       setSnackbarText("PlantID not found !");
       setOpen(true);
@@ -190,6 +202,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
       console.log('fetchProjectAndPlantDetails() called')
       const projectDetails=await fetchAllProjectDetails();
       console.log('Project Details : ',projectDetails)
+      const allProjects=[]
       const plantNameList=[]
       const projectList=[]
       // let uniqueplantId=new Set();
@@ -204,6 +217,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
             //  const currentProject=data.project_name;
             //  if(data.plant_id===userData.plantID)
             //   {
+              allProjects.push(data)
              plantNameList.push(data.plant_name)
             // projectList.push(data)
                if(data.plant_name===plantNameAtIndexZero)
@@ -219,6 +233,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
        console.log('Final PlantId List :',finalPlantIDList)
        setPlantNameList(finalPlantIDList)
        setProjectList(projectList)
+       setMasterAllDetailsProjectList(allProjects)
       //  const projectAtIndexZeroByPlantId=[];
       //  const selectedprojects=projectList.filter((plant)=>(plant===plantIdList[0]))
       // const selectedprojects=projectList.filter(data=>{
@@ -670,9 +685,30 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
               <>
                 <div style={{display:'flex'}}>
                   <Dropdown
-                  id={"plantId-dropdown"}
+                  id={"plantName-dropdown"}
                   value={selectedPlantAndProject.plantName ? selectedPlantAndProject.plantName : ''}
-                  onChange={(event) =>setSelectedPlantAndProject({...selectedPlantAndProject,plantName:event.target.value})}
+                  onChange={(event) => {
+                    const newPlantName = event.target.value;
+                    console.log('New Plant Name  : ',newPlantName)
+                    const finalProjectList=[]
+                    console.log('Current Master AllProject Details : ',masterAllProjectDetailsList)
+                    const selectedPlantProjects = masterAllProjectDetailsList
+                      .filter(data => data.plant_name === newPlantName)
+                      .map(data => data.project_name)
+
+                      console.log('Current Selected Plant Projects : ',selectedPlantProjects)
+                  
+                    setSelectedPlantAndProject({
+                      ...selectedPlantAndProject,
+                      plantName: newPlantName,
+                      project: '' 
+                    });
+
+                    // console.log('selectedPlantProjects :',selectedPlantAndProject)
+                  
+                    setProjectList(selectedPlantProjects);
+                  }}
+                  
                   list={plantNameList}
                   label={"Plant-Name"}
                   // error={dropDownError}

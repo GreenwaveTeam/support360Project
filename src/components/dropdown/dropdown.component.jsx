@@ -12,6 +12,7 @@ export default function Dropdown({
   style,
   error,
   helpertext,
+  disabled
 }) {
   return (
     <>
@@ -26,6 +27,7 @@ export default function Dropdown({
           className={value}
           error={error}
           helpertext={helpertext}
+          disabled={disabled}
         >
           {list.map((item, index) => (
             <MenuItem key={index} value={item} className={item}>

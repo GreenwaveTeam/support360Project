@@ -104,7 +104,13 @@ const PlantProjectComponent = ({
     }
 
     // Check if the project name already exists
-    if (projects.some((project) => project.project_name === project_name)) {
+    if (
+      projects.some(
+        (project) =>
+          project.project_name.toLowerCase().trim() ===
+          project_name.toLowerCase().trim()
+      )
+    ) {
       showSnackbar("Project name already exists.", "error");
       return;
     }
@@ -225,7 +231,8 @@ const PlantProjectComponent = ({
   };
 
   function removeOnlySpecialChar(str) {
-    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
+    // var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
+    var stringWithoutSpecialChars = str.replace(/[^\w\s]/g, "");
     return stringWithoutSpecialChars;
   }
 
@@ -249,6 +256,9 @@ const PlantProjectComponent = ({
                   fullWidth
                   value={plant_name}
                   onChange={(e) =>
+                    setPlant_name(removeOnlySpecialChar(e.target.value))
+                  }
+                  onBlur={(e) =>
                     setPlant_name(removeOnlySpecialChar(e.target.value.trim()))
                   }
                   disabled
@@ -260,6 +270,9 @@ const PlantProjectComponent = ({
                   fullWidth
                   value={plant_id}
                   onChange={(e) =>
+                    setPlant_id(removeOnlySpecialChar(e.target.value))
+                  }
+                  onBlur={(e) =>
                     setPlant_id(removeOnlySpecialChar(e.target.value.trim()))
                   }
                   disabled
@@ -271,6 +284,9 @@ const PlantProjectComponent = ({
                   fullWidth
                   value={project_name}
                   onChange={(e) =>
+                    setProject_name(removeOnlySpecialChar(e.target.value))
+                  }
+                  onBlur={(e) =>
                     setProject_name(
                       removeOnlySpecialChar(e.target.value.trim())
                     )
@@ -335,7 +351,8 @@ const PlantProjectComponent = ({
                   <TableCell>Support End Date</TableCell>
                   <TableCell>Plant Id</TableCell>
                   <TableCell>Plant Name</TableCell>
-                  <TableCell>Actions</TableCell>
+                  <TableCell>Edit</TableCell>
+                  <TableCell>Delete</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -348,10 +365,12 @@ const PlantProjectComponent = ({
                     <TableCell>{project.plant_name}</TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEdit(index)}>
-                        <EditIcon />
+                        <EditIcon color="primary" />
                       </IconButton>
+                    </TableCell>
+                    <TableCell>
                       <IconButton onClick={() => handleDeleteClick(project)}>
-                        <DeleteIcon />
+                        <DeleteIcon color="error" />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -376,7 +395,7 @@ const PlantProjectComponent = ({
           <Button onClick={() => setDeleteDialogOpen(false)} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleDeleteConfirm} color="primary">
+          <Button onClick={handleDeleteConfirm} color="error">
             Confirm
           </Button>
         </DialogActions>

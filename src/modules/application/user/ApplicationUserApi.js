@@ -1,13 +1,15 @@
 const DB_IP=process.env.REACT_APP_SERVERIP;
 
 
-export const fetchApplicationNames = async (plantID) => {
+export const fetchApplicationNames = async (plantID,project) => {
     const currentIP = process.env.REACT_APP_SERVERIP;
     console.log("env : ", currentIP);
+    console.log("Plant Id : ",plantID)
+    console.log('Project : ',project)
     // console.log("Current user : ", userData);
     try {
       const response = await fetch(
-        `http://${DB_IP}/application/user/${plantID}`,
+        `http://${DB_IP}/application/user/${plantID}/${project}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,

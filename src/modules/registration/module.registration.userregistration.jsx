@@ -1939,10 +1939,9 @@ export default function UserRegistration({ sendUrllist }) {
                                 onChange={(e) => {
                                   setFormData({
                                     ...formData,
-                                    userId:
-                                      removeOnlySpecialCharExceptAtTheRate(
-                                        e.target.value.toLocaleLowerCase()
-                                      ),
+                                    userId: removeOnlySpecialChar(
+                                      e.target.value.trim()
+                                    ),
                                   });
                                   setUnchangedUserID(e.target.value);
                                   setFormErrors({

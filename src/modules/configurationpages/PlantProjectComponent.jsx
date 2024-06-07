@@ -224,6 +224,11 @@ const PlantProjectComponent = ({
     setSnackbarOpen(true);
   };
 
+  function removeOnlySpecialChar(str) {
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
+    return stringWithoutSpecialChars;
+  }
+
   return (
     <Box sx={{ mt: 3 }}>
       <Box
@@ -243,7 +248,9 @@ const PlantProjectComponent = ({
                   label="Plant Name"
                   fullWidth
                   value={plant_name}
-                  onChange={(e) => setPlant_name(e.target.value)}
+                  onChange={(e) =>
+                    setPlant_name(removeOnlySpecialChar(e.target.value.trim()))
+                  }
                   disabled
                 />
               </Grid>
@@ -252,7 +259,9 @@ const PlantProjectComponent = ({
                   label="Plant Id"
                   fullWidth
                   value={plant_id}
-                  onChange={(e) => setPlant_id(e.target.value)}
+                  onChange={(e) =>
+                    setPlant_id(removeOnlySpecialChar(e.target.value.trim()))
+                  }
                   disabled
                 />
               </Grid>
@@ -261,7 +270,11 @@ const PlantProjectComponent = ({
                   label="Project Name"
                   fullWidth
                   value={project_name}
-                  onChange={(e) => setProject_name(e.target.value)}
+                  onChange={(e) =>
+                    setProject_name(
+                      removeOnlySpecialChar(e.target.value.trim())
+                    )
+                  }
                   disabled={editIndex !== null}
                 />
               </Grid>

@@ -87,7 +87,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
       fetchDivs(role);
     } catch (error) {
       console.error("Error fetching user list:", error);
-      navigate("/notfound")
     }
   };
   const fetchDivs = async (role) => {
@@ -140,7 +139,6 @@ export default function ModuleConfiguration({ sendUrllist }) {
       setFilteredRows(moduleData);
     } catch (error) {
       console.error("Error fetching data:", error);
-      navigate('/notfound')
     }
   };
   

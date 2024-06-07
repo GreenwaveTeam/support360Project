@@ -111,7 +111,6 @@ const Application = ({ sendUrllist }) => {
       fetchDivs(role);
     } catch (error) {
       console.error("Error fetching user list:", error);
-      navigate("/notfound")
     }
   };
 

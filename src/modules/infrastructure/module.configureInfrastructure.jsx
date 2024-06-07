@@ -383,8 +383,11 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     //   if (!response.ok) {
     //     throw new Error(`HTTP error! status: ${response.status}`);
     //   }
+    const foundPlantId = masterAllProjectDetailsList.find(
+      (element) => element.plant_name === selectedPlantAndProject.plantName
+    ).plant_id;
     const success = await deleteInfrastructureFromDb(
-      selectedPlantAndProject.plantId,
+      foundPlantId,
       infra_name,
       selectedPlantAndProject.project
     );
@@ -544,11 +547,15 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
       // } else {
       //   throw new Error("PlantID not found ! ");
       // }
+
+      const foundPlantId = masterAllProjectDetailsList.find(
+        (element) => element.plant_name === selectedPlantAndProject.plantName
+      ).plant_id;
       const success = await updateInfraNameDB(
         selected_category.categoryname,
         updated_category.categoryname,
         selectedPlantAndProject.project,
-        selectedPlantAndProject.plantId
+        foundPlantId
       );
       console.log("The success returned handleSaveClick() => ", success);
 

@@ -1745,6 +1745,7 @@ export default function ApplicationUser({ sendUrllist }) {
     setIssueDropDownError(false);
     setprogressVisible(false);
     setSelectedProject('Select a Project')
+    setAppDropdown([])
 
 
     setCurrentImageData({})
@@ -2919,7 +2920,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
             </center>
           </center>
 
-          {tabsmoduleNames.length !== 0 && (
+          {tabsmoduleNames.length !== 0 && isUserUnderSupport&& (
             <TabContext value={value}>
               <Box
                 style={{

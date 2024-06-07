@@ -1549,29 +1549,29 @@ export default function AdminHome({ sendUrllist }) {
                                           fontWeight: "600",
                                           fontSize: "14px",
                                         }}
-                                        onClick={() => {
-                                          navigate("/admin/configurePage");
-                                          setUserData({
-                                            ...userData,
-                                            plantID: item.plantID,
-                                            role: item.role,
-                                            userId: item.userId,
-                                            name: item.name,
-                                          });
-                                        }}
+                                        // onClick={() => {
+                                        //   navigate("/admin/configurePage");
+                                        //   setUserData({
+                                        //     ...userData,
+                                        //     plantID: item.plantID,
+                                        //     role: item.role,
+                                        //     userId: item.userId,
+                                        //     name: item.name,
+                                        //   });
+                                        // }}
                                         align="center"
                                       >
-                                        <Tooltip title="Configure ➚ ">
-                                          <Chip
-                                            variant="outlined"
-                                            label={item.userId}
-                                            sx={{
-                                              color: getColor(index),
-                                              borderColor: getColor(index),
-                                              fontWeight: 600,
-                                            }}
-                                          />
-                                        </Tooltip>
+                                        {/* <Tooltip title="Configure ➚ "> */}
+                                        <Chip
+                                          variant="outlined"
+                                          label={item.userId}
+                                          sx={{
+                                            color: getColor(index),
+                                            borderColor: getColor(index),
+                                            fontWeight: 600,
+                                          }}
+                                        />
+                                        {/* </Tooltip> */}
                                       </TableCell>
                                       <TableCell
                                         style={{

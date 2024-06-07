@@ -22,11 +22,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import NotFound from "../../../components/notfound/notfound.component";
 import { useUserContext } from "../../contexts/UserContext";
+import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
+import { display } from "@mui/system";
 
 const DeviceCategory = ({ sendUrllist }) => {
   const { userData, setUserData } = useUserContext();
 
-  const plantid = 'NA';
+  // const plantid = 'NA';
   //const role = userData.role;
   console.log(userData);
   const [open, setOpen] = useState(false);
@@ -43,6 +45,11 @@ const DeviceCategory = ({ sendUrllist }) => {
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
   const [showpipispinner,setShowpipispinner]=useState(true)
+  const [selectedPlant,setSelectedPlant]=useState(null)
+  const [plantDetails,setPlantDetails]=useState([])
+  const [plantid,setPlantid]=useState(null)
+  const [projectDetails,setProjectDetails]=useState([])
+  
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
     { pageName: "User Configure", pagelink: "/admin/configurePage" },
@@ -158,11 +165,22 @@ const DeviceCategory = ({ sendUrllist }) => {
     extendTokenExpiration();
     
     sendUrllist(urllist);
-    await fetchData();
+    //await fetchData();
     // fetchDivs();
+    const projects=await fetchAllProjectDetails()
+    setProjectDetails(projects)
+    const uniquePlantNames = Array.from(new Set(projects.map(plant => plant.plant_name)));
+    setPlantDetails(uniquePlantNames);
     await fetchUser();
     setShowpipispinner(false)
   }
+  useEffect(() => {
+    const plant = projectDetails.find((plant) => plant.plant_name.trim() === selectedPlant.trim())?.plant_id;
+    setPlantid(plant)
+  }, [selectedPlant]);
+  useEffect(()=>{
+    fetchData()
+  },[plantid])
   useEffect(() => {
     functionsCalledOnUseEffect()
   }, []);
@@ -228,6 +246,7 @@ const DeviceCategory = ({ sendUrllist }) => {
     console.log("Category==========>" + category.categoryname);
     navigate(`/admin/Device/CategoryConfigure/Issue`, {
       state: {
+        plantid:plantid,
         issuelist: category.issuelist,
         categoryname: category.categoryname,
       },
@@ -313,16 +332,22 @@ const DeviceCategory = ({ sendUrllist }) => {
         <Box>
           <div>
             <Container>
+              <Box sx={{display:'flex',flexDirection:'row'}}>
+            {divIsVisibleList.length!=0 &&
+              <Box >
+              
+              <div style={{padding:'10px'}}>
+                <Dropdown list={plantDetails} label={"Select Plant"} value={selectedPlant} onChange={(event)=>{setSelectedPlant(event.target.value);setPlantid(event.target.value)}}  style={{width:"200px"}} />
+              </div>
+              
+            </Box>
+            }
               {divIsVisibleList &&
                 divIsVisibleList.includes("add-new-category") && (
                   <form
                     onSubmit={submitCategory}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
+                    style={{marginLeft:'40%'}}>
+                  
                     <Textfield
                       label={"Issue Category "}
                       id="issuecategory"
@@ -334,9 +359,12 @@ const DeviceCategory = ({ sendUrllist }) => {
                     <Button
                       color="primary"
                       variant="contained"
-                      style={{ width: "200px" }}
+                      // style={{ width: "200px" }}
                       type="submit"
+                      size="medium"
+                      
                       sx={{
+                        padding: "15px 18px",
                         backgroundImage:
                           "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
                       }}
@@ -349,6 +377,7 @@ const DeviceCategory = ({ sendUrllist }) => {
                     </Button>
                   </form>
                 )}
+                </Box>
               &nbsp;&nbsp;
               {divIsVisibleList &&
                 divIsVisibleList.includes("device-category-table") && (

@@ -19,12 +19,13 @@ const DeviceIssue = ({ sendUrllist }) => {
   const [open, setOpen] = useState(false);
   const { userData, setUserData } = useUserContext();
 
-  const plantid = 'NA';
+  //const plantid = 'NA';
   const role = userData.role;
   //const history=useHis
   const location = useLocation();
   // if(location.state.categoryname===null)
   // navigate('/notfound');
+  const plantid=location.state.plantid
   const categoryname = location.state.categoryname;
   const [showpipispinner,setShowpipispinner]=useState(true)
   const [issueList, setIssueList] = useState([]);

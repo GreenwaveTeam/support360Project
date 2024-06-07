@@ -123,7 +123,7 @@ export default function AdminHome({ sendUrllist }) {
     }
   };
 
-  const newColors = ["#ff7043", "#7e57c2", "#81c784"];
+  const newColors = ["#7e57c2"];
   const getColor = (index) => {
     return newColors[index % newColors.length]; // Cycle through colors based on index
   };
@@ -1238,7 +1238,7 @@ export default function AdminHome({ sendUrllist }) {
                               <TableHead>
                                 <TableRow>
                                   <TableCell
-                                    colSpan={7}
+                                    colSpan={8}
                                     sx={{
                                       textAlign: "center",
                                       fontSize: "15px",
@@ -1446,6 +1446,16 @@ export default function AdminHome({ sendUrllist }) {
                                       sx={{
                                         fontWeight: "bold",
                                         fontSize: "14px",
+                                        width: "20%",
+                                      }}
+                                      align="center"
+                                    >
+                                      Projects
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{
+                                        fontWeight: "bold",
+                                        fontSize: "14px",
                                         width: "10%",
                                       }}
                                       align="center"
@@ -1563,6 +1573,33 @@ export default function AdminHome({ sendUrllist }) {
                                           />
                                         </Tooltip>
                                       </TableCell>
+                                      <TableCell
+                                        style={{
+                                          cursor: "pointer",
+                                          fontWeight: "600",
+                                          fontSize: "14px",
+                                        }}
+                                        align="center"
+                                      >
+                                        {item.projectName.map((name, index) => (
+                                          // <Tooltip
+                                          //   key={index}
+                                          //   title="Configure ➚"
+                                          // >
+                                          <Chip
+                                            variant="outlined"
+                                            label={name}
+                                            sx={{
+                                              color: getColor(index),
+                                              borderColor: getColor(index),
+                                              fontWeight: 600,
+                                              margin: "2px",
+                                            }}
+                                          />
+                                          // </Tooltip>
+                                        ))}
+                                      </TableCell>
+
                                       {/* </Link> */}
                                       <TableCell align="center">
                                         {/* <Link

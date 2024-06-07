@@ -69,7 +69,7 @@ export default function PlantPage({ sendUrllist }) {
   });
   const DB_IP = process.env.REACT_APP_SERVERIP;
 
-  const newColors = ["#ff7043", "#7e57c2", "#81c784"];
+  const newColors = ["#7e57c2"];
   const getColor = (index) => {
     return newColors[index % newColors.length];
   };

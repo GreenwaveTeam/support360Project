@@ -103,6 +103,7 @@ export default function UserRegistration({ sendUrllist }) {
     passwordNotMatch: false,
     weakPassword: false,
     projectName: false,
+    validEmail: false,
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -880,6 +881,11 @@ export default function UserRegistration({ sendUrllist }) {
       console.error("Error fetching project details:", error);
     }
   };
+
+  function isValidEmail(email) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
 
   return (
     <>
@@ -1841,10 +1847,21 @@ export default function UserRegistration({ sendUrllist }) {
                                   ...formErrors,
                                   email: e.target.value.trim() === "",
                                 });
+                                setFormErrors({
+                                  ...formErrors,
+                                  validEmail: !isValidEmail(
+                                    e.target.value.trim()
+                                  ),
+                                });
+                                console.log(
+                                  "isValidEmail : ",
+                                  isValidEmail(e.target.value.trim())
+                                );
                               }}
-                              error={formErrors.email}
+                              error={formErrors.email || formErrors.validEmail}
                               helperText={
-                                formErrors.email && "Email must be filled"
+                                (formErrors.email && "Email must be filled") ||
+                                (formErrors.validEmail && "Email is not valid")
                               }
                             />
                           </Grid>

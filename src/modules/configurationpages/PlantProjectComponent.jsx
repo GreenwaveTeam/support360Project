@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   TextField,
   Button,
@@ -42,38 +42,19 @@ const PlantProjectComponent = ({
   const [editIndex, setEditIndex] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
-  const [tableDialogOpen, setTableDialogOpen] = useState(false);
-  const [formDialogOpen, setFormDialogOpen] = useState(false);
 
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [snackbarText, setSnackbarText] = useState("");
 
+  const formRef = useRef(null);
+
   useEffect(() => {
     console.log(
-      `PlantProjectComponent called with name ${initialPlantName} and is ${initialPlantId}`
+      `PlantProjectComponent called with name ${initialPlantName} and id ${initialPlantId}`
     );
     fetchProjects();
   }, []);
-
-  // const fetchProjects = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `http://${DB_IP}/plants/projectDetails`,
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //         },
-  //       }
-  //     );
-  //     console.log("fetchProjects : ", response.data);
-  //     setProjects(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching project details:", error);
-  //     showSnackbar("Error fetching project details", "error");
-  //   }
-  // };
 
   const fetchProjects = async () => {
     try {
@@ -111,6 +92,20 @@ const PlantProjectComponent = ({
       !support_end_date
     ) {
       showSnackbar("All fields are required.", "error");
+      return;
+    }
+
+    if (dayjs(support_start_date).isAfter(dayjs(support_end_date))) {
+      showSnackbar(
+        "Support start date cannot be later than support end date.",
+        "error"
+      );
+      return;
+    }
+
+    // Check if the project name already exists
+    if (projects.some((project) => project.project_name === project_name)) {
+      showSnackbar("Project name already exists.", "error");
       return;
     }
 
@@ -173,7 +168,6 @@ const PlantProjectComponent = ({
     setProject_name("");
     setSupport_start_date(null);
     setSupport_end_date(null);
-    setFormDialogOpen(false); // Close the form dialog
   };
 
   const handleEdit = (index) => {
@@ -182,7 +176,14 @@ const PlantProjectComponent = ({
     setSupport_start_date(dayjs(project.support_start_date));
     setSupport_end_date(dayjs(project.support_end_date));
     setEditIndex(index);
-    setFormDialogOpen(true); // Open the form dialog for editing
+    formRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleCancelEdit = () => {
+    setProject_name("");
+    setSupport_start_date(null);
+    setSupport_end_date(null);
+    setEditIndex(null);
   };
 
   const handleDeleteClick = (project) => {
@@ -225,26 +226,16 @@ const PlantProjectComponent = ({
 
   return (
     <Box sx={{ mt: 3 }}>
-      {/* <Box sx={{ mb: 3 }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => setTableDialogOpen(true)}
-          sx={{ ml: 2 }}
-        >
-          Show Projects
-        </Button>
-      </Box> */}
-      <Dialog
-        open={formDialogOpen}
-        onClose={() => setFormDialogOpen(false)}
-        fullWidth
-        maxWidth="md"
+      <Box
+        ref={formRef}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
       >
-        <DialogTitle>
-          {editIndex !== null ? "Edit Project" : "Add New Project"}
-        </DialogTitle>
-        <DialogContent>
+        <Box>
           <Box component="form" onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
@@ -265,7 +256,7 @@ const PlantProjectComponent = ({
                   disabled
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   label="Project Name"
                   fullWidth
@@ -294,83 +285,70 @@ const PlantProjectComponent = ({
                   slotProps={{ textField: { fullWidth: true } }}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    mt: 2,
+                    padding: "5px",
+                  }}
+                >
+                  <Button type="submit" variant="contained" color="primary">
+                    {editIndex !== null ? "Update" : "Submit"}
+                  </Button>
+                  {editIndex !== null && (
+                    <Button
+                      onClick={handleCancelEdit}
+                      variant="contained"
+                      color="secondary"
+                      sx={{ ml: 2 }}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </Box>
+              </Grid>
             </Grid>
           </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setFormDialogOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} color="primary">
-            {editIndex !== null ? "Update" : "Submit"}
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* <Dialog
-        open={tableDialogOpen}
-        onClose={() => setTableDialogOpen(false)}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle>Projects</DialogTitle>
-        <DialogContent> */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Project Name</TableCell>
-              <TableCell>Support Start Date</TableCell>
-              <TableCell>Support End Date</TableCell>
-              <TableCell>Plant Id</TableCell>
-              <TableCell>Plant Name</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {projects.map((project, index) => (
-              <TableRow key={index}>
-                <TableCell>{project.project_name}</TableCell>
-                <TableCell>{project.support_start_date}</TableCell>
-                <TableCell>{project.support_end_date}</TableCell>
-                <TableCell>{project.plant_id}</TableCell>
-                <TableCell>{project.plant_name}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEdit(index)}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDeleteClick(project)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {/* </DialogContent>
-        <DialogContent> */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mt: 2,
-        }}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setFormDialogOpen(true)}
-        >
-          Add New Project
-        </Button>
+        </Box>
+        <Box>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Project Name</TableCell>
+                  <TableCell>Support Start Date</TableCell>
+                  <TableCell>Support End Date</TableCell>
+                  <TableCell>Plant Id</TableCell>
+                  <TableCell>Plant Name</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {projects.map((project, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{project.project_name}</TableCell>
+                    <TableCell>{project.support_start_date}</TableCell>
+                    <TableCell>{project.support_end_date}</TableCell>
+                    <TableCell>{project.plant_id}</TableCell>
+                    <TableCell>{project.plant_name}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleEdit(index)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleDeleteClick(project)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       </Box>
-      {/* </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setTableDialogOpen(false)} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog> */}
+
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}

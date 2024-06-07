@@ -1,9 +1,9 @@
 const DB_IP = process.env.REACT_APP_SERVERIP;
 
 export const login = async (username, password) => {
-  // if (localStorage.getItem("token") !== null) {
-  //   localStorage.removeItem("token");
-  // }
+  if (localStorage.getItem("token") !== null) {
+    await localStorage.removeItem("token");
+  }
   try {
     const response = await fetch(`http://${DB_IP}/auth/signin`, {
       method: "POST",
@@ -16,7 +16,7 @@ export const login = async (username, password) => {
     if (response.ok) {
       const res = await response.json();
       console.log("token : ", res);
-      localStorage.setItem("token", res.token);
+      await localStorage.setItem("token", res.token);
       localStorage.setItem("expire", res.expire);
       return true;
     } else {

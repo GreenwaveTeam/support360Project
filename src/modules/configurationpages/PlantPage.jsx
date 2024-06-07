@@ -251,6 +251,7 @@ export default function PlantPage({ sendUrllist }) {
         // navigate("/Plant/home");
         return;
       }
+
       const data = await response.json();
       console.log("plantDetails : ", data);
 
@@ -314,14 +315,34 @@ export default function PlantPage({ sendUrllist }) {
       }
     }
 
-    if (newPlant.supportStartDate > newPlant.supportEndDate) {
+    const isDuplicate = plantList.some(
+      (plant) =>
+        plant.plantName.toLowerCase() === newPlant.plantName.toLowerCase() ||
+        plant.plantID.toLowerCase() === newPlant.plantID.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      // setDuplicateError("Plant Name or Plant ID already exists");
+      // return;
       handleClickSnackbar();
-      setSnackbarText(
-        "Support Start Date should not be Greater than Support End Date !"
-      );
+      setSnackbarText("Plant Name or Plant ID already exists");
       setsnackbarSeverity("error");
+      console.log("Plant Name or Plant ID already exists");
       return;
     }
+
+    // else {
+    //   setDuplicateError("");
+    // }
+
+    // if (newPlant.supportStartDate > newPlant.supportEndDate) {
+    //   handleClickSnackbar();
+    //   setSnackbarText(
+    //     "Support Start Date should not be Greater than Support End Date !"
+    //   );
+    //   setsnackbarSeverity("error");
+    //   return;
+    // }
 
     try {
       console.log("JSON.stringify(newPlant) : ", JSON.stringify(newPlant));
@@ -359,7 +380,7 @@ export default function PlantPage({ sendUrllist }) {
   };
 
   function removeAllSpecialChar(str) {
-    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z\s]/g, "");
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9\s]/g, "");
     var stringWithoutExtraSpaces = stringWithoutSpecialChars.replace(
       /\s+/g,
       " "
@@ -557,6 +578,14 @@ export default function PlantPage({ sendUrllist }) {
                   onClick={() => {
                     postPlantData();
                     fetchPlantData();
+                    setNewPlant({
+                      ...newPlant,
+                      plantName: "",
+                      plantID: "",
+                      address: "",
+                      customerName: "",
+                      division: "",
+                    });
                   }}
                 >
                   Save Plant
@@ -781,7 +810,7 @@ export default function PlantPage({ sendUrllist }) {
                           style={{ cursor: "pointer" }}
                           onClick={() => handlePlantDelete(item.plantID)}
                         />
-                        <Dialog
+                        {/* <Dialog
                           open={openPlantDeleteDialog}
                           onClose={() => setOpenPlantDeleteDialog(false)}
                           aria-labelledby="alert-dialog-title"
@@ -814,7 +843,7 @@ export default function PlantPage({ sendUrllist }) {
                               Delete
                             </Button>
                           </DialogActions>
-                        </Dialog>
+                        </Dialog> */}
                       </TableCell>
                       <TableCell align="center">
                         <IconButton
@@ -833,6 +862,39 @@ export default function PlantPage({ sendUrllist }) {
             </TableContainer>
           </Grid>
           {/* {showPlantProjectComponent && ( */}
+          <Dialog
+            open={openPlantDeleteDialog}
+            onClose={() => setOpenPlantDeleteDialog(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Delete Plant Data?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure you want to delete this Plant: {selectedplantId} ?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setOpenPlantDeleteDialog(false)}
+                color="primary"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  deletePlantByplantId(selectedplantId);
+                  setOpenPlantDeleteDialog(false);
+                }}
+                color="error"
+                autoFocus
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
           <Dialog open={showPlantProjectComponent} onClose={handleCloseDialog}>
             <DialogContent>
               <PlantProjectComponent

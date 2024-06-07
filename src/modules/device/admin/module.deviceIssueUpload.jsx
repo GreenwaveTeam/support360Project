@@ -336,8 +336,8 @@ const DeviceIssue = ({ sendUrllist }) => {
                 <form
                   style={{
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
+                    flexDirection: "row",
+                    // alignItems: "center",
                   }}
                   onSubmit={submitIssue}
                 >
@@ -366,7 +366,7 @@ const DeviceIssue = ({ sendUrllist }) => {
                     style={{ width: "200px", paddingBottom: "1rem" }}
                     value={issueName}
                     onChange={(e) => setIssueName(e.target.value)}
-                  />
+                  />&nbsp;&nbsp;
                   <Dropdown
                     label={"Severity"}
                     value={severity}
@@ -376,10 +376,12 @@ const DeviceIssue = ({ sendUrllist }) => {
                   />
                   &nbsp;&nbsp;
                   <Button
-                    style={{ width: "200px" }}
                     color="primary"
                     variant="contained"
+                     style={{ height: "55px" }}
                     type="submit"
+                    size="small"
+                    
                     sx={{
                       backgroundImage:
                         "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",

@@ -848,7 +848,7 @@ const Application = ({ sendUrllist }) => {
             <Box
               sx={{
                 position: "relative",
-                width: "80vw",
+                width: "95vw",
                 height: "80vh",
                 objectFit: "contain",
               }}

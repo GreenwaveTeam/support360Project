@@ -175,7 +175,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const abortControllerRef=React.useRef();
 
-  const [isUserUnderSupport,setIsUserUnderSupport]= useState(false);
+  const [isUserUnderSupport,setIsUserUnderSupport]= useState(true);
 
   // const [currentLoaderModule,setCurrentLoaderModule]=useState("");
 
@@ -193,7 +193,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
   
-  const [selectedProject,setSelectedProject]=useState('Select a Project')
+  const [selectedProject,setSelectedProject]=useState('')
 
   const [plantIdList,setPlantIdList]=useState([])
   const [projectList,setProjectList]=useState([])
@@ -288,8 +288,8 @@ export default function ApplicationUser({ sendUrllist }) {
     if (
       // isUserUnderSupport && 
       // (
-        dropdownValue === 'Select an application' || 
-        selectedProject === 'Select a Project' || 
+        // dropdownValue === 'Select an application' || 
+        // selectedProject === 'Select a Project' || 
         dropdownValue === '' || 
         selectedProject === ''
       // )
@@ -557,6 +557,7 @@ export default function ApplicationUser({ sendUrllist }) {
         else{
               setDropdownValue('')
               setAppDropdown([])
+              setIsUserUnderSupport(false)
         }
       
 
@@ -599,11 +600,12 @@ export default function ApplicationUser({ sendUrllist }) {
            }
          )
        }
-       projectList.unshift('Select a Project')
+      //  projectList.unshift('Select a Project')
        console.log('Final PlantList : ',plantIdList)
        console.log('Final ProjectList : ',projectList)
        setPlantIdList(plantIdList)
        setProjectList(projectList)
+      //  setSelectedProject('Select a Project')
 
        setMasterAllProjectDetails(masterDetails)
 
@@ -1761,7 +1763,7 @@ export default function ApplicationUser({ sendUrllist }) {
     setSeverityError(false);
     setIssueDropDownError(false);
     setprogressVisible(false);
-    setSelectedProject('Select a Project')
+    setSelectedProject('')
     setAppDropdown([])
 
 
@@ -2678,16 +2680,16 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                 list={projectList}
                 label={"Project"}
                 // error={dropDownError}
-                style={{ width: "200px" }}
+                style={{ minWidth: "200px" }}
               ></Dropdown>
 
 
                 <div id="app-dropdown-selection">
                   <Dropdown
-                    style={{ width: "200px" ,marginLeft:'10px'}}
+                    style={{ minWidth: "200px" ,marginLeft:'10px'}}
                     id={"app-dropdown"}
                     list={appDropdown}
-                    label={"Application Name"}
+                    label={<div style={{marginLeft:'15px'}}>Application Name</div>}
                     value={dropdownValue}
                     onChange={handleAppDropdownChange}
                     disabled={isUserUnderSupport===false}
@@ -2707,8 +2709,8 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                
                 </div>
               )}
-            { isUserUnderSupport===false&&selectedProject!=='Select a Project'&&<RenewMessageComponent/> }
-            {tabsmoduleNames.length===0&&isUserUnderSupport&& <div style={{paddingTop:'10px'}}> <Chip color="success" variant="outlined" label={<div><InfoOutlinedIcon fontSize="small"/> Please select a Project and an Application from the above dropdown </div>}/></div>}
+            { isUserUnderSupport===false&&selectedProject!==''&&<RenewMessageComponent/> }
+            {tabsmoduleNames.length===0&&isUserUnderSupport&& <div style={{paddingTop:'10px'}}> <Chip color="success" variant="outlined" label={<div><InfoOutlinedIcon fontSize="small"/> Please select both Project and Application from the above dropdown </div>}/></div>}
           </center>
           <br />
           <center>

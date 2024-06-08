@@ -13,6 +13,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContext";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
+import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
+
 
 const AdminPage = ({ sendUrllist }) => {
   const [userPlantID, setUserPlantID] = useState(
@@ -24,6 +26,8 @@ const AdminPage = ({ sendUrllist }) => {
   const location = useLocation();
   const currentPageLocation = useLocation().pathname;
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
+  const storedTheme = localStorage.getItem("theme");
+  console.log(`CurrentTheme ${storedTheme}`);
 
   useEffect(() => {
     if (userPlantID) {
@@ -157,7 +161,9 @@ const AdminPage = ({ sendUrllist }) => {
                 >
                   <Avatar
                     sx={{
-                      bgcolor: colors.primary[700],
+                      // bgcolor: colors.primary[700],
+                      bgcolor: storedTheme?.toLowerCase() === 'light' || storedTheme === null ? colors.primary[700] : '',
+
                       mb: 2,
                       width: 80,
                       height: 80,
@@ -201,7 +207,8 @@ const AdminPage = ({ sendUrllist }) => {
                 >
                   <Avatar
                     sx={{
-                      bgcolor: colors.primary[700],
+                      // bgcolor: colors.primary[700],
+                      bgcolor: storedTheme?.toLowerCase() === 'light' || storedTheme === null ? colors.primary[700] : '',
                       mb: 2,
                       width: 80,
                       height: 80,
@@ -245,7 +252,8 @@ const AdminPage = ({ sendUrllist }) => {
                 >
                   <Avatar
                     sx={{
-                      bgcolor: colors.primary[700],
+                      // bgcolor: colors.primary[700],
+                      bgcolor: storedTheme?.toLowerCase() === 'light' || storedTheme === null ? colors.primary[700] : '',
                       mb: 2,
                       width: 80,
                       height: 80,
@@ -287,7 +295,8 @@ const AdminPage = ({ sendUrllist }) => {
                 >
                   <Avatar
                     sx={{
-                      bgcolor: colors.primary[700],
+                      // bgcolor: colors.primary[700],
+                      bgcolor: storedTheme?.toLowerCase() === 'light' || storedTheme === null ? colors.primary[700] : '',
                       mb: 2,
                       width: 80,
                       height: 80,

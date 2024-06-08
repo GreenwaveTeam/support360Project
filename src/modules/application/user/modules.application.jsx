@@ -2709,7 +2709,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                
                 </div>
               )}
-            { isUserUnderSupport===false&&selectedProject!==''&&<RenewMessageComponent/> }
+            { isUserUnderSupport===false&&selectedProject!==''&&<div style={{marginTop:'10px'}}><RenewMessageComponent/></div> }
             {tabsmoduleNames.length===0&&isUserUnderSupport&& <div style={{paddingTop:'10px'}}> <Chip color="success" variant="outlined" label={<div><InfoOutlinedIcon fontSize="small"/> Please select both Project and Application from the above dropdown </div>}/></div>}
           </center>
           <br />

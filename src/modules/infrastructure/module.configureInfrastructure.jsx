@@ -138,6 +138,15 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   const handleAddIssues = () => {
     console.log("handleAddIssues called !");
     setCategoryError(false);
+
+    if(selectedPlantAndProject.plantName===''||selectedPlantAndProject.project==='')
+      {
+        setsnackbarSeverity("error");
+      setSnackbarText("Fill the required fields! ");
+      setOpen(true);
+      setCategoryError(true);
+      return;
+      }
     if (newCateogry.length === 0 || newCateogry.trim() === "") {
       setsnackbarSeverity("error");
       setSnackbarText("Category name cannot be blank ! ");
@@ -260,13 +269,13 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     //  setProjectList(selectedprojects)
     //  setPlantIdList(Array.from(new Set(selectedprojects)))
 
-    const indexAtZeroPlantName = finalPlantIDList[0];
-    const indexAtZeroProject = projectList[0];
-    setSelectedPlantAndProject({
-      ...selectedPlantAndProject,
-      plantName: indexAtZeroPlantName,
-      project: indexAtZeroProject,
-    });
+    // const indexAtZeroPlantName = finalPlantIDList[0];
+    // const indexAtZeroProject = projectList[0];
+    // setSelectedPlantAndProject({
+    //   ...selectedPlantAndProject,
+    //   plantName: indexAtZeroPlantName,
+    //   project: indexAtZeroProject,
+    // });
     //  await fetchInfraFromDb(indexAtZeroPlantName, indexAtZeroProject);
   };
 

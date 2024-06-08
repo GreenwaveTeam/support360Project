@@ -167,7 +167,7 @@ export default function ApplicationUser({ sendUrllist }) {
   const navigate = useNavigate();
   const currentPageLocation = useLocation().pathname;
 
-  const { userData, setUserData } = useUserContext();
+  const [ userData, setUserData ] = useState({})
 
   const [currentUserData,setCurrentUserData]= useState({})
 
@@ -283,18 +283,24 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
 
-  useEffect(()=>
-  {
-    if(dropdownValue==='Select an application'||selectedProject==='Select a Project'||dropdownValue===''||selectedProject==='')
-      {
-        console.log('Both fields need to be filled ! ')
-        return;
-      }
-      else
-      {
-        fetchTabs(dropdownValue)
-      }
-  },[dropdownValue,selectedProject])
+  useEffect(() => {
+    console.log('Current Selected Project : ',selectedProject)
+    if (
+      // isUserUnderSupport && 
+      // (
+        dropdownValue === 'Select an application' || 
+        selectedProject === 'Select a Project' || 
+        dropdownValue === '' || 
+        selectedProject === ''
+      // )
+    ) {
+      console.log('Both fields need to be filled!');
+      setAppDropdown([]);
+    } else {
+      fetchTabs(dropdownValue);
+    }
+  }, [dropdownValue, selectedProject]);
+  
 
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
@@ -573,6 +579,11 @@ export default function ApplicationUser({ sendUrllist }) {
       const masterDetails=[]
       const plantIdList=[]
       const projectList=[]
+      const currentUserData=await fetchCurrentUser()
+      if(currentUserData)//!setting the userdata here
+        {
+          setUserData(currentUserData)
+        }
       if(projectDetails)
        {
          projectDetails.forEach(data=>
@@ -580,7 +591,7 @@ export default function ApplicationUser({ sendUrllist }) {
             masterDetails.push(data)
              const currentPlant=data.plant_id;
              const currentProject=data.project_name;
-             if(data.plant_id===userData.plantID)
+             if(data.plant_id===currentUserData.plantID)
               {
              plantIdList.push(currentPlant)
              projectList.push(currentProject)
@@ -661,6 +672,10 @@ export default function ApplicationUser({ sendUrllist }) {
               console.log('Current Divs Components : ',currentDivs.components)
         setDivIsVisibleList(currentDivs.components);
       }
+    }
+    else
+    {
+      navigate('/login')
     }
   };
   // const fetchDivs = async (role) => {
@@ -762,6 +777,8 @@ export default function ApplicationUser({ sendUrllist }) {
     //   return;
     // }
     // setDisableTabSelection(true)
+    if(dropdownvalue===''||selectedProject==='')
+      return;
 
     const tabData= await fetchTabNames(dropdownvalue,userData,selectedProject)
     if (tabData) {
@@ -1732,7 +1749,7 @@ export default function ApplicationUser({ sendUrllist }) {
       return;
     }
     //Resetting Data
-    setDropdownValue("Select an application");
+    setDropdownValue("");
     setTabsModuleNames([]);
     setFinalUserInput([]);
     setMiscellaneousInput("");
@@ -2673,6 +2690,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                     label={"Application Name"}
                     value={dropdownValue}
                     onChange={handleAppDropdownChange}
+                    disabled={isUserUnderSupport===false}
                   ></Dropdown>
                 </div>
 
@@ -2690,7 +2708,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                 </div>
               )}
             { isUserUnderSupport===false&&selectedProject!=='Select a Project'&&<RenewMessageComponent/> }
-            {tabsmoduleNames.length===0&& <div style={{paddingTop:'10px'}}> <Chip color="success" variant="outlined" label={<div><InfoOutlinedIcon fontSize="small"/> Please select a Project and an Application from the above dropdown </div>}/></div>}
+            {tabsmoduleNames.length===0&&isUserUnderSupport&& <div style={{paddingTop:'10px'}}> <Chip color="success" variant="outlined" label={<div><InfoOutlinedIcon fontSize="small"/> Please select a Project and an Application from the above dropdown </div>}/></div>}
           </center>
           <br />
           <center>

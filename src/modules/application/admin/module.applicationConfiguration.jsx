@@ -43,11 +43,20 @@ export default function ModuleConfiguration({ sendUrllist }) {
   const [selectedProject, setSelectedProject] = useState(null);
   const columns = [
     {
+      id: "project_name",
+      label: "Project Name",
+      type: "dropdown",
+      canRepeatSameValue: false,
+      values: projects,
+    
+    },
+    {
       id: "application_name",
       label: "Application Name",
       type: "textbox",
       canRepeatSameValue: false,
     },
+   
   ];
   const [data, setData] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
@@ -134,6 +143,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
         }
       );
       const moduleData = response.data;
+      console.log("Application Data:",moduleData)
       setData(moduleData);
       setFilteredRows(moduleData);
     } catch (error) {
@@ -171,6 +181,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
     setPlantid(plant);
     setData([]);
     setFilteredRows([]);
+    setSelectedProject(null)
   }, [selectedPlant]);
   useEffect(() => {
     setData([]);
@@ -215,7 +226,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
     try {
       // Send requestBody as request body in the PUT request
       const response = await axios.put(
-        `http://${DB_IP}/application/admin/${plantid}/${selectedProject}/${prev.application_name}`,
+        `http://${DB_IP}/application/admin/updateApplicationDetails/${plantid}/${selectedProject}/${prev.application_name}`,
         rowData,
         {
           headers: {
@@ -339,7 +350,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
                         padding: "15px 18px",
                         backgroundImage:
                           "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
-                      }}
+                      }} disabled={selectedProject===null}
                     >
                       Add&nbsp;
                       <AddCircleOutlineOutlinedIcon

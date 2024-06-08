@@ -200,11 +200,11 @@ export const fetchApplicationNames = async (plantID,project) => {
           };
 
 
-          export const postDatainDB = async (json_data,project) => {
+          export const postDatainDB = async (json_data) => {
             console.log("postDatainDB() called");
             console.log("current JSON_data is => ", JSON.stringify(json_data));
             try {
-              const response = await fetch(`http://${DB_IP}/application/user/${project}`, {
+              const response = await fetch(`http://${DB_IP}/application/user`, {
                 method: "POST",
         
                 headers: {

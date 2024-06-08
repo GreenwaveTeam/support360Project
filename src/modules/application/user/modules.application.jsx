@@ -387,6 +387,7 @@ export default function ApplicationUser({ sendUrllist }) {
       plantID: PlantID,
       application_name: dropdownValue,
       module_name: value,
+      project:selectedProject,
       // "miscellaneous_issues": miscellaneousInput,
       // "remarks": remarksInput,
       ticket_number: ticketNumber,
@@ -1724,7 +1725,7 @@ export default function ApplicationUser({ sendUrllist }) {
     let json_Count = 0;
     try {
       const results = await Promise.all(final_Json.map(async json_data => {
-        const success = await postDatainDB(json_data,selectedProject);
+        const success = await postDatainDB(json_data);
         if (success) {
           json_Count++;
         }
@@ -1736,6 +1737,7 @@ export default function ApplicationUser({ sendUrllist }) {
       setSnackbarSeverity('error')
       setSnackbarText('Error !')
       setMainAlert(true)
+      setprogressVisible(false);
       return;
     }
     

@@ -6,8 +6,10 @@ import {
   Container,
   DialogTitle,
   Divider,
+  Menu,
   MenuItem,
   Typography,
+  styled,
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Cancel";
@@ -29,6 +31,7 @@ import NotFound from "../../../components/notfound/notfound.component";
 import styles from "./module.module.css";
 import { borderBottom } from "@mui/system";
 import { extendTokenExpiration } from "../../helper/Support360Api";
+import Textfield from "../../../components/textfield/textfield.component";
 
 const Application = ({ sendUrllist }) => {
   const [open, setOpen] = useState(false);
@@ -44,6 +47,8 @@ const Application = ({ sendUrllist }) => {
   const [issues, setissues] = useState([]);
   const [dialogMessage, setDialogMessage] = useState(null);
   const [categories, setCategories] = useState([]);
+  const[isEditModule,setIsEditModule]=useState(false)
+
   const { userData, setUserData } = useUserContext();
 
   // const plantid = userData.plantID;
@@ -80,12 +85,24 @@ const Application = ({ sendUrllist }) => {
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const currentPageLocation = useLocation().pathname;
   const DB_IP = process.env.REACT_APP_SERVERIP;
+  
+  // const chipStyle = {
+  //   height: isEditModule ? '60px' : '32px',
+  //   padding: isEditModule ? '20px' : '4px', // Add padding for better appearance
+  //   };
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
     { pageName: "Configuration", pagelink: "/admin/configurePage" },
     { pageName: "Application", pagelink: "/admin/ApplicationConfigure" },
   ];
-
+  const [contextMenuPosition, setContextMenuPosition] = useState(null);
+  const [selectedModuleForDelete, setSelectedModuleForDelete] = useState(null);
+  const [deleteModuleDialog, setDeleteModuleDialog] = useState(false);
+  const [selectedModuleForUpdate, setSelectedModuleForUpdate] = useState(null);
+  const [updatedModuleName, setUpdateModuleName] = useState("");
+  const [updateModuleDialog, setUpdateModuleDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  
   useEffect(() => {
     extendTokenExpiration();
     fetchUser();
@@ -114,7 +131,11 @@ const Application = ({ sendUrllist }) => {
       console.error("Error fetching user list:", error);
     }
   };
-
+  const handleUpdateModule=()=>{
+    setIsEditModule(true)
+    setUpdateModuleName(module_Name)
+    setContextMenuPosition(null)
+  }
   const fetchDivs = async (role) => {
     try {
       console.log("fetchDivs() called");
@@ -521,7 +542,7 @@ const Application = ({ sendUrllist }) => {
       setSelection({ left, top, width, height });
       detailsToCheckOverlap = { left, top, width, height };
     };
-
+    
     const handleTouchEnd = () => {
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
@@ -760,7 +781,110 @@ const Application = ({ sendUrllist }) => {
     }
     return false;
   };
+  
+  const handleModuleProceed = () => {
+    console.log("On blur called")
+    setUpdateModuleDialog(true);
+    
+  };
+  const handleUpdateModuleName=async()=>{
+    console.log("Handle update module name")
+    try {
+      if (
+        modulelist !== null &&
+        modulelist.some(
+          (module) =>
+            module.modulename.toLowerCase().trim() ===
+            updatedModuleName.toLowerCase().trim()
+        )
+      ) {
+        setDialogPopup(true);
+        setsnackbarSeverity("error");
+        setDialogMessage("Module Name is already present");
+        setUpdateModuleDialog(false);
+        
+        return;
+      }
+      if (updatedModuleName.trim() === "") {
+        setDialogPopup(true);
+        setsnackbarSeverity("error");
+        setDialogMessage("Blank string is not accepted");
+        setUpdateModuleDialog(false);
+        return;
+      }
+      const regex = /[^A-Za-z0-9 _]/;
+      if (regex.test(updatedModuleName.trim())) {
+        setDialogPopup(true);
+        setsnackbarSeverity("error");
+        setDialogMessage("Special Character is not allowed");
+        setUpdateModuleDialog(false);
+        return;
+      }
+      ///admin/{plant_id}/{application}/{module}/{updatemodule}/updatemodulename
+      const response = await axios.put(
+        `http://${DB_IP}/application/admin/updatemodulename/${plantid}/${selectedProject}/${application_name}/${module_Name}/${updatedModuleName}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
+      // Optionally, update the UI or perform any additional actions after successful deletion
+      setUpdateModuleDialog(false);
+      setSelectedModuleForUpdate(null);
+      setIsEditModule(false)
+      setModule_Name(updatedModuleName)
+      setUpdateModuleName("");
+      
+    } catch (error) {
+      // Handle errors, such as displaying an error message to the user
+
+      setsnackbarSeverity("error");
+      setDialogPopup(true);
+      setUpdateModuleDialog(false);
+      setUpdateModuleName("");
+      setDialogMessage("Database error");
+      setIsEditModule(false)
+    }
+  }
+  const handleDeleteModule = async () => {
+    setDeleteModuleDialog(true);
+    setContextMenuPosition(null)
+  };
+  const handleContextClick = (event, module) => {
+    event.preventDefault();
+    setContextMenuPosition({ x: event.clientX, y: event.clientY });
+    setSelectedModuleForDelete(module_Name);
+    setUpdateModuleName(module_Name);
+  };
+  const handleDeleteModuleConfirm = async () => {
+    try {
+      const response = await axios.delete(
+        `http://${DB_IP}/application/admin/${plantid}/${selectedProject}/${application_name}/${module_Name}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setImageUrl(null)
+      setSelectedAreas([])
+      setDeleteModuleDialog(false)
+      setContextMenuPosition(null);
+    } catch (error) {
+      // Handle errors, such as displaying an error message to the user
+
+      setsnackbarSeverity("error");
+      setDialogPopup(true);
+      setDeleteModuleDialog(false)
+      setDialogMessage("Database error");
+    }
+  };
+  
+  
   if (localStorage.getItem("token") === null) return <NotFound />;
 
   return (
@@ -814,6 +938,7 @@ const Application = ({ sendUrllist }) => {
 
             {imageUrl && (
               <Box>
+              <Box>
                 <Box
                   sx={{
                     display: "flex",
@@ -821,8 +946,27 @@ const Application = ({ sendUrllist }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Chip variant="outlined" label={module_Name} color="primary"/>
-                  
+                  {isEditModule ? (
+                          <Textfield
+                            value={updatedModuleName}
+                             onChange={(event)=>setUpdateModuleName(event.target.value)}
+                             onBlur={()=>{console.log("On blur");handleModuleProceed()}}
+                           
+                          />
+                        ) : (
+                  <Chip 
+                    label={
+                      <div onContextMenu={handleContextClick}>
+                        
+                          <Typography>
+                            {module_Name}
+                          </Typography>
+                        
+                      </div>
+                    }
+                    color="primary"
+                    variant="outlined"
+                  />)}
                 </Box>
                 <Divider
                   sx={{
@@ -832,7 +976,7 @@ const Application = ({ sendUrllist }) => {
                   }}
                 />
               </Box>
-            )}
+            
 
             <Box
               sx={{
@@ -1071,6 +1215,20 @@ const Application = ({ sendUrllist }) => {
                 )}
               </Box>
             </Box>
+            <Menu
+              open={contextMenuPosition !== null}
+              onClose={() => setContextMenuPosition(null)}
+              anchorReference="anchorPosition"
+              anchorPosition={
+                contextMenuPosition !== null
+                  ? { top: contextMenuPosition.y, left: contextMenuPosition.x }
+                  : undefined
+              }
+            >
+              <MenuItem onClick={handleDeleteModule}>Delete Module</MenuItem>
+              <MenuItem onClick={handleUpdateModule}>Update Module</MenuItem>
+            </Menu>
+            
             <Snackbar
               openPopup={dialogPopup}
               snackbarSeverity={snackbarSeverity}
@@ -1084,6 +1242,22 @@ const Application = ({ sendUrllist }) => {
               proceedButtonClick={handleDeleteAreaConfirm}
               cancelButtonText="Cancel"
             />
+            <CustomDialog
+              open={updateModuleDialog}
+              setOpen={setUpdateModuleDialog}
+              proceedButtonText={"Update"}
+              proceedButtonClick={handleUpdateModuleName}
+              cancelButtonText="Cancel"
+            />
+            <CustomDialog
+              open={deleteModuleDialog}
+              setOpen={setDeleteModuleDialog}
+              proceedButtonText={"Delete"}
+              proceedButtonClick={handleDeleteModuleConfirm}
+              cancelButtonText="Cancel"
+            />
+            </Box>
+            )}
           </Box>
         )}
     </div>

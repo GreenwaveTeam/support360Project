@@ -118,6 +118,7 @@ export default function ModuleConfigure({ sendUrllist }) {
     setContextMenuPosition({ x: event.clientX, y: event.clientY });
     setSelectedModuleForDelete(module.modulename);
     setSelectedModuleForUpdate(module.modulename);
+    setUpdateModuleName(module.modulename)
   };
   const handleDeleteModule = async () => {
     setDeleteModuleDialog(true);
@@ -990,7 +991,7 @@ export default function ModuleConfigure({ sendUrllist }) {
                           <Tab
                             key={index}
                             label={
-                              <Tooltip title="Right Click to modify module">
+                              <Tooltip  title="Right Click to modify module">
                                 <div>{module.modulename}</div>
                               </Tooltip>
                             }

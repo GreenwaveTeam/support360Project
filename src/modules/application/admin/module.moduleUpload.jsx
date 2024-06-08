@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import Button from "@mui/material/Button";
 import {
   Box,
+  Card,
   Chip,
   Container,
   DialogTitle,
   Divider,
   Menu,
   MenuItem,
+  Tooltip,
   Typography,
   styled,
 } from "@mui/material";
@@ -103,6 +105,25 @@ const Application = ({ sendUrllist }) => {
   const [updateModuleDialog, setUpdateModuleDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   
+  const cardStyleToInputImage = {
+    width: '300px',
+    height: '200px',
+    padding: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    borderRadius: '8px',
+  };
+
+  const formStyleToInputImage = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '1rem',
+  };
+
   useEffect(() => {
     extendTokenExpiration();
     fetchUser();
@@ -893,48 +914,35 @@ const Application = ({ sendUrllist }) => {
         divIsVisibleList.includes("add-module-existing-issues") && (
           <Box>
             {!imageUrl && (
-              <form
-                style={{
-                  position: "relative",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    paddingBottom: "0.8rem",
-                  }}
-                >
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', marginTop: '-100px' // Adjust this value to move the card upward
+              }}>
+              <Card style={cardStyleToInputImage}>
+                <form style={formStyleToInputImage}>
                   <TextField
-                    label={"Enter Module  Name"}
+                    label="Enter Module Name"
                     id="issuecategory"
-                    sx={{ width: "300px" }}
+                    sx={{ width: '100%' }}
                     value={module_Name}
                     onChange={handleModuleNameChange}
                   />
-                </div>
-
-                <Button
-                  variant="contained"
-                  component="label"
-                  startIcon={<CloudUploadIcon />}
-                  color="success"
-                >
-                  Upload Image
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    style={{ display: "none" }}
-                    multiple={false}
-                  />
-                </Button>
-              </form>
-            )}
+                  <Button
+                    variant="contained"
+                    component="label"
+                    startIcon={<CloudUploadIcon />}
+                    color="success"
+                  >
+                    Upload Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      style={{ display: 'none' }}
+                      multiple={false}
+                    />
+                  </Button>
+                </form>
+              </Card>
+            </div>)}
 
             {imageUrl && (
               <Box>
@@ -957,10 +965,11 @@ const Application = ({ sendUrllist }) => {
                   <Chip 
                     label={
                       <div onContextMenu={handleContextClick}>
-                        
+                        <Tooltip title='Right Click to modify module'>
                           <Typography>
                             {module_Name}
                           </Typography>
+                          </Tooltip>
                         
                       </div>
                     }

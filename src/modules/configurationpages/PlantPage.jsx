@@ -315,34 +315,30 @@ export default function PlantPage({ sendUrllist }) {
       }
     }
 
-    const isDuplicate = plantList.some(
-      (plant) =>
-        plant.plantName.toLowerCase() === newPlant.plantName.toLowerCase() ||
-        plant.plantID.toLowerCase() === newPlant.plantID.toLowerCase()
-    );
-
-    if (isDuplicate) {
-      // setDuplicateError("Plant Name or Plant ID already exists");
-      // return;
+    if (
+      plantList.some(
+        (p) =>
+          p.plantName.toLowerCase().trim() ===
+          newPlant.plantName.toLowerCase().trim()
+      )
+    ) {
       handleClickSnackbar();
-      setSnackbarText("Plant Name or Plant ID already exists");
+      setSnackbarText("Plant name already exist");
       setsnackbarSeverity("error");
-      console.log("Plant Name or Plant ID already exists");
       return;
     }
-
-    // else {
-    //   setDuplicateError("");
-    // }
-
-    // if (newPlant.supportStartDate > newPlant.supportEndDate) {
-    //   handleClickSnackbar();
-    //   setSnackbarText(
-    //     "Support Start Date should not be Greater than Support End Date !"
-    //   );
-    //   setsnackbarSeverity("error");
-    //   return;
-    // }
+    if (
+      plantList.some(
+        (p) =>
+          p.plantID.toLowerCase().trim() ===
+          newPlant.plantID.toLowerCase().trim()
+      )
+    ) {
+      handleClickSnackbar();
+      setSnackbarText("Plant Id already exist");
+      setsnackbarSeverity("error");
+      return;
+    }
 
     try {
       console.log("JSON.stringify(newPlant) : ", JSON.stringify(newPlant));
@@ -360,6 +356,14 @@ export default function PlantPage({ sendUrllist }) {
         handleClickSnackbar();
         setSnackbarText(text);
         setsnackbarSeverity("success");
+        setNewPlant({
+          ...newPlant,
+          plantName: "",
+          plantID: "",
+          address: "",
+          customerName: "",
+          division: "",
+        });
       } else {
         const text = await response.text();
         handleClickSnackbar();
@@ -444,6 +448,12 @@ export default function PlantPage({ sendUrllist }) {
                         plantName: e.target.value.trim() === "",
                       });
                     }}
+                    onBlur={(e) => {
+                      setNewPlant({
+                        ...newPlant,
+                        plantName: removeAllSpecialChar(e.target.value.trim()),
+                      });
+                    }}
                     error={formErrors.plantName}
                     helperText={
                       formErrors.plantName && "Plant Name must be filled"
@@ -487,6 +497,12 @@ export default function PlantPage({ sendUrllist }) {
                         address: e.target.value.trim() === "",
                       });
                     }}
+                    onBlur={(e) => {
+                      setNewPlant({
+                        ...newPlant,
+                        address: e.target.value.trim(),
+                      });
+                    }}
                     error={formErrors.address}
                     helperText={formErrors.address && "Address must be filled"}
                   />
@@ -509,38 +525,20 @@ export default function PlantPage({ sendUrllist }) {
                         customerName: e.target.value.trim() === "",
                       });
                     }}
+                    onBlur={(e) => {
+                      setNewPlant({
+                        ...newPlant,
+                        customerName: removeAllSpecialChar(
+                          e.target.value.trim()
+                        ),
+                      });
+                    }}
                     error={formErrors.customerName}
                     helperText={
                       formErrors.customerName && "Customer Name must be filled"
                     }
                   />
                 </Grid>
-                {/* <Grid item xs={6}>
-                  <Datepicker
-                    label="Support Start Date"
-                    value={dayjs(newPlant.supportStartDate)}
-                    onChange={(startDate) =>
-                      setNewPlant({
-                        ...newPlant,
-                        supportStartDate: startDate.format("YYYY-MM-DD"),
-                      })
-                    }
-                    slotProps={{ textField: { fullWidth: true } }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Datepicker
-                    label="Support End Date"
-                    value={dayjs(newPlant.supportEndDate)}
-                    onChange={(endDate) =>
-                      setNewPlant({
-                        ...newPlant,
-                        supportEndDate: endDate.format("YYYY-MM-DD"),
-                      })
-                    }
-                    slotProps={{ textField: { fullWidth: true } }}
-                  />
-                </Grid> */}
                 <Grid item xs={12}>
                   <Textfield
                     required
@@ -557,6 +555,12 @@ export default function PlantPage({ sendUrllist }) {
                       setFormErrors({
                         ...formErrors,
                         division: e.target.value.trim() === "",
+                      });
+                    }}
+                    onBlur={(e) => {
+                      setNewPlant({
+                        ...newPlant,
+                        division: removeAllSpecialChar(e.target.value.trim()),
                       });
                     }}
                     error={formErrors.division}
@@ -578,14 +582,6 @@ export default function PlantPage({ sendUrllist }) {
                   onClick={() => {
                     postPlantData();
                     fetchPlantData();
-                    setNewPlant({
-                      ...newPlant,
-                      plantName: "",
-                      plantID: "",
-                      address: "",
-                      customerName: "",
-                      division: "",
-                    });
                   }}
                 >
                   Save Plant

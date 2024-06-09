@@ -404,7 +404,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
           confirmNewPassword: "",
         });
         setsnackbarSeverity("success");
-        navigate(`/admin/home`);
+        // navigate(`/admin/home`);
         // logout();
       } else {
         const text = await response.text();

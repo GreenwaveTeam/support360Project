@@ -105,6 +105,7 @@ const PlantProjectComponent = ({
 
     // Check if the project name already exists
     if (
+      editIndex === null &&
       projects.some(
         (project) =>
           project.project_name.toLowerCase().trim() ===
@@ -230,10 +231,19 @@ const PlantProjectComponent = ({
     setSnackbarOpen(true);
   };
 
+  // function removeOnlySpecialChar(str) {
+  //   // var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
+  //   var stringWithoutSpecialChars = str.replace(/[^\w\s]/g, "");
+  //   return stringWithoutSpecialChars;
+  // }
+
   function removeOnlySpecialChar(str) {
-    // var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9]/g, "");
-    var stringWithoutSpecialChars = str.replace(/[^\w\s]/g, "");
-    return stringWithoutSpecialChars;
+    var stringWithoutSpecialChars = str.replace(/[^a-zA-Z0-9\s]/g, "");
+    var stringWithoutExtraSpaces = stringWithoutSpecialChars.replace(
+      /\s+/g,
+      " "
+    );
+    return stringWithoutExtraSpaces;
   }
 
   return (

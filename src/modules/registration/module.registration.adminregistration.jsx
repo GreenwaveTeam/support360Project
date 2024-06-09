@@ -485,6 +485,13 @@ export default function AdminRegistration({ sendUrllist }) {
       return;
     }
 
+    if (!isValidEmail(formData.email)) {
+      handleClick();
+      setSnackbarText("Email is not valid");
+      setsnackbarSeverity("error");
+      return;
+    }
+
     console.log("formData : : ", formData);
     try {
       const response = await fetch(`http://${DB_IP}/auth/admin/signup`, {
@@ -969,7 +976,7 @@ export default function AdminRegistration({ sendUrllist }) {
                               setFormData({
                                 ...formData,
                                 email: removeNumberAndSpecialChar(
-                                  removeSpaceAndLowerCase(e.target.value)
+                                  e.target.value.trim()
                                 ),
                               });
                               setFormErrors({
@@ -978,9 +985,7 @@ export default function AdminRegistration({ sendUrllist }) {
                               });
                               setFormErrors({
                                 ...formErrors,
-                                validEmail: !isValidEmail(
-                                  e.target.value.trim()
-                                ),
+                                validEmail: !isValidEmail(e.target.value),
                               });
                             }}
                             error={formErrors.email || formErrors.validEmail}
@@ -1039,7 +1044,7 @@ export default function AdminRegistration({ sendUrllist }) {
                                     e.target.value.trim()
                                   ),
                                 });
-                                setUnchangedAdminID(e.target.value);
+                                setUnchangedAdminID(e.target.value.trim());
                                 setFormErrors({
                                   ...formErrors,
                                   adminId: e.target.value.trim() === "",

@@ -103,7 +103,9 @@ export default function UserRegistration({ sendUrllist }) {
     passwordNotMatch: false,
     weakPassword: false,
     projectName: false,
-    validEmail: false,
+    invalidEmailForEmailField: false,
+    invalidEmailForAccountOwnerGW: false,
+    invalidEmailForAccountOwnerCustomer: false,
   });
 
   const [updateFormData, setUpdateFormData] = useState({
@@ -150,6 +152,8 @@ export default function UserRegistration({ sendUrllist }) {
     phoneNumberLength: false,
     passwordNotMatch: false,
     projectName: false,
+    invalidEmailForAccountOwnerGW: false,
+    invalidEmailForAccountOwnerCustomer: false,
   });
 
   const [cnfpass, setCnfpass] = useState("");
@@ -469,16 +473,6 @@ export default function UserRegistration({ sendUrllist }) {
     setOpenDeleteDialog(true);
   };
 
-  const handlenewPlantNameInputChange = (e) => {
-    console.log("Event:", e);
-    console.log("Value:", e.target.value);
-    console.log("Name:", e.target.name);
-    const { name, value } = e.target;
-    setNewPlantName({ ...newPlantName, [name]: value });
-    // setFormData({ ...formData, [name]: value });
-    // setUpdateFormData({ ...updateFormData, [name]: value });
-  };
-
   const handlenewPlantNameInputChangeForAll = () => {
     // plantName: "",
     // plantID: "",
@@ -602,6 +596,30 @@ export default function UserRegistration({ sendUrllist }) {
   };
 
   const postPlantName = async () => {
+    if (
+      plantList.some(
+        (p) =>
+          p.plantName.toLowerCase().trim() ===
+          newPlantName.plantName.toLowerCase().trim()
+      )
+    ) {
+      handleClick();
+      setSnackbarText("Plant name already exist");
+      setsnackbarSeverity("error");
+      return;
+    }
+    if (
+      plantList.some(
+        (p) =>
+          p.plantID.toLowerCase().trim() ===
+          newPlantName.plantID.toLowerCase().trim()
+      )
+    ) {
+      handleClick();
+      setSnackbarText("Plant Id already exist");
+      setsnackbarSeverity("error");
+      return;
+    }
     try {
       const response = await fetch(`http://${DB_IP}/plants/plant`, {
         method: "POST",
@@ -611,10 +629,19 @@ export default function UserRegistration({ sendUrllist }) {
         },
         body: JSON.stringify(newPlantName),
       });
-      if (response.ok) {
+      if (response.status === 201) {
+        setOpenDeleteDialog(false);
         console.log("Plant Added successfully : ", newPlantName);
+        const text = await response.text();
+        handleClick();
+        setSnackbarText(text);
+        setsnackbarSeverity("success");
       } else {
         console.error("Failed to Add Plant");
+        const text = await response.text();
+        handleClick();
+        setSnackbarText(text);
+        setsnackbarSeverity("error");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -703,6 +730,21 @@ export default function UserRegistration({ sendUrllist }) {
       setsnackbarSeverity("error");
       return;
     }
+
+    if (!isValidEmail(updateFormData.accountOwnerCustomer)) {
+      handleClick();
+      setSnackbarText("Account Owner Customer Email is not valid");
+      setsnackbarSeverity("error");
+      return;
+    }
+
+    if (!isValidEmail(updateFormData.accountOwnerGW)) {
+      handleClick();
+      setSnackbarText("Account Owner GW Email is not valid");
+      setsnackbarSeverity("error");
+      return;
+    }
+
     try {
       console.log(
         "updateFormData.userId : ",
@@ -833,6 +875,27 @@ export default function UserRegistration({ sendUrllist }) {
       return;
     }
 
+    if (!isValidEmail(formData.email)) {
+      handleClick();
+      setSnackbarText("Email is not valid");
+      setsnackbarSeverity("error");
+      return;
+    }
+
+    if (!isValidEmail(formData.accountOwnerCustomer)) {
+      handleClick();
+      setSnackbarText("Account Owner Customer Email is not valid");
+      setsnackbarSeverity("error");
+      return;
+    }
+
+    if (!isValidEmail(formData.accountOwnerGW)) {
+      handleClick();
+      setSnackbarText("Account Owner GW Email is not valid");
+      setsnackbarSeverity("error");
+      return;
+    }
+
     // if (formData.supportStartDate > formData.supportEndDate) {
     //   handleClick();
     //   setSnackbarText(
@@ -919,7 +982,6 @@ export default function UserRegistration({ sendUrllist }) {
               >
                 {isStatePresent ? (
                   // update form starts here...
-
                   <>
                     <Avatar
                       sx={{
@@ -1162,7 +1224,7 @@ export default function UserRegistration({ sendUrllist }) {
                                   ...updateFormData,
                                   phoneNumber: isValidPhoneNumber
                                     ? removeAllExceptNumber(e.target.value)
-                                    : formData.phoneNumber,
+                                    : updateFormData.phoneNumber,
                                 });
                                 setUpdateFormErrors({
                                   ...updateFormErrors,
@@ -1221,7 +1283,10 @@ export default function UserRegistration({ sendUrllist }) {
                           <Grid item xs={6}>
                             <FormControl
                               fullWidth
-                              error={updateFormErrors.accountOwnerCustomer}
+                              error={
+                                updateFormErrors.accountOwnerCustomer ||
+                                updateFormErrors.invalidEmailForAccountOwnerCustomer
+                              }
                             >
                               <Autocomplete
                                 id="updateAccountOwnerCustomer"
@@ -1232,10 +1297,20 @@ export default function UserRegistration({ sendUrllist }) {
                                     ...updateFormData,
                                     accountOwnerCustomer: newValue,
                                   });
-                                  if (newValue !== null && newValue !== "") {
+                                  // setUpdateFormErrors({
+                                  //   ...updateFormErrors,
+                                  //   invalidEmailForAccountOwnerCustomer:
+                                  //     !isValidEmail(newValue),
+                                  // });
+                                  if (
+                                    newValue !== null &&
+                                    newValue !== "" &&
+                                    isValidEmail(newValue)
+                                  ) {
                                     setUpdateFormErrors({
                                       ...updateFormErrors,
                                       accountOwnerCustomer: false,
+                                      invalidEmailForAccountOwnerCustomer: false,
                                     });
                                   } else {
                                     setUpdateFormErrors({
@@ -1244,16 +1319,36 @@ export default function UserRegistration({ sendUrllist }) {
                                     });
                                   }
                                 }}
+                                onInputChange={(event, newInputValue) => {
+                                  // Save the new input value even if it's not in the options list
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    accountOwnerCustomer: newInputValue,
+                                  });
+                                  // Remove the error when the user starts typing manually
+                                  setUpdateFormErrors({
+                                    ...updateFormErrors,
+                                    accountOwnerCustomer: false,
+                                  });
+                                  setUpdateFormErrors({
+                                    ...updateFormErrors,
+                                    invalidEmailForAccountOwnerCustomer:
+                                      !isValidEmail(newInputValue),
+                                  });
+                                }}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
                                     label="Account Owner Customer"
                                     error={
-                                      updateFormErrors.accountOwnerCustomer
+                                      updateFormErrors.accountOwnerCustomer ||
+                                      updateFormErrors.invalidEmailForAccountOwnerCustomer
                                     }
                                     helperText={
-                                      updateFormErrors.accountOwnerCustomer &&
-                                      "Account Owner Customer must be filled"
+                                      (updateFormErrors.accountOwnerCustomer &&
+                                        "Account Owner Customer must be filled") ||
+                                      (updateFormErrors.invalidEmailForAccountOwnerCustomer &&
+                                        "Account Owner Customer Email is not valid")
                                     }
                                   />
                                 )}
@@ -1263,7 +1358,10 @@ export default function UserRegistration({ sendUrllist }) {
                           <Grid item xs={6}>
                             <FormControl
                               fullWidth
-                              error={updateFormErrors.accountOwnerGW}
+                              error={
+                                updateFormErrors.accountOwnerGW ||
+                                updateFormErrors.invalidEmailForAccountOwnerGW
+                              }
                             >
                               <Autocomplete
                                 id="updateAccountOwnerGW"
@@ -1274,10 +1372,20 @@ export default function UserRegistration({ sendUrllist }) {
                                     ...updateFormData,
                                     accountOwnerGW: newValue,
                                   });
-                                  if (newValue !== null && newValue !== "") {
+                                  // setUpdateFormErrors({
+                                  //   ...updateFormErrors,
+                                  //   invalidEmailForAccountOwnerGW:
+                                  //     !isValidEmail(newValue),
+                                  // });
+                                  if (
+                                    newValue !== null &&
+                                    newValue !== "" &&
+                                    isValidEmail(newValue)
+                                  ) {
                                     setUpdateFormErrors({
                                       ...updateFormErrors,
                                       accountOwnerGW: false,
+                                      invalidEmailForAccountOwnerGW: false,
                                     });
                                   } else {
                                     setUpdateFormErrors({
@@ -1286,14 +1394,36 @@ export default function UserRegistration({ sendUrllist }) {
                                     });
                                   }
                                 }}
+                                onInputChange={(event, newInputValue) => {
+                                  // Save the new input value even if it's not in the options list
+                                  setUpdateFormData({
+                                    ...updateFormData,
+                                    accountOwnerGW: newInputValue,
+                                  });
+                                  // Remove the error when the user starts typing manually
+                                  setUpdateFormErrors({
+                                    ...updateFormErrors,
+                                    accountOwnerGW: false,
+                                  });
+                                  setUpdateFormErrors({
+                                    ...updateFormErrors,
+                                    invalidEmailForAccountOwnerGW:
+                                      !isValidEmail(newInputValue),
+                                  });
+                                }}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
                                     label="Account Owner GW"
-                                    error={updateFormErrors.accountOwnerGW}
+                                    error={
+                                      updateFormErrors.accountOwnerGW ||
+                                      updateFormErrors.invalidEmailForAccountOwnerGW
+                                    }
                                     helperText={
-                                      updateFormErrors.accountOwnerGW &&
-                                      "Account Owner GW must be filled"
+                                      (updateFormErrors.accountOwnerGW &&
+                                        "Account Owner GW must be filled") ||
+                                      (updateFormErrors.invalidEmailForAccountOwnerGW &&
+                                        "Account Owner GW Email is not valid")
                                     }
                                   />
                                 )}
@@ -1460,11 +1590,16 @@ export default function UserRegistration({ sendUrllist }) {
                           )}
                           <Grid item xs={6}>
                             <Autocomplete
-                              value={updateFormData.plantName}
+                              value={
+                                updateFormData.plantName +
+                                " (" +
+                                updateFormData.plantID +
+                                ")"
+                              }
                               disablePortal
                               fullWidth
                               id="plantName"
-                              options={plantList.map((p) => p.plantName)}
+                              options={plantList.map((p, index) => p.plantName)}
                               getOptionLabel={(option) => option}
                               onChange={handleAutocompleteChange}
                               renderInput={(params) => (
@@ -1846,17 +1981,13 @@ export default function UserRegistration({ sendUrllist }) {
                               name="email"
                               autoComplete="email"
                               value={formData.email}
-                              onBlur={(e) => {
-                                setFormData({
-                                  ...formData,
-                                  email: e.target.value.trim(),
-                                });
-                              }}
                               onChange={(e) => {
                                 setFormData({
                                   ...formData,
                                   email: removeNumberAndSpecialChar(
-                                    removeSpaceAndLowerCase(e.target.value)
+                                    removeSpaceAndLowerCase(
+                                      e.target.value.trim()
+                                    )
                                   ),
                                 });
                                 setFormErrors({
@@ -1865,19 +1996,23 @@ export default function UserRegistration({ sendUrllist }) {
                                 });
                                 setFormErrors({
                                   ...formErrors,
-                                  validEmail: !isValidEmail(
-                                    e.target.value.trim()
+                                  invalidEmailForEmailField: !isValidEmail(
+                                    e.target.value
                                   ),
                                 });
                                 console.log(
                                   "isValidEmail : ",
-                                  isValidEmail(e.target.value.trim())
+                                  isValidEmail(e.target.value)
                                 );
                               }}
-                              error={formErrors.email || formErrors.validEmail}
+                              error={
+                                formErrors.email ||
+                                formErrors.invalidEmailForEmailField
+                              }
                               helperText={
                                 (formErrors.email && "Email must be filled") ||
-                                (formErrors.validEmail && "Email is not valid")
+                                (formErrors.invalidEmailForEmailField &&
+                                  "Email is not valid")
                               }
                             />
                           </Grid>
@@ -2194,7 +2329,10 @@ export default function UserRegistration({ sendUrllist }) {
 
                             <FormControl
                               fullWidth
-                              error={formErrors.accountOwnerCustomer}
+                              error={
+                                formErrors.accountOwnerCustomer ||
+                                formErrors.invalidEmailForAccountOwnerCustomer
+                              }
                             >
                               {/* <InputLabel id="account-owner-customer-label">
                                 Account Owner Customer
@@ -2247,10 +2385,20 @@ export default function UserRegistration({ sendUrllist }) {
                                     ...formData,
                                     accountOwnerCustomer: newValue,
                                   });
-                                  if (newValue !== null && newValue !== "") {
+                                  // setFormErrors({
+                                  //   ...formErrors,
+                                  //   invalidEmailForAccountOwnerCustomer:
+                                  //     !isValidEmail(newValue),
+                                  // });
+                                  if (
+                                    newValue !== null &&
+                                    newValue !== "" &&
+                                    isValidEmail(newValue)
+                                  ) {
                                     setFormErrors({
                                       ...formErrors,
                                       accountOwnerCustomer: false,
+                                      invalidEmailForAccountOwnerCustomer: false,
                                     });
                                   } else {
                                     setFormErrors({
@@ -2259,14 +2407,36 @@ export default function UserRegistration({ sendUrllist }) {
                                     });
                                   }
                                 }}
+                                onInputChange={(event, newInputValue) => {
+                                  // Save the new input value even if it's not in the options list
+                                  setFormData({
+                                    ...formData,
+                                    accountOwnerCustomer: newInputValue,
+                                  });
+                                  // Remove the error when the user starts typing manually
+                                  setFormErrors({
+                                    ...formErrors,
+                                    accountOwnerCustomer: false,
+                                  });
+                                  setFormErrors({
+                                    ...formErrors,
+                                    invalidEmailForAccountOwnerCustomer:
+                                      !isValidEmail(newInputValue),
+                                  });
+                                }}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
                                     label="Account Owner Customer"
-                                    error={formErrors.accountOwnerCustomer}
+                                    error={
+                                      formErrors.accountOwnerCustomer ||
+                                      formErrors.invalidEmailForAccountOwnerCustomer
+                                    }
                                     helperText={
-                                      formErrors.accountOwnerCustomer &&
-                                      "Account Owner Customer must be filled"
+                                      (formErrors.accountOwnerCustomer &&
+                                        "Account Owner Customer must be filled") ||
+                                      (formErrors.invalidEmailForAccountOwnerCustomer &&
+                                        "Account Owner Customer Email is not valid")
                                     }
                                   />
                                 )}
@@ -2310,7 +2480,10 @@ export default function UserRegistration({ sendUrllist }) {
                             /> */}
                             <FormControl
                               fullWidth
-                              error={formErrors.accountOwnerGW}
+                              error={
+                                formErrors.accountOwnerGW ||
+                                formErrors.invalidEmailForAccountOwnerGW
+                              }
                             >
                               {/* <InputLabel id="account-owner-GW-label">
                                 Account Owner GW
@@ -2363,10 +2536,20 @@ export default function UserRegistration({ sendUrllist }) {
                                     ...formData,
                                     accountOwnerGW: newValue,
                                   });
-                                  if (newValue !== null && newValue !== "") {
+                                  // setFormErrors({
+                                  //   ...formErrors,
+                                  //   invalidEmailForAccountOwnerGW:
+                                  //     !isValidEmail(newValue),
+                                  // });
+                                  if (
+                                    newValue !== null &&
+                                    newValue !== "" &&
+                                    isValidEmail(newValue)
+                                  ) {
                                     setFormErrors({
                                       ...formErrors,
                                       accountOwnerGW: false,
+                                      invalidEmailForAccountOwnerGW: false,
                                     });
                                   } else {
                                     setFormErrors({
@@ -2375,14 +2558,36 @@ export default function UserRegistration({ sendUrllist }) {
                                     });
                                   }
                                 }}
+                                onInputChange={(event, newInputValue) => {
+                                  // Save the new input value even if it's not in the options list
+                                  setFormData({
+                                    ...formData,
+                                    accountOwnerGW: newInputValue,
+                                  });
+                                  // Remove the error when the user starts typing manually
+                                  setFormErrors({
+                                    ...formErrors,
+                                    accountOwnerGW: false,
+                                  });
+                                  setFormErrors({
+                                    ...formErrors,
+                                    invalidEmailForAccountOwnerGW:
+                                      !isValidEmail(newInputValue),
+                                  });
+                                }}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
                                     label="Account Owner GW"
-                                    error={formErrors.accountOwnerGW}
+                                    error={
+                                      formErrors.accountOwnerGW ||
+                                      formErrors.invalidEmailForAccountOwnerGW
+                                    }
                                     helperText={
-                                      formErrors.accountOwnerGW &&
-                                      "Account Owner GW must be filled"
+                                      (formErrors.accountOwnerGW &&
+                                        "Account Owner GW must be filled") ||
+                                      (formErrors.invalidEmailForAccountOwnerGW &&
+                                        "Account Owner GW Email is not valid")
                                     }
                                   />
                                 )}
@@ -2749,7 +2954,6 @@ export default function UserRegistration({ sendUrllist }) {
                               )}
                             </FormControl>
                           </Grid>
-
                           <Grid item xs={6}>
                             <TextField
                               inputProps={{
@@ -2886,66 +3090,6 @@ export default function UserRegistration({ sendUrllist }) {
                               </Select>
                             </FormControl>
                           </Grid>
-                          {/* <Grid item xs={6}> */}
-                          {/* <Datepicker
-                        label="Support Start Date"
-                        value={dayjs(formData.supportStartDate)}
-                        onChange={(startDate) =>
-                          setFormData({
-                            ...formData,
-                            supportStartDate: startDate.format("YYYY-MM-DD"),
-                          })
-                        }
-                        slotProps={{ textField: { fullWidth: true } }}
-                      /> */}
-                          {/* <TextField
-                              inputProps={{
-                                readOnly: true,
-                              }}
-                              required
-                              fullWidth
-                              name="supportStartDate"
-                              label="Support Start Date"
-                              id="supportStartDate"
-                              autoComplete="supportStartDate"
-                              value={formData.supportStartDate}
-                              error={formErrors.supportStartDate}
-                              helperText={
-                                formErrors.supportStartDate &&
-                                "Support Start Date must be filled"
-                              }
-                            />
-                          </Grid> */}
-                          {/* <Grid item xs={6}> */}
-                          {/* <Datepicker
-                        label="Support End Date"
-                        value={dayjs(formData.supportEndDate)}
-                        onChange={(endDate) =>
-                          setFormData({
-                            ...formData,
-                            supportEndDate: endDate.format("YYYY-MM-DD"),
-                          })
-                        }
-                        slotProps={{ textField: { fullWidth: true } }}
-                      /> */}
-                          {/* <TextField
-                              inputProps={{
-                                readOnly: true,
-                              }}
-                              required
-                              fullWidth
-                              name="supportEndDate"
-                              label="Support End Date"
-                              id="supportEndDate"
-                              autoComplete="supportEndDate"
-                              value={formData.supportEndDate}
-                              error={formErrors.supportEndDate}
-                              helperText={
-                                formErrors.supportEndDate &&
-                                "Support End Date must be filled"
-                              }
-                            />
-                          </Grid> */}
                         </Grid>
                         <Button
                           type="submit"
@@ -3033,7 +3177,18 @@ export default function UserRegistration({ sendUrllist }) {
                             id="address"
                             autoComplete="address"
                             value={newPlantName.address}
-                            onChange={handlenewPlantNameInputChange}
+                            onChange={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                address: e.target.value,
+                              });
+                            }}
+                            onBlur={(e) => {
+                              setNewPlantName({
+                                ...newPlantName,
+                                address: e.target.value.trim(),
+                              });
+                            }}
                           />
                         </Grid>
                         <Grid item xs={6}>
@@ -3126,12 +3281,11 @@ export default function UserRegistration({ sendUrllist }) {
                       </Button>
                       <Button
                         onClick={() => {
-                          setOpenDeleteDialog(false);
                           postPlantName();
                           fetchPlantData();
                           handlenewPlantNameInputChangeForAll();
                         }}
-                        color="error"
+                        color="success"
                         autoFocus
                         disabled={
                           newPlantName.plantName.trim() === "" ||

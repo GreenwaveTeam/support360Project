@@ -532,13 +532,14 @@ export default function ApplicationUser({ sendUrllist }) {
       setSelectedProject(event.target.value)
       setDropdownValue('')
       setTabsModuleNames([])
+      setTicketNumber(generateRandomNumber());
 
       //Will get a grace period of 30 days 
       
       const currentPlantId=userData.plantID
       const currentselectedProject=event.target.value
 
-      const finalPlantDetails=masterAllProjectDetails.find(data=>data.plant_id===userData.plantID&&data.project_name===currentselectedProject)
+      const finalPlantDetails=masterAllProjectDetails.find(data=>data?.plant_id===userData?.plantID&&data?.project_name===currentselectedProject)
       if(finalPlantDetails)
         {
       const supportEndData=finalPlantDetails.support_end_date;

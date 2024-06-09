@@ -1295,7 +1295,7 @@ export default function UserRegistration({ sendUrllist }) {
                                 onChange={(event, newValue) => {
                                   setUpdateFormData({
                                     ...updateFormData,
-                                    accountOwnerCustomer: newValue,
+                                    accountOwnerCustomer: newValue.trim(),
                                   });
                                   // setUpdateFormErrors({
                                   //   ...updateFormErrors,
@@ -1323,7 +1323,7 @@ export default function UserRegistration({ sendUrllist }) {
                                   // Save the new input value even if it's not in the options list
                                   setUpdateFormData({
                                     ...updateFormData,
-                                    accountOwnerCustomer: newInputValue,
+                                    accountOwnerCustomer: newInputValue.trim(),
                                   });
                                   // Remove the error when the user starts typing manually
                                   setUpdateFormErrors({
@@ -1370,7 +1370,7 @@ export default function UserRegistration({ sendUrllist }) {
                                 onChange={(event, newValue) => {
                                   setUpdateFormData({
                                     ...updateFormData,
-                                    accountOwnerGW: newValue,
+                                    accountOwnerGW: newValue.trim(),
                                   });
                                   // setUpdateFormErrors({
                                   //   ...updateFormErrors,
@@ -1398,7 +1398,7 @@ export default function UserRegistration({ sendUrllist }) {
                                   // Save the new input value even if it's not in the options list
                                   setUpdateFormData({
                                     ...updateFormData,
-                                    accountOwnerGW: newInputValue,
+                                    accountOwnerGW: newInputValue.trim(),
                                   });
                                   // Remove the error when the user starts typing manually
                                   setUpdateFormErrors({
@@ -1981,6 +1981,16 @@ export default function UserRegistration({ sendUrllist }) {
                               name="email"
                               autoComplete="email"
                               value={formData.email}
+                              onBlur={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  email: removeNumberAndSpecialChar(
+                                    removeSpaceAndLowerCase(
+                                      e.target.value.trim()
+                                    )
+                                  ),
+                                });
+                              }}
                               onChange={(e) => {
                                 setFormData({
                                   ...formData,
@@ -2383,7 +2393,7 @@ export default function UserRegistration({ sendUrllist }) {
                                 onChange={(event, newValue) => {
                                   setFormData({
                                     ...formData,
-                                    accountOwnerCustomer: newValue,
+                                    accountOwnerCustomer: newValue.trim(),
                                   });
                                   // setFormErrors({
                                   //   ...formErrors,
@@ -2411,7 +2421,7 @@ export default function UserRegistration({ sendUrllist }) {
                                   // Save the new input value even if it's not in the options list
                                   setFormData({
                                     ...formData,
-                                    accountOwnerCustomer: newInputValue,
+                                    accountOwnerCustomer: newInputValue.trim(),
                                   });
                                   // Remove the error when the user starts typing manually
                                   setFormErrors({
@@ -2534,7 +2544,7 @@ export default function UserRegistration({ sendUrllist }) {
                                 onChange={(event, newValue) => {
                                   setFormData({
                                     ...formData,
-                                    accountOwnerGW: newValue,
+                                    accountOwnerGW: newValue.trim(),
                                   });
                                   // setFormErrors({
                                   //   ...formErrors,
@@ -2562,7 +2572,7 @@ export default function UserRegistration({ sendUrllist }) {
                                   // Save the new input value even if it's not in the options list
                                   setFormData({
                                     ...formData,
-                                    accountOwnerGW: newInputValue,
+                                    accountOwnerGW: newInputValue.trim(),
                                   });
                                   // Remove the error when the user starts typing manually
                                   setFormErrors({

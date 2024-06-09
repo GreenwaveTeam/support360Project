@@ -969,14 +969,16 @@ export default function AdminRegistration({ sendUrllist }) {
                             onBlur={(e) => {
                               setFormData({
                                 ...formData,
-                                email: e.target.value.trim(),
+                                email: removeNumberAndSpecialChar(
+                                  removeSpaceAndLowerCase(e.target.value.trim())
+                                ),
                               });
                             }}
                             onChange={(e) => {
                               setFormData({
                                 ...formData,
                                 email: removeNumberAndSpecialChar(
-                                  e.target.value.trim()
+                                  removeSpaceAndLowerCase(e.target.value.trim())
                                 ),
                               });
                               setFormErrors({

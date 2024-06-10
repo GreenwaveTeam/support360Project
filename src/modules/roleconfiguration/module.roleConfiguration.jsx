@@ -156,7 +156,7 @@ export default function RoleConfiguration({ sendUrllist }) {
           <TextField
             label={"Description "}
             id="description"
-            value={role}
+            value={description}
             style={{ width: "200px" }}
             onChange={(e) => setDescription(e.target.value)}
           />

@@ -2398,9 +2398,9 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
         <CustomDialog
         open={isSureToChangeApplication}
         setOpen={setIsSureToChangeApplication}
-        proceedButtonText={"Proceed"}
+        proceedButtonText={<Chip color="success" label="Proceed"/>}
         proceedButtonClick={()=>handleAppDropdownChange(currentDropdownApplicationValue)}
-        cancelButtonText="Cancel"
+        cancelButtonText={<Chip color="error" label="Cancel"/>}
         
         />
 
@@ -2408,9 +2408,9 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
           <CustomDialog
           open={isSureToChangeProject}
           setOpen={setIsSureToChangeProject}
-          proceedButtonText={"Proceed"}
+          proceedButtonText={<Chip color="success" label="Proceed"/>}
           proceedButtonClick={()=>handleProjectChange(currentDropdownProjectValue)}
-          cancelButtonText="Cancel"
+          cancelButtonText={<Chip color="error" label="Cancel"/>}
           
           />
           </>

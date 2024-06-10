@@ -48,7 +48,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
       type: "dropdown",
       canRepeatSameValue: false,
       values: projects,
-    
+      isSpecialCharacterAllowed:true
     },
     {
       id: "application_name",

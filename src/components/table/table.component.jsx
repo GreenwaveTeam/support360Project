@@ -231,7 +231,7 @@ export default function CustomTable({
         checkError = true;
       } else if (
         column.type !== "calender" &&
-        regex.test(updatedRow[column.id].trim())
+        regex.test(updatedRow[column.id].trim())&&column.isSpecialCharacterAllowed!==true
       ) {
         console.log("Special characters check");
         setSnackbarText("Special Characters are not allowed !");

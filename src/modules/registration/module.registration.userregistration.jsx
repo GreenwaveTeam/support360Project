@@ -1632,18 +1632,18 @@ export default function UserRegistration({ sendUrllist }) {
                                 fullWidth
                                 id="PlantID"
                                 value={updateFormData.plantID}
-                                endAdornment={
-                                  <InputAdornment position="end">
-                                    <Tooltip title="Add Plant">
-                                      <IconButton
-                                        onClick={handleAddPlantClick}
-                                        edge="end"
-                                      >
-                                        <AddCircleOutlineIcon />
-                                      </IconButton>
-                                    </Tooltip>
-                                  </InputAdornment>
-                                }
+                                // endAdornment={
+                                //   <InputAdornment position="end">
+                                //     <Tooltip title="Add Plant">
+                                //       <IconButton
+                                //         onClick={handleAddPlantClick}
+                                //         edge="end"
+                                //       >
+                                //         <AddCircleOutlineIcon />
+                                //       </IconButton>
+                                //     </Tooltip>
+                                //   </InputAdornment>
+                                // }
                               />
                               {updateFormErrors.plantID && (
                                 <FormHelperText>
@@ -2917,7 +2917,7 @@ export default function UserRegistration({ sendUrllist }) {
                           <Grid item xs={6}>
                             <FormControl fullWidth error={formErrors.plantID}>
                               <InputLabel htmlFor="PlantID">PlantID</InputLabel>
-                              {divIsVisibleList &&
+                              {/* {divIsVisibleList &&
                               divIsVisibleList.includes("add-plant") ? (
                                 <OutlinedInput
                                   inputProps={{
@@ -2943,20 +2943,20 @@ export default function UserRegistration({ sendUrllist }) {
                                     </InputAdornment>
                                   }
                                 />
-                              ) : (
-                                <OutlinedInput
-                                  inputProps={{
-                                    readOnly: true,
-                                  }}
-                                  label="PlantID"
-                                  autoComplete="PlantID"
-                                  name="PlantID"
-                                  required
-                                  fullWidth
-                                  id="PlantID"
-                                  value={formData.plantID}
-                                />
-                              )}
+                              ) : ( */}
+                              <OutlinedInput
+                                inputProps={{
+                                  readOnly: true,
+                                }}
+                                label="PlantID"
+                                autoComplete="PlantID"
+                                name="PlantID"
+                                required
+                                fullWidth
+                                id="PlantID"
+                                value={formData.plantID}
+                              />
+                              {/* )} */}
                               {formErrors.plantID && (
                                 <FormHelperText>
                                   Plant ID must be filled

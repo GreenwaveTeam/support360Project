@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Box, MenuItem, Button, Container } from "@mui/material";
+import { Box, MenuItem, Button, Container, Card, CardContent, Typography, Chip } from "@mui/material";
 
 /*Custom Components*/
 import Table from "../../../components/table/table.component";
@@ -337,7 +337,15 @@ const DeviceIssue = ({ sendUrllist }) => {
           >
             <Box>
               <Container>
-                <form
+                <Card>
+              <CardContent sx={{display:'flex', flexDirection:'row'}}>
+                <Typography variant="h6" fontWeight={800} gutterBottom>
+                  Current Device Issue Category Name :
+                </Typography>
+                <Chip label={categoryname} color="primary" sx={{width:'100px'}} variant="filled"/>
+                  
+                </CardContent>
+                  <form
                   style={{
                     display: "flex",
                     flexDirection: "row",
@@ -399,9 +407,11 @@ const DeviceIssue = ({ sendUrllist }) => {
                   </Button>
                   {/* <Button variant="contained" sx={{ width: '300px' }} type='submit'>Add Issue</Button> */}
                 </form>
+                </Card>
                 {/* <Table rows={issues} header={'Current Acronym Name ➥ '+categoryname} filteredRows={issues} setRows={setissues} setFilteredRows={setissues} editIssueCategory={handleEditIssue} deleteIssueCategory={handleDeleteIssue}/>
                  */}
               </Container>
+              
             </Box>
             &nbsp;
             <Table

@@ -87,6 +87,7 @@ import { fetchModuleImageMap } from "../../ticketdetails/AllocateTicket";
 import IssueListTable from "./modules.issueListTable";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
+import CustomDialog from "../../../components/dialog/dialog.component";
 
 
 //The main export starts here....
@@ -200,6 +201,13 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const[masterAllProjectDetails,setMasterAllProjectDetails]=useState([])
 
+  const [isSureToChangeApplication,setIsSureToChangeApplication]=useState(false)
+  const [isSureToChangeProject,setIsSureToChangeProject]=useState(false)
+
+
+  const[currentDropdownApplicationValue,setCurrentDropdownApplicationValue]=useState('')
+  const [currentDropdownProjectValue,setCurrentDropdownProjectValue]=useState('');
+
     //For Screenshot 
     const screenshotRef = React.useRef(null)
 
@@ -299,6 +307,7 @@ export default function ApplicationUser({ sendUrllist }) {
     } else {
       fetchTabs(dropdownValue);
       setTabsModuleNames([]); //! Replacing the existing tabModuleNames to again populate it with new Data
+      // setOverviewTableData([])
     }
   }, [dropdownValue, selectedProject]);
   
@@ -528,17 +537,33 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
 
-  const handleProjectChange=async(event)=>
+  const handleProjectChange=async(newValue)=>
     {
-      setSelectedProject(event.target.value)
+      setSelectedProject(newValue)
       setDropdownValue('')
       setTabsModuleNames([])
+      //First resetting the data
       setTicketNumber(generateRandomNumber());
+     
+      //Resetting Data
+      // setTabsModuleNames([]);
+      setFinalUserInput([]);
+      setMiscellaneousInput("");
+      setRemarksInput("");
+      setSuperInformationofAllModules([]);
+      setMainData({});
+      setUpdatedMainData({});
+      setOverviewTableData([]);
+      setSeverityError(false);
+      setIssueDropDownError(false);
+      //Added
+      setmiscellaneousSeverity("");
+      setmiscellaneousRemarks("");
 
       //Will get a grace period of 30 days 
       
       const currentPlantId=userData.plantID
-      const currentselectedProject=event.target.value
+      const currentselectedProject=newValue
 
       const finalPlantDetails=masterAllProjectDetails.find(data=>data?.plant_id===userData?.plantID&&data?.project_name===currentselectedProject)
       if(finalPlantDetails)
@@ -566,7 +591,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
 
 
-      const currentProject=event.target.value
+      const currentProject=newValue
       const currentProjectAppicationNames= await fetchApplicationNames(userData.plantID,currentProject)
       if(currentProjectAppicationNames)
         {
@@ -965,8 +990,8 @@ export default function ApplicationUser({ sendUrllist }) {
   //    console.log("Y : ",event.clientY)
   // })
 
-  const handleAppDropdownChange = (e) => {
-    console.log("Changed value in Dropdown => ", e.target.value);
+  const handleAppDropdownChange = (newValue) => {
+    console.log("Changed value in Dropdown => ", newValue);
     // if (e.target.value === "Select an application") {
     //   setDropdownValue(e.target.value);
     //   // setTabsModuleNames([]);
@@ -974,7 +999,8 @@ export default function ApplicationUser({ sendUrllist }) {
     //   return;
     // } else {
       //Will review it once again
-      setDropdownValue(e.target.value);
+      // setDropdownValue(e.target.value);
+      setDropdownValue(newValue);
       // fetchTabs(e.target.value);
       setTicketNumber(generateRandomNumber());
       //Resetting Data
@@ -2366,25 +2392,47 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
           </div>
         </Fab>
       )}
+{/* Warning the user */}
+      {
+        <>
+        <CustomDialog
+        open={isSureToChangeApplication}
+        setOpen={setIsSureToChangeApplication}
+        proceedButtonText={"Proceed"}
+        proceedButtonClick={()=>handleAppDropdownChange(currentDropdownApplicationValue)}
+        cancelButtonText="Cancel"
+        
+        />
+
+        
+          <CustomDialog
+          open={isSureToChangeProject}
+          setOpen={setIsSureToChangeProject}
+          proceedButtonText={"Proceed"}
+          proceedButtonClick={()=>handleProjectChange(currentDropdownProjectValue)}
+          cancelButtonText="Cancel"
+          
+          />
+          </>
+      }
       <Dialog
         open={open}
         // onClose={(event, reason) => handleCloseDialog(event, reason)}
       >
         <DialogTitle>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Tooltip title='Close' placement="left-start">
-  <IconButton
-    edge="end"
-    color="inherit"
-    onClick={() => setOpen(false)}
-    aria-label="close"
-    disabled={progressVisible}
-    
-  >
-    <CloseIcon />
-  </IconButton>
-  </Tooltip>
-</div>
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Tooltip title="Close" placement="left-start">
+              <IconButton
+                edge="end"
+                color="inherit"
+                onClick={() => setOpen(false)}
+                aria-label="close"
+                disabled={progressVisible}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
 
           <div className="IssueDialog">
             {tabsmoduleNames.length !== 0 && (
@@ -2502,7 +2550,9 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                       color={"success"}
                       onClick={handleFinalReportClick}
                       style={classes.btn}
-                      disabled={progressVisible||overviewTableData.length===0}
+                      disabled={
+                        progressVisible || overviewTableData.length === 0
+                      }
                       buttontext={
                         <div
                           style={{
@@ -2520,18 +2570,20 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                   &nbsp;
                   {progressVisible && (
                     // <CircularProgress color="info" thickness={5} size={20} />
-                    <RotatingLines  
-                            visible={true}
-                            height="20"
-                            width="20"
-                            strokeWidth="5" 
-                          />
+                    <RotatingLines
+                      visible={true}
+                      height="20"
+                      width="20"
+                      strokeWidth="5"
+                    />
                   )}
                 </div>
-                <br/>
+                <br />
 
                 <center>
-                {overviewTableData.length===0&&<Chip label="Please select an issue. " variant="outlined" />}
+                  {overviewTableData.length === 0 && (
+                    <Chip label="Please select an issue. " variant="outlined" />
+                  )}
                 </center>
               </div>
             )}
@@ -2670,37 +2722,66 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
           <center>
             {divIsVisibleList &&
               divIsVisibleList.includes("app-dropdown-selection") && (
-                <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
-
-              <Dropdown
-                id={"project-dropdown"}
-                value={selectedProject}
-                onChange={(event) =>{
-                  // setSelectedProject(event.target.value)
-                  handleProjectChange(event)
-                }
-                
-                }
-                list={projectList}
-                label={"Project"}
-                // error={dropDownError}
-                style={{ minWidth: "200px" }}
-              ></Dropdown>
-
-
-                <div id="app-dropdown-selection">
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
                   <Dropdown
-                    style={{ minWidth: "200px" ,marginLeft:'10px'}}
-                    id={"app-dropdown"}
-                    list={appDropdown}
-                    label={<div style={{marginLeft:'15px'}}>Application Name</div>}
-                    value={dropdownValue}
-                    onChange={handleAppDropdownChange}
-                    disabled={isUserUnderSupport===false}
+                    id={"project-dropdown"}
+                    value={selectedProject}
+                    onChange={(event) => {
+                      // setSelectedProject(event.target.value)
+                      // handleProjectChange(event);
+                      setCurrentDropdownProjectValue(event.target.value)
+                      if(overviewTableData.length>0)
+                        {
+                          setIsSureToChangeProject(true)
+                          return;
+                        }
+                        // else{
+                          // handleAppDropdownChange(event);
+                          // handleAppDropdownChange(event.target.value);
+                          handleProjectChange(event.target.value);
+                    }}
+                    list={projectList}
+                    label={"Project"}
+                    // error={dropDownError}
+                    style={{ minWidth: "200px" }}
                   ></Dropdown>
-                </div>
 
-                {/* <Dropdown
+                  <div id="app-dropdown-selection">
+                    <Dropdown
+                      style={{ minWidth: "200px", marginLeft: "10px" }}
+                      id={"app-dropdown"}
+                      list={appDropdown}
+                      label={
+                        <div style={{ marginLeft: "15px" }}>
+                          Application Name
+                        </div>
+                      }
+                      value={dropdownValue}
+                      onChange={(event)=>
+                        {
+                          setCurrentDropdownApplicationValue(event.target.value)
+                          if(overviewTableData.length>0)
+                            {
+                              setIsSureToChangeApplication(true)
+                              return;
+                            }
+                            // else{
+                              // handleAppDropdownChange(event);
+                              handleAppDropdownChange(event.target.value);
+                            // }
+                          // handleAppDropdownChange(event);
+                        }}
+                      disabled={isUserUnderSupport === false}
+                    ></Dropdown>
+                  </div>
+
+                  {/* <Dropdown
                 id={"project-dropdown"}
                 value={selectedProject}
                 onChange={(event) =>setSelectedProject(event.target.value)}
@@ -2709,12 +2790,28 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                 // error={dropDownError}
                 style={{ width: "200px",marginLeft:'10px' }}
               ></Dropdown> */}
-                
-               
                 </div>
               )}
-            { isUserUnderSupport===false&&selectedProject!==''&&<div style={{marginTop:'10px'}}><RenewMessageComponent/></div> }
-            {tabsmoduleNames.length===0&&isUserUnderSupport&& <div style={{paddingTop:'10px'}}> <Chip color="success" variant="outlined" label={<div><InfoOutlinedIcon fontSize="small"/> Please select both Project and Application from the above dropdown </div>}/></div>}
+            {isUserUnderSupport === false && selectedProject !== "" && (
+              <div style={{ marginTop: "10px" }}>
+                <RenewMessageComponent />
+              </div>
+            )}
+            {tabsmoduleNames.length === 0 && isUserUnderSupport && (
+              <div style={{ paddingTop: "10px" }}>
+                {" "}
+                <Chip
+                  color="success"
+                  variant="outlined"
+                  label={
+                    <div>
+                      <InfoOutlinedIcon fontSize="small" /> Please select both
+                      Project and Application from the above dropdown{" "}
+                    </div>
+                  }
+                />
+              </div>
+            )}
           </center>
           <br />
           <center>
@@ -2944,7 +3041,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
             </center>
           </center>
 
-          {tabsmoduleNames.length !== 0 && isUserUnderSupport&& (
+          {tabsmoduleNames.length !== 0 && isUserUnderSupport && (
             <TabContext value={value}>
               <Box
                 style={{
@@ -2976,20 +3073,25 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                       {tabsmoduleNames.map((module, index) => (
                         <Tab
                           className="tab-names"
-                          label={<div>{module}{module===value&&!mainData.module_image&& <RotatingLines  
-                            visible={true}
-                            height="20"
-                            width="20"
-                            strokeWidth="5" 
-                          />}</div>}
+                          label={
+                            <div>
+                              {module}
+                              {module === value && !mainData.module_image && (
+                                <RotatingLines
+                                  visible={true}
+                                  height="20"
+                                  width="20"
+                                  strokeWidth="5"
+                                />
+                              )}
+                            </div>
+                          }
                           value={module}
                           key={index}
                           // disabled={disableTabSelection}
                         ></Tab>
-                      ))
-                     
-                      }
-                    {/* {!mainData.module_image&&<Tab
+                      ))}
+                      {/* {!mainData.module_image&&<Tab
     label={
       <RotatingLines  
         visible={true}
@@ -3001,8 +3103,8 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
     }
     disabled // Make the tab unselectable
     style={{ marginLeft: "auto" }} // Push the tab to the extreme right */}
-  {/* />} */}
-</Tabs>
+                      {/* />} */}
+                    </Tabs>
                     {/* {!mainData.module_image && (
                       <Box sx={{ width: "100%" }}>
                         <LinearProgress />
@@ -3012,18 +3114,17 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                   </div>
                 </div>
               </Box>
-               {!mainData.module_image&&<>
-                <Skeleton
-  variant="rectangular"
-  width="100%" 
-  height={1000}
-  animation="pulse"
-  sx={{ bgcolor: 'grey', borderRadius: 10, mt:'10px' }}
-  
-/>
-
-                    </>   
-                       }
+              {!mainData.module_image && (
+                <>
+                  <Skeleton
+                    variant="rectangular"
+                    width="100%"
+                    height={1000}
+                    animation="pulse"
+                    sx={{ bgcolor: "grey", borderRadius: 10, mt: "10px" }}
+                  />
+                </>
+              )}
               {mainData.module_image && (
                 <>
                   <center>
@@ -3039,14 +3140,16 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                       //   animationTimingFunction: "ease-in-out",
                       // }}
                     >
-                      <Chip label={ <span
-                     style={{color:'red'}}
-                   >
-                     
-                     Click on the Image below to add Issue{" "}
-                     <KeyboardDoubleArrowDownIcon />
-                   </span>} variant="outlined" />
-                     
+                      <Chip
+                        label={
+                          <span style={{ color: "red" }}>
+                            Click on the Image below to add Issue{" "}
+                            <KeyboardDoubleArrowDownIcon />
+                          </span>
+                        }
+                        variant="outlined"
+                      />
+
                       {/* <style>
                     {`
         @keyframes floating {
@@ -3060,16 +3163,54 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                   </center>
                   <br />
                   {/* <Paper elevation={24} square> */}
-                  <Chip  label= {<div> <CheckCircleIcon
-                      fontSize="small"
-                      sx={{ color: "#16FF00",border:"none" }}
-                      
-                    />
-                    <span style={{fontWeight:'bold'}}> - Indicates Issues have been added </span></div>}variant="outlined" >
-                   
-                    </Chip>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Chip
+                      label={
+                        <div>
+                          {" "}
+                          <CheckCircleIcon
+                            fontSize="small"
+                            sx={{ color: "#16FF00", border: "none" }}
+                          />
+                          <span style={{ fontWeight: "bold" }}>
+                            {" "}
+                            - Indicates Issues have been added{" "}
+                          </span>
+                        </div>
+                      }
+                      variant="outlined"
+                    ></Chip>
+
+                    {/* <Chip
+                    color="success"
+                  label={
+                    <div>
+                      <InfoOutlinedIcon fontSize="small" />
+                      A maximum of five issues can be included
+                    </div>
+                  }
+                /> */}
+
+                    <Chip
+                      label={
+                        <div>
+                          {" "}
+                          <InfoOutlinedIcon
+                            fontSize="small"
+                            sx={{ color: "#16FF00", border: "none" }}
+                          />
+                          <span style={{ fontWeight: "bold" }}>
+                            {" "}
+                            A maximum of five issues can be included{" "}
+                          </span>
+                        </div>
+                      }
+                      variant="outlined"
+                    ></Chip>
+                  </div>
                   {/* </Paper> */}
-                 
 
                   <motion.div
                     variants={icon}
@@ -3081,201 +3222,196 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                     }}
                   >
                     <div id="mainDiv" style={{ position: "relative" }}>
-                    <div id="showDiv" 
-                     style={{
-                      position: "relative",
-                      width: "100%",
-                      height: "100%",
-                      zIndex: 2,
-                      top: 0,
-                       background: colors.primary[400],
-                    }}
-                    
-                    >
-                    <div
-                      style={{
-                        position: "relative",
-                        width: "100%",
-                        height: "100%",
-                      }}
-                      // Note : Don't disturb the inline styling because then the click even is not getting triggered
-                      //className="main-image-div"
-                    >
-                     
-                      {mainData.module_image && (
-                        <Paper
-                          elevation={3}
-                          // style={{
-                          //   width: "95%",
-                          //   height: "95%",
-                          //   margin: "auto",
-                          //   borderRadius: "40px",
-                          // }}
-                          className="paper-img-style"
+                      <div
+                        id="showDiv"
+                        style={{
+                          position: "relative",
+                          width: "100%",
+                          height: "100%",
+                          zIndex: 2,
+                          top: 0,
+                          background: colors.primary[400],
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: "relative",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                          // Note : Don't disturb the inline styling because then the click even is not getting triggered
+                          //className="main-image-div"
                         >
-                          <img
-                            src={`data:image/jpeg;base64,${mainData.module_image}`}
-                            alt={mainData.module_name}
-                            // style={{
-                            //   borderRadius: "10px",
-                            //   width: "100%",
-                            //   height: "100%",
-                            //   // userSelect:'none',
-                            //   // pointerEvents:'none'
-                            // }}
-                            className="img-style"
-                            // onClick={(e) => checkForDialog(e)}
-                          />
-                        </Paper>
-                      )}
-                      {updatedMainData &&
-                        updatedMainData.issuesList &&
-                        updatedMainData.issuesList.map((area, areaIndex) => (
-                          <Tooltip
-                            key={areaIndex}
-                            title="Click me ! "
-                            placement="top-start"
-                          >
-                            <div
-                              onClick={(event) => handleDivClick(event, area)}
-                              key={areaIndex}
-                              style={{
-                                position: "absolute",
-                                left: `${area.left * 100}%`,
-                                top: `${area.top * 100}%`,
-                                width: `${area.width * 100}%`,
-                                height: `${area.height * 100}%`,
-                                border: "2px solid #2196f3",
-                                backgroundColor: "rgba(128, 128, 128, 0.5)",
-
-                                // display: 'flex',
-                                // justifyContent: 'center',
-                                // alignItems: 'center',
-                                // color: 'white',
-                                // fontSize: '16px',
-                                // fontWeight: 'bold',
-                                // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-                                //transition: 'all 0.3s ease',
-                                cursor: "pointer",
-                              }}
-                              // onMouseEnter={(e) => {
-                              //   e.target.style.backgroundColor =
-                              //     "rgba(128, 128, 128, 0.5)";
-                              //   // e.target.style.filter = "blur(5px)";
-                              //   e.target.style.transition =
-                              //     "background-color 0.3s, filter 0.3s";
+                          {mainData.module_image && (
+                            <Paper
+                              elevation={3}
+                              // style={{
+                              //   width: "95%",
+                              //   height: "95%",
+                              //   margin: "auto",
+                              //   borderRadius: "40px",
                               // }}
-                              // onMouseLeave={(e) => {
-                              //   e.target.style.backgroundColor = "rgba(0,0,0,0)";
-                              //   e.target.style.filter = "blur(0px)";
-                              // }}
+                              className="paper-img-style"
                             >
-                              {area.edited && (
-                                <CheckCircleIcon
-                                  // style={{
-                                  //   position: "absolute",
-                                  //   top: "50%",
-                                  //   left: "50%",
-                                  //   transform: "translate(-50%, -50%)",
-                                  //   color: "#66FF00",
-                                  // }}
-                                  className="check-icon"
-                                  fontSize="small"
-                                  // onClick={(e) => {
-                                  //   e.stopPropagation();
-                                  //   handleDivClick(area); // Call a function to delete the area when delete icon is clicked
-                                  // }}
-                                />
-                              )}
-                            </div>
-                          </Tooltip>
-                        ))}
+                              <img
+                                src={`data:image/jpeg;base64,${mainData.module_image}`}
+                                alt={mainData.module_name}
+                                // style={{
+                                //   borderRadius: "10px",
+                                //   width: "100%",
+                                //   height: "100%",
+                                //   // userSelect:'none',
+                                //   // pointerEvents:'none'
+                                // }}
+                                className="img-style"
+                                // onClick={(e) => checkForDialog(e)}
+                              />
+                            </Paper>
+                          )}
+                          {updatedMainData &&
+                            updatedMainData.issuesList &&
+                            updatedMainData.issuesList.map(
+                              (area, areaIndex) => (
+                                <Tooltip
+                                  key={areaIndex}
+                                  title="Click me ! "
+                                  placement="top-start"
+                                >
+                                  <div
+                                    onClick={(event) =>
+                                      handleDivClick(event, area)
+                                    }
+                                    key={areaIndex}
+                                    style={{
+                                      position: "absolute",
+                                      left: `${area.left * 100}%`,
+                                      top: `${area.top * 100}%`,
+                                      width: `${area.width * 100}%`,
+                                      height: `${area.height * 100}%`,
+                                      border: "2px solid #2196f3",
+                                      backgroundColor:
+                                        "rgba(128, 128, 128, 0.5)",
+
+                                      // display: 'flex',
+                                      // justifyContent: 'center',
+                                      // alignItems: 'center',
+                                      // color: 'white',
+                                      // fontSize: '16px',
+                                      // fontWeight: 'bold',
+                                      // textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+                                      //transition: 'all 0.3s ease',
+                                      cursor: "pointer",
+                                    }}
+                                    // onMouseEnter={(e) => {
+                                    //   e.target.style.backgroundColor =
+                                    //     "rgba(128, 128, 128, 0.5)";
+                                    //   // e.target.style.filter = "blur(5px)";
+                                    //   e.target.style.transition =
+                                    //     "background-color 0.3s, filter 0.3s";
+                                    // }}
+                                    // onMouseLeave={(e) => {
+                                    //   e.target.style.backgroundColor = "rgba(0,0,0,0)";
+                                    //   e.target.style.filter = "blur(0px)";
+                                    // }}
+                                  >
+                                    {area.edited && (
+                                      <CheckCircleIcon
+                                        // style={{
+                                        //   position: "absolute",
+                                        //   top: "50%",
+                                        //   left: "50%",
+                                        //   transform: "translate(-50%, -50%)",
+                                        //   color: "#66FF00",
+                                        // }}
+                                        className="check-icon"
+                                        fontSize="small"
+                                        // onClick={(e) => {
+                                        //   e.stopPropagation();
+                                        //   handleDivClick(area); // Call a function to delete the area when delete icon is clicked
+                                        // }}
+                                      />
+                                    )}
+                                  </div>
+                                </Tooltip>
+                              )
+                            )}
                         </div>
-                    </div>
+                      </div>
 
-
-
-
-
-                    <div
-  id="hiddenDiv" 
-  // ref={screenshotRef}
-  //  onLoad={prepareScreenshot} 
-  // className={
-  //   storedTheme === "light" || storedTheme == null
-  //     ? "hideSectionLightMode"
-  //     : "hideSectionDarkMode"
-  // }
-  style={{
-    position: "absolute",
-    minWidth: "100%",
-    minHeight: "100%",
-     top: 0,
-    //left: 0,
-    zIndex: 1,
-    overflow: "auto",
-    // display: "flex",
-    // justifyContent: "center",
-    // alignItems: "center",
-    //marginTop :"10rem"
-  }}
->
-  {/* <img 
+                      <div
+                        id="hiddenDiv"
+                        // ref={screenshotRef}
+                        //  onLoad={prepareScreenshot}
+                        // className={
+                        //   storedTheme === "light" || storedTheme == null
+                        //     ? "hideSectionLightMode"
+                        //     : "hideSectionDarkMode"
+                        // }
+                        style={{
+                          position: "absolute",
+                          minWidth: "100%",
+                          minHeight: "100%",
+                          top: 0,
+                          //left: 0,
+                          zIndex: 1,
+                          overflow: "auto",
+                          // display: "flex",
+                          // justifyContent: "center",
+                          // alignItems: "center",
+                          //marginTop :"10rem"
+                        }}
+                      >
+                        {/* <img 
     src={"https://img.freepik.com/free-photo/wide-angle-shot-single-tree-growing-clouded-sky-during-sunset-surrounded-by-grass_181624-22807.jpg"} 
     alt="demoImg"
     style={{ minWidth: "100%", minHeight: "100%",border:'1px solid red',objectFit: "contain" }}
   /> */}
 
+                        <div
+                          style={{
+                            position: "relative",
+                            width: "100%",
+                            height: "100%",
+                          }}
+                          ref={screenshotRef}
+                        >
+                          {currentImageData.module_image && (
+                            <Paper
+                              elevation={3}
+                              // className="paper-img-style"
+                            >
+                              <img
+                                src={`data:image/jpeg;base64,${currentImageData.module_image}`}
+                                // src={demoImagetest}
+                                alt={currentImageData.module_name}
+                                style={{ width: "100%", height: "100%" }}
+                                // onClick={(e) => checkForDialog(e)}
+                              />
+                            </Paper>
+                          )}
 
-<div
-          style={{
-            position: "relative",
-            width: "100%",
-            height: "100%",
-          }}
-            ref={screenshotRef}
-        >
-          {currentImageData.module_image && (
-            <Paper
-              elevation={3}
-              // className="paper-img-style"
-            >
-              <img
-                src={`data:image/jpeg;base64,${currentImageData.module_image}`}
-                // src={demoImagetest}
-                alt={currentImageData.module_name}
-                style={{ width: "100%", height: "100%" }}
-                // onClick={(e) => checkForDialog(e)}
-              />
-            </Paper>
-          )}
+                          <div
+                            style={{
+                              position: "absolute",
+                              left: `${currentImageData.left_ * 100}%`,
+                              top: `${currentImageData.top_ * 100}%`,
+                              width: `${currentImageData.width_ * 100}%`,
+                              height: `${currentImageData.height_ * 100}%`,
+                              border: "2px solid #2196f3",
+                              backgroundColor: "rgba(128, 128, 128, 0.5)",
 
-          <div
-            style={{
-              position: "absolute",
-              left: `${currentImageData.left_ * 100}%`,
-              top: `${currentImageData.top_ * 100}%`,
-              width: `${currentImageData.width_ * 100}%`,
-              height: `${currentImageData.height_ * 100}%`,
-              border: "2px solid #2196f3",
-              backgroundColor: "rgba(128, 128, 128, 0.5)",
-
-              // cursor: "pointer",
-            }}
-          >
-            
-            </div>
-        </div>
-        {/*}
+                              // cursor: "pointer",
+                            }}
+                          ></div>
+                        </div>
+                        {/*}
 <div
  style={{background:'#03AED2'}}
 
  >
         <IssueListTable issuesList={currentImageData.issuesList} />   
           </div>*/}
-</div>
-
-
+                      </div>
                     </div>
                   </motion.div>
 
@@ -3695,7 +3831,7 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                     id="user-remarks"
                     label={
                       // <span style={{ fontSize: "14px", fontWeight: "bold" }}>
-                        'Remarks'
+                      "Remarks"
                       // </span>
                     }
                     // multiline

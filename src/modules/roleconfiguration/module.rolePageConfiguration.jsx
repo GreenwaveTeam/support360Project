@@ -9,6 +9,10 @@ import {
   Button,
   TextField,
   Typography,
+  FormControl,
+  Autocomplete,
+  InputAdornment,
+  Chip,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Dropdown from "../../components/dropdown/dropdown.component";
@@ -26,6 +30,7 @@ import Main from "../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { extendTokenExpiration } from "../helper/Support360Api";
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function RolePageConfiguration({ sendUrllist }) {
   //       const jsonData =
@@ -217,15 +222,13 @@ export default function RolePageConfiguration({ sendUrllist }) {
     },
   ];
 
-  const handlePageChange = (event) => {
-    const selectedPage = event.target.value;
+  const handlePageChange = (event, value) => {
     setSelectedComponents([]);
-    console.log("PAge=>" + selectedPage);
-    setSelectedPage(selectedPage);
-    const page = pageDetails.find((page) => page.pagename === selectedPage);
+    console.log("Page =>", value);
+    setSelectedPage(value);
+    const page = pageDetails.find((page) => page.pagename === value);
     if (page) {
-      console.log("Comonents===>" + page.components);
-
+      console.log("Components ===>", page.components);
       setComponentList(page.components);
     }
   };
@@ -321,26 +324,31 @@ export default function RolePageConfiguration({ sendUrllist }) {
       <Box
         sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
       >
-        {/* <TextField
-        label={"Role"}
-       value={selectedRole}
-        required
-        onChange={handleRoleChange}
-        /> &nbsp;&nbsp;&nbsp; */}
-        <Typography
-          sx={{ fontWeight: 800, fontSize: 18, mb: 1, fontStyle: "oblique" }}
-        >
-          Current Role :{" "}
-          {<span style={{ fontWeight: "bold", color: "red" }}>{role}</span>}
-        </Typography>
-        <Dropdown
-          id="pageDetails"
-          style={{ width: "200px" }}
-          label="Page"
-          value={selectedPage}
-          onChange={handlePageChange}
-          list={pagelist}
-        />
+        <Chip label={role} variant="filled" color="primary" sx={{width:'200px'}}></Chip>
+        &nbsp;&nbsp;
+        <FormControl style={{ width: '200px' }}>
+          <Autocomplete
+            id="pageDetails-autocomplete"
+            value={selectedPage}
+            onChange={handlePageChange}
+            options={pagelist}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Page"
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            )}
+          />
+        </FormControl>
+
         &nbsp;
         {componentList.length > 0 && (
           <Box>
@@ -377,7 +385,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
           sx={{
             backgroundImage:
               "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
-            width: "200px",
+            
           }}
           onClick={handleRoleSubmit}
         >

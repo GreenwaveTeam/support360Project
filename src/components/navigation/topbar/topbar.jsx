@@ -82,8 +82,13 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     setDarkMode(!darkMode);
   };
 
+  const storedTheme = localStorage.getItem("theme");
+  console.log(`CurrentTheme ${storedTheme}`);
+
   const { setUserData } = useUserContext();
   const handleLogout = () => {
+    if(storedTheme?.toLowerCase()==='dark')
+      colorMode.toggleColorMode();
     logout(setUserData);
   };
 
@@ -481,7 +486,9 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
               {/* <Avatar alt="Greenwave" src={gwlogo} /> */}
               <Tooltip
                 title={
-                  darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                  storedTheme === "light" || storedTheme == null
+                  ? "Switch to Dark Mode"
+                  : "Switch to Light Mode"
                 }
                 placement="bottom"
               >

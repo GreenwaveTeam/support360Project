@@ -135,8 +135,8 @@ export default function RoleConfiguration({ sendUrllist }) {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            flexDirection: "row",
+            // alignItems: "center",
           }}
         >
           <TextField
@@ -150,7 +150,7 @@ export default function RoleConfiguration({ sendUrllist }) {
           <Button
             color="primary"
             variant="contained"
-            style={{ width: "200px" }}
+           // style={{ width: "200px" }}
             startIcon={<AddCircleIcon />}
             sx={{
               backgroundImage:

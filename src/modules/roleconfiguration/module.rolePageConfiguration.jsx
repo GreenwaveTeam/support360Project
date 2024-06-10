@@ -13,6 +13,7 @@ import {
   Autocomplete,
   InputAdornment,
   Chip,
+  Card,
 } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import Dropdown from "../../components/dropdown/dropdown.component";
@@ -324,7 +325,13 @@ export default function RolePageConfiguration({ sendUrllist }) {
       <Box
         sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}
       >
-        <Chip label={role} variant="filled" color="primary" sx={{width:'200px'}}></Chip>
+        <Card
+        sx={{ display: "flex", flexDirection: "row", alignItems: "center", padding:'5px' }}
+      >
+        {"Current Role "} &nbsp;&nbsp;
+      <Chip label={role} variant="outlined" color="primary" ></Chip>
+        </Card>
+       
         &nbsp;&nbsp;
         <FormControl style={{ width: '200px' }}>
           <Autocomplete

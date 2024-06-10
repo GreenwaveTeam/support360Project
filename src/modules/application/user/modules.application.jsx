@@ -1526,8 +1526,8 @@ export default function ApplicationUser({ sendUrllist }) {
     console.log('Final Json to Post : ',final_Json)
     // return;
 
-    console.log('Current PlantID : ',final_Json[0].plantID)
-    const moduleImageMap=await fetchModuleImageMap(final_Json[0].plantID) 
+    console.log('Current PlantID : ',final_Json[0].plantID,' Selected Project : ',selectedProject,"Current Application : ",dropdownValue)
+    const moduleImageMap=await fetchModuleImageMap(final_Json[0].plantID,dropdownValue,selectedProject) 
     // const currentApplicationTicketDetails= await fetchApplicationTicketDetails(ticketNo)
 
 

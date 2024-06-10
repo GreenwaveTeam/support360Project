@@ -186,6 +186,7 @@ export default function RoleConfiguration({ sendUrllist }) {
           redirectColumn={"role"}
           redirectIconActive={true}
           tablename={"Role Configuration"}
+          isDeleteDialog={true}
           // savetoDatabse={editCategory}   isDeleteDialog={true}
           // editActive={true} tablename={"Existing Device Issue Category"}
           // /*style={}*/

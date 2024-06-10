@@ -410,6 +410,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
         columns={columns}
         editActive={false}
         deleteFromDatabase={handleDelete}
+        isDeleteDialog={true}
       />
       <Snackbar
         snackbarSeverity={snackbarSeverity}

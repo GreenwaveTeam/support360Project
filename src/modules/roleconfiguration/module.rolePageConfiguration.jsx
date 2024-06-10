@@ -333,6 +333,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
         </Card>
        
         &nbsp;&nbsp;
+        <Box >
         <FormControl style={{ width: '200px' }}>
           <Autocomplete
             id="pageDetails-autocomplete"
@@ -398,6 +399,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
         >
           Add
         </Button>
+        </Box>
       </Box>
       &nbsp;&nbsp;
       <Table

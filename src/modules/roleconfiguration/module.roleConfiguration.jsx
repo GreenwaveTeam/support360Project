@@ -27,6 +27,7 @@ import { extendTokenExpiration } from "../helper/Support360Api";
 
 export default function RoleConfiguration({ sendUrllist }) {
   const [role, setRole] = useState("");
+  const [description,setDescription]=useState("")
   const [rows, setRows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [openPopup, setOpenPopup] = useState(false);
@@ -48,6 +49,12 @@ export default function RoleConfiguration({ sendUrllist }) {
       type: "textbox",
       canRepeatSameValue: false,
     },
+    {
+      id: "description",
+      label: "Description",
+      type: "textbox",
+      canRepeatSameValue: true,
+    }
   ];
 
   const handleDrawerOpen = () => {
@@ -71,15 +78,15 @@ export default function RoleConfiguration({ sendUrllist }) {
 
         // Extract data from the response
         const data = await response.data;
-        console.log("data=====>", JSON.stringify(data));
-        if (data) {
-          const renamedData = data.map((item) => ({
-            role: item,
-          }));
-          console.log(renamedData);
-          setRows(renamedData);
-          setFilteredRows(renamedData);
-        }
+        // console.log("data=====>", JSON.stringify(data));
+        // if (data) {
+        //   const renamedData = data.map((item) => ({
+        //     role: item,
+        //   }));
+        //   console.log(renamedData);
+          setRows(data);
+          setFilteredRows(data);
+        console.log("Role configure:",data)
       } catch (e) {
         //console.error('Error:', error);
         setOpenPopup(true);
@@ -94,7 +101,7 @@ export default function RoleConfiguration({ sendUrllist }) {
   const handleRedirect = () => {
     //if()
     navigate(`/admin/role/Page`, {
-      state: { role: role },
+      state: { role: role ,description:description},
     });
   };
   const handleDelete = async (rowdata) => {
@@ -124,7 +131,7 @@ export default function RoleConfiguration({ sendUrllist }) {
   };
   const handleRedirectToRolePage = (row) => {
     navigate(`/admin/role/Page`, {
-      state: { role: row.role },
+      state: { role: row.role,description:row.description },
     });
   };
   return (
@@ -145,6 +152,13 @@ export default function RoleConfiguration({ sendUrllist }) {
             value={role}
             style={{ width: "200px" }}
             onChange={(e) => setRole(e.target.value)}
+          />&nbsp;&nbsp;
+          <TextField
+            label={"Description "}
+            id="description"
+            value={role}
+            style={{ width: "200px" }}
+            onChange={(e) => setDescription(e.target.value)}
           />
           &nbsp;
           <Button

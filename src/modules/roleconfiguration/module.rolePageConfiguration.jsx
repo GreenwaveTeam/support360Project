@@ -123,6 +123,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
 
   const location = useLocation();
   const role = location.state.role;
+  const description=location.state.description;
   const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -291,6 +292,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
         role: role,
         pagename: selectedPage,
         components: selectedComponents,
+        description:description
       };
       console.log("Request=>" + JSON.stringify(requestData));
       console.log("Bearer=>" + localStorage.getItem("token"));

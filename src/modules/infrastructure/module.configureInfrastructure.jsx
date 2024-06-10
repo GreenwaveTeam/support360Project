@@ -68,6 +68,8 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
 
   const [booleanProgressVisible, setBooleanProgressVisible] = useState(false);
 
+   const [plantNameProjectError,setPlantNameProjectError]=useState(false)
+
   //new change added project
 
   const [selectedPlantAndProject, setSelectedPlantAndProject] = useState({
@@ -138,13 +140,15 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   const handleAddIssues = () => {
     console.log("handleAddIssues called !");
     setCategoryError(false);
+    setPlantNameProjectError(false)
 
     if(selectedPlantAndProject.plantName===''||selectedPlantAndProject.project==='')
       {
         setsnackbarSeverity("error");
-      setSnackbarText("Fill the required fields! ");
+      setSnackbarText("Plant Name and Project cannot be blank ! ");
       setOpen(true);
-      setCategoryError(true);
+      // setCategoryError(true);
+      setPlantNameProjectError(true)
       return;
       }
     if (newCateogry.length === 0 || newCateogry.trim() === "") {
@@ -762,6 +766,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                       }}
                       list={plantNameList}
                       label={"Plant-Name"}
+                      error={plantNameProjectError}
                       // error={dropDownError}
                       style={{ width: "110px" }}
                     ></Dropdown>
@@ -783,6 +788,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                       label={"Project"}
                       // error={dropDownError}
                       style={{ width: "110px", marginLeft: "10px" }}
+                      error={plantNameProjectError}
                     ></Dropdown>
                   </div>
                 </>

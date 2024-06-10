@@ -298,6 +298,7 @@ export default function ApplicationUser({ sendUrllist }) {
       setAppDropdown([]);
     } else {
       fetchTabs(dropdownValue);
+      setTabsModuleNames([]); //! Replacing the existing tabModuleNames to again populate it with new Data
     }
   }, [dropdownValue, selectedProject]);
   
@@ -966,18 +967,18 @@ export default function ApplicationUser({ sendUrllist }) {
 
   const handleAppDropdownChange = (e) => {
     console.log("Changed value in Dropdown => ", e.target.value);
-    if (e.target.value === "Select an application") {
-      setDropdownValue(e.target.value);
-      // setTabsModuleNames([]);
+    // if (e.target.value === "Select an application") {
+    //   setDropdownValue(e.target.value);
+    //   // setTabsModuleNames([]);
 
-      return;
-    } else {
+    //   return;
+    // } else {
       //Will review it once again
       setDropdownValue(e.target.value);
       // fetchTabs(e.target.value);
       setTicketNumber(generateRandomNumber());
       //Resetting Data
-      setTabsModuleNames([]);
+      // setTabsModuleNames([]);
       setFinalUserInput([]);
       setMiscellaneousInput("");
       setRemarksInput("");
@@ -990,7 +991,7 @@ export default function ApplicationUser({ sendUrllist }) {
       //Added
       setmiscellaneousSeverity("");
       setmiscellaneousRemarks("");
-    }
+    // }
   };
 
   const handleDivClick = (event, area) => {

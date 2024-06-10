@@ -244,7 +244,7 @@ function UserHome({ sendUrllist }) {
       label: "Device",
       color: "#34d399",
       value:
-        Math.ceil(
+        Math.floor(
           (deviceIssuesCurrentMonth /
             (deviceIssuesCurrentMonth +
               applicationIssuesCurrentMonth +
@@ -256,7 +256,7 @@ function UserHome({ sendUrllist }) {
       label: "Application",
       color: "#fbbf24",
       value:
-        Math.ceil(
+        Math.floor(
           (applicationIssuesCurrentMonth /
             (deviceIssuesCurrentMonth +
               applicationIssuesCurrentMonth +
@@ -268,7 +268,7 @@ function UserHome({ sendUrllist }) {
       label: "Infrastructure",
       color: "#60a5fa",
       value:
-        Math.ceil(
+        Math.floor(
           (infrastructureIssuesCurrentMonth /
             (deviceIssuesCurrentMonth +
               applicationIssuesCurrentMonth +
@@ -300,7 +300,7 @@ function UserHome({ sendUrllist }) {
     // setPendingTickets(await Promise.all(getAllOpenTicketDetails()));
     extendTokenExpiration();
     // setToken(`${localStorage.getItem("token")}`);
-    fetchTicketDetails();
+    // fetchTicketDetails();
     sendUrllist(urllist);
     monthwiseticketraised();
     monthAndCatagoryWiseTicketRaised();
@@ -875,30 +875,30 @@ function UserHome({ sendUrllist }) {
     }
   };
 
-  const fetchTicketDetails = async () => {
-    console.log(`userhome Bearer ${localStorage.getItem("token")}`);
-    try {
-      const response = await fetch(`http://${DB_IP}/users/user/ticketInfo`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          // Authorization: `Bearer ${token}`,
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      const data = await response.json();
-      console.log("fetchTicketDetails data : ", data);
-      setTicketData((prevData) => ({
-        ...prevData,
-        total_ticket_raised: data.total_ticket_raised,
-        pending_tickets: data.pending_tickets,
-        resolved_tickets: data.resolved_tickets,
-        last_ticket_raised: data.last_ticket_raised,
-      }));
-    } catch (error) {
-      console.error("Error fetching user list:", error);
-    }
-  };
+  // const fetchTicketDetails = async () => {
+  //   console.log(`userhome Bearer ${localStorage.getItem("token")}`);
+  //   try {
+  //     const response = await fetch(`http://${DB_IP}/users/user/ticketInfo`, {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/json",
+  //         // Authorization: `Bearer ${token}`,
+  //         Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //       },
+  //     });
+  //     const data = await response.json();
+  //     console.log("fetchTicketDetails data : ", data);
+  //     setTicketData((prevData) => ({
+  //       ...prevData,
+  //       total_ticket_raised: data.total_ticket_raised,
+  //       pending_tickets: data.pending_tickets,
+  //       resolved_tickets: data.resolved_tickets,
+  //       last_ticket_raised: data.last_ticket_raised,
+  //     }));
+  //   } catch (error) {
+  //     console.error("Error fetching user list:", error);
+  //   }
+  // };
 
   function convertDateFormat(dateString) {
     console.log("dateString : ", dateString);
@@ -2056,7 +2056,7 @@ function UserHome({ sendUrllist }) {
                               series={[
                                 {
                                   dataKey: "Issue_Count",
-                                  label: "Issue Count",
+                                  label: "Total Issues",
                                 },
                                 {
                                   dataKey: "Pending_Issues",

@@ -331,10 +331,10 @@ export const fetchTicketCloseTime = async (plantId) => {
 };
 
 
-export const fetchModuleImageMap = async (plantId) => {
+export const fetchModuleImageMap = async (plantId,application,project) => {
   try {
     const response = await fetch(
-      `http://${DB_IP}/application/moduleData/${plantId}`,
+      `http://${DB_IP}/application/moduleData/${plantId}/${application}/${project}`,
       {
         method: "GET",
         headers: {

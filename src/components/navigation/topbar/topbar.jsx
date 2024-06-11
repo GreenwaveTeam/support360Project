@@ -150,6 +150,10 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       }))
     );
     setProjectNameWithSupportExpitedate(SupportExpitedateList);
+    console.log(
+      "setProjectNameWithSupportExpitedate : : ",
+      SupportExpitedateList
+    );
   };
 
   const differenceInDaysTillNow = async (endDate) => {
@@ -268,7 +272,9 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       setUserRole(data.role);
       setUserplantID(data.plantID);
       // differenceInDays(data.supportStartDate, data.supportEndDate);
-      fetchAllProjects(data.userId);
+      if (data.plantID !== "NA") {
+        fetchAllProjects(data.userId);
+      }
     } catch (error) {
       console.error("Error fetching user list:", error);
     }

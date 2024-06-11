@@ -42,9 +42,9 @@ export default function CustomDialog(
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-        <div style={{display:'flex'}}>
-          <WarningAmberIcon  sx={{color:'#FFC700'}}/>&nbsp;
-          <span style={{fontSize:"17px"}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'center'}}>
+          <WarningAmberIcon  sx={{color:'#FF6500'}}/>&nbsp;
+          <span style={{fontSize:"17px",fontWeight:'bold'}}>
               Are you sure you want to proceed ?
           </span>
           </div>

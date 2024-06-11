@@ -82,13 +82,18 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     setDarkMode(!darkMode);
   };
 
+  const storedTheme = localStorage.getItem("theme");
+  console.log(`CurrentTheme ${storedTheme}`);
+
   const { setUserData } = useUserContext();
   const handleLogout = () => {
+    if (storedTheme?.toLowerCase() === "dark") colorMode.toggleColorMode();
     logout(setUserData);
   };
 
   const [user, setUser] = useState();
   const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("");
   const [userplantID, setUserplantID] = useState("");
   const [dialogopen, setdialogopen] = useState(false);
   // const [newPass, setNewPass] = useState("");
@@ -145,7 +150,6 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       }))
     );
     setProjectNameWithSupportExpitedate(SupportExpitedateList);
-    console.log("abc : ", SupportExpitedateList);
   };
 
   const differenceInDaysTillNow = async (endDate) => {
@@ -261,6 +265,7 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
       console.log("fetchUser data : ", data);
       setUser(data);
       setUserName(data.name);
+      setUserRole(data.role);
       setUserplantID(data.plantID);
       // differenceInDays(data.supportStartDate, data.supportEndDate);
       fetchAllProjects(data.userId);
@@ -481,7 +486,9 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
               {/* <Avatar alt="Greenwave" src={gwlogo} /> */}
               <Tooltip
                 title={
-                  darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                  storedTheme === "light" || storedTheme == null
+                    ? "Switch to Dark Mode"
+                    : "Switch to Light Mode"
                 }
                 placement="bottom"
               >
@@ -548,6 +555,9 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                         />
                       </>
                       {userName}
+                      {"  ("}
+                      {userRole}
+                      {")"}
                     </MenuItem>
                     <Divider sx={{ margin: "0 !important", opacity: 0.8 }} />
                     {/* {userplantID !== "NA" && ( 

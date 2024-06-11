@@ -10,6 +10,7 @@ import {
   Button,
   TextField,
   Typography,
+  Snackbar,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +25,7 @@ import Main from "../../components/navigation/mainbody/mainbody";
 import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.component";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { extendTokenExpiration } from "../helper/Support360Api";
+import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
 
 export default function RoleConfiguration({ sendUrllist }) {
   const [role, setRole] = useState("");
@@ -106,7 +108,16 @@ export default function RoleConfiguration({ sendUrllist }) {
     }
   }, []);
   const handleRedirect = () => {
-    //if()
+    if (role.trim() !== "") {
+      const roleExists = rows.some(
+        (row) => row.role === role.trim()
+      );
+      if (roleExists) {
+        setDialogMessage("Role already exists.");
+        setOpenPopup(true);
+        return;
+      }
+    }
     navigate(`/admin/role/Page`, {
       state: { role: role ,description:description},
     });
@@ -199,6 +210,12 @@ export default function RoleConfiguration({ sendUrllist }) {
           // editActive={true} tablename={"Existing Device Issue Category"}
           // /*style={}*/
         />
+         <SnackbarComponent
+              openPopup={openPopup}
+              snackbarSeverity={snackbarSeverity}
+              setOpenPopup={setOpenPopup}
+              dialogMessage={dialogMessage}
+            />
       </Container>
     </Box>
   );

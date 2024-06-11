@@ -11,7 +11,7 @@ const defaultStyles = {
   //color: "#c50808",
 };
 const DB_IP = process.env.REACT_APP_SERVERIP;
-const CustomMenuItem = ({ label, path }) => {
+const CustomMenuItem = ({ label, path,open,setOpen }) => {
   const navigate = useNavigate();
 
   if (path) {
@@ -19,6 +19,7 @@ const CustomMenuItem = ({ label, path }) => {
       <div
         onClick={() => {
           navigate(path);
+          setOpen(false)
         }}
         style={defaultStyles}
       >
@@ -30,7 +31,7 @@ const CustomMenuItem = ({ label, path }) => {
   }
 };
 
-const CustomPanelBar = () => {
+const CustomPanelBar = ({open,setOpen}) => {
   // const items = [
   //   {
   //     label: "Admin",
@@ -215,7 +216,7 @@ const CustomPanelBar = () => {
     } else {
       return items.map((item) => ({
         ...item,
-        label: <CustomMenuItem label={item.label} path={item.path} />,
+        label: <CustomMenuItem label={item.label} path={item.path} open={open} setOpen={setOpen}/>,
         items: item.items ? renderMenuItems(item.items) : undefined,
       }));
     }

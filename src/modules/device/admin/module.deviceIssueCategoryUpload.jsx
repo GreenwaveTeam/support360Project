@@ -243,7 +243,12 @@ const DeviceCategory = ({ sendUrllist }) => {
     const { value } = e.target;
     setEditedValue(value); // Update input value
   };
-
+  const handleDisableIssueButton = () => {
+      console.log("Disabled function entered,");
+      console.log(plantid, ":::");
+      return plantid === '' || plantid === null || plantid===undefined;
+    };
+  
   const handleRedirect = (category) => {
     const categoryname = category.categoryname;
     console.log("Category==========>" + category.categoryname);
@@ -383,6 +388,7 @@ const DeviceCategory = ({ sendUrllist }) => {
                           backgroundImage:
                             "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
                         }}
+                        disabled={handleDisableIssueButton()}
                       >
                         Add &nbsp;
                         <AddCircleOutlineOutlinedIcon

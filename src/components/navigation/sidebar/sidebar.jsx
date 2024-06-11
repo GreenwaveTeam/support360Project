@@ -19,7 +19,7 @@ import gwlogo from "../../../resources/images/gwlogo.png";
 
 const drawerWidth = 240;
 
-const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
+const SidebarPage = ({ open,setOpen, handleDrawerClose, adminList, userList }) => {
   const [openAdmin, setOpenAdmin] = useState(true);
   const [openUser, setOpenUser] = useState(true);
 
@@ -62,7 +62,7 @@ const SidebarPage = ({ open, handleDrawerClose, adminList, userList }) => {
         </IconButton>
       </div>
       <Divider />
-      <CustomPanelBar></CustomPanelBar>
+      <CustomPanelBar open={open} setOpen={setOpen} ></CustomPanelBar>
     </Drawer>
   );
 };

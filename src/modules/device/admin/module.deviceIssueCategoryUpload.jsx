@@ -372,7 +372,7 @@ const DeviceCategory = ({ sendUrllist }) => {
                   </Box>
                 )}
                 {divIsVisibleList &&
-                  divIsVisibleList.includes("add-new-category") && (
+                  divIsVisibleList.includes("add-new-category") && !(plantid === '' || plantid === null || plantid===undefined)&&(
                     <form
                       onSubmit={submitCategory}
                       style={{ marginLeft: "40%" }}
@@ -396,7 +396,7 @@ const DeviceCategory = ({ sendUrllist }) => {
                           backgroundImage:
                             "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
                         }}
-                        disabled={handleDisableIssueButton()}
+                        // disabled={handleDisableIssueButton()}
                       >
                         Add &nbsp;
                         <AddCircleOutlineOutlinedIcon
@@ -409,7 +409,7 @@ const DeviceCategory = ({ sendUrllist }) => {
               </Box>
               &nbsp;&nbsp;
               {divIsVisibleList &&
-                divIsVisibleList.includes("device-category-table") && (
+                divIsVisibleList.includes("device-category-table") && !(plantid === '' || plantid === null || plantid===undefined) &&(
                   <Table
                     rows={categorylist}
                     columns={columns}

@@ -324,7 +324,8 @@ export default function ModuleConfiguration({ sendUrllist }) {
                     style={{ width: "200px" }}
                   />
                 </div>
-                <div style={{ padding: "10px" }}>
+                {selectedPlant&&
+                  <div style={{ padding: "10px" }}>
                   <Dropdown
                     list={projects}
                     label={"Select Project"}
@@ -334,9 +335,12 @@ export default function ModuleConfiguration({ sendUrllist }) {
                     }}
                   />
                 </div>
+                }
               </Box>
               {divIsVisibleList &&
-                divIsVisibleList.includes("add-new-application") && (
+                divIsVisibleList.includes("add-new-application") && !(selectedProject===null 
+                  ||selectedProject==='' || selectedProject===undefined
+                )&&(
                   <form onSubmit={handleSubmit} style={{ marginLeft: "20%" }}>
                     <TextField
                       label={"Application Name"}
@@ -406,6 +410,9 @@ export default function ModuleConfiguration({ sendUrllist }) {
             </Box>*/}
             &nbsp;
             {divIsVisibleList &&
+                !(selectedProject===null 
+                ||selectedProject==='' || selectedProject===undefined
+              )&&
               divIsVisibleList.includes("existing-application-table") && (
                 <Table
                   rows={data}

@@ -18,7 +18,7 @@ import {
 import React, { useState, useEffect } from "react";
 import Dropdown from "../../components/dropdown/dropdown.component";
 import Table from "../../components/table/table.component";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import Snackbar from "../../components/snackbar/customsnackbar.component";
 import axios from "axios";
@@ -62,6 +62,7 @@ export default function RolePageConfiguration({ sendUrllist }) {
   //  // const jsonData=packagedata;
   const DB_IP = process.env.REACT_APP_SERVERIP;
   const [jsonData, setJsonData] = useState([]);
+  const navigate=useNavigate()
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
     { pageName: "Role", pagelink: "/admin/role" },
@@ -89,9 +90,15 @@ export default function RolePageConfiguration({ sendUrllist }) {
         setsnackbarSeverity("error");
       }
     };
+    if( localStorage.getItem("token")===null||localStorage.getItem("token")===''){
+      console.log("Local storage::", localStorage.getItem("token"))
+      navigate("/login")
+    }
+    else{
     extendTokenExpiration();
     fetchData();
     sendUrllist(urllist);
+    }
   }, []);
   useEffect(() => {
     console.log("JSondata==>" + JSON.stringify(jsonData));

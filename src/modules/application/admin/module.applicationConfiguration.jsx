@@ -153,6 +153,11 @@ export default function ModuleConfiguration({ sendUrllist }) {
 
   const functionsCalledOnUseEffect = async () => {
     // fetchDivs();
+    if( localStorage.getItem("token")===null||localStorage.getItem("token")===''){
+      console.log("Local storage::", localStorage.getItem("token"))
+      navigate("/login")
+    }
+    else{
     sendUrllist(urllist);
     extendTokenExpiration();
     const projects = await fetchAllProjectDetails();
@@ -164,6 +169,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
     //await fetchData();
     await fetchUser();
     setShowpipispinner(false);
+  }
   };
   useEffect(() => {
     functionsCalledOnUseEffect();

@@ -125,10 +125,16 @@ const Application = ({ sendUrllist }) => {
   };
 
   useEffect(() => {
+    if( localStorage.getItem("token")===null||localStorage.getItem("token")===''){
+      console.log("Local storage::", localStorage.getItem("token"))
+      navigate("/login")
+    }
+    else{
     extendTokenExpiration();
     fetchUser();
     //fetchDivs();
     sendUrllist(urllist);
+    }
   }, []);
   const fetchUser = async () => {
     let role = "";

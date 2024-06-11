@@ -161,6 +161,12 @@ const DeviceCategory = ({ sendUrllist }) => {
     }
   };
   const functionsCalledOnUseEffect = async () => {
+    console.log("Function called on useEffect")
+    if( localStorage.getItem("token")===null||localStorage.getItem("token")===''){
+      console.log("Local storage::", localStorage.getItem("token"))
+      navigate("/login")
+    }
+    else{
     extendTokenExpiration();
 
     sendUrllist(urllist);
@@ -174,6 +180,7 @@ const DeviceCategory = ({ sendUrllist }) => {
     setPlantDetails(uniquePlantNames);
     await fetchUser();
     setShowpipispinner(false);
+  }
   };
   useEffect(() => {
     const plant = projectDetails.find(
@@ -186,6 +193,7 @@ const DeviceCategory = ({ sendUrllist }) => {
   }, [plantid]);
   useEffect(() => {
     functionsCalledOnUseEffect();
+    
   }, []);
 
   const handleEditClick = (rowData) => {

@@ -65,6 +65,7 @@ export default function RoleConfiguration({ sendUrllist }) {
   };
 
   useEffect(() => {
+    
     const fetchData = async () => {
       try {
         console.log(`user/home Bearer ${localStorage.getItem("token")}`);
@@ -94,9 +95,15 @@ export default function RoleConfiguration({ sendUrllist }) {
         setsnackbarSeverity("error");
       }
     };
+    if( localStorage.getItem("token")===null||localStorage.getItem("token")===''){
+      console.log("Local storage::", localStorage.getItem("token"))
+      navigate("/login")
+    }
+    else{
     extendTokenExpiration();
     fetchData();
     sendUrllist(urllist);
+    }
   }, []);
   const handleRedirect = () => {
     //if()
@@ -171,6 +178,7 @@ export default function RoleConfiguration({ sendUrllist }) {
                 "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
             }}
             type="submit"
+            disabled={role===null ||role===undefined||role===''}
             onClick={handleRedirect}
           >
             Add

@@ -325,6 +325,11 @@ export default function ModuleConfigure({ sendUrllist }) {
     }
   };
   const functionsCalledOnUseEffect = async () => {
+    if( localStorage.getItem("token")===null||localStorage.getItem("token")===''){
+      console.log("Local storage::", localStorage.getItem("token"))
+      navigate("/login")
+    }
+    else{
     sendUrllist(urllist);
     extendTokenExpiration();
     await fetchData();
@@ -332,6 +337,7 @@ export default function ModuleConfigure({ sendUrllist }) {
 
     setShowpipispinner(false);
     //fetchDivs();
+    }
   };
   useEffect(() => {
     functionsCalledOnUseEffect();

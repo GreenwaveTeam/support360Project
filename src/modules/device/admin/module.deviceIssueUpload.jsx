@@ -162,6 +162,11 @@ const DeviceIssue = ({ sendUrllist }) => {
     }
   };
   const functionsCalledOnUseEffect = async () => {
+    if( localStorage.getItem("token")===null||localStorage.getItem("token")===''){
+      console.log("Local storage::", localStorage.getItem("token"))
+      navigate("/login")
+    }
+    else{
     extendTokenExpiration();
     if (plantid === null) navigate("/notfound");
 
@@ -171,6 +176,8 @@ const DeviceIssue = ({ sendUrllist }) => {
     await fetchUser();
     setShowpipispinner(false);
     //const issues = location.state.issuelist;
+
+    }
   };
   useEffect(() => {
     functionsCalledOnUseEffect();

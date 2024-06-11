@@ -110,7 +110,7 @@ export default function RoleConfiguration({ sendUrllist }) {
   const handleRedirect = () => {
     if (role.trim() !== "") {
       const roleExists = rows.some(
-        (row) => row.role === role.trim()
+        (row) => row.role.toLowerCase() === role.trim().toLowerCase()
       );
       if (roleExists) {
         setDialogMessage("Role already exists.");

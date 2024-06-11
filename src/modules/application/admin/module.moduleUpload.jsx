@@ -388,6 +388,7 @@ const Application = ({ sendUrllist }) => {
       setDialogPopup(true);
       setsnackbarSeverity("error");
       setDialogMessage("Module Name is already present");
+      setDialogPopup(true);
       setSelectedFile(null);
       setSelectedByteArray(null);
       return;
@@ -1250,12 +1251,7 @@ const Application = ({ sendUrllist }) => {
               <MenuItem onClick={handleUpdateModule}>Update Module</MenuItem>
             </Menu>
             
-            <Snackbar
-              openPopup={dialogPopup}
-              snackbarSeverity={snackbarSeverity}
-              setOpenPopup={setDialogPopup}
-              dialogMessage={dialogMessage}
-            />
+            
             <CustomDialog
               open={deleteDialog}
               setOpen={setDeleteDialog}
@@ -1279,6 +1275,12 @@ const Application = ({ sendUrllist }) => {
             />
             </Box>
             )}
+            <Snackbar
+              openPopup={dialogPopup}
+              snackbarSeverity={snackbarSeverity}
+              setOpenPopup={setDialogPopup}
+              dialogMessage={dialogMessage}
+            />
           </Box>
         )}
     </div>

@@ -81,6 +81,8 @@ export default function AllocateTicket({ sendUrllist }) {
   const [divIsVisibleList, setDivIsVisibleList] = useState([]);
   const [fromDate, setFromDate] = useState(dayjs());
   const [token, setToken] = React.useState("");
+
+  const [isAllocateDisable, setIsAllocateDisable] = useState(true);
   // const [tikcetStatus, setTicketStatus] = React.useState("");
 
   //   const application=1;
@@ -469,7 +471,7 @@ export default function AllocateTicket({ sendUrllist }) {
     const interval = setInterval(() => {
       //console.log("UseEffect called");
       fetchAllTicketsDetails();
-    }, 2000000000000000000);
+    }, 2000);
 
     return () => {
       clearInterval(interval);
@@ -486,6 +488,7 @@ export default function AllocateTicket({ sendUrllist }) {
     setSelectedApprover(event.target.value);
   };
   const handleSubmit = async (selectedRow) => {
+    setIsAllocateDisable(true);
     // .plantId, selectedRow.ticketNo
     const plantId = selectedRow.plantId;
     const ticketNo = selectedRow.ticketNo;
@@ -686,6 +689,9 @@ export default function AllocateTicket({ sendUrllist }) {
       setFromDate(dayjs());
       return;
     }
+    if (newValue.isAfter(dayjs())) {
+      setIsAllocateDisable(false);
+    }
     setFromDate(newValue);
   };
 
@@ -885,6 +891,7 @@ export default function AllocateTicket({ sendUrllist }) {
                   sx={{ mt: "1rem" }}
                   variant="contained"
                   onClick={() => handleSubmit(selectedRow)}
+                  disabled={isAllocateDisable}
                 >
                   Allocate
                 </Button>

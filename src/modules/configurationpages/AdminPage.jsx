@@ -13,8 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContext";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import GridViewRoundedIcon from '@mui/icons-material/GridViewRounded';
-
+import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
 
 const AdminPage = ({ sendUrllist }) => {
   const [userPlantID, setUserPlantID] = useState(
@@ -162,7 +161,11 @@ const AdminPage = ({ sendUrllist }) => {
                   <Avatar
                     sx={{
                       // bgcolor: colors.primary[700],
-                      bgcolor: storedTheme?.toLowerCase() === 'light' || storedTheme === null ? colors.primary[700] : '',
+                      bgcolor:
+                        storedTheme?.toLowerCase() === "light" ||
+                        storedTheme === null
+                          ? colors.primary[700]
+                          : "",
 
                       mb: 2,
                       width: 80,
@@ -208,14 +211,18 @@ const AdminPage = ({ sendUrllist }) => {
                   <Avatar
                     sx={{
                       // bgcolor: colors.primary[700],
-                      bgcolor: storedTheme?.toLowerCase() === 'light' || storedTheme === null ? colors.primary[700] : '',
+                      bgcolor:
+                        storedTheme?.toLowerCase() === "light" ||
+                        storedTheme === null
+                          ? colors.primary[700]
+                          : "",
                       mb: 2,
                       width: 80,
                       height: 80,
                     }}
                   >
                     <i
-                      className="fa  fa-microchip"
+                      className="fa fa-network-wired"
                       style={{ fontSize: 22 }}
                       aria-hidden="true"
                     ></i>
@@ -253,7 +260,11 @@ const AdminPage = ({ sendUrllist }) => {
                   <Avatar
                     sx={{
                       // bgcolor: colors.primary[700],
-                      bgcolor: storedTheme?.toLowerCase() === 'light' || storedTheme === null ? colors.primary[700] : '',
+                      bgcolor:
+                        storedTheme?.toLowerCase() === "light" ||
+                        storedTheme === null
+                          ? colors.primary[700]
+                          : "",
                       mb: 2,
                       width: 80,
                       height: 80,
@@ -265,7 +276,7 @@ const AdminPage = ({ sendUrllist }) => {
                       aria-hidden="true"
                     ></i>
                   </Avatar>
-                  <Typography variant="h6">Device Category</Typography>
+                  <Typography variant="h6">Device Issue Category</Typography>
                 </Card>
               </Grid>
             )}
@@ -296,14 +307,18 @@ const AdminPage = ({ sendUrllist }) => {
                   <Avatar
                     sx={{
                       // bgcolor: colors.primary[700],
-                      bgcolor: storedTheme?.toLowerCase() === 'light' || storedTheme === null ? colors.primary[700] : '',
+                      bgcolor:
+                        storedTheme?.toLowerCase() === "light" ||
+                        storedTheme === null
+                          ? colors.primary[700]
+                          : "",
                       mb: 2,
                       width: 80,
                       height: 80,
                     }}
                   >
                     <i
-                      className="fa fa-network-wired"
+                      className="fa  fa-microchip"
                       style={{ fontSize: 22 }}
                       aria-hidden="true"
                     ></i>

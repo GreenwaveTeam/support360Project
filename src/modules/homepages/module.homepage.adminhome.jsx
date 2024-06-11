@@ -207,14 +207,15 @@ export default function AdminHome({ sendUrllist }) {
         setDivIsVisibleList(data.components);
         console.log("data.components.length : ", data.components.length);
         if (data.components.length === 0) {
+          console.error("Components error");
           navigate("/*");
         }
       }
     } catch (error) {
       console.log("Error in getting divs name :", error);
-      if (fetchDivs.length === 0) {
-        navigate("/*");
-      }
+      // if (fetchDivs.length === 0) {
+      navigate("/*");
+      // }
       // setsnackbarSeverity("error"); // Assuming setsnackbarSeverity is defined elsewhere
       // setSnackbarText("Database Error !"); // Assuming setSnackbarText is defined elsewhere
       // setOpen(true); // Assuming setOpen is defined elsewhere

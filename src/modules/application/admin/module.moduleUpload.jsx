@@ -50,7 +50,7 @@ const Application = ({ sendUrllist }) => {
   const [dialogMessage, setDialogMessage] = useState(null);
   const [categories, setCategories] = useState([]);
   const[isEditModule,setIsEditModule]=useState(false)
-
+  const [inputLink,setInputLink]=useState(false)
   const { userData, setUserData } = useUserContext();
 
   // const plantid = userData.plantID;
@@ -375,9 +375,8 @@ const Application = ({ sendUrllist }) => {
       return false;
     }
   };
-
-  const handleFileChange = (event) => {
-    setImageUrl(null);
+  const handleModuleNameCheck=()=>{
+    setInputLink(false)
     if (
       modulelist !== null &&
       modulelist.some(
@@ -406,6 +405,11 @@ const Application = ({ sendUrllist }) => {
       setDialogMessage("Special Character is not allowed");
       return;
     }
+    setInputLink(true)
+    
+  }
+  const handleFileChange = (event) => {
+    setImageUrl(null);
     setSelectedFile(event.target.files[event.target.files.length - 1]);
     // Clear previous image URL when selecting a new file
     const file = event.target.files[0];
@@ -943,15 +947,17 @@ const Application = ({ sendUrllist }) => {
                     component="label"
                     startIcon={<CloudUploadIcon />}
                     color="success"
+                    onClick={handleModuleNameCheck}
                   >
                     Upload Image
+                    {inputLink&&
                     <input
                       type="file"
                       accept="image/*"
                       onChange={handleFileChange}
                       style={{ display: 'none' }}
                       multiple={false}
-                    />
+                    />}
                   </Button>
                 </form>
               </Card>

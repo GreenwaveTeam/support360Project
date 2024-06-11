@@ -410,9 +410,7 @@ export default function ModuleConfiguration({ sendUrllist }) {
             </Box>*/}
             &nbsp;
             {divIsVisibleList &&
-                !(selectedProject===null 
-                ||selectedProject==='' || selectedProject===undefined
-              )&&
+                
               divIsVisibleList.includes("existing-application-table") && (
                 <Table
                   rows={data}

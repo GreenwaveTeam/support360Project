@@ -409,7 +409,7 @@ const DeviceCategory = ({ sendUrllist }) => {
               </Box>
               &nbsp;&nbsp;
               {divIsVisibleList &&
-                divIsVisibleList.includes("device-category-table") && !(plantid === '' || plantid === null || plantid===undefined) &&(
+                divIsVisibleList.includes("device-category-table") && (
                   <Table
                     rows={categorylist}
                     columns={columns}

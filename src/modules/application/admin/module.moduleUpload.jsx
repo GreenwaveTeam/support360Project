@@ -678,11 +678,17 @@ const Application = ({ sendUrllist }) => {
         setSelectedAreas([...selectedAreas, detail]);
         !categories.includes(categoryname) &&
           setCategories([...categories, categoryname]);
+          setCategoryname("")
+          setIssueName("")
+          setSeverity("")
       } catch (error) {
         console.error("Error:", error);
         setsnackbarSeverity("error");
         setDialogPopup(true);
         setDialogMessage("Database Error.");
+        setCategoryname("")
+          setIssueName("")
+          setSeverity("")
       }
     }
     //setShowPopup(false);

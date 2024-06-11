@@ -89,14 +89,14 @@ function AdminRoutes() {
         <DrawerHeader />
         <Box>
           <Routes>
-            <Route
+            {/* <Route
               path="/Sample"
               element={<Samplemodule sendUrllist={receiveUrllist} />}
             />
             <Route
               path="/test1"
               element={<Test1 sendUrllist={receiveUrllist} />}
-            />
+            /> */}
             <Route
               path="/Device/CategoryConfigure"
               element={

@@ -346,10 +346,20 @@ const DeviceIssue = ({ sendUrllist }) => {
               <Container>
                 <Card>
               <CardContent sx={{display:'flex', flexDirection:'row'}}>
-                <Typography variant="h6" fontWeight={800} gutterBottom>
+                {/* <Typography variant="h6" fontWeight={800} gutterBottom>
                   Current Device Issue Category Name :
-                </Typography>
-                <Chip label={categoryname} color="primary" sx={{width:'100px'}} variant="filled"/>
+                </Typography> */}
+                {/* <Chip label={categoryname} color="primary" sx={{width:'100px'}} variant="filled"/> */}
+                <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+              gutterBottom
+              fontWeight={900}
+            >
+              Current Device Issue Category Name : &nbsp;
+              <span style={{ color: "red" }}>{categoryname}</span>
+            </Typography>
                   
                 </CardContent>
                   <form

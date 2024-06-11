@@ -99,7 +99,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
   useEffect(() => {
     console.log("useEffect triggered:", selectedPlantAndProject);
 
-    if (selectedPlantAndProject.plantName && selectedPlantAndProject.project) {
+    if (selectedPlantAndProject.plantName!=='' && selectedPlantAndProject.project!=='') {
       console.log(
         "Plant Id:",
         selectedPlantAndProject.plantId,
@@ -263,8 +263,12 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
     const finalPlantIDList = Array.from(new Set(plantNameList));
     console.log("Final PlantId List :", finalPlantIDList);
     setPlantNameList(finalPlantIDList);
-    setProjectList(projectList);
+    // setProjectList(projectList);
     setMasterAllDetailsProjectList(allProjects);
+    //   setSelectedPlantAndProject({
+    //   plantName: "",
+    //   project: "",
+    // })
     //  const projectAtIndexZeroByPlantId=[];
     //  const selectedprojects=projectList.filter((plant)=>(plant===plantIdList[0]))
     // const selectedprojects=projectList.filter(data=>{
@@ -737,6 +741,7 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                           : ""
                       }
                       onChange={(event) => {
+                        console.log('On Change Event Occurred ! plant-name')
                         const newPlantName = event.target.value;
                         console.log("New Plant Name  : ", newPlantName);
                         const finalProjectList = [];
@@ -778,12 +783,12 @@ export default function ConfigureInfrastructure({ sendUrllist }) {
                           ? selectedPlantAndProject.project
                           : ""
                       }
-                      onChange={(event) =>
+                      onChange={(event) =>{
                         setSelectedPlantAndProject({
                           ...selectedPlantAndProject,
                           project: event.target.value,
                         })
-                      }
+                      }}
                       list={projectList}
                       label={"Project"}
                       // error={dropDownError}

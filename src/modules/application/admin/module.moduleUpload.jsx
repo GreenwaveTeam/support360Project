@@ -12,6 +12,8 @@ import {
   Tooltip,
   Typography,
   styled,
+  Fade,
+  IconButton
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Cancel";
@@ -21,6 +23,7 @@ import Dialog from "@mui/material/Dialog";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import { useUserContext } from "../../contexts/UserContext";
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
 
 /*Custom Components*/
 import Table from "../../../components/table/table.component";
@@ -34,6 +37,10 @@ import styles from "./module.module.css";
 import { borderBottom } from "@mui/system";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 import Textfield from "../../../components/textfield/textfield.component";
+import CancelIcon from "@mui/icons-material/Cancel";
+import CheckIcon from "@mui/icons-material/Check";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 const Application = ({ sendUrllist }) => {
   const [open, setOpen] = useState(false);
@@ -935,6 +942,17 @@ const Application = ({ sendUrllist }) => {
               }}>
               <Card style={cardStyleToInputImage}>
                 <form style={formStyleToInputImage}>
+                <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+              gutterBottom
+              fontWeight={700}
+            >
+              Current Application: &nbsp;
+              <span style={{ color: "red" }}>{application_name}</span>
+            </Typography>
+
                   <TextField
                     label="Enter Module Name"
                     id="issuecategory"
@@ -974,12 +992,35 @@ const Application = ({ sendUrllist }) => {
                   }}
                 >
                   {isEditModule ? (
+                    <div style={{display:'flex',justifyContent:'center',alignItems:'cemter'}}>
                           <Textfield
                             value={updatedModuleName}
                              onChange={(event)=>setUpdateModuleName(event.target.value)}
-                             onBlur={()=>{console.log("On blur");handleModuleProceed()}}
+                            //  onBlur={()=>{console.log("On blur");handleModuleProceed()}}
                            
                           />
+                          
+
+                                  <Tooltip
+                                  TransitionComponent={Fade}
+                                  title="Save"
+                                >
+                                  <IconButton onClick={() => handleModuleProceed()} color="success">
+                                 < SaveOutlinedIcon color="sucess"/></IconButton>
+                                </Tooltip>
+
+                                <Tooltip
+                                  TransitionComponent={Fade}
+                                  title="Cancel"
+                                >
+                                  <IconButton
+                                    onClick={() => setIsEditModule(false)} color="error"
+                                  >
+                                    <CancelOutlinedIcon color="error"/>
+                                  </IconButton>
+                                </Tooltip>
+
+                          </div>
                         ) : (
                   <Chip 
                     label={

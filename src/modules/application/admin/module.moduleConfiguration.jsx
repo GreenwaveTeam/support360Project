@@ -8,6 +8,7 @@ import {
   Typography,
   Menu,
   Tooltip,
+  Chip,
 } from "@mui/material";
 import axios from "axios";
 import Tab from "@mui/material/Tab";
@@ -45,6 +46,8 @@ import { useTheme } from "@mui/material";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 import { display } from "@mui/system";
 import { red } from "@mui/material/colors";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 
 export default function ModuleConfigure({ sendUrllist }) {
   const { userData, setUserData } = useUserContext();
@@ -945,9 +948,9 @@ export default function ModuleConfigure({ sendUrllist }) {
                           <Button
                             variant="contained"
                             onClick={handleRedirect}
-                            color="primary"
+                            color="success"
                           >
-                            Add Module
+                            Add New Module
                             <AddCircleOutlineOutlinedIcon
                               fontSize="medium"
                               sx={{ paddingLeft: "5px" }}
@@ -965,6 +968,23 @@ export default function ModuleConfigure({ sendUrllist }) {
 									Delete Module
 								</Button> */}
                   </Box>
+                  <Chip
+                  label={
+                    <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+                    
+                      <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+              gutterBottom
+              fontWeight={700}
+            >
+              Current Application : &nbsp;
+              <span style={{ color: "red" }}>{data.application_name}</span>
+            </Typography>
+                    </div>
+                  }
+                />
                   <Box
                     sx={{
                       backgroundColor: colors.primary[400],
@@ -978,11 +998,28 @@ export default function ModuleConfigure({ sendUrllist }) {
                         alignItems: "center",
                       }}
                     >
+                      <div  style={{display:'flex',justifyContent:'space-between'}}>
+                    
                       <TextField
-                        label={"Filter Module"}
+                        label={<div style={{display:'flex',justifyContent:'center',alignItems:'center'}}><FilterListOutlinedIcon/>&nbsp;Filter Module</div>}
                         id="filter"
                         onChange={handleFilterChange}
                       />
+
+
+
+{/* <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+              gutterBottom
+              fontWeight={700}
+            >
+              Current Application : &nbsp;
+              <span style={{ color: "red" }}>{selectedProject}</span>
+            </Typography> */}
+
+                      </div>
 
                       <TabList
                         onChange={handleChange}

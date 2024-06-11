@@ -353,7 +353,11 @@ export default function AdminRegistration({ sendUrllist }) {
       }
       const data = await response.json();
       console.log("Roles : ", data);
-      setRoleList(data);
+      const newRoles = [];
+      data.forEach((element) => {
+        newRoles.push(element.role);
+      });
+      setRoleList(newRoles);
     } catch (error) {
       console.log(error);
     }

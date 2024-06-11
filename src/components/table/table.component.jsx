@@ -1,11 +1,12 @@
 import * as React from "react";
-//import DatePicker from "../../components/datepicker/datepicker.component";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DisabledByDefaultRoundedIcon from "@mui/icons-material/DisabledByDefaultRounded";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import Box from "@mui/material/Box";
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Alert,
@@ -21,7 +22,6 @@ import {
   TextField,
   Tooltip,
   Typography,
-  Box,
 } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -76,16 +76,13 @@ export default function CustomTable({
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [deleteRow, setDeleteRow] = useState(null);
   useEffect(() => {
-    // Filter rows when filterValue changes
     filterRows();
   }, [filterValue, rows]);
 
   const filterRows = () => {
     if (!filterValue) {
-      // If filter value is empty, show all rows
       setFilteredrows(rows);
     } else {
-      // Filter rows based on filterValue
       const filtered = rows.filter((row) =>
         Object.values(row).some(
           (value) =>
@@ -100,7 +97,6 @@ export default function CustomTable({
   };
 
   const handleFilterChange = (event) => {
-    // Update filter value when input changes
     setFilterValue(event.target.value);
   };
 
@@ -140,39 +136,7 @@ export default function CustomTable({
     }
   };
 
-  //   const handleDeleteClick = (selectedrow) => {
-  //     // Swal.fire({
-  //     //   title: "Do you really want to delete ? ",
-  //     //   showDenyButton: true,
-  //     //   confirmButtonText: "Delete",
-  //     //   denyButtonText: `Cancel`,
-  //     // }).then((result) => {
-  //     //   if (result.isConfirmed) {
-  //        console.log(deleteFromDatabase)
-  //         if (deleteFromDatabase != null)
-  //         {
-  //          const deleted= deleteFromDatabase(selectedrow)
-  //          if(deleted){
-  //             console.log('Returned value is true hence updating the Table component')
-  //          const updatedRows = rows.filter((row) => row !== selectedrow);
-  //         setRows(updatedRows);
-  //          }
-  //          else
-  //          {
-  //              setSnackbarText("Error in Deleting data !");
-  //              setsnackbarSeverity("error");
-  //              setOpen(true);
-  //          }
-  //         }
-  //         // setSnackbarText("Deleted successfully !");
-  //         // setsnackbarSeverity("success");
-  //         // setOpen(true);
-  //     //   }
-  //     // });
-  //   };
-
   useEffect(() => {
-    //This useEffect is keeping track of the search whenever it is visible  or not
     console.log("useEffect for search");
     setClearVisible(filterValue === "" ? false : true);
   }, [filterValue]);
@@ -231,7 +195,8 @@ export default function CustomTable({
         checkError = true;
       } else if (
         column.type !== "calender" &&
-        regex.test(updatedRow[column.id].trim())&&column.isSpecialCharacterAllowed!==true
+        regex.test(updatedRow[column.id].trim()) &&
+        column.isSpecialCharacterAllowed !== true
       ) {
         console.log("Special characters check");
         setSnackbarText("Special Characters are not allowed !");
@@ -267,9 +232,6 @@ export default function CustomTable({
       const success = await savetoDatabse(selectedRow, updatedRow);
       console.log("The final returned value in table component is => ");
       if (success === false) {
-        // setEditRowIndex(null);
-        // setUpdatedRow(null)
-        // set
         return;
       }
     }
@@ -312,14 +274,13 @@ export default function CustomTable({
   const tableStyle = {
     color: "#f2f0f0",
     border: "1px solid",
-    borderColor: "#f2f0f063", //colors.grey[800]
+    borderColor: "#f2f0f063",
     borderRadius: "0.5rem",
     boxShadow: 0,
-    //height:300
   };
 
-  const oddRowColor = colors.grey[900]; // Light gray color for odd rows
-  const evenRowColor = ""; // White color for even rows
+  const oddRowColor = colors.grey[900];
+  const evenRowColor = "";
 
   return (
     <>
@@ -332,13 +293,16 @@ export default function CustomTable({
           boxShadow: 0,
         }}
       >
-        <TableContainer
-          component={Paper}
-          sx={tableStyle}
-          //sx={{ borderRadius: 5, maxHeight: 440,maxWidth:1200 }}
-          style={style}
-        >
+        <TableContainer component={Paper} sx={tableStyle} style={style}>
           <Table stickyHeader aria-label="sticky table">
+            {/* {filteredrows?.length === 0 && (
+              <div style={{ width: "100vw" }}>
+                <LinearProgress />
+              </div>
+            )} */}
+            <caption>
+              <>{filteredrows?.length === 0 && <LinearProgress />}</>
+            </caption>
             <TableHead>
               <TableRow>
                 <TableCell
@@ -362,7 +326,6 @@ export default function CustomTable({
                       <b> {tablename} </b>&nbsp;
                     </div>
                     <TextField
-                      //defaultValue="Small"
                       size="small"
                       label={
                         <div
@@ -442,14 +405,9 @@ export default function CustomTable({
                 )}
               </TableRow>
             </TableHead>
-            {/* {progressVisible&&filteredrows?.length === 0 && (
-                <>
-                  <CircularProgress />
-                </>
-              )} */}
             <TableBody>
-              {/* {filteredrows.status} */}
               {filteredrows &&
+                filteredrows.length > 0 &&
                 filteredrows
                   .slice(page * rowperpage, page * rowperpage + rowperpage)
                   .map((row, index) => {
@@ -477,17 +435,8 @@ export default function CustomTable({
                                 style={{
                                   display: "flex",
                                   justifyContent: "flex-start",
-                                  //alignItems: "center",
                                 }}
                               >
-                                {/* {row.edited && (
-                              <>
-                                 <CheckCircleIcon
-                                 fontSize="small"
-                                  sx={{ color: "green" }}
-                                />
-                              </>
-                            )} */}
                                 {editRowIndex !== index &&
                                   row.edited &&
                                   columnindex === 0 && (
@@ -523,17 +472,6 @@ export default function CustomTable({
                                 {editRowIndex !== index &&
                                   column.id === redirectColumn &&
                                   !redirectIconActive && <div>{value}</div>}
-                                {/* </div>
-                                <div> */}
-                                {/* { redirectIconActive && <Tooltip TransitionComponent={Fade}  title="Configure 🡵  ">
-                        <Button onClick={() => handleRedirect(row)}>
-                          <LaunchOutlinedIcon
-                            fontSize="small"
-                            color="secondary"
-                          />
-                        </Button>
-                        </Tooltip>} */}
-
                                 {editRowIndex !== index &&
                                   column.id !== "severity" &&
                                   column.type !== "button" &&
@@ -556,7 +494,6 @@ export default function CustomTable({
                                       {value.toLowerCase() === "major" && (
                                         <Chip
                                           label={value}
-                                          // color="primary"
                                           sx={{
                                             background: "#610c9f",
                                             color: "white",
@@ -566,7 +503,6 @@ export default function CustomTable({
                                       {value.toLowerCase() === "minor" && (
                                         <Chip
                                           label={value}
-                                          // color="success"
                                           sx={{
                                             background: "#1b3c73",
                                             color: "white",
@@ -600,37 +536,7 @@ export default function CustomTable({
                                       />
                                     </div>
                                   )}
-                                {/* {editRowIndex === index &&
-                                  column.type === "chip" && (
-                                    <div>
-                                      <Select
-                                        label={column.label}
-                                        value={updatedValue}
-                                        required
-                                        error={
-                                          errorValue === value && editError
-                                        }
-                                        onChange={(e) => {
-                                          handleInputChange(
-                                            e,
-                                            column.id,
-                                            column.type
-                                          );
-                                        }}
-                                      >
-                                        {column.values.map(
-                                          (dropdownvalue, valueindex) => (
-                                            <MenuItem
-                                              key={valueindex}
-                                              value={dropdownvalue}
-                                            >
-                                              {dropdownvalue}
-                                            </MenuItem>
-                                          )
-                                        )}
-                                      </Select>
-                                    </div>
-                                  )} */}
+
                                 {editRowIndex === index &&
                                   column.type === "dropdown" && (
                                     <div>
@@ -719,7 +625,6 @@ export default function CustomTable({
                                               columnbutton.function(row)
                                             }
                                           >
-                                            {/* {columnbutton.buttonlabel} */}
                                             {columnbutton.icon}
                                           </IconButton>
                                         )

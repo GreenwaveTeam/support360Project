@@ -17,7 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import Typography from "@mui/material/Typography";
 import { Toast } from "primereact/toast";
-
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {
   Button,
   Card,
@@ -148,6 +148,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     console.log("Plant:", plant);
     setPlantid(plant);
     setData(null);
+    setSelectedNode();
   }, [selectedPlant]);
 
   React.useEffect(() => {
@@ -183,6 +184,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
     };
 
     fetchData();
+    setSelectedNode();
   }, [selectedProject]);
 
   const fetchProjectAndPlantDetails = async () => {
@@ -344,7 +346,11 @@ export default function RichObjectTreeView({ sendUrllist }) {
   };
 
   const handleCategoryChange = (event) => {
-    setSelectedCategory(event.target.value);
+    const value = event.target.value;
+    if (value === "selectAnyone") {
+      setSelectedCategory();
+    }
+    setSelectedCategory(value);
   };
   const handleEditCategoryChange = (event) => {
     setEditedCategory(event.target.value);
@@ -393,9 +399,10 @@ export default function RichObjectTreeView({ sendUrllist }) {
     }
   };
 
-  const handleSaveName = (property) => {
+  const handleSaveName = async (property) => {
     let selNode = selectedNode;
     let localData;
+    console.log("Edited Category : ", editedCategory);
     if (selectedNode) {
       const updatedData = JSON.parse(JSON.stringify(data));
       findAndEditNode(
@@ -414,18 +421,22 @@ export default function RichObjectTreeView({ sendUrllist }) {
       );
 
       localData = updatedData;
-      setData(updatedData);
-      handlePostData(localData);
 
-      setIsEditing(false);
-      setIsEditingMake(false);
-      setIsEditingModel(false);
-      setIsEditingCapacity(false);
-      setIsEditingDescription(false);
-      setIsEditingWarrantyDate(false);
-      setIsEditingSupportDate(false);
-      setIsEditingImageFile(false);
-      setIsEditingCatagory(false);
+      const success = await handlePostData(localData);
+      console.log("success ?", success);
+      if (success) {
+        setData(updatedData);
+
+        setIsEditing(false);
+        setIsEditingMake(false);
+        setIsEditingModel(false);
+        setIsEditingCapacity(false);
+        setIsEditingDescription(false);
+        setIsEditingWarrantyDate(false);
+        setIsEditingSupportDate(false);
+        setIsEditingImageFile(false);
+        setIsEditingCatagory(false);
+      }
     }
     console.log(selNode);
   };
@@ -523,7 +534,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
           setSelectedNode(node);
           break;
         case "Catagory":
-          node.issue_category_name = Array.from(editedCategory1);
+          node.issue_category_name = editedCategory1;
           setSelectedNode(node);
           break;
         default:
@@ -800,6 +811,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
   };
   const handlePostData = async (dataLocal) => {
     console.log("data for post ", dataLocal);
+
     try {
       const response = await fetch(
         `http://${DB_IP}/device/admin/saveTree/${plantid}/${selectedProject}`,
@@ -816,12 +828,15 @@ export default function RichObjectTreeView({ sendUrllist }) {
       if (response.ok) {
         setPostDataStatus("Data successfully posted!");
         console.log("post completed");
+        return true;
       } else {
         setPostDataStatus("Error posting data. Please try again.");
+        return false;
       }
     } catch (error) {
       console.error("Error posting data:", error);
       setPostDataStatus("Error posting data. Please try again.");
+      return false;
     }
   };
 
@@ -877,7 +892,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
 
       setDataPromise.then(() => {
         // Now you can safely use localData
-        handlePostData(localData, selectedPlantAndProject);
+        handlePostData(localData);
       });
 
       setSelectedNode(null);
@@ -966,7 +981,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                 <>
                   <Textfield
                     className="textInput"
-                    label="Enter Parent Asset Name"
+                    label="Enter Device Group Name"
                     variant="outlined"
                     value={rootNodeName}
                     onChange={(e) => setRootNodeName(e.target.value)}
@@ -986,23 +1001,35 @@ export default function RichObjectTreeView({ sendUrllist }) {
                     variant="contained"
                     color="primary"
                     onClick={handleRootNodeCreate}
-                    buttontext={"Create Parent Asset"}
+                    buttontext={"Create Device Group"}
                   ></CustomButton>
                 </>
               )}
 
               {data !== null && (
                 <div className="treeViewContainer">
-                  <Chip
-                    sx={{
-                      marginLeft: "5px",
-                      fontSize: "0.9rem",
-                      marginBottom: "15px",
-                    }}
-                    label="Device Tree:"
-                    color="info"
-                    //variant="outlined"
-                  />
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Chip
+                      sx={{
+                        marginLeft: "5px",
+                        // fontSize: "0.9rem",
+                        marginBottom: "15px",
+                      }}
+                      label="Device Tree:"
+                      color="info"
+                      //variant="outlined"
+                    />
+                    <Chip
+                      label={
+                        <div>
+                          <InfoOutlinedIcon fontSize="small" />
+                          Select Device to view details
+                        </div>
+                      }
+                    />
+                  </div>
                   <Divider sx={{ marginBottom: "0.6rem", opacity: 0.8 }} />
                   <CustomTreeView
                     data={data}
@@ -1163,9 +1190,8 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             "aria-label": "Select Issue Category",
                           }}
                         >
-                          <MenuItem value="" disabled>
-                            Select Issue Category
-                          </MenuItem>
+                          <MenuItem value="">Select Issue Category</MenuItem>
+
                           {categories.map((category) => (
                             <MenuItem
                               key={category.issuecategoryname}
@@ -1257,6 +1283,97 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             </div>
                           )}
                       </div>
+                      <br></br>
+                      <Chip
+                        size="large"
+                        sx={{ fontSize: "0.8rem", fontWeight: "600" }}
+                        label={
+                          selectedNode
+                            ? `Selected Asset: 
+                              `
+                            : "Select a Asset"
+                        }
+                      />
+                      <div>
+                        {isEditing ? (
+                          <>
+                            {/* <Textfield
+                                  label="Edit Node Name"
+                                  variant="outlined"
+                                  value={editedName}
+                                  onChange={(e) =>
+                                    setEditedName(e.target.value)
+                                  }
+                                />
+                                <CustomButton
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() => handleSaveName("Name")}
+                                  buttontext={"Save"}
+                                ></CustomButton>
+                                <CustomButton
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={() => handleCancelNameEdit("Name")}
+                                  buttontext={"Cancel"}
+                                ></CustomButton> */}
+                            <FormControl fullWidth>
+                              <InputLabel htmlFor="EditNodeName">
+                                Edit Name
+                              </InputLabel>
+                              <OutlinedInput
+                                autoFocus
+                                autoComplete="Edit Name"
+                                name="Edit Name"
+                                required
+                                fullWidth
+                                id="EditNodeName"
+                                label="Edit Name"
+                                value={editedName}
+                                onChange={(e) => setEditedName(e.target.value)}
+                                endAdornment={
+                                  <>
+                                    <Tooltip title="Save">
+                                      <InputAdornment position="end">
+                                        <IconButton
+                                          onClick={() => handleSaveName("Name")}
+                                          edge="end"
+                                        >
+                                          <SaveOutlinedIcon color="success" />
+                                        </IconButton>
+                                      </InputAdornment>
+                                    </Tooltip>
+
+                                    <Tooltip title="Cancel">
+                                      <InputAdornment position="end">
+                                        <IconButton
+                                          onClick={() =>
+                                            handleCancelNameEdit("Name")
+                                          }
+                                          edge="end"
+                                        >
+                                          <CancelOutlinedIcon color="error" />
+                                        </IconButton>
+                                      </InputAdornment>
+                                    </Tooltip>
+                                  </>
+                                }
+                              />
+                            </FormControl>
+                          </>
+                        ) : (
+                          <>
+                            <div
+                              className="value-comp"
+                              onClick={() => handleEdit("Name")}
+                            >
+                              {selectedNode.name === ""
+                                ? "NA"
+                                : selectedNode.name}
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </>
                   )}
 
@@ -1343,6 +1460,23 @@ export default function RichObjectTreeView({ sendUrllist }) {
                             className="Card-Components"
                             style={{ padding: "0.9rem" }}
                           >
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "flex-end",
+                              }}
+                            >
+                              <Chip
+                                // sx={{ flex: "1" }}
+                                label={
+                                  <div>
+                                    <InfoOutlinedIcon fontSize="small" />
+                                    Click on the fields to edit
+                                  </div>
+                                }
+                              />
+                            </div>
+
                             {/* <h3
                           style={{
                             marginBottom: "15px",
@@ -2112,7 +2246,7 @@ export default function RichObjectTreeView({ sendUrllist }) {
                                         "aria-label": "Select Issue Category",
                                       }}
                                     >
-                                      <MenuItem value="" disabled>
+                                      <MenuItem value="NA">
                                         Select Issue Category
                                       </MenuItem>
                                       {categories.map((category) => (

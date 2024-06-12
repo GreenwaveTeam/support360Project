@@ -75,8 +75,14 @@ export default function CustomTable({
   const [clearVisible, setClearVisible] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [deleteRow, setDeleteRow] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
+    setIsLoading(true);
     filterRows();
+
+    // setTimeout(() => {
+
+    // });
   }, [filterValue, rows]);
 
   const filterRows = () => {
@@ -94,6 +100,7 @@ export default function CustomTable({
       );
       setFilteredrows(filtered);
     }
+    setIsLoading(false);
   };
 
   const handleFilterChange = (event) => {
@@ -301,7 +308,7 @@ export default function CustomTable({
               </div>
             )} */}
             <caption>
-              <>{filteredrows?.length === 0 && <LinearProgress />}</>
+              <>{isLoading && <LinearProgress />}</>
             </caption>
             <TableHead>
               <TableRow>

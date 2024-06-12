@@ -860,36 +860,36 @@ function UserHome({ sendUrllist }) {
       }
       const data = await response.json();
       console.log("fetchUser data : ", data);
-      setFormData((prevData) => ({
-        ...prevData,
-        userId: data.userId,
-        name: data.name,
-        designation: data.designation,
-        email: data.email,
-        phoneNumber: data.phoneNumber,
-        plantID: data.plantID,
-        plantName: data.plantName,
-        address: data.address,
-        division: data.division,
-        customerName: data.customerName,
-        supportStartDate: data.supportStartDate,
-        supportEndDate: data.supportEndDate,
-        accountOwnerCustomer: data.accountOwnerCustomer,
-        accountOwnerGW: data.accountOwnerGW,
-        role: data.role,
-      }));
+      // setFormData((prevData) => ({
+      //   ...prevData,
+      //   userId: data.userId,
+      //   name: data.name,
+      //   designation: data.designation,
+      //   email: data.email,
+      //   phoneNumber: data.phoneNumber,
+      //   plantID: data.plantID,
+      //   plantName: data.plantName,
+      //   address: data.address,
+      //   division: data.division,
+      //   customerName: data.customerName,
+      //   supportStartDate: data.supportStartDate,
+      //   supportEndDate: data.supportEndDate,
+      //   accountOwnerCustomer: data.accountOwnerCustomer,
+      //   accountOwnerGW: data.accountOwnerGW,
+      //   role: data.role,
+      // }));
       // localStorage.setItem("userPlantID", data.plantID);
-      setUserData({
-        ...userData,
-        plantID: data.plantID,
-        role: data.role,
-        userId: data.userId,
-      });
+      // setUserData({
+      //   ...userData,
+      //   plantID: data.plantID,
+      //   role: data.role,
+      //   userId: data.userId,
+      // });
       // differenceInDays(data.supportStartDate, data.supportEndDate);
       // differenceInDaysTillNow(new Date(), data.supportEndDate);
-      let role = data.role;
-      console.log("Role Test : ", role);
-      await fetchDivs(role);
+      // let role = data.role;
+      // console.log("Role Test : ", role);
+      // await fetchDivs(role);
       showAlert(data.plantID);
       setIsLoading(false);
     } catch (error) {

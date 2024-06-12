@@ -756,10 +756,7 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
       pageName: "Configure Infrastructure",
       pagelink: "/admin/InfrastructureConfigure",
     },
-    {
-      pageName: "Add Issues",
-      pagelink: "/admin/infrastructure/addIssues",
-    },
+    
   ];
 
   //************** Returned Component  **************

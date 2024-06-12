@@ -53,6 +53,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import CustomButton from "../../../components/button/button.component";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
 import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
+import CustomDialog from "../../../components/dialog/dialog.component";
 const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function InfrastructureUser({ sendUrllist }) {
   const [open, setOpen] = useState(false);
@@ -92,6 +93,12 @@ export default function InfrastructureUser({ sendUrllist }) {
 
   const [currentUserData, setCurrentUserData] = useState();
 
+  const [currentDropdownProjectValue, setCurrentDropdownProjectValue] =
+    useState("");
+  const [isSureToChangeProject, setIsSureToChangeProject] = useState(false);
+  const [isSureToChangeInfra, setIsSureToChangeInfra] = useState(false);
+  const [currentDropdownInfraValue, setCurrentDropdownInfraValue] =
+    useState("");
   console.log("userData ==>> ", userData);
 
   //Dialog
@@ -338,17 +345,20 @@ export default function InfrastructureUser({ sendUrllist }) {
 
     setFilteredDeviceIssueDetails([]);
     setInfraIssueDetails([]);
+    setSelectedInfrastructure();
+    setSelectedProject();
     setTicketNumber(generateRandomNumber);
   };
   const generateRandomNumber = () => {
     const randomNumber = dayjs().format("YYYYMMDDTHHmmssSSS");
     return "I" + randomNumber;
   };
-  const handleInfrastructureChange = (event) => {
+  const handleInfrastructureChange = (newValue) => {
     console.log("handleInfrastructureChange called");
-    setSelectedInfrastructure(event.target.value);
+    setSelectedInfrastructure(newValue);
     setVisible(true);
     setTableData([]);
+    setInfraIssueDetails([]);
     // setSelectedInfrastructure("");
   };
   const fetchProjectAndPlantDetails = async () => {
@@ -499,6 +509,11 @@ export default function InfrastructureUser({ sendUrllist }) {
     },
   ];
 
+  const handleProjectChange = async (newValue) => {
+    setSelectedProject(newValue);
+    setInfraIssueDetails([]);
+  };
+
   return (
     <Container maxWidth="lg">
       <>
@@ -559,9 +574,22 @@ export default function InfrastructureUser({ sendUrllist }) {
                       <Dropdown
                         id={"project-dropdown"}
                         value={selectedProject}
-                        onChange={(event) =>
-                          setSelectedProject(event.target.value)
-                        }
+                        // onChange={(event) =>
+                        //   setSelectedProject(event.target.value)
+                        // }
+                        onChange={(event) => {
+                          // setSelectedProject(event.target.value)
+                          // handleProjectChange(event);
+                          setCurrentDropdownProjectValue(event.target.value);
+                          if (infraIssueDetails.length > 0) {
+                            setIsSureToChangeProject(true);
+                            return;
+                          }
+                          // else{
+                          // handleAppDropdownChange(event);
+                          // handleAppDropdownChange(event.target.value);
+                          handleProjectChange(event.target.value);
+                        }}
                         list={projectList}
                         label={"Project"}
                         // error={dropDownError}
@@ -587,7 +615,19 @@ export default function InfrastructureUser({ sendUrllist }) {
                             labelId="infrastructure-label"
                             id="infrastructureDropdown"
                             value={selectedInfrastructure}
-                            onChange={handleInfrastructureChange}
+                            // onChange={handleInfrastructureChange}
+                            onChange={(event) => {
+                              setCurrentDropdownInfraValue(event.target.value);
+                              if (infraIssueDetails.length > 0) {
+                                setIsSureToChangeInfra(true);
+                                return;
+                              }
+                              // else{
+                              // handleAppDropdownChange(event);
+                              handleInfrastructureChange(event.target.value);
+                              // }
+                              // handleAppDropdownChange(event);
+                            }}
                             label="Select Infrastructure"
                           >
                             {infrastructures.map((infra, index) => (
@@ -1151,6 +1191,30 @@ export default function InfrastructureUser({ sendUrllist }) {
         dialogMessage={snackbarText}
         snackbarSeverity={snackbarSeverity}
       ></SnackbarComponent>
+      {/* Warning the user */}
+      {
+        <>
+          <CustomDialog
+            open={isSureToChangeInfra}
+            setOpen={setIsSureToChangeInfra}
+            proceedButtonText={<Chip color="success" label="Proceed" />}
+            proceedButtonClick={() =>
+              handleInfrastructureChange(currentDropdownInfraValue)
+            }
+            cancelButtonText={<Chip color="error" label="Cancel" />}
+          />
+
+          <CustomDialog
+            open={isSureToChangeProject}
+            setOpen={setIsSureToChangeProject}
+            proceedButtonText={<Chip color="success" label="Proceed" />}
+            proceedButtonClick={() =>
+              handleProjectChange(currentDropdownProjectValue)
+            }
+            cancelButtonText={<Chip color="error" label="Cancel" />}
+          />
+        </>
+      }
     </Container>
   );
 }

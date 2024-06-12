@@ -698,7 +698,7 @@ export default function AdminHome({ sendUrllist }) {
                               <TableHead>
                                 <TableRow>
                                   <TableCell
-                                    colSpan={6}
+                                    colSpan={7}
                                     sx={{
                                       textAlign: "center",
                                       fontSize: "15px",
@@ -922,6 +922,15 @@ export default function AdminHome({ sendUrllist }) {
                                       }}
                                       align="center"
                                     >
+                                      Role
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{
+                                        fontWeight: "bold",
+                                        fontSize: "14px",
+                                      }}
+                                      align="center"
+                                    >
                                       Admin ID
                                     </TableCell>
                                     <TableCell
@@ -984,6 +993,9 @@ export default function AdminHome({ sendUrllist }) {
                                       </TableCell>
                                       <TableCell align="center">
                                         {item.email}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        {item.role}
                                       </TableCell>
                                       <TableCell align="center">
                                         {/* {item.userId} */}
@@ -1239,7 +1251,7 @@ export default function AdminHome({ sendUrllist }) {
                               <TableHead>
                                 <TableRow>
                                   <TableCell
-                                    colSpan={8}
+                                    colSpan={9}
                                     sx={{
                                       textAlign: "center",
                                       fontSize: "15px",
@@ -1431,6 +1443,16 @@ export default function AdminHome({ sendUrllist }) {
                                       }}
                                       align="center"
                                     >
+                                      Role
+                                    </TableCell>
+                                    <TableCell
+                                      sx={{
+                                        fontWeight: "bold",
+                                        fontSize: "14px",
+                                        width: "20%",
+                                      }}
+                                      align="center"
+                                    >
                                       Plant Name
                                     </TableCell>
                                     <TableCell
@@ -1533,6 +1555,9 @@ export default function AdminHome({ sendUrllist }) {
 
                                       <TableCell align="center">
                                         {item.email}
+                                      </TableCell>
+                                      <TableCell align="center">
+                                        {item.role}
                                       </TableCell>
                                       <TableCell align="center">
                                         <Chip

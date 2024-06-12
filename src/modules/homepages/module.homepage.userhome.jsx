@@ -305,6 +305,7 @@ function UserHome({ sendUrllist }) {
     monthwiseticketraised();
     monthAndCatagoryWiseTicketRaised();
     fetchCatagoryWiseTrend();
+    fetchUser2();
     // getPendingTickets();
     // getAllTickets();
     // showAlert();
@@ -312,6 +313,7 @@ function UserHome({ sendUrllist }) {
   }, []);
 
   useEffect(() => {
+    console.log("qwertyuiop count interval : ");
     const interval = setInterval(() => {
       if (count < ApplicationValue) {
         setCount(count + 1);
@@ -323,12 +325,12 @@ function UserHome({ sendUrllist }) {
   }, [count]);
 
   React.useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     const interval = setInterval(() => {
-      console.log("UseEffect called");
+      console.log("UseEffect with setinterval called");
       // showAlert(formData.plantID);
       fetchUser();
-      setIsLoading(false);
+      // setIsLoading(false);
     }, 4000);
     return () => {
       clearInterval(interval);
@@ -387,13 +389,33 @@ function UserHome({ sendUrllist }) {
       const tempResolveTime = await fetchTicketResolveTime(plantId);
       const tempCloseTime = await fetchTicketCloseTime(plantId);
 
+      if (tempResponseTime.length === 0) {
+        setResponseTime([0, 0]);
+      } else if (tempResponseTime.length === 1) {
+        setResponseTime([tempResponseTime[0], 0]);
+      } else {
+        setResponseTime(tempResponseTime);
+      }
+
+      if (tempResolveTime.length === 0) {
+        setResolveTime([0, 0]);
+      } else if (tempResolveTime.length === 1) {
+        setResponseTime([tempResolveTime[0], 0]);
+      } else {
+        setResolveTime(tempResolveTime);
+      }
+
+      if (tempCloseTime.length === 0) {
+        setCloseTime([0, 0]);
+      } else if (tempCloseTime.length === 1) {
+        setResponseTime([tempCloseTime[0], 0]);
+      } else {
+        setCloseTime(tempCloseTime);
+      }
+
       console.log("tempResponseTime : ", tempResponseTime);
       console.log("tempResolveTime : ", tempResolveTime);
       console.log("tempCloseTime : ", tempCloseTime);
-
-      setResponseTime(tempResponseTime);
-      setResolveTime(tempResolveTime);
-      setCloseTime(tempCloseTime);
 
       const details = await getAllOpenTicketDetails();
       const closedDetails = await getAllClosedTicketDetails(plantId);
@@ -865,11 +887,33 @@ function UserHome({ sendUrllist }) {
       });
       differenceInDays(data.supportStartDate, data.supportEndDate);
       differenceInDaysTillNow(new Date(), data.supportEndDate);
-      let role = data.role;
-      console.log("Role Test : ", role);
-      fetchDivs(role);
 
       showAlert(data.plantID);
+    } catch (error) {
+      console.error("Error fetching user list:", error);
+    }
+  };
+
+  const fetchUser2 = async () => {
+    console.log("expire : ", localStorage.getItem("expire"));
+    try {
+      const response = await fetch(`http://${DB_IP}/users/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      if (response.status === 403) {
+        localStorage.clear();
+        navigate("/login");
+        return;
+      }
+      const data = await response.json();
+      console.log("fetchUser data : ", data);
+      let role = data.role;
+      console.log("Role Test : ", role);
+      await fetchDivs(role);
     } catch (error) {
       console.error("Error fetching user list:", error);
     }

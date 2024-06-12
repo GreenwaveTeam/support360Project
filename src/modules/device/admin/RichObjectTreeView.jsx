@@ -169,10 +169,17 @@ export default function RichObjectTreeView({ sendUrllist }) {
           }
         );
         if (response.ok) {
+          console.log("Response is Ok");
+        }
+
+        if (
+          response.ok &&
+          (response !== null || response !== undefined || response !== "")
+        ) {
+          console.log("data true");
           const devData = await response.json();
           console.log("from API => ", JSON.stringify(devData));
           setData(devData);
-          console.log("data");
         } else {
           setData(null);
           console.error("Error fetching data:", response.statusText);

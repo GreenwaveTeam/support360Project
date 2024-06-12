@@ -9,7 +9,7 @@ import { ColorModeContext, tokens } from "../../../theme";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Skeleton from '@mui/material/Skeleton';
+import Skeleton from "@mui/material/Skeleton";
 import {
   Badge,
   Chip,
@@ -75,20 +75,26 @@ import dayjs from "dayjs";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useMemo } from "react";
 import SearchIcon from "@mui/icons-material/Search";
-import { fetchApplicationNames, fetchCurrentDivs, fetchCurrentUser, fetchTabData, fetchTabNames, postDatainDB } from "./ApplicationUserApi";
-import { RotatingLines } from 'react-loader-spinner'
+import {
+  fetchApplicationNames,
+  fetchCurrentDivs,
+  fetchCurrentUser,
+  fetchTabData,
+  fetchTabNames,
+  postDatainDB,
+} from "./ApplicationUserApi";
+import { RotatingLines } from "react-loader-spinner";
 import RenewMessageComponent from "../../../components/renew/renew.component";
-import JSZip from 'jszip';
+import JSZip from "jszip";
 
 // import Test12 from "../../resources/images/test12";
 
- import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 import { fetchModuleImageMap } from "../../ticketdetails/AllocateTicket";
 import IssueListTable from "./modules.issueListTable";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
 import CustomDialog from "../../../components/dialog/dialog.component";
-
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -168,60 +174,50 @@ export default function ApplicationUser({ sendUrllist }) {
   const navigate = useNavigate();
   const currentPageLocation = useLocation().pathname;
 
-  const [ userData, setUserData ] = useState({})
+  const [userData, setUserData] = useState({});
 
-  const [currentUserData,setCurrentUserData]= useState({})
+  const [currentUserData, setCurrentUserData] = useState({});
 
   // const [disableTabSelection,setDisableTabSelection]=useState(false)
 
-  const abortControllerRef=React.useRef();
+  const abortControllerRef = React.useRef();
 
-  const [isUserUnderSupport,setIsUserUnderSupport]= useState(true);
+  const [isUserUnderSupport, setIsUserUnderSupport] = useState(true);
 
   // const [currentLoaderModule,setCurrentLoaderModule]=useState("");
 
-
-
   const [zip, setZip] = useState(new JSZip());
 
-
   //for hidden Image
-  const [currentDivData,setCurrentDivData]=useState({})
-  const [currentImageData,setCurrentImageData]=useState({})
+  const [currentDivData, setCurrentDivData] = useState({});
+  const [currentImageData, setCurrentImageData] = useState({});
 
-  const[testImgList,setTestImgList]=useState([]);
+  const [testImgList, setTestImgList] = useState([]);
 
+  const [selectedProject, setSelectedProject] = useState("");
 
+  const [plantIdList, setPlantIdList] = useState([]);
+  const [projectList, setProjectList] = useState([]);
 
-  
-  const [selectedProject,setSelectedProject]=useState('')
+  const [masterAllProjectDetails, setMasterAllProjectDetails] = useState([]);
 
-  const [plantIdList,setPlantIdList]=useState([])
-  const [projectList,setProjectList]=useState([])
+  const [isSureToChangeApplication, setIsSureToChangeApplication] =
+    useState(false);
+  const [isSureToChangeProject, setIsSureToChangeProject] = useState(false);
 
-  const[masterAllProjectDetails,setMasterAllProjectDetails]=useState([])
+  const [currentDropdownApplicationValue, setCurrentDropdownApplicationValue] =
+    useState("");
+  const [currentDropdownProjectValue, setCurrentDropdownProjectValue] =
+    useState("");
 
-  const [isSureToChangeApplication,setIsSureToChangeApplication]=useState(false)
-  const [isSureToChangeProject,setIsSureToChangeProject]=useState(false)
+  //For Screenshot
+  const screenshotRef = React.useRef(null);
 
-
-  const[currentDropdownApplicationValue,setCurrentDropdownApplicationValue]=useState('')
-  const [currentDropdownProjectValue,setCurrentDropdownProjectValue]=useState('');
-
-    //For Screenshot 
-    const screenshotRef = React.useRef(null)
-
-    const storedTheme = localStorage.getItem("theme");
-    console.log(`CurrentTheme ${storedTheme}`);
+  const storedTheme = localStorage.getItem("theme");
+  console.log(`CurrentTheme ${storedTheme}`);
 
   /**************************************    useEffect()   ******************************* */
   useEffect(() => {
-
-
-
-
-
-
     extendTokenExpiration();
     fetchProjectAndPlantDetails();
     sendUrllist(urllist);
@@ -238,8 +234,8 @@ export default function ApplicationUser({ sendUrllist }) {
     //   console.log("useEffect() for fetching data for first time....");
     //   fetchCurrentApplicationNames(plantID);
     //   //fetchDivs();
-      fetchUser();
-     setTicketNumber(generateRandomNumber());
+    fetchUser();
+    setTicketNumber(generateRandomNumber());
     // } else {
     //   console.log('Error in fetching plantId ! ')
     //   setSnackbarSeverity("error");
@@ -289,20 +285,18 @@ export default function ApplicationUser({ sendUrllist }) {
       });
   }, [mainData, finalUserInput]);
 
-
-
   useEffect(() => {
-    console.log('Current Selected Project : ',selectedProject)
+    console.log("Current Selected Project : ", selectedProject);
     if (
-      // isUserUnderSupport && 
+      // isUserUnderSupport &&
       // (
-        // dropdownValue === 'Select an application' || 
-        // selectedProject === 'Select a Project' || 
-        dropdownValue === '' || 
-        selectedProject === ''
+      // dropdownValue === 'Select an application' ||
+      // selectedProject === 'Select a Project' ||
+      dropdownValue === "" ||
+      selectedProject === ""
       // )
     ) {
-      console.log('Both fields need to be filled!');
+      console.log("Both fields need to be filled!");
       setAppDropdown([]);
     } else {
       fetchTabs(dropdownValue);
@@ -310,7 +304,6 @@ export default function ApplicationUser({ sendUrllist }) {
       // setOverviewTableData([])
     }
   }, [dropdownValue, selectedProject]);
-  
 
   //On Closing the Dialog would update the Overview Table
   const saveUpdatedDataInOverview = () => {
@@ -397,15 +390,15 @@ export default function ApplicationUser({ sendUrllist }) {
       plantID: PlantID,
       application_name: dropdownValue,
       module_name: value,
-      project:selectedProject,
+      project: selectedProject,
       // "miscellaneous_issues": miscellaneousInput,
       // "remarks": remarksInput,
       ticket_number: ticketNumber,
       status: "open",
       //The case may arise when the issues are blank for the current selection  then only  add it the finaluserInput
       //Two more fields added
-      userName:currentUserData.name,
-      userEmailId:currentUserData.email,
+      userName: currentUserData.name,
+      userEmailId: currentUserData.email,
 
       issuesList: updatedfinalUserInput,
     };
@@ -491,10 +484,10 @@ export default function ApplicationUser({ sendUrllist }) {
     }
   };
 
-  const handleTabsChange =async (event, newValue) => {
+  const handleTabsChange = async (event, newValue) => {
     // setDisableTabSelection(true)
     // setCurrentLoaderModule(newValue)
-    console.log('Current New Value : ',newValue)
+    console.log("Current New Value : ", newValue);
     console.log(event);
     event.preventDefault();
     event.stopPropagation();
@@ -502,7 +495,6 @@ export default function ApplicationUser({ sendUrllist }) {
 
     console.log("Current Miscellaneous Issue => ", miscellaneousInput);
     saveCurrentTabModuleInformation(); //This is meant to save the information for the current modified information in the current Tab
-   
 
     //Resetting data
     setMiscellaneousInput("");
@@ -514,7 +506,13 @@ export default function ApplicationUser({ sendUrllist }) {
     setmiscellaneousSeverity("");
     setValue(newValue);
     //Now feed with new data
-    const moduleData=await fetchTabData(newValue, dropdownValue,userData,abortControllerRef,selectedProject);
+    const moduleData = await fetchTabData(
+      newValue,
+      dropdownValue,
+      userData,
+      abortControllerRef,
+      selectedProject
+    );
     // if (!mainData) {
     //   setSnackbarSeverity('error')
     //   setSnackbarText('Error ! ')
@@ -523,8 +521,7 @@ export default function ApplicationUser({ sendUrllist }) {
     // }
     // setValue(newValue);
     console.log("tab value", newValue);
-    if(moduleData)
-      setMainData(moduleData)
+    if (moduleData) setMainData(moduleData);
 
     checkAndRestoreFromSuperInformationofAllModules(newValue, dropdownValue); // This method is reserved for restoring the previous user I/P based on the current selected module  i.e you only need to set the final userInput because on each div click check is already made in the finalUserInput list
 
@@ -535,110 +532,106 @@ export default function ApplicationUser({ sendUrllist }) {
 
   /* ********************** API ************************** */
 
+  const handleProjectChange = async (newValue) => {
+    setSelectedProject(newValue);
+    setDropdownValue("");
+    setTabsModuleNames([]);
+    //First resetting the data
+    setTicketNumber(generateRandomNumber());
 
+    //Resetting Data
+    // setTabsModuleNames([]);
+    setFinalUserInput([]);
+    setMiscellaneousInput("");
+    setRemarksInput("");
+    setSuperInformationofAllModules([]);
+    setMainData({});
+    setUpdatedMainData({});
+    setOverviewTableData([]);
+    setSeverityError(false);
+    setIssueDropDownError(false);
+    //Added
+    setmiscellaneousSeverity("");
+    setmiscellaneousRemarks("");
 
-  const handleProjectChange=async(newValue)=>
-    {
-      setSelectedProject(newValue)
-      setDropdownValue('')
-      setTabsModuleNames([])
-      //First resetting the data
-      setTicketNumber(generateRandomNumber());
-     
-      //Resetting Data
-      // setTabsModuleNames([]);
-      setFinalUserInput([]);
-      setMiscellaneousInput("");
-      setRemarksInput("");
-      setSuperInformationofAllModules([]);
-      setMainData({});
-      setUpdatedMainData({});
-      setOverviewTableData([]);
-      setSeverityError(false);
-      setIssueDropDownError(false);
-      //Added
-      setmiscellaneousSeverity("");
-      setmiscellaneousRemarks("");
+    //Will get a grace period of 30 days
 
-      //Will get a grace period of 30 days 
-      
-      const currentPlantId=userData.plantID
-      const currentselectedProject=newValue
+    const currentPlantId = userData.plantID;
+    const currentselectedProject = newValue;
 
-      const finalPlantDetails=masterAllProjectDetails.find(data=>data?.plant_id===userData?.plantID&&data?.project_name===currentselectedProject)
-      if(finalPlantDetails)
-        {
-      const supportEndData=finalPlantDetails.support_end_date;
+    const finalPlantDetails = masterAllProjectDetails.find(
+      (data) =>
+        data?.plant_id === userData?.plantID &&
+        data?.project_name === currentselectedProject
+    );
+    if (finalPlantDetails) {
+      const supportEndData = finalPlantDetails.support_end_date;
       const isSameOrBefore = require("dayjs/plugin/isSameOrBefore");
       dayjs.extend(isSameOrBefore);
-      console.log('Support End date : ',supportEndData)
-      const supportExpiryDate=dayjs(supportEndData).add(30,'day');
-      console.log("Current User Support End Date , after adding grace period :", supportExpiryDate.format("YYYY-MM-DD"));
-      
+      console.log("Support End date : ", supportEndData);
+      const supportExpiryDate = dayjs(supportEndData).add(30, "day");
+      console.log(
+        "Current User Support End Date , after adding grace period :",
+        supportExpiryDate.format("YYYY-MM-DD")
+      );
+
       const currentDate = dayjs();
       console.log("Current Date:", currentDate.format("YYYY-MM-DD"));
-      
-      const isUnderSupport = currentDate.isSameOrBefore(supportExpiryDate, 'day');
+
+      const isUnderSupport = currentDate.isSameOrBefore(
+        supportExpiryDate,
+        "day"
+      );
       console.log("Is under Support?", isUnderSupport);
-      setIsUserUnderSupport(isUnderSupport)
-        }
-        else{
-              setDropdownValue('')
-              setAppDropdown([])
-              setIsUserUnderSupport(false)
-        }
-      
-
-
-
-      const currentProject=newValue
-      const currentProjectAppicationNames= await fetchApplicationNames(userData.plantID,currentProject)
-      if(currentProjectAppicationNames)
-        {
-      setAppDropdown(currentProjectAppicationNames)
-        }
+      setIsUserUnderSupport(isUnderSupport);
+    } else {
+      setDropdownValue("");
+      setAppDropdown([]);
+      setIsUserUnderSupport(false);
     }
 
-
-  const fetchProjectAndPlantDetails=async()=>
-    {
-      console.log('fetchProjectAndPlantDetails() called')
-      const projectDetails=await fetchAllProjectDetails();
-      console.log('Project Details : ',projectDetails)
-      const masterDetails=[]
-      const plantIdList=[]
-      const projectList=[]
-      const currentUserData=await fetchCurrentUser()
-      if(currentUserData)//!setting the userdata here
-        {
-          setUserData(currentUserData)
-        }
-      if(projectDetails)
-       {
-         projectDetails.forEach(data=>
-           {
-            masterDetails.push(data)
-             const currentPlant=data.plant_id;
-             const currentProject=data.project_name;
-             if(data.plant_id===currentUserData.plantID)
-              {
-             plantIdList.push(currentPlant)
-             projectList.push(currentProject)
-              }
-           }
-         )
-       }
-      //  projectList.unshift('Select a Project')
-       console.log('Final PlantList : ',plantIdList)
-       console.log('Final ProjectList : ',projectList)
-       setPlantIdList(plantIdList)
-       setProjectList(projectList)
-      //  setSelectedProject('Select a Project')
-
-       setMasterAllProjectDetails(masterDetails)
-
-       
+    const currentProject = newValue;
+    const currentProjectAppicationNames = await fetchApplicationNames(
+      userData.plantID,
+      currentProject
+    );
+    if (currentProjectAppicationNames) {
+      setAppDropdown(currentProjectAppicationNames);
     }
+  };
+
+  const fetchProjectAndPlantDetails = async () => {
+    console.log("fetchProjectAndPlantDetails() called");
+    const projectDetails = await fetchAllProjectDetails();
+    console.log("Project Details : ", projectDetails);
+    const masterDetails = [];
+    const plantIdList = [];
+    const projectList = [];
+    const currentUserData = await fetchCurrentUser();
+    if (currentUserData) {
+      //!setting the userdata here
+      setUserData(currentUserData);
+    }
+    if (projectDetails) {
+      projectDetails.forEach((data) => {
+        masterDetails.push(data);
+        const currentPlant = data.plant_id;
+        const currentProject = data.project_name;
+        if (data.plant_id === currentUserData.plantID) {
+          plantIdList.push(currentPlant);
+          projectList.push(currentProject);
+        }
+      });
+    }
+    //  projectList.unshift('Select a Project')
+    console.log("Final PlantList : ", plantIdList);
+    console.log("Final ProjectList : ", projectList);
+    setPlantIdList(plantIdList);
+    setProjectList(projectList);
+    //  setSelectedProject('Select a Project')
+
+    setMasterAllProjectDetails(masterDetails);
+  };
 
   const fetchUser = async () => {
     // let role = "";
@@ -667,45 +660,38 @@ export default function ApplicationUser({ sendUrllist }) {
     if (userData) {
       setCurrentUserData(userData);
       console.log("userData : ", userData);
-      let role =userData.role;
+      let role = userData.role;
 
-      //Check for Support Expiration Time 
-     
+      //Check for Support Expiration Time
+
       // const dayjs = require("dayjs");
-
 
       // const isSameOrBefore = require("dayjs/plugin/isSameOrBefore");
       // dayjs.extend(isSameOrBefore);
       // console.log('Support End date : ',userData.supportEndDate)
       //  const supportExpiryDate=dayjs(userData.supportEndDate).add(30,'day');
       // console.log("Current User Support End Date , after adding grace period :", supportExpiryDate.format("YYYY-MM-DD"));
-      
+
       // const currentDate = dayjs();
       // console.log("Current Date:", currentDate.format("YYYY-MM-DD"));
-      
+
       // const isUnderSupport = currentDate.isSameOrBefore(supportExpiryDate, 'day');
       // console.log("Is under Support?", isUnderSupport);
       // setIsUserUnderSupport(isUnderSupport)
-      
 
-      //Will give a grace period of one month 
-     
+      //Will give a grace period of one month
 
-
-      const currentDivs= await fetchCurrentDivs(role,currentPageLocation)
-      if(currentDivs)
-        {
-          console.log("currentDivs : ", currentDivs);
-             if (currentDivs.length === 0) {
-                navigate("/*");
-              }
-              console.log('Current Divs Components : ',currentDivs.components)
+      const currentDivs = await fetchCurrentDivs(role, currentPageLocation);
+      if (currentDivs) {
+        console.log("currentDivs : ", currentDivs);
+        if (currentDivs.length === 0) {
+          navigate("/*");
+        }
+        console.log("Current Divs Components : ", currentDivs.components);
         setDivIsVisibleList(currentDivs.components);
       }
-    }
-    else
-    {
-      navigate('/login')
+    } else {
+      navigate("/login");
     }
   };
   // const fetchDivs = async (role) => {
@@ -752,7 +738,7 @@ export default function ApplicationUser({ sendUrllist }) {
   //     // setEditValue("");
   //   }
   // };
-//!used previously
+  //!used previously
   const fetchCurrentApplicationNames = async (PlantID) => {
     console.log("fetchCurrentApplicationNames() called");
     const data = await fetchApplicationNames(PlantID);
@@ -807,32 +793,39 @@ export default function ApplicationUser({ sendUrllist }) {
     //   return;
     // }
     // setDisableTabSelection(true)
-    if(dropdownvalue===''||selectedProject==='')
-      return;
+    if (dropdownvalue === "" || selectedProject === "") return;
 
-    const tabData= await fetchTabNames(dropdownvalue,userData,selectedProject)
+    const tabData = await fetchTabNames(
+      dropdownvalue,
+      userData,
+      selectedProject
+    );
     if (tabData) {
       console.log("Data from Database : ", tabData);
       setTabsModuleNames(tabData);
       setValue(tabData[0]);
       // setCurrentLoaderModule(tabData[0])
       //further a function will be called to set the image data here
-      console.log('UserData : ',userData)
-      const moduleData=await fetchTabData(tabData[0], dropdownvalue,userData,abortControllerRef,selectedProject);
-      console.log('Current Module Data :  ',moduleData)
-      if(moduleData)
-        setMainData(moduleData);
+      console.log("UserData : ", userData);
+      const moduleData = await fetchTabData(
+        tabData[0],
+        dropdownvalue,
+        userData,
+        abortControllerRef,
+        selectedProject
+      );
+      console.log("Current Module Data :  ", moduleData);
+      if (moduleData) setMainData(moduleData);
     }
 
-      // setDisableTabSelection(false)
+    // setDisableTabSelection(false)
     // }
     // else
     // {
     //   setTabsModuleNames([]);
     //   navigate("/notfound");
     // }
-  } 
-
+  };
 
   // const fetchTabs = async (dropdownvalue) => {
   //   if (dropdownvalue === "Select an application") {
@@ -998,25 +991,25 @@ export default function ApplicationUser({ sendUrllist }) {
 
     //   return;
     // } else {
-      //Will review it once again
-      // setDropdownValue(e.target.value);
-      setDropdownValue(newValue);
-      // fetchTabs(e.target.value);
-      setTicketNumber(generateRandomNumber());
-      //Resetting Data
-      // setTabsModuleNames([]);
-      setFinalUserInput([]);
-      setMiscellaneousInput("");
-      setRemarksInput("");
-      setSuperInformationofAllModules([]);
-      setMainData({});
-      setUpdatedMainData({});
-      setOverviewTableData([]);
-      setSeverityError(false);
-      setIssueDropDownError(false);
-      //Added
-      setmiscellaneousSeverity("");
-      setmiscellaneousRemarks("");
+    //Will review it once again
+    // setDropdownValue(e.target.value);
+    setDropdownValue(newValue);
+    // fetchTabs(e.target.value);
+    setTicketNumber(generateRandomNumber());
+    //Resetting Data
+    // setTabsModuleNames([]);
+    setFinalUserInput([]);
+    setMiscellaneousInput("");
+    setRemarksInput("");
+    setSuperInformationofAllModules([]);
+    setMainData({});
+    setUpdatedMainData({});
+    setOverviewTableData([]);
+    setSeverityError(false);
+    setIssueDropDownError(false);
+    //Added
+    setmiscellaneousSeverity("");
+    setmiscellaneousRemarks("");
     // }
   };
 
@@ -1134,13 +1127,12 @@ export default function ApplicationUser({ sendUrllist }) {
     setIssueDropDownError(false);
     setSeverityError(false);
 
-    if(overviewTableData.length===5)
-      {
-        setSnackbarText("At most 5 Issues can be added ! ");
+    if (overviewTableData.length === 5) {
+      setSnackbarText("At most 5 Issues can be added ! ");
       setSnackbarSeverity("warning");
-      setModalAlertOpen(true)
+      setModalAlertOpen(true);
       return;
-      }
+    }
 
     if (checkForValidations()) {
       return;
@@ -1524,20 +1516,22 @@ export default function ApplicationUser({ sendUrllist }) {
     //   //     return;
     //   //   }
     //   if (hasNonEmptyIssue) {
-    //     console.log('The item that has been pushed : ',item) 
+    //     console.log('The item that has been pushed : ',item)
     //     final_Json.push(item);
     //   }
     // });
     //The filteration is done multip[le times because the references are being updated successively....
-    final_Json = final_Json.map(data => {
-      const nonEmptyIssues = data.issuesList.filter(currentIssueList=>currentIssueList.issues.length>0);
+    final_Json = final_Json.map((data) => {
+      const nonEmptyIssues = data.issuesList.filter(
+        (currentIssueList) => currentIssueList.issues.length > 0
+      );
       data.issuesList = nonEmptyIssues;
       return data;
-  });
-  final_Json=final_Json.filter(item=>item.issuesList.length>0)
-  
-  console.log("Final Json for POST in handleSubmit() : ", final_Json);
-  
+    });
+    final_Json = final_Json.filter((item) => item.issuesList.length > 0);
+
+    console.log("Final Json for POST in handleSubmit() : ", final_Json);
+
     // return;
     if (final_Json.length === 0) {
       setSnackbarSeverity("warning");
@@ -1547,16 +1541,24 @@ export default function ApplicationUser({ sendUrllist }) {
       return;
     }
 
-
-    //Adding the image Data here 
-    console.log('Final Json to Post : ',final_Json)
+    //Adding the image Data here
+    console.log("Final Json to Post : ", final_Json);
     // return;
 
-    console.log('Current PlantID : ',final_Json[0].plantID,' Selected Project : ',selectedProject,"Current Application : ",dropdownValue)
-    const moduleImageMap=await fetchModuleImageMap(final_Json[0].plantID,dropdownValue,selectedProject) 
+    console.log(
+      "Current PlantID : ",
+      final_Json[0].plantID,
+      " Selected Project : ",
+      selectedProject,
+      "Current Application : ",
+      dropdownValue
+    );
+    const moduleImageMap = await fetchModuleImageMap(
+      final_Json[0].plantID,
+      dropdownValue,
+      selectedProject
+    );
     // const currentApplicationTicketDetails= await fetchApplicationTicketDetails(ticketNo)
-
-
 
     // final_Json.forEach(async(mainData)=>
     //   {
@@ -1566,151 +1568,152 @@ export default function ApplicationUser({ sendUrllist }) {
 
     // console.log('Current Application Ticket Details : ',currentApplicationTicketDetails)
 
-    const finalMapModuleImage=new Map()
-    if(moduleImageMap)
-      {
-        for (let key in moduleImageMap) {
-          if (moduleImageMap.hasOwnProperty(key)) {
-            //  console.log(key, moduleImageMap[key]);
-             finalMapModuleImage.set(key, moduleImageMap[key])
-          }
-       }
+    const finalMapModuleImage = new Map();
+    if (moduleImageMap) {
+      for (let key in moduleImageMap) {
+        if (moduleImageMap.hasOwnProperty(key)) {
+          //  console.log(key, moduleImageMap[key]);
+          finalMapModuleImage.set(key, moduleImageMap[key]);
+        }
       }
-      console.log('Final Map for Module Image : ',finalMapModuleImage)
-      let finalTicketDetailsForImage=[];
+    }
+    console.log("Final Map for Module Image : ", finalMapModuleImage);
+    let finalTicketDetailsForImage = [];
 
-      if (moduleImageMap)
-         {
-           final_Json.forEach(data => {
-              const currentImage = finalMapModuleImage.get(data.application_name + "=>" + data.module_name);
-              console.log('Current key to get : ', data.application_name + "=>" + data.module_name);
+    if (moduleImageMap) {
+      final_Json.forEach((data) => {
+        const currentImage = finalMapModuleImage.get(
+          data.application_name + "=>" + data.module_name
+        );
+        console.log(
+          "Current key to get : ",
+          data.application_name + "=>" + data.module_name
+        );
 
+        data.issuesList.forEach((current_issue) => {
+          if (
+            current_issue.selected_coordinates_acronym.toLowerCase() ===
+            "miscellaneous"
+          )
+            return;
+          const currentImageData = {
+            module_image: currentImage,
+            application_name: data.application_name,
+            module_name: data.module_name,
+            top_: current_issue.top,
+            left_: current_issue.left,
+            height_: current_issue.height,
+            width_: current_issue.width,
+            selected_coordinates_acronym:
+              current_issue.selected_coordinates_acronym,
+            issuesList: current_issue.issues, //added to populate the list of issues.
+          };
 
-              data.issuesList.forEach(current_issue=>
-              
-                {
-                  if(current_issue.selected_coordinates_acronym.toLowerCase()==='miscellaneous')
-                    return;
-                  const currentImageData={
+          finalTicketDetailsForImage.push(currentImageData);
+        });
+        // console.log('Current Image : ', currentImage);
 
-                    module_image:currentImage,
-                    application_name:data.application_name,
-                    module_name : data.module_name,
-                    top_ :current_issue.top,
-                    left_ :current_issue.left,
-                    height_ :current_issue.height,
-                    width_ :current_issue.width,
-                    selected_coordinates_acronym:current_issue.selected_coordinates_acronym,
-                    issuesList:current_issue.issues //added to populate the list of issues.
+        //  data.issueList
 
-                    
-                  }
-                  
-                  finalTicketDetailsForImage.push(currentImageData)
+        // if (currentImage) {
+        //     // If condition is met, add newProperty
+        //     return {
+        //         ...data,
+        //         module_image: currentImage
+        //     };
+        // }
+        // return data;
+      });
+    }
 
-                }
-              )
-              // console.log('Current Image : ', currentImage);
+    console.log(
+      "finalTicketDetailsForImage after modification : ",
+      finalTicketDetailsForImage
+    );
 
-            //  data.issueList
-
-
-      
-              // if (currentImage) {
-              //     // If condition is met, add newProperty
-              //     return {
-              //         ...data,
-              //         module_image: currentImage
-              //     };
-              // }
-              // return data;
-          });
-      }
-
-      console.log('finalTicketDetailsForImage after modification : ',finalTicketDetailsForImage)
-
-
-         const finalBlobDataMap =await processScreenshotsAndDownload(finalTicketDetailsForImage);
-         console.log('Final Blob Map : ',finalBlobDataMap)
-        // if (true)
-        //   return;
+    const finalBlobDataMap = await processScreenshotsAndDownload(
+      finalTicketDetailsForImage
+    );
+    console.log("Final Blob Map : ", finalBlobDataMap);
+    // if (true)
+    //   return;
     //  console.log('Final Base64 string for post in DB : ',base64Data)
 
     //  const mainBlobData=base64Data.split(',')[1];
 
-      let blankImageFill=[]; //* This is used to keep track that respective Images was found and inserted as object property
+    let blankImageFill = []; //* This is used to keep track that respective Images was found and inserted as object property
 
-      let test=[]
+    let test = [];
 
-      final_Json.forEach(async(application_module_data, index) => {
-        const current_application = application_module_data.application_name;
-        const current_module = application_module_data.module_name;
-      
-        console.log('Current Application:', current_application);
-        console.log('Current Module:', current_module);
-      
-        application_module_data?.issuesList?.forEach(async(issueDetails) =>
-           {
-            console.log('Current Issue:', issueDetails);
-          // const imageData = finalTicketDetailsForImage.find(element =>
-          //   element?.application_name?.toLowerCase() === current_application?.toLowerCase() &&
-          //   element?.module_name?.toLowerCase() === current_module?.toLowerCase() &&
-          //   element?.selected_coordinates_acronym?.toLowerCase() === issueDetails?.selected_coordinates_acronym?.toLowerCase()
-          // );
-          const imageKey=[current_application,current_module,issueDetails.selected_coordinates_acronym].join('=>')
-          console.log('Current Key to find : ',imageKey)
-          const imageData=finalBlobDataMap.get(imageKey)
-          console.log('Found Image Data : ',imageData)
-          // test.push(imageData)
+    final_Json.forEach(async (application_module_data, index) => {
+      const current_application = application_module_data.application_name;
+      const current_module = application_module_data.module_name;
 
+      console.log("Current Application:", current_application);
+      console.log("Current Module:", current_module);
+
+      application_module_data?.issuesList?.forEach(async (issueDetails) => {
+        console.log("Current Issue:", issueDetails);
+        // const imageData = finalTicketDetailsForImage.find(element =>
+        //   element?.application_name?.toLowerCase() === current_application?.toLowerCase() &&
+        //   element?.module_name?.toLowerCase() === current_module?.toLowerCase() &&
+        //   element?.selected_coordinates_acronym?.toLowerCase() === issueDetails?.selected_coordinates_acronym?.toLowerCase()
+        // );
+        const imageKey = [
+          current_application,
+          current_module,
+          issueDetails.selected_coordinates_acronym,
+        ].join("=>");
+        console.log("Current Key to find : ", imageKey);
+        const imageData = finalBlobDataMap.get(imageKey);
+        console.log("Found Image Data : ", imageData);
+        // test.push(imageData)
 
         // setTestImg(imageData)
         // await delay(000)
-          if (imageData) {
-            issueDetails.fileContent = imageData;
-            console.log('Updated Issue Details:', issueDetails);
-            blankImageFill.push(true)
-          } else {
-            console.log('Image Data not found for issue:', issueDetails);
-            issueDetails.fileContent=null // * In case the selected_coordinates_acronym is of type ' Miscellaneous '
-            console.log('Current Selected Coordinates Acronym : ',issueDetails?.selected_coordinates_acronym?.toLowerCase())
-            if(issueDetails?.selected_coordinates_acronym?.toLowerCase() === 'miscellaneous')
-              return;
+        if (imageData) {
+          issueDetails.fileContent = imageData;
+          console.log("Updated Issue Details:", issueDetails);
+          blankImageFill.push(true);
+        } else {
+          console.log("Image Data not found for issue:", issueDetails);
+          issueDetails.fileContent = null; // * In case the selected_coordinates_acronym is of type ' Miscellaneous '
+          console.log(
+            "Current Selected Coordinates Acronym : ",
+            issueDetails?.selected_coordinates_acronym?.toLowerCase()
+          );
+          if (
+            issueDetails?.selected_coordinates_acronym?.toLowerCase() ===
+            "miscellaneous"
+          )
+            return;
 
-            blankImageFill.push(false)
-          }
-        });
-      });
-      
-
-      console.log('Final Ticket with image in each Issue : ',final_Json)
-      // setTestImgList(test)
-
-      if(blankImageFill.includes(false))
-        {
-          console.error("Error:", 'One or more Image was not inserted!');
-      setSnackbarSeverity('error')
-      setSnackbarText('Error !')
-      setMainAlert(true)
-      return;
+          blankImageFill.push(false);
         }
+      });
+    });
 
+    console.log("Final Ticket with image in each Issue : ", final_Json);
+    // setTestImgList(test)
 
+    if (blankImageFill.includes(false)) {
+      console.error("Error:", "One or more Image was not inserted!");
+      setSnackbarSeverity("error");
+      setSnackbarText("Error !");
+      setMainAlert(true);
+      return;
+    }
 
-        final_Json.forEach(element=>
-          {
-              element.issuesList.forEach(data=>
-                {
-                  test.push(data.fileContent)
-                }
-              )
-          }
-        )
-        setTestImgList(test)
+    final_Json.forEach((element) => {
+      element.issuesList.forEach((data) => {
+        test.push(data.fileContent);
+      });
+    });
+    setTestImgList(test);
 
-      // if(true)
-      //   {
-       //  const finalBlobData =await processScreenshotsAndDownload(finalTicketDetailsForImage);
+    // if(true)
+    //   {
+    //  const finalBlobData =await processScreenshotsAndDownload(finalTicketDetailsForImage);
     //  console.log('Final Blob Data : ',finalBlobData);
     //  const base64Data = await blobToBase64(finalBlobData);
 
@@ -1718,58 +1721,44 @@ export default function ApplicationUser({ sendUrllist }) {
 
     //  const mainBlobData=base64Data.split(',')[1];
 
-
     // final_Json=final_Json.map((data)=>
     // {
     //   return {...data,fileContent:mainBlobData}
     // })
 
     //  console.log('Final JSON for POST with image data : ',final_Json)//     return;
-      //   }
+    //   }
 
+    // const returnHere=true;
+    // if(returnHere)
+    //   return;
 
-
-
-   
-
-
-      // const returnHere=true;
-      // if(returnHere)
-      //   return;
-
-
-
-
-
-
-
-
-      // final_Json = final_Json.map(data => ({
-      //   ...data,
-      //   project_name: selectedProject
-      // }));
-      
+    // final_Json = final_Json.map(data => ({
+    //   ...data,
+    //   project_name: selectedProject
+    // }));
 
     let json_Count = 0;
     try {
-      const results = await Promise.all(final_Json.map(async json_data => {
-        const success = await postDatainDB(json_data);
-        if (success) {
-          json_Count++;
-        }
-      }));
-    
+      const results = await Promise.all(
+        final_Json.map(async (json_data) => {
+          const success = await postDatainDB(json_data);
+          if (success) {
+            json_Count++;
+          }
+        })
+      );
+
       // The rest of your code
     } catch (error) {
       console.error("Error:", error.message);
-      setSnackbarSeverity('error')
-      setSnackbarText('Error !')
-      setMainAlert(true)
+      setSnackbarSeverity("error");
+      setSnackbarText("Error !");
+      setMainAlert(true);
       setprogressVisible(false);
       return;
     }
-    
-    
+
     //   )
     console.log("Number of JSON posted => ", json_Count);
 
@@ -1793,13 +1782,12 @@ export default function ApplicationUser({ sendUrllist }) {
     setSeverityError(false);
     setIssueDropDownError(false);
     setprogressVisible(false);
-    setSelectedProject('')
-    setAppDropdown([])
+    setSelectedProject("");
+    setAppDropdown([]);
 
+    setCurrentImageData({});
+    setZip(new JSZip());
 
-    setCurrentImageData({})
-    setZip(new JSZip())
-    
     if (json_Count === final_Json.length) {
       const ticket = "Ticket raised successfully ! Ticket No - " + ticketNumber;
       setSnackbarSeverity("success");
@@ -1819,9 +1807,7 @@ export default function ApplicationUser({ sendUrllist }) {
     return "A" + randomNumber;
   };
 
-
-
-  //For Image Zip methods 
+  //For Image Zip methods
   const blobToBase64 = (blobData) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -1830,21 +1816,22 @@ export default function ApplicationUser({ sendUrllist }) {
       reader.readAsDataURL(blobData);
     });
   };
-  
+
   const createFileName = (extension, name) => `${name}.${extension}`;
-  
+
   const addImageToZip = (zip, image, { name, extension = "jpg" }) => {
     const fileName = createFileName(extension, name);
     zip.file(fileName, image.split(",")[1], { base64: true }); // The blob data is present in the second index
   };
-  
+
   const returnMainBlob = (image, { name, extension = "jpg" }) => {
-    console.log('Image Data at 2nd Index : ', image.split(",")[1]);
+    console.log("Image Data at 2nd Index : ", image.split(",")[1]);
     return image.split(",")[1];
   };
-  
+
   const downloadZip = (zip) => {
-    zip.generateAsync({ type: "blob" })
+    zip
+      .generateAsync({ type: "blob" })
       .then((blob) => {
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
@@ -1856,67 +1843,64 @@ export default function ApplicationUser({ sendUrllist }) {
         console.error("Error generating zip:", error);
       });
   };
-  
-  
-const takeScreenShot = async (element) => {
-  return html2canvas(element, {
-    useCORS: true,
-    logging: true,
-    scale: 5,
-    windowWidth: document.documentElement.scrollWidth,
-    windowHeight: document.documentElement.scrollHeight,
-  }).then((canvas) => {
-    return canvas.toDataURL("image/jpeg", 1.0);
-  });
-};
 
-const prepareScreenshot = async () => {
-  // await delay(500);
-  const image = await takeScreenShot(screenshotRef.current);
-  console.log("Screenshot Process started!");
-  // await delay(500);
-  return image;
-};
+  const takeScreenShot = async (element) => {
+    return html2canvas(element, {
+      useCORS: true,
+      logging: true,
+      scale: 5,
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight,
+    }).then((canvas) => {
+      return canvas.toDataURL("image/jpeg", 1.0);
+    });
+  };
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const prepareScreenshot = async () => {
+    // await delay(500);
+    const image = await takeScreenShot(screenshotRef.current);
+    console.log("Screenshot Process started!");
+    // await delay(500);
+    return image;
+  };
 
-const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
-  try {
-    const blobDataMasterMap = new Map();
-    // const testList=[]
-    let count = 0;
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    for (const data of finalTicketDetailsForImage) {
-      console.log("Current Data:", data);
+  const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
+    try {
+      const blobDataMasterMap = new Map();
+      // const testList=[]
+      let count = 0;
 
-      setCurrentImageData(data);
+      for (const data of finalTicketDetailsForImage) {
+        console.log("Current Data:", data);
 
-      await delay(500); // Give time for the DOM to update with the new data
+        setCurrentImageData(data);
 
-      const image = await prepareScreenshot();
-      // await delay(500); // Ensure the screenshot is fully captured
+        await delay(500); // Give time for the DOM to update with the new data
 
-      const base64Data = image.split(',')[1]; // Extract base64 image data directly
+        const image = await prepareScreenshot();
+        // await delay(500); // Ensure the screenshot is fully captured
 
-      blobDataMasterMap.set(
-        `${data.application_name}=>${data.module_name}=>${data.selected_coordinates_acronym}`,
-        base64Data
-      );
-      // testList.push(base64Data)
+        const base64Data = image.split(",")[1]; // Extract base64 image data directly
 
-      // await delay(1000);
-      count++;
+        blobDataMasterMap.set(
+          `${data.application_name}=>${data.module_name}=>${data.selected_coordinates_acronym}`,
+          base64Data
+        );
+        // testList.push(base64Data)
+
+        // await delay(1000);
+        count++;
+      }
+
+      console.log("Number of times the loop iterated : ", count);
+      // setTestImgList(testList)
+      return blobDataMasterMap;
+    } catch (error) {
+      console.log("Error : ", error);
     }
-
-    console.log('Number of times the loop iterated : ', count);
-    // setTestImgList(testList)
-    return blobDataMasterMap;
-  } catch (error) {
-    console.log('Error : ', error);
-  }
-};
-
-
+  };
 
   // const handleAlertClose = (event, reason) => {
   //   if (reason === "clickaway") {
@@ -2139,25 +2123,30 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
 
     //! At most 5 issues will be added
 
-    if(overviewTableData.length===5)
-      {
+    if (overviewTableData.length === 5) {
       setSnackbarSeverity("warning");
       setSnackbarText("At most 5 issues can be added ! ");
       setMainAlert(true);
       return;
-      }
+    }
     //Check for validations
     setAdditionalMiscellaneousError(false);
     setAdditionallMiscellaneousSeverityError(false);
-      console.log('OverviewRableData : ',overviewTableData)
-    if (overviewTableData.some(issue =>issue.issue_name?.toLowerCase() === miscellaneousInput?.trim().toLowerCase())) {
+    console.log("OverviewRableData : ", overviewTableData);
+    if (
+      overviewTableData.some(
+        (issue) =>
+          issue.issue_name?.toLowerCase() ===
+          miscellaneousInput?.trim().toLowerCase()
+      )
+    ) {
       setAdditionalMiscellaneousError(true);
       setSnackbarSeverity("error");
       setSnackbarText("This issue is already added!");
       setMainAlert(true);
       return;
     }
-    
+
     if (miscellaneousInput === "" && miscellaneousSeverity === "") {
       setAdditionalMiscellaneousError(true);
       setAdditionallMiscellaneousSeverityError(true);
@@ -2353,21 +2342,17 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
   const [searchText, setSearchText] = useState("");
   // const [lastSetValue,setLastSetValue]=useState("");
 
-  const displayedOptions = useMemo(
-      () => {
-      const searchTextLowerCase = searchText.toLowerCase();
-      // console.log('Current Search Text : ',searchTextLowerCase)
-      return issuesDropdown.filter(
-          option => 
-          option.toLowerCase().includes(searchTextLowerCase)
-      );
-      },
-      [searchText, issuesDropdown]
-  );
+  const displayedOptions = useMemo(() => {
+    const searchTextLowerCase = searchText.toLowerCase();
+    // console.log('Current Search Text : ',searchTextLowerCase)
+    return issuesDropdown.filter((option) =>
+      option.toLowerCase().includes(searchTextLowerCase)
+    );
+  }, [searchText, issuesDropdown]);
 
   const isOptionInRange = displayedOptions.some(
-      option => option === userIssue
-    );
+    (option) => option === userIssue
+  );
   /*************************************************** Component return ************************************** */
   return (
     <div className="row">
@@ -2392,28 +2377,29 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
           </div>
         </Fab>
       )}
-{/* Warning the user */}
+      {/* Warning the user */}
       {
         <>
-        <CustomDialog
-        open={isSureToChangeApplication}
-        setOpen={setIsSureToChangeApplication}
-        proceedButtonText={<Chip color="success" label="Proceed"/>}
-        proceedButtonClick={()=>handleAppDropdownChange(currentDropdownApplicationValue)}
-        cancelButtonText={<Chip color="error" label="Cancel"/>}
-        
-        />
-
-        
           <CustomDialog
-          open={isSureToChangeProject}
-          setOpen={setIsSureToChangeProject}
-          proceedButtonText={<Chip color="success" label="Proceed"/>}
-          proceedButtonClick={()=>handleProjectChange(currentDropdownProjectValue)}
-          cancelButtonText={<Chip color="error" label="Cancel"/>}
-          
+            open={isSureToChangeApplication}
+            setOpen={setIsSureToChangeApplication}
+            proceedButtonText={<Chip color="success" label="Proceed" />}
+            proceedButtonClick={() =>
+              handleAppDropdownChange(currentDropdownApplicationValue)
+            }
+            cancelButtonText={<Chip color="error" label="Cancel" />}
           />
-          </>
+
+          <CustomDialog
+            open={isSureToChangeProject}
+            setOpen={setIsSureToChangeProject}
+            proceedButtonText={<Chip color="success" label="Proceed" />}
+            proceedButtonClick={() =>
+              handleProjectChange(currentDropdownProjectValue)
+            }
+            cancelButtonText={<Chip color="error" label="Cancel" />}
+          />
+        </>
       }
       <Dialog
         open={open}
@@ -2735,16 +2721,15 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                     onChange={(event) => {
                       // setSelectedProject(event.target.value)
                       // handleProjectChange(event);
-                      setCurrentDropdownProjectValue(event.target.value)
-                      if(overviewTableData.length>0)
-                        {
-                          setIsSureToChangeProject(true)
-                          return;
-                        }
-                        // else{
-                          // handleAppDropdownChange(event);
-                          // handleAppDropdownChange(event.target.value);
-                          handleProjectChange(event.target.value);
+                      setCurrentDropdownProjectValue(event.target.value);
+                      if (overviewTableData.length > 0) {
+                        setIsSureToChangeProject(true);
+                        return;
+                      }
+                      // else{
+                      // handleAppDropdownChange(event);
+                      // handleAppDropdownChange(event.target.value);
+                      handleProjectChange(event.target.value);
                     }}
                     list={projectList}
                     label={"Project"}
@@ -2763,20 +2748,18 @@ const processScreenshotsAndDownload = async (finalTicketDetailsForImage) => {
                         </div>
                       }
                       value={dropdownValue}
-                      onChange={(event)=>
-                        {
-                          setCurrentDropdownApplicationValue(event.target.value)
-                          if(overviewTableData.length>0)
-                            {
-                              setIsSureToChangeApplication(true)
-                              return;
-                            }
-                            // else{
-                              // handleAppDropdownChange(event);
-                              handleAppDropdownChange(event.target.value);
-                            // }
-                          // handleAppDropdownChange(event);
-                        }}
+                      onChange={(event) => {
+                        setCurrentDropdownApplicationValue(event.target.value);
+                        if (overviewTableData.length > 0) {
+                          setIsSureToChangeApplication(true);
+                          return;
+                        }
+                        // else{
+                        // handleAppDropdownChange(event);
+                        handleAppDropdownChange(event.target.value);
+                        // }
+                        // handleAppDropdownChange(event);
+                      }}
                       disabled={isUserUnderSupport === false}
                     ></Dropdown>
                   </div>

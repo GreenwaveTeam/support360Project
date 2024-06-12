@@ -66,6 +66,7 @@ import CustomButton from "../../../components/button/button.component";
 import { ArrowRightIcon } from "@mui/x-date-pickers";
 import SnackbarComponent from "../../../components/snackbar/customsnackbar.component";
 import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
+import CustomDialog from "../../../components/dialog/dialog.component";
 const DB_IP = process.env.REACT_APP_SERVERIP;
 export default function UserDeviceTree({ sendUrllist }) {
   const [snackbarText, setSnackbarText] = useState("Data saved !");
@@ -107,6 +108,9 @@ export default function UserDeviceTree({ sendUrllist }) {
   const [userEmailId, setUserEmailId] = useState();
   const [selectedProject, setSelectedProject] = useState("Select a Project");
   const toast = useRef(null);
+  const [currentDropdownProjectValue, setCurrentDropdownProjectValue] =
+    useState("");
+  const [isSureToChangeProject, setIsSureToChangeProject] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -407,7 +411,10 @@ export default function UserDeviceTree({ sendUrllist }) {
     setCategoryIssues();
     handleAddDeviceIssueDetails();
   };
-
+  const handleProjectChange = async (newValue) => {
+    setSelectedProject(newValue);
+    setDeviceIssueDetails([]);
+  };
   const handleAddItem = () => {
     // setRemarks("");
     // setSelectedIssue("");
@@ -429,11 +436,17 @@ export default function UserDeviceTree({ sendUrllist }) {
         setShowAlert(true);
       } else {
         if (selectedIssue === "Other") {
+          if (!remarks) {
+            setsnackbarSeverity("error");
+            setSnackbarText("Please Describe the issue in Remarks field");
+            setSnackbarOpen(true);
+            return;
+          }
           const newItem = {
-            issue: otherIssue,
+            issue: selectedIssue,
             severity: selectedPriority,
             remarks: remarks,
-            category: selectedIssue,
+            category: selectedNode.issue_category_name,
           };
           setTableData([...tableData, newItem]);
           setRemarks("");
@@ -1050,7 +1063,20 @@ export default function UserDeviceTree({ sendUrllist }) {
                   <Dropdown
                     id={"project-dropdown"}
                     value={selectedProject}
-                    onChange={(event) => setSelectedProject(event.target.value)}
+                    // onChange={(event) => setSelectedProject(event.target.value)}
+                    onChange={(event) => {
+                      // setSelectedProject(event.target.value)
+                      // handleProjectChange(event);
+                      setCurrentDropdownProjectValue(event.target.value);
+                      if (deviceIssueDetails.length > 0) {
+                        setIsSureToChangeProject(true);
+                        return;
+                      }
+                      // else{
+                      // handleAppDropdownChange(event);
+                      // handleAppDropdownChange(event.target.value);
+                      handleProjectChange(event.target.value);
+                    }}
                     list={projectList}
                     label={"Project"}
                     // error={dropDownError}
@@ -1114,7 +1140,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                           id="alert-dialog-title"
                           sx={{ padding: "15px", fontWeight: "600" }}
                         >
-                          {`Report Issue for : ${selectedNode.name}`}
+                          {`Add Issues for : ${selectedNode.name}`}
                         </DialogTitle>
                         <Divider sx={{ opacity: 0.8 }} />
 
@@ -1611,6 +1637,20 @@ export default function UserDeviceTree({ sendUrllist }) {
         dialogMessage={snackbarText}
         snackbarSeverity={snackbarSeverity}
       ></SnackbarComponent>
+      {/* Warning the user */}
+      {
+        <>
+          <CustomDialog
+            open={isSureToChangeProject}
+            setOpen={setIsSureToChangeProject}
+            proceedButtonText={<Chip color="success" label="Proceed" />}
+            proceedButtonClick={() =>
+              handleProjectChange(currentDropdownProjectValue)
+            }
+            cancelButtonText={<Chip color="error" label="Cancel" />}
+          />
+        </>
+      }
     </Container>
   );
 }

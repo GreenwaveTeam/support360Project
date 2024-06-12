@@ -77,7 +77,11 @@ function UserRoutes() {
           urllist={urllist}
         />
       )}
-      <Sidebar open={open} handleDrawerClose={handleDrawerClose} />
+      <Sidebar
+        open={open}
+        setOpen={setOpen}
+        handleDrawerClose={handleDrawerClose}
+      />
       <Main open={open}>
         <DrawerHeader />
         <Box>

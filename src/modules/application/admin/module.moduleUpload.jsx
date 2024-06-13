@@ -696,7 +696,7 @@ const Application = ({ sendUrllist }) => {
         setSelectedAreas([...selectedAreas, detail]);
         !categories.includes(categoryname) &&
           setCategories([...categories, categoryname]);
-          setCategoryname("")
+          //setCategoryname("")
           setIssueName("")
           setSeverity("")
       } catch (error) {

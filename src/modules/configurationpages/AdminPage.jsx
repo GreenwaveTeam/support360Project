@@ -13,8 +13,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContext";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
-
+import GridViewIcon from '@mui/icons-material/GridView';
+import DeviceHubIcon from '@mui/icons-material/DeviceHub';
+import PersonIcon from '@mui/icons-material/Person';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 const AdminPage = ({ sendUrllist }) => {
   const [userPlantID, setUserPlantID] = useState(
     localStorage.getItem("adminPlantID")
@@ -172,11 +174,12 @@ const AdminPage = ({ sendUrllist }) => {
                       height: 80,
                     }}
                   >
-                    <i
+                    {/* <i
                       className="fa fa-th-large"
                       style={{ fontSize: 22 }}
                       aria-hidden="true"
-                    ></i>
+                    ></i> */}
+                    <GridViewIcon/>
                   </Avatar>
                   <Typography variant="h6">Application</Typography>
                 </Card>
@@ -221,11 +224,12 @@ const AdminPage = ({ sendUrllist }) => {
                       height: 80,
                     }}
                   >
-                    <i
+                    {/* <i
                       className="fa fa-network-wired"
                       style={{ fontSize: 22 }}
                       aria-hidden="true"
-                    ></i>
+                    ></i> */}
+                    <DeviceHubIcon/>
                   </Avatar>
                   <Typography variant="h6">Device</Typography>
                 </Card>
@@ -270,11 +274,12 @@ const AdminPage = ({ sendUrllist }) => {
                       height: 80,
                     }}
                   >
-                    <i
+                    {/* <i
                       className="fa fa-list-alt"
                       style={{ fontSize: 36 }}
                       aria-hidden="true"
-                    ></i>
+                    ></i> */}
+                  <PersonIcon/>
                   </Avatar>
                   <Typography variant="h6">Device Issue Category</Typography>
                 </Card>
@@ -317,11 +322,12 @@ const AdminPage = ({ sendUrllist }) => {
                       height: 80,
                     }}
                   >
-                    <i
+                    {/* <i
                       className="fa  fa-microchip"
                       style={{ fontSize: 22 }}
                       aria-hidden="true"
-                    ></i>
+                    ></i> */}
+                    <DashboardIcon/>
                   </Avatar>
                   <Typography variant="h6">Infrastructure</Typography>
                 </Card>

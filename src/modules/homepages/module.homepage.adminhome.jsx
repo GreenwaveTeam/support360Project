@@ -552,7 +552,7 @@ export default function AdminHome({ sendUrllist }) {
 
   return (
     <>
-      <Container maxWidth="lg">
+      <Container maxWidth="xl">
         {!divIsVisibleList && (
           <Box
             sx={{

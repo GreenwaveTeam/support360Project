@@ -389,19 +389,40 @@ function UserHome({ sendUrllist }) {
       const tempResolveTime = await fetchTicketResolveTime(plantId);
       const tempCloseTime = await fetchTicketCloseTime(plantId);
 
+      if (tempResponseTime.length === 0) {
+        setResponseTime([0, 0]);
+      } else if (tempResponseTime.length === 1) {
+        setResponseTime([tempResponseTime[0], 0]);
+      } else {
+        setResponseTime(tempResponseTime);
+      }
+
+      if (tempResolveTime.length === 0) {
+        setResolveTime([0, 0]);
+      } else if (tempResolveTime.length === 1) {
+        setResponseTime([tempResolveTime[0], 0]);
+      } else {
+        setResolveTime(tempResolveTime);
+      }
+
+      if (tempCloseTime.length === 0) {
+        setCloseTime([0, 0]);
+      } else if (tempCloseTime.length === 1) {
+        setResponseTime([tempCloseTime[0], 0]);
+      } else {
+        setCloseTime(tempCloseTime);
+      }
+
       console.log("tempResponseTime : ", tempResponseTime);
       console.log("tempResolveTime : ", tempResolveTime);
       console.log("tempCloseTime : ", tempCloseTime);
-
-      setResponseTime(tempResponseTime);
-      setResolveTime(tempResolveTime);
-      setCloseTime(tempCloseTime);
 
       const details = await getAllOpenTicketDetails();
       const closedDetails = await getAllClosedTicketDetails(plantId);
       console.log("formData.plantID : ", plantId);
       setAllTickets(details.filter((ticket) => ticket.plantId === plantId));
       console.log("closedDetails : ", closedDetails);
+      console.log("closedTickets : ", closedTickets);
       setClosedTickets(closedDetails);
     } catch (error) {
       console.error("Error in showAlert:", error);
@@ -1415,44 +1436,42 @@ function UserHome({ sendUrllist }) {
                                         justifyContent: "center",
                                       }}
                                     >
-                                      <Tooltip title="60-Day Comparative Trend Analysis">
-                                        <Button
-                                          style={{
-                                            borderRadius: "50%",
-                                            padding: 0,
-                                          }}
-                                          icon={
+                                      <Button
+                                        style={{
+                                          borderRadius: "50%",
+                                          padding: 0,
+                                        }}
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .recentDevicePeriod -
                                             catagoryWiseTrend[0]
-                                              .recentDevicePeriod -
-                                              catagoryWiseTrend[0]
-                                                .earlierDevicePeriod >
-                                            0 ? (
-                                              <TrendingDownIcon />
-                                            ) : (
-                                              <TrendingUpIcon />
-                                            )
-                                          }
-                                          size="small"
-                                          rounded
-                                          text
-                                          severity={
+                                              .earlierDevicePeriod >
+                                          0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        size="small"
+                                        rounded
+                                        text
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .recentDevicePeriod -
                                             catagoryWiseTrend[0]
-                                              .recentDevicePeriod -
-                                              catagoryWiseTrend[0]
-                                                .earlierDevicePeriod >
-                                            0
-                                              ? "danger"
-                                              : "success"
-                                          }
-                                          aria-label="Cancel"
-                                          label={`${calculateDifferencePercentage(
-                                            catagoryWiseTrend[0]
-                                              .earlierDevicePeriod,
-                                            catagoryWiseTrend[0]
-                                              .recentDevicePeriod
-                                          )}`}
-                                        />
-                                      </Tooltip>
+                                              .earlierDevicePeriod >
+                                          0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                        label={`${calculateDifferencePercentage(
+                                          catagoryWiseTrend[0]
+                                            .earlierDevicePeriod,
+                                          catagoryWiseTrend[0]
+                                            .recentDevicePeriod
+                                        )}`}
+                                      />
                                     </div>
                                     <Typography
                                       sx={{
@@ -1634,44 +1653,42 @@ function UserHome({ sendUrllist }) {
                                         justifyContent: "center",
                                       }}
                                     >
-                                      <Tooltip title="60-Day Comparative Trend Analysis">
-                                        <Button
-                                          style={{
-                                            borderRadius: "50%",
-                                            padding: 0,
-                                          }}
-                                          icon={
+                                      <Button
+                                        style={{
+                                          borderRadius: "50%",
+                                          padding: 0,
+                                        }}
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .recentApplicationPeriod -
                                             catagoryWiseTrend[0]
-                                              .recentApplicationPeriod -
-                                              catagoryWiseTrend[0]
-                                                .earlierApplicationPeriod >
-                                            0 ? (
-                                              <TrendingDownIcon />
-                                            ) : (
-                                              <TrendingUpIcon />
-                                            )
-                                          }
-                                          size="small"
-                                          rounded
-                                          text
-                                          severity={
+                                              .earlierApplicationPeriod >
+                                          0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        size="small"
+                                        rounded
+                                        text
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .recentApplicationPeriod -
                                             catagoryWiseTrend[0]
-                                              .recentApplicationPeriod -
-                                              catagoryWiseTrend[0]
-                                                .earlierApplicationPeriod >
-                                            0
-                                              ? "danger"
-                                              : "success"
-                                          }
-                                          aria-label="Cancel"
-                                          label={`${calculateDifferencePercentage(
-                                            catagoryWiseTrend[0]
-                                              .earlierApplicationPeriod,
-                                            catagoryWiseTrend[0]
-                                              .recentApplicationPeriod
-                                          )}`}
-                                        />
-                                      </Tooltip>
+                                              .earlierApplicationPeriod >
+                                          0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                        label={`${calculateDifferencePercentage(
+                                          catagoryWiseTrend[0]
+                                            .earlierApplicationPeriod,
+                                          catagoryWiseTrend[0]
+                                            .recentApplicationPeriod
+                                        )}`}
+                                      />
                                     </div>
                                     <Typography
                                       sx={{
@@ -1866,44 +1883,42 @@ function UserHome({ sendUrllist }) {
                                         justifyContent: "center",
                                       }}
                                     >
-                                      <Tooltip title="60-Day Comparative Trend Analysis">
-                                        <Button
-                                          style={{
-                                            borderRadius: "50%",
-                                            padding: 0,
-                                          }}
-                                          icon={
+                                      <Button
+                                        style={{
+                                          borderRadius: "50%",
+                                          padding: 0,
+                                        }}
+                                        icon={
+                                          catagoryWiseTrend[0]
+                                            .recentInfrastructurePeriod -
                                             catagoryWiseTrend[0]
-                                              .recentInfrastructurePeriod -
-                                              catagoryWiseTrend[0]
-                                                .earlierInfrastructurePeriod >
-                                            0 ? (
-                                              <TrendingDownIcon />
-                                            ) : (
-                                              <TrendingUpIcon />
-                                            )
-                                          }
-                                          size="small"
-                                          rounded
-                                          text
-                                          severity={
+                                              .earlierInfrastructurePeriod >
+                                          0 ? (
+                                            <TrendingDownIcon />
+                                          ) : (
+                                            <TrendingUpIcon />
+                                          )
+                                        }
+                                        size="small"
+                                        rounded
+                                        text
+                                        severity={
+                                          catagoryWiseTrend[0]
+                                            .recentInfrastructurePeriod -
                                             catagoryWiseTrend[0]
-                                              .recentInfrastructurePeriod -
-                                              catagoryWiseTrend[0]
-                                                .earlierInfrastructurePeriod >
-                                            0
-                                              ? "danger"
-                                              : "success"
-                                          }
-                                          aria-label="Cancel"
-                                          label={`${calculateDifferencePercentage(
-                                            catagoryWiseTrend[0]
-                                              .earlierInfrastructurePeriod,
-                                            catagoryWiseTrend[0]
-                                              .recentInfrastructurePeriod
-                                          )}`}
-                                        />
-                                      </Tooltip>
+                                              .earlierInfrastructurePeriod >
+                                          0
+                                            ? "danger"
+                                            : "success"
+                                        }
+                                        aria-label="Cancel"
+                                        label={`${calculateDifferencePercentage(
+                                          catagoryWiseTrend[0]
+                                            .earlierInfrastructurePeriod,
+                                          catagoryWiseTrend[0]
+                                            .recentInfrastructurePeriod
+                                        )}`}
+                                      />
                                     </div>
                                     <Typography
                                       sx={{
@@ -2175,7 +2190,16 @@ function UserHome({ sendUrllist }) {
                                             flexDirection: "row-reverse",
                                             marginLeft: "1rem",
                                           }}
-                                          label="All Tickets"
+                                          //label="All Tickets"
+                                          label={
+                                            <>
+                                              {<b> All Tickets </b>}
+                                              <Badge
+                                                value={allTickets.length}
+                                                severity="success"
+                                              ></Badge>
+                                            </>
+                                          }
                                           checked={isChecked}
                                           onChange={handleChange}
                                           control={<Switch defaultChecked />}
@@ -2211,7 +2235,16 @@ function UserHome({ sendUrllist }) {
                                             flexDirection: "row-reverse",
                                             marginLeft: "1rem",
                                           }}
-                                          label="Ticket History"
+                                          //label="Ticket History"
+                                          label={
+                                            <>
+                                              {<b> Ticket History </b>}
+                                              <Badge
+                                                value={closedTickets.length}
+                                                severity="success"
+                                              ></Badge>
+                                            </>
+                                          }
                                           checked={isChecked}
                                           onChange={handleChange}
                                           control={<Switch defaultChecked />}

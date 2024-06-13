@@ -137,7 +137,7 @@ export default function AllocateTicket({ sendUrllist }) {
     },
     {
       id: "status",
-      label: "Status",
+      label: "Ticket Status",
       type: "textbox",
       canRepeatSameValue: false,
     },

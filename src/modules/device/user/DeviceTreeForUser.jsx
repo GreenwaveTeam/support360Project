@@ -54,6 +54,7 @@ import TicketDialog from "../../../components/ticketdialog/ticketdialog.componen
 import { useUserContext } from "../../contexts/UserContext";
 import { useLocation } from "react-router-dom";
 //Theme
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { ColorModeContext, tokens } from "../../../theme";
 import { useTheme } from "@mui/material";
 import { useContext } from "react";
@@ -1097,6 +1098,22 @@ export default function UserDeviceTree({ sendUrllist }) {
                       }}
                       label="Asset Tree"
                     />
+                    <Chip
+                      label={
+                        <div>
+                          {" "}
+                          <InfoOutlinedIcon
+                            fontSize="small"
+                            sx={{ color: "#16FF00", border: "none" }}
+                          />
+                          <span style={{ fontWeight: "bold" }}>
+                            {" "}
+                            A maximum of five issues can be included{" "}
+                          </span>
+                        </div>
+                      }
+                      variant="outlined"
+                    ></Chip>
                     <Divider sx={{ marginBottom: "0.6rem", opacity: 0.8 }} />
                     <TreeView
                       className="treeView"

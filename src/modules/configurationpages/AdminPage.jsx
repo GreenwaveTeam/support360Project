@@ -13,10 +13,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useUserContext } from "../contexts/UserContext";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import GridViewIcon from '@mui/icons-material/GridView';
-import DeviceHubIcon from '@mui/icons-material/DeviceHub';
-import PersonIcon from '@mui/icons-material/Person';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import GridViewIcon from "@mui/icons-material/GridView";
+import DeviceHubIcon from "@mui/icons-material/DeviceHub";
+import CategoryIcon from "@mui/icons-material/Category";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import RoomPreferencesIcon from "@mui/icons-material/RoomPreferences";
+import "primeicons/primeicons.css";
 const AdminPage = ({ sendUrllist }) => {
   const [userPlantID, setUserPlantID] = useState(
     localStorage.getItem("adminPlantID")
@@ -179,7 +181,7 @@ const AdminPage = ({ sendUrllist }) => {
                       style={{ fontSize: 22 }}
                       aria-hidden="true"
                     ></i> */}
-                    <GridViewIcon/>
+                    <GridViewIcon />
                   </Avatar>
                   <Typography variant="h6">Application</Typography>
                 </Card>
@@ -229,7 +231,8 @@ const AdminPage = ({ sendUrllist }) => {
                       style={{ fontSize: 22 }}
                       aria-hidden="true"
                     ></i> */}
-                    <DeviceHubIcon/>
+                    {/* <DeviceHubIcon /> */}
+                    <i className="pi pi-sitemap" style={{ fontSize: "2" }}></i>
                   </Avatar>
                   <Typography variant="h6">Device</Typography>
                 </Card>
@@ -279,7 +282,7 @@ const AdminPage = ({ sendUrllist }) => {
                       style={{ fontSize: 36 }}
                       aria-hidden="true"
                     ></i> */}
-                  <PersonIcon/>
+                    <CategoryIcon />
                   </Avatar>
                   <Typography variant="h6">Device Issue Category</Typography>
                 </Card>
@@ -327,7 +330,8 @@ const AdminPage = ({ sendUrllist }) => {
                       style={{ fontSize: 22 }}
                       aria-hidden="true"
                     ></i> */}
-                    <DashboardIcon/>
+                    {/* <DashboardIcon /> */}
+                    <RoomPreferencesIcon />
                   </Avatar>
                   <Typography variant="h6">Infrastructure</Typography>
                 </Card>

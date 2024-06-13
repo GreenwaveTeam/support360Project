@@ -772,7 +772,7 @@ export default function PlantPage({ sendUrllist }) {
                       sx={{ fontWeight: "bold", fontSize: "14px" }}
                       align="center"
                     >
-                      View Projects
+                      Projects
                     </TableCell>
                   </TableRow>
                 </TableHead>

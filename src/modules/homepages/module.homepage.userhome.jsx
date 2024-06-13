@@ -1415,42 +1415,44 @@ function UserHome({ sendUrllist }) {
                                         justifyContent: "center",
                                       }}
                                     >
-                                      <Button
-                                        style={{
-                                          borderRadius: "50%",
-                                          padding: 0,
-                                        }}
-                                        icon={
-                                          catagoryWiseTrend[0]
-                                            .recentDevicePeriod -
+                                      <Tooltip title="60-Day Comparative Trend Analysis">
+                                        <Button
+                                          style={{
+                                            borderRadius: "50%",
+                                            padding: 0,
+                                          }}
+                                          icon={
                                             catagoryWiseTrend[0]
-                                              .earlierDevicePeriod >
-                                          0 ? (
-                                            <TrendingDownIcon />
-                                          ) : (
-                                            <TrendingUpIcon />
-                                          )
-                                        }
-                                        size="small"
-                                        rounded
-                                        text
-                                        severity={
-                                          catagoryWiseTrend[0]
-                                            .recentDevicePeriod -
+                                              .recentDevicePeriod -
+                                              catagoryWiseTrend[0]
+                                                .earlierDevicePeriod >
+                                            0 ? (
+                                              <TrendingDownIcon />
+                                            ) : (
+                                              <TrendingUpIcon />
+                                            )
+                                          }
+                                          size="small"
+                                          rounded
+                                          text
+                                          severity={
                                             catagoryWiseTrend[0]
-                                              .earlierDevicePeriod >
-                                          0
-                                            ? "danger"
-                                            : "success"
-                                        }
-                                        aria-label="Cancel"
-                                        label={`${calculateDifferencePercentage(
-                                          catagoryWiseTrend[0]
-                                            .earlierDevicePeriod,
-                                          catagoryWiseTrend[0]
-                                            .recentDevicePeriod
-                                        )}`}
-                                      />
+                                              .recentDevicePeriod -
+                                              catagoryWiseTrend[0]
+                                                .earlierDevicePeriod >
+                                            0
+                                              ? "danger"
+                                              : "success"
+                                          }
+                                          aria-label="Cancel"
+                                          label={`${calculateDifferencePercentage(
+                                            catagoryWiseTrend[0]
+                                              .earlierDevicePeriod,
+                                            catagoryWiseTrend[0]
+                                              .recentDevicePeriod
+                                          )}`}
+                                        />
+                                      </Tooltip>
                                     </div>
                                     <Typography
                                       sx={{
@@ -1632,42 +1634,44 @@ function UserHome({ sendUrllist }) {
                                         justifyContent: "center",
                                       }}
                                     >
-                                      <Button
-                                        style={{
-                                          borderRadius: "50%",
-                                          padding: 0,
-                                        }}
-                                        icon={
-                                          catagoryWiseTrend[0]
-                                            .recentApplicationPeriod -
+                                      <Tooltip title="60-Day Comparative Trend Analysis">
+                                        <Button
+                                          style={{
+                                            borderRadius: "50%",
+                                            padding: 0,
+                                          }}
+                                          icon={
                                             catagoryWiseTrend[0]
-                                              .earlierApplicationPeriod >
-                                          0 ? (
-                                            <TrendingDownIcon />
-                                          ) : (
-                                            <TrendingUpIcon />
-                                          )
-                                        }
-                                        size="small"
-                                        rounded
-                                        text
-                                        severity={
-                                          catagoryWiseTrend[0]
-                                            .recentApplicationPeriod -
+                                              .recentApplicationPeriod -
+                                              catagoryWiseTrend[0]
+                                                .earlierApplicationPeriod >
+                                            0 ? (
+                                              <TrendingDownIcon />
+                                            ) : (
+                                              <TrendingUpIcon />
+                                            )
+                                          }
+                                          size="small"
+                                          rounded
+                                          text
+                                          severity={
                                             catagoryWiseTrend[0]
-                                              .earlierApplicationPeriod >
-                                          0
-                                            ? "danger"
-                                            : "success"
-                                        }
-                                        aria-label="Cancel"
-                                        label={`${calculateDifferencePercentage(
-                                          catagoryWiseTrend[0]
-                                            .earlierApplicationPeriod,
-                                          catagoryWiseTrend[0]
-                                            .recentApplicationPeriod
-                                        )}`}
-                                      />
+                                              .recentApplicationPeriod -
+                                              catagoryWiseTrend[0]
+                                                .earlierApplicationPeriod >
+                                            0
+                                              ? "danger"
+                                              : "success"
+                                          }
+                                          aria-label="Cancel"
+                                          label={`${calculateDifferencePercentage(
+                                            catagoryWiseTrend[0]
+                                              .earlierApplicationPeriod,
+                                            catagoryWiseTrend[0]
+                                              .recentApplicationPeriod
+                                          )}`}
+                                        />
+                                      </Tooltip>
                                     </div>
                                     <Typography
                                       sx={{
@@ -1862,42 +1866,44 @@ function UserHome({ sendUrllist }) {
                                         justifyContent: "center",
                                       }}
                                     >
-                                      <Button
-                                        style={{
-                                          borderRadius: "50%",
-                                          padding: 0,
-                                        }}
-                                        icon={
-                                          catagoryWiseTrend[0]
-                                            .recentInfrastructurePeriod -
+                                      <Tooltip title="60-Day Comparative Trend Analysis">
+                                        <Button
+                                          style={{
+                                            borderRadius: "50%",
+                                            padding: 0,
+                                          }}
+                                          icon={
                                             catagoryWiseTrend[0]
-                                              .earlierInfrastructurePeriod >
-                                          0 ? (
-                                            <TrendingDownIcon />
-                                          ) : (
-                                            <TrendingUpIcon />
-                                          )
-                                        }
-                                        size="small"
-                                        rounded
-                                        text
-                                        severity={
-                                          catagoryWiseTrend[0]
-                                            .recentInfrastructurePeriod -
+                                              .recentInfrastructurePeriod -
+                                              catagoryWiseTrend[0]
+                                                .earlierInfrastructurePeriod >
+                                            0 ? (
+                                              <TrendingDownIcon />
+                                            ) : (
+                                              <TrendingUpIcon />
+                                            )
+                                          }
+                                          size="small"
+                                          rounded
+                                          text
+                                          severity={
                                             catagoryWiseTrend[0]
-                                              .earlierInfrastructurePeriod >
-                                          0
-                                            ? "danger"
-                                            : "success"
-                                        }
-                                        aria-label="Cancel"
-                                        label={`${calculateDifferencePercentage(
-                                          catagoryWiseTrend[0]
-                                            .earlierInfrastructurePeriod,
-                                          catagoryWiseTrend[0]
-                                            .recentInfrastructurePeriod
-                                        )}`}
-                                      />
+                                              .recentInfrastructurePeriod -
+                                              catagoryWiseTrend[0]
+                                                .earlierInfrastructurePeriod >
+                                            0
+                                              ? "danger"
+                                              : "success"
+                                          }
+                                          aria-label="Cancel"
+                                          label={`${calculateDifferencePercentage(
+                                            catagoryWiseTrend[0]
+                                              .earlierInfrastructurePeriod,
+                                            catagoryWiseTrend[0]
+                                              .recentInfrastructurePeriod
+                                          )}`}
+                                        />
+                                      </Tooltip>
                                     </div>
                                     <Typography
                                       sx={{

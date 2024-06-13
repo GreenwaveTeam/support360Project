@@ -1997,7 +1997,7 @@ function UserHome({ sendUrllist }) {
                               <Divider
                                 sx={{ opacity: "0.8", marginBottom: "0.5rem" }}
                               />
-                              <SparkLineChart data={responseTime} height={35} />
+                              <SparkLineChart data={responseTime} height={60} />
                             </CardContent>
                           </Card>
                         </div>
@@ -2023,7 +2023,7 @@ function UserHome({ sendUrllist }) {
                                 sx={{ opacity: "0.8", marginBottom: "0.5rem" }}
                               />
 
-                              <SparkLineChart data={resolveTime} height={35} />
+                              <SparkLineChart data={resolveTime} height={60} />
                             </CardContent>
                           </Card>
                         </div>
@@ -2048,7 +2048,7 @@ function UserHome({ sendUrllist }) {
                               <Divider
                                 sx={{ opacity: "0.8", marginBottom: "0.5rem" }}
                               />
-                              <SparkLineChart data={closeTime} height={35} />
+                              <SparkLineChart data={closeTime} height={60} />
                             </CardContent>
                           </Card>
                         </div>

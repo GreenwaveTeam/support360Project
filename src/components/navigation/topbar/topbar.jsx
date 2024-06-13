@@ -111,8 +111,11 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
     newPasswordNotMatch: false,
     weakNewPassword: false,
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const [showPreviousPassword, setShowPreviousPassword] = useState(false);
+  const handleClickShowPreviousPassword = () =>
+    setShowPreviousPassword((show) => !show);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const handleClickShowNewPassword = () => setShowNewPassword((show) => !show);
   const [snackbarText, setSnackbarText] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState("");
   const [passwordErrorOpen, setPasswordErrorOpen] = useState(false);
@@ -678,16 +681,20 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                       oldPassword: oldPassword.trim() === "",
                     });
                   }}
-                  type={showPassword ? "text" : "password"}
+                  type={showPreviousPassword ? "text" : "password"}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
+                        onClick={handleClickShowPreviousPassword}
                         onMouseDown={handleMouseDownPassword}
                         edge="end"
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showPreviousPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
                       </IconButton>
                     </InputAdornment>
                   }
@@ -737,16 +744,16 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
                       newPassword !== formData.confirmNewPassword
                     );
                   }}
-                  type={showPassword ? "text" : "password"}
+                  type={showNewPassword ? "text" : "password"}
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
+                        onClick={handleClickShowNewPassword}
                         onMouseDown={handleMouseDownPassword}
                         edge="end"
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   }

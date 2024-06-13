@@ -167,7 +167,7 @@ export const getSelectedOptionTask = async (selected_asset) => {
       {
         method: "GET",
         headers: {
-           Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           // Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -207,7 +207,10 @@ export const login = async () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username:"info@greenwave.co.in", password:"user_123" }),
+        body: JSON.stringify({
+          username: "info@greenwave.co.in",
+          password: "user_123",
+        }),
       }
     );
 
@@ -239,7 +242,7 @@ export const fetchStatusFromJob = async (ticketNo) => {
       {
         method: "GET",
         headers: {
-           Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           // Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -277,6 +280,9 @@ export const fetchTicketResponseTime = async (plantId) => {
       const data = await response.json();
       console.log("fetchTicketResponseTime : ", data);
       console.log("fetchTicketResponseTime : ", Array.isArray(data));
+      if (data.length === 1) {
+        return [data[0], 0];
+      }
       return data;
     }
   } catch (error) {
@@ -300,6 +306,9 @@ export const fetchTicketResolveTime = async (plantId) => {
     if (response.ok) {
       const data = await response.json();
       console.log("fetchTicketResolveTime : ", data);
+      if (data.length === 1) {
+        return [data[0], 0];
+      }
       return data;
     }
   } catch (error) {
@@ -323,6 +332,9 @@ export const fetchTicketCloseTime = async (plantId) => {
     if (response.ok) {
       const data = await response.json();
       console.log("fetchTicketCloseTime : ", data);
+      if (data.length === 1) {
+        return [data[0], 0];
+      }
       return data;
     }
   } catch (error) {
@@ -330,8 +342,7 @@ export const fetchTicketCloseTime = async (plantId) => {
   }
 };
 
-
-export const fetchModuleImageMap = async (plantId,application,project) => {
+export const fetchModuleImageMap = async (plantId, application, project) => {
   try {
     const response = await fetch(
       `http://${DB_IP}/application/moduleData/${plantId}/${application}/${project}`,
@@ -353,8 +364,6 @@ export const fetchModuleImageMap = async (plantId,application,project) => {
     console.error("Error fetchModuleImageMap:", error);
   }
 };
-
-
 
 export const fetchApplicationTicketDetails = async (ticketNo) => {
   try {

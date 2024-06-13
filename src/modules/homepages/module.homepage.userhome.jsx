@@ -389,40 +389,19 @@ function UserHome({ sendUrllist }) {
       const tempResolveTime = await fetchTicketResolveTime(plantId);
       const tempCloseTime = await fetchTicketCloseTime(plantId);
 
-      if (tempResponseTime.length === 0) {
-        setResponseTime([0, 0]);
-      } else if (tempResponseTime.length === 1) {
-        setResponseTime([tempResponseTime[0], 0]);
-      } else {
-        setResponseTime(tempResponseTime);
-      }
-
-      if (tempResolveTime.length === 0) {
-        setResolveTime([0, 0]);
-      } else if (tempResolveTime.length === 1) {
-        setResponseTime([tempResolveTime[0], 0]);
-      } else {
-        setResolveTime(tempResolveTime);
-      }
-
-      if (tempCloseTime.length === 0) {
-        setCloseTime([0, 0]);
-      } else if (tempCloseTime.length === 1) {
-        setResponseTime([tempCloseTime[0], 0]);
-      } else {
-        setCloseTime(tempCloseTime);
-      }
-
       console.log("tempResponseTime : ", tempResponseTime);
       console.log("tempResolveTime : ", tempResolveTime);
       console.log("tempCloseTime : ", tempCloseTime);
+
+      setResponseTime(tempResponseTime);
+      setResolveTime(tempResolveTime);
+      setCloseTime(tempCloseTime);
 
       const details = await getAllOpenTicketDetails();
       const closedDetails = await getAllClosedTicketDetails(plantId);
       console.log("formData.plantID : ", plantId);
       setAllTickets(details.filter((ticket) => ticket.plantId === plantId));
       console.log("closedDetails : ", closedDetails);
-      console.log("closedTickets : ", closedTickets);
       setClosedTickets(closedDetails);
     } catch (error) {
       console.error("Error in showAlert:", error);

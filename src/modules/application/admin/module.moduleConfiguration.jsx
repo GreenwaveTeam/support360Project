@@ -1320,7 +1320,7 @@ export default function ModuleConfigure({ sendUrllist }) {
               setOpen={setDeleteDialog}
               proceedButtonText={<Chip color="success" label="Delete"/>}
               proceedButtonClick={handleDeleteAreaConfirm}
-              cancelButtonText={<Chip color="success" label="Cancel"/>}
+              cancelButtonText={<Chip color="error" label="Cancel"/>}
             />
 
             <Snackbar
@@ -1347,14 +1347,14 @@ export default function ModuleConfigure({ sendUrllist }) {
               setOpen={setDeleteModuleDialog}
               proceedButtonText={<Chip color="success" label="Delete"/>}
               proceedButtonClick={handleDeleteModuleConfirm}
-              cancelButtonText={<Chip color="success" label="Cancel"/>}
+              cancelButtonText={<Chip color="error" label="Cancel"/>}
             />
             <CustomDialog
               open={updateModuleDialog}
               setOpen={setUpdateModuleDialog}
               proceedButtonText={<Chip color="success" label="Update"/>}
               proceedButtonClick={handleUpdateModuleConfirm}
-              cancelButtonText={<Chip color="success" label="Cancel"/>}
+              cancelButtonText={<Chip color="error" label="Cancel"/>}
             />
             <Dialog open={openEditDialog} onClose={handleEditDialogClose}>
               <Container sx={{ display: "flex", flexDirection: "column" }}>

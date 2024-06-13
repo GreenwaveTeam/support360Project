@@ -302,7 +302,7 @@ function UserHome({ sendUrllist }) {
     // setToken(`${localStorage.getItem("token")}`);
     // fetchTicketDetails();
     sendUrllist(urllist);
-    monthwiseticketraised();
+    // monthwiseticketraised();
     monthAndCatagoryWiseTicketRaised();
     fetchCatagoryWiseTrend();
     fetchUserRenderOnce();
@@ -330,6 +330,7 @@ function UserHome({ sendUrllist }) {
       console.log("UseEffect with setinterval called");
       // showAlert(formData.plantID);
       fetchUser();
+      monthwiseticketraised();
       // setIsLoading(false);
     }, 2000);
     return () => {

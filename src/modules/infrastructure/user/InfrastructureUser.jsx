@@ -353,12 +353,11 @@ export default function InfrastructureUser({ sendUrllist }) {
     const randomNumber = dayjs().format("YYYYMMDDTHHmmssSSS");
     return "I" + randomNumber;
   };
-  const handleInfrastructureChange = (newValue) => {
+  const handleInfrastructureChange = (event) => {
     console.log("handleInfrastructureChange called");
-    setSelectedInfrastructure(newValue);
+    setSelectedInfrastructure(event.target.value);
     setVisible(true);
     setTableData([]);
-    setInfraIssueDetails([]);
     // setSelectedInfrastructure("");
   };
   const fetchProjectAndPlantDetails = async () => {
@@ -615,19 +614,19 @@ export default function InfrastructureUser({ sendUrllist }) {
                             labelId="infrastructure-label"
                             id="infrastructureDropdown"
                             value={selectedInfrastructure}
-                            // onChange={handleInfrastructureChange}
-                            onChange={(event) => {
-                              setCurrentDropdownInfraValue(event.target.value);
-                              if (infraIssueDetails.length > 0) {
-                                setIsSureToChangeInfra(true);
-                                return;
-                              }
-                              // else{
-                              // handleAppDropdownChange(event);
-                              handleInfrastructureChange(event.target.value);
-                              // }
-                              // handleAppDropdownChange(event);
-                            }}
+                            onChange={handleInfrastructureChange}
+                            // onChange={(event) => {
+                            //   setCurrentDropdownInfraValue(event.target.value);
+                            //   if (infraIssueDetails.length > 0) {
+                            //     setIsSureToChangeInfra(true);
+                            //     return;
+                            //   }
+                            //   // else{
+                            //   // handleAppDropdownChange(event);
+                            //   handleInfrastructureChange(event.target.value);
+                            //   // }
+                            //   // handleAppDropdownChange(event);
+                            // }}
                             label="Select Infrastructure"
                           >
                             {infrastructures.map((infra, index) => (
@@ -728,6 +727,8 @@ export default function InfrastructureUser({ sendUrllist }) {
                               <TextField
                                 label="Remarks"
                                 variant="outlined"
+                                multiline
+                                maxRows={4}
                                 value={remarks}
                                 onChange={handleRemarksChange}
                                 style={{ margin: "10px 0" }}
@@ -1194,7 +1195,7 @@ export default function InfrastructureUser({ sendUrllist }) {
       {/* Warning the user */}
       {
         <>
-          <CustomDialog
+          {/* <CustomDialog
             open={isSureToChangeInfra}
             setOpen={setIsSureToChangeInfra}
             proceedButtonText={<Chip color="success" label="Proceed" />}
@@ -1202,7 +1203,7 @@ export default function InfrastructureUser({ sendUrllist }) {
               handleInfrastructureChange(currentDropdownInfraValue)
             }
             cancelButtonText={<Chip color="error" label="Cancel" />}
-          />
+          /> */}
 
           <CustomDialog
             open={isSureToChangeProject}

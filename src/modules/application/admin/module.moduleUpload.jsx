@@ -1316,23 +1316,23 @@ const Application = ({ sendUrllist }) => {
             <CustomDialog
               open={deleteDialog}
               setOpen={setDeleteDialog}
-              proceedButtonText={<Chip color="success" label="Delete"/>}
+              proceedButtonText={<Chip color="error" label="Delete"/>}
               proceedButtonClick={handleDeleteAreaConfirm}
-              cancelButtonText={<Chip color="error" label="Cancel"/>}
+              cancelButtonText={<Chip color="primary" label="Cancel"/>}
             />
             <CustomDialog
               open={updateModuleDialog}
               setOpen={setUpdateModuleDialog}
-              proceedButtonText={<Chip color="success" label="Update"/>}
+              proceedButtonText={<Chip color="error" label="Update"/>}
               proceedButtonClick={handleUpdateModuleName}
-              cancelButtonText={<Chip color="error" label="Cancel"/>}
+              cancelButtonText={<Chip color="primary" label="Cancel"/>}
             />
             <CustomDialog
               open={deleteModuleDialog}
               setOpen={setDeleteModuleDialog}
-              proceedButtonText={<Chip color="success" label="Delete"/>}
+              proceedButtonText={<Chip color="error" label="Delete"/>}
               proceedButtonClick={handleDeleteModuleConfirm}
-              cancelButtonText={<Chip color="success" label="Cancel"/>}
+              cancelButtonText={<Chip color="primary" label="Cancel"/>}
             />
             </Box>
             )}

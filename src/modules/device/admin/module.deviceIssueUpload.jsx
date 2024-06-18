@@ -345,6 +345,24 @@ const DeviceIssue = ({ sendUrllist }) => {
             <Box>
               <Container>
                 <Card>
+                <CardContent sx={{display:'flex', flexDirection:'row'}}>
+                {/* <Typography variant="h6" fontWeight={800} gutterBottom>
+                  Current Device Issue Category Name :
+                </Typography> */}
+                {/* <Chip label={categoryname} color="primary" sx={{width:'100px'}} variant="filled"/> */}
+                <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+              gutterBottom
+              fontWeight={900}
+            >
+              Current Plant : &nbsp;
+              <span style={{ color: "red" }}>{plantid}</span>
+            </Typography>
+                  
+                </CardContent>
+              
               <CardContent sx={{display:'flex', flexDirection:'row'}}>
                 {/* <Typography variant="h6" fontWeight={800} gutterBottom>
                   Current Device Issue Category Name :
@@ -362,6 +380,9 @@ const DeviceIssue = ({ sendUrllist }) => {
             </Typography>
                   
                 </CardContent>
+
+                  
+
                   <form
                   style={{
                     display: "flex",

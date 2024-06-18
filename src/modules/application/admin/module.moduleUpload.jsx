@@ -34,7 +34,7 @@ import CustomDialog from "../../../components/dialog/dialog.component";
 import NotFound from "../../../components/notfound/notfound.component";
 
 import styles from "./module.module.css";
-import { borderBottom } from "@mui/system";
+import { borderBottom, display } from "@mui/system";
 import { extendTokenExpiration } from "../../helper/Support360Api";
 import Textfield from "../../../components/textfield/textfield.component";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -935,24 +935,38 @@ const Application = ({ sendUrllist }) => {
   return (
     <div>
       {divIsVisibleList.length !== 0 &&
+      <Box style={{display:'flex', flexDirection:'column', alignItems:'center'}}>
+      <Typography
+      variant="h6"
+      color="textSecondary"
+      component="h2"
+      gutterBottom
+      fontWeight={700} alignItems={"center"}
+    >
+      Plant : &nbsp;
+      <span style={{ color: "red" }}>{plantid}</span>
+      &nbsp;&nbsp;
+
+      Project : &nbsp;
+      <span style={{ color: "red" }}>{selectedProject}</span>
+      &nbsp;&nbsp;
+      Application : &nbsp;
+      
+      <span style={{ color: "red" }}>{application_name}</span>
+    </Typography>
+    </Box>
+      }
+      {divIsVisibleList.length !== 0 &&
         divIsVisibleList.includes("add-module-existing-issues") && (
           <Box>
             {!imageUrl && (
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', marginTop: '-100px' // Adjust this value to move the card upward
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', marginTop: '-220px' // Adjust this value to move the card upward
               }}>
+
+                
               <Card style={cardStyleToInputImage}>
                 <form style={formStyleToInputImage}>
-                <Typography
-              variant="h6"
-              color="textSecondary"
-              component="h2"
-              gutterBottom
-              fontWeight={700}
-            >
-              Current Application: &nbsp;
-              <span style={{ color: "red" }}>{application_name}</span>
-            </Typography>
-
+                
                   <TextField
                     label="Enter Module Name"
                     id="issuecategory"

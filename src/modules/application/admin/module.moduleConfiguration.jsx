@@ -979,7 +979,14 @@ export default function ModuleConfigure({ sendUrllist }) {
               gutterBottom
               fontWeight={700}
             >
-              Current Application : &nbsp;
+              Plant : &nbsp;
+              <span style={{ color: "red" }}>{plantid}</span>
+              &nbsp;&nbsp;
+
+              Project : &nbsp;
+              <span style={{ color: "red" }}>{selectedProject}</span>
+              &nbsp;&nbsp;
+              Application : &nbsp;
               <span style={{ color: "red" }}>{data.application_name}</span>
             </Typography>
                     </div>

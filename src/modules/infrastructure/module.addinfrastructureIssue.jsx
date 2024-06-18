@@ -770,6 +770,8 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
             p={2} // Optional: Add padding to the box
             borderRadius={2}
           >
+            <div id='plant_inf_main' style={{display:'flex',justifyContent:'space-between'}}>
+            <div>
             <Typography
               variant="h6"
               color="textSecondary"
@@ -780,7 +782,31 @@ export default function AddInfrastructureIssue({ sendUrllist }) {
               Current Infrastructure Category Name : &nbsp;
               <span style={{ color: "red" }}>{inf}</span>
             </Typography>
+            </div>
+            <div>
+            <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+              gutterBottom
+              fontWeight={900}
+            >
+              Plant ID : &nbsp;
+              <span style={{ color: "red" }}>{plantId}</span>
+            </Typography>
 
+            <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h2"
+              gutterBottom
+              fontWeight={900}
+            >
+              Project : &nbsp;
+              <span style={{ color: "red" }}>{current_project}</span>
+            </Typography>
+            </div>
+            </div>
             <br />
             {/* issue name */}
             {divIsVisibleList &&

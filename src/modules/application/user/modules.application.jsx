@@ -1877,7 +1877,7 @@ export default function ApplicationUser({ sendUrllist }) {
 
         setCurrentImageData(data);
 
-        await delay(500); // Give time for the DOM to update with the new data
+        await delay(10); // Give time for the DOM to update with the new data
 
         const image = await prepareScreenshot();
         // await delay(500); // Ensure the screenshot is fully captured

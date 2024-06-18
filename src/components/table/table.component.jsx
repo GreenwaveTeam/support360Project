@@ -756,8 +756,8 @@ export default function CustomTable({
       <CustomDialog
         open={openDeleteDialog}
         setOpen={setOpenDeleteDialog}
-        proceedButtonText="Delete"
-        cancelButtonText="Cancel"
+        proceedButtonText={<Chip label="Delete" color="error"/>}
+        cancelButtonText={<Chip label="Cancel" color="primary"/>}
         proceedButtonClick={handleFinalDelete}
       />
     </>

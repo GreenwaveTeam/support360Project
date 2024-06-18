@@ -1126,8 +1126,18 @@ export default function ApplicationUser({ sendUrllist }) {
     console.log("handleAddUserIssues() called");
     setIssueDropDownError(false);
     setSeverityError(false);
-
-    if (overviewTableData.length === 5) {
+    // let avoid_current_issues=0;
+    // avoid_current_issues=issuesDropdown.length>0?0:issuesDropdown.length;
+    // if(overviewTableData.length+avoid_current_issues>5)
+    //   {
+    //     setSnackbarText("At most 5 Issues can be added ! ");
+    //     setSnackbarSeverity("warning");
+    //     setModalAlertOpen(true);
+    //     return;
+    //   }
+    console.log('Current Issues dropdown : ',tableIssuesForCurrentDiv)
+//!+1 because the issue is incoming 
+    if (((tableIssuesForCurrentDiv.length+1)+overviewTableData.length>5)|| overviewTableData.length === 5) {
       setSnackbarText("At most 5 Issues can be added ! ");
       setSnackbarSeverity("warning");
       setModalAlertOpen(true);

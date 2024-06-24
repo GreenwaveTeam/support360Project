@@ -421,7 +421,7 @@ export default function UserDeviceTree({ sendUrllist }) {
     // setSelectedIssue("");
     // setSelectedPriority("");
 
-    if (deviceIssueDetails.length === 5) {
+    if (tableData.length + deviceIssueDetails.length === 5) {
       setSnackbarText("At most 5 Issues can be added ! ");
       setsnackbarSeverity("warning");
       setSnackbarOpen(true);

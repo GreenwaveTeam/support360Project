@@ -881,8 +881,13 @@ export default function RichObjectTreeView({ sendUrllist }) {
       // If the selected node is the root, clear all data and hide the right panel
 
       handleDeleteData();
+      setsnackbarSeverity();
+      setSnackbarText("Delete Asset Successfully");
+      setSnackbarOpen(true);
+      setCategoryError(true);
       setData(null);
       setSelectedNode(null);
+
       setDelOpen(false);
     } else if (selectedNode) {
       let localData;

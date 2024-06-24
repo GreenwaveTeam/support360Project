@@ -424,6 +424,13 @@ export default function InfrastructureUser({ sendUrllist }) {
       setSnackbarOpen(true);
       return;
     }
+
+    if (tableData.length + infraIssueDetails.length === 5) {
+      setSnackbarText("At most 5 Issues can be added ! ");
+      setsnackbarSeverity("warning");
+      setSnackbarOpen(true);
+      return;
+    }
     if (selectedIssue && selectedPriority) {
       const existingIssue = tableData.find(
         (item) => item.issue === selectedIssue

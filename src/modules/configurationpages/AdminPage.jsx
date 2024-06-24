@@ -147,11 +147,19 @@ const AdminPage = ({ sendUrllist }) => {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    "&:hover": {
-                      boxShadow: 6,
-                      backgroundColor: colors.primary[500], // Change color on hover
-                      color: "#fff", // Optional: Change text color on hover
-                    },
+                    "&:hover":
+                      storedTheme?.toLowerCase() === "light" ||
+                      storedTheme === null
+                        ? {
+                            boxShadow: 6,
+                            backgroundColor: colors.primary[500], // Change color on hover
+                            color: "#fff", // Optional: Change text color on hover
+                          }
+                        : {
+                            boxShadow: 6,
+                            backgroundColor: "#C0C0C0", // Set background color to white
+                            color: "#000000", // Set text color to black
+                          },
                     minWidth: 200,
                     textAlign: "center",
                     transition: "background-color 0.3s, color 0.3s", // Smooth transition
@@ -198,11 +206,19 @@ const AdminPage = ({ sendUrllist }) => {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    "&:hover": {
-                      boxShadow: 6,
-                      backgroundColor: colors.primary[500], // Change color on hover
-                      color: "#fff", // Optional: Change text color on hover
-                    },
+                    "&:hover":
+                      storedTheme?.toLowerCase() === "light" ||
+                      storedTheme === null
+                        ? {
+                            boxShadow: 6,
+                            backgroundColor: colors.primary[500], // Change color on hover
+                            color: "#fff", // Optional: Change text color on hover
+                          }
+                        : {
+                            boxShadow: 6,
+                            backgroundColor: "#C0C0C0", // Set background color to white
+                            color: "#000000", // Set text color to black
+                          },
                     minWidth: 200,
                     textAlign: "center",
                     transition: "background-color 0.3s, color 0.3s", // Smooth transition
@@ -249,11 +265,19 @@ const AdminPage = ({ sendUrllist }) => {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    "&:hover": {
-                      boxShadow: 6,
-                      backgroundColor: colors.primary[500], // Change color on hover
-                      color: "#fff", // Optional: Change text color on hover
-                    },
+                    "&:hover":
+                      storedTheme?.toLowerCase() === "light" ||
+                      storedTheme === null
+                        ? {
+                            boxShadow: 6,
+                            backgroundColor: colors.primary[500], // Change color on hover
+                            color: "#fff", // Optional: Change text color on hover
+                          }
+                        : {
+                            boxShadow: 6,
+                            backgroundColor: "#C0C0C0", // Set background color to white
+                            color: "#000000", // Set text color to black
+                          },
                     minWidth: 200,
                     textAlign: "center",
                     transition: "background-color 0.3s, color 0.3s", // Smooth transition
@@ -299,11 +323,19 @@ const AdminPage = ({ sendUrllist }) => {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    "&:hover": {
-                      boxShadow: 6,
-                      backgroundColor: colors.primary[500], // Change color on hover
-                      color: "#fff", // Optional: Change text color on hover
-                    },
+                    "&:hover":
+                      storedTheme?.toLowerCase() === "light" ||
+                      storedTheme === null
+                        ? {
+                            boxShadow: 6,
+                            backgroundColor: colors.primary[500], // Change color on hover
+                            color: "#fff", // Optional: Change text color on hover
+                          }
+                        : {
+                            boxShadow: 6,
+                            backgroundColor: "#C0C0C0", // Set background color to white
+                            color: "#000000", // Set text color to black
+                          },
                     minWidth: 200,
                     textAlign: "center",
                     transition: "background-color 0.3s, color 0.3s", // Smooth transition

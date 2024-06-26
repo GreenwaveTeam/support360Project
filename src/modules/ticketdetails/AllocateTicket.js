@@ -167,7 +167,7 @@ export const getSelectedOptionTask = async (selected_asset) => {
     console.log("getSelectedOptionTask() called ", selected_asset);
 
     const response = await axios.get(
-      `http://${REACT_APP_TASK_IP}/usergroup/jobAssetGroup/${selected_asset} `,
+      `http://${REACT_APP_TASK_IP}/tasks/jobAssetGroup/${selected_asset} `,
       {
         method: "GET",
         headers: {
@@ -268,7 +268,7 @@ export const fetchStatusFromJob = async (ticketNo) => {
   try {
     // console.log("URL : ",`http://${REACT_APP_DASHBOARD_IP}/dashboard/jobStatus?ticketNo=${ticketNo}`)
     const response = await fetch( 
-      `http://${REACT_APP_TASK_IP}/dashboard/jobStatus?ticketNo=${ticketNo}`,
+      `http://${REACT_APP_TASK_IP}/tasks/jobStatus?ticketNo=${ticketNo}`,
       {
         method: "GET",
         headers: {

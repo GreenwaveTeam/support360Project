@@ -3,6 +3,7 @@ const DB_IP = process.env.REACT_APP_SERVERIP;
 const REACT_APP_DASHBOARD_IP = process.env.REACT_APP_DASHBOARD_IP;
 const REACT_APP_USERGROUP_IP = process.env.REACT_APP_USERGROUP_IP;
 const AUTH_API = process.env.REACT_APP_AUTH_IP;
+const REACT_APP_TASK_IP = process.env.REACT_APP_TASK_IP;
 export const fetchUser = async () => {
   // let role = "";
   try {
@@ -195,6 +196,32 @@ export const getSelectedOptionTask = async (selected_asset) => {
 };
 
 
+export const saveJobDetails = async (job,token) => {
+  console.log("Job Details : ",job)
+  console.log("Job Details Task : ",job.task.taskName)
+  try {
+    const response = await axios.put(`http://${REACT_APP_TASK_IP}/tasks/${job.task.taskId}/${job.jobID}/activities/activity`,
+      job,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+         "Content-Type": "application/json",
+         // Authorization: `Bearer ${localStorage.getItem("token")}`,
+       },
+      }
+    );
+ 
+    if (response.status === 200) {
+      // return "SuccesFully posted";
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error("Error occurred while saving job details:", error);
+    return false;
+  }
+};
 
 export const login = async () => {
   // if (localStorage.getItem("token") !== null) {
@@ -239,8 +266,8 @@ export const fetchStatusFromJob = async (ticketNo) => {
   const token = await login();
   // console.log("New Tocken :")
   try {
-    const response = await fetch(
-      // console.log("URL : ",`http://localhost:8090/dashboard/jobStatus?ticketNo=${ticketNo}`),
+    console.log("URL : ",`http://${REACT_APP_DASHBOARD_IP}/dashboard/jobStatus?ticketNo=${ticketNo}`)
+    const response = await fetch( 
       `http://${REACT_APP_DASHBOARD_IP}/dashboard/jobStatus?ticketNo=${ticketNo}`,
       {
         method: "GET",

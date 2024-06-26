@@ -14,6 +14,7 @@ import {
   getAllOpenTicketDetails,
   getSelectedOptionTask,
   login,
+  saveJobDetails,
   updateStatus,
 } from "./AllocateTicket";
 import Badge from "@mui/material/Badge";
@@ -38,12 +39,7 @@ import {
 } from "@mui/material";
 import DataTableByCatagory from "./DataTableByCatagory";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
-import {
-  createActivity,
-  createJobDetails,
-  createTask,
-  saveJobDetails,
-} from "./Utility";
+import { createActivity, createJobDetails, createTask } from "./Utility";
 import dayjs from "dayjs";
 import { useState } from "react";
 import {
@@ -533,7 +529,8 @@ export default function AllocateTicket({ sendUrllist }) {
           finalDuration += obj.duration;
           return createActivity(
             obj.taskId || null,
-            obj.taskName || null,
+            // obj.taskName || null,
+            null,
             obj.jobId || null,
             obj.activityId || null,
             obj.activityName || null,
@@ -626,6 +623,12 @@ export default function AllocateTicket({ sendUrllist }) {
       );
 
       const success = await saveJobDetails(job, token);
+      if (success === false) {
+        setSnackbarText(" Error !");
+        setsnackbarSeverity("error");
+        setSnackbarOpen(true);
+        return;
+      }
       //console.log("Succces ", job);
       await updateStatus(plantId, ticketNo, tikcetStatus);
 

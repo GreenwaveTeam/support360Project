@@ -148,28 +148,3 @@ export function createJobDetails(
       activityList: activityList || [],
     };
   }
-
-  export const saveJobDetails = async (job,token) => {
-    console.log("Job Details : ",job)
-    try {
-      const response = await axios.put(`http://localhost:8084/tasks/${job.task.taskId}/${job.jobID}/activities/activity`,
-        job,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-           "Content-Type": "application/json",
-           // Authorization: `Bearer ${localStorage.getItem("token")}`,
-         },
-        }
-      );
-   
-      if (response.status === 200) {
-        return "SuccesFully posted";
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.error("Error occurred while saving job details:", error);
-      return false;
-    }
-  };

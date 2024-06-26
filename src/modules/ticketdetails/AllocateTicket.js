@@ -1,7 +1,7 @@
 import axios from "axios";
 const DB_IP = process.env.REACT_APP_SERVERIP;
-const REACT_APP_DASHBOARD_IP = process.env.REACT_APP_DASHBOARD_IP;
-const REACT_APP_USERGROUP_IP = process.env.REACT_APP_USERGROUP_IP;
+// const REACT_APP_DASHBOARD_IP = process.env.REACT_APP_DASHBOARD_IP;
+// const REACT_APP_USERGROUP_IP = process.env.REACT_APP_USERGROUP_IP;
 const AUTH_API = process.env.REACT_APP_AUTH_IP;
 const REACT_APP_TASK_IP = process.env.REACT_APP_TASK_IP;
 export const fetchUser = async () => {
@@ -159,15 +159,15 @@ const encoded = btoa(username + ":" + password);
 
 export const getSelectedOptionTask = async (selected_asset) => {
   const token = await login();
-  console.log(
-    "getSelectedOptionTask : ",
-    `http://${REACT_APP_USERGROUP_IP}/usergroup/jobAssetGroup/${selected_asset} `
-  );
+  // console.log(
+  //   "getSelectedOptionTask : ",
+  //   `http://${REACT_APP_USERGROUP_IP}/usergroup/jobAssetGroup/${selected_asset} `
+  // );
   try {
     console.log("getSelectedOptionTask() called ", selected_asset);
 
     const response = await axios.get(
-      `http://${REACT_APP_USERGROUP_IP}/usergroup/jobAssetGroup/${selected_asset} `,
+      `http://${REACT_APP_TASK_IP}/usergroup/jobAssetGroup/${selected_asset} `,
       {
         method: "GET",
         headers: {
@@ -266,9 +266,9 @@ export const fetchStatusFromJob = async (ticketNo) => {
   const token = await login();
   // console.log("New Tocken :")
   try {
-    console.log("URL : ",`http://${REACT_APP_DASHBOARD_IP}/dashboard/jobStatus?ticketNo=${ticketNo}`)
+    // console.log("URL : ",`http://${REACT_APP_DASHBOARD_IP}/dashboard/jobStatus?ticketNo=${ticketNo}`)
     const response = await fetch( 
-      `http://${REACT_APP_DASHBOARD_IP}/dashboard/jobStatus?ticketNo=${ticketNo}`,
+      `http://${REACT_APP_TASK_IP}/dashboard/jobStatus?ticketNo=${ticketNo}`,
       {
         method: "GET",
         headers: {

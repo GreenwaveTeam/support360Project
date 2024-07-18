@@ -11,6 +11,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Skeleton from "@mui/material/Skeleton";
 import {
+  Autocomplete,
   Badge,
   Chip,
   CircularProgress,
@@ -95,6 +96,10 @@ import IssueListTable from "./modules.issueListTable";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { fetchAllProjectDetails } from "../../helper/AllProjectDetails";
 import CustomDialog from "../../../components/dialog/dialog.component";
+import { IconField } from 'primereact/iconfield';
+import { InputText } from 'primereact/inputtext';
+import { InputIcon } from 'primereact/inputicon';
+
 
 //The main export starts here....
 export default function ApplicationUser({ sendUrllist }) {
@@ -210,6 +215,10 @@ export default function ApplicationUser({ sendUrllist }) {
   const [currentDropdownProjectValue, setCurrentDropdownProjectValue] =
     useState("");
 
+
+    const [saveTabNames,setSaveTabNames]=useState([])
+    const [searchTabValue,setSearchTabValue]=useState("")
+
   //For Screenshot
   const screenshotRef = React.useRef(null);
 
@@ -301,6 +310,7 @@ export default function ApplicationUser({ sendUrllist }) {
     } else {
       fetchTabs(dropdownValue);
       setTabsModuleNames([]); //! Replacing the existing tabModuleNames to again populate it with new Data
+      setSaveTabNames([])
       // setOverviewTableData([])
     }
   }, [dropdownValue, selectedProject]);
@@ -536,6 +546,7 @@ export default function ApplicationUser({ sendUrllist }) {
     setSelectedProject(newValue);
     setDropdownValue("");
     setTabsModuleNames([]);
+    setSaveTabNames([])
     //First resetting the data
     setTicketNumber(generateRandomNumber());
 
@@ -803,6 +814,7 @@ export default function ApplicationUser({ sendUrllist }) {
     if (tabData) {
       console.log("Data from Database : ", tabData);
       setTabsModuleNames(tabData);
+      setSaveTabNames(tabData)
       setValue(tabData[0]);
       // setCurrentLoaderModule(tabData[0])
       //further a function will be called to set the image data here
@@ -1782,6 +1794,7 @@ export default function ApplicationUser({ sendUrllist }) {
     //Resetting Data
     setDropdownValue("");
     setTabsModuleNames([]);
+    setSaveTabNames([])
     setFinalUserInput([]);
     setMiscellaneousInput("");
     setRemarksInput("");
@@ -3033,6 +3046,70 @@ export default function ApplicationUser({ sendUrllist }) {
               </div> */}
             </center>
           </center>
+          {tabsmoduleNames.length > 0 && (
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              {/* <IconField iconPosition="left">
+           <InputIcon className="pi pi-search"  />
+           <InputText value={searchTabValue} placeholder="Search" onChange={(event)=>
+            {
+              console.log("Event : ",event.target.value)
+              setSearchTabValue(event.target.value)
+              const searchTextLowerCase = event.target.value.toLowerCase();
+        // console.log('Current Search Text : ',searchTextLowerCase)
+        const filteredTabs= tabsmoduleNames?.filter(
+            option => 
+            option.toLowerCase().includes(searchTextLowerCase) ||
+            option.toLowerCase().includes(searchTextLowerCase)
+        );
+        console.log('Filtered Tabs : ',filteredTabs.push(value))
+        setTabsModuleNames(filteredTabs)
+
+            }
+           }/>
+       </IconField> */}
+               <Autocomplete
+      id="app-searchTab"
+      options={tabsmoduleNames}
+      sx={{ width: 300 }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label="Search"
+          value={searchTabValue}
+          onChange={(event) => {
+            console.log("Event : ", event.target.value);
+            setSearchTabValue(event.target.value);
+            console.log("All Tab Names : ",saveTabNames)
+            if(event.target.value==='')
+              {
+                setTabsModuleNames(saveTabNames)
+                return;
+              }
+            const searchTextLowerCase = event.target.value.toLowerCase();
+            const filteredTabs = tabsmoduleNames?.filter(
+              (option) =>
+                option.toLowerCase().includes(searchTextLowerCase) ||
+                option.toLowerCase().includes(searchTextLowerCase)
+            );
+           
+            filteredTabs.push(value)
+            const uniqueTabNames=Array.from(new Set(filteredTabs))
+            console.log("Filtered and Unique Tabs : ", uniqueTabNames);
+            
+            
+            setTabsModuleNames(uniqueTabNames);
+          }}
+        />
+      )}
+      getOptionLabel={(option) => option}
+      renderOption={(props, option) => (
+        <li {...props} key={option}>
+          {option}
+        </li>
+      )}
+    />
+            </div>
+          )}
 
           {tabsmoduleNames.length !== 0 && isUserUnderSupport && (
             <TabContext value={value}>

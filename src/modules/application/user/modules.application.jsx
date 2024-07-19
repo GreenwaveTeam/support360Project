@@ -1135,9 +1135,12 @@ export default function ApplicationUser({ sendUrllist }) {
     //     setModalAlertOpen(true);
     //     return;
     //   }
-    console.log('Current Issues dropdown : ',tableIssuesForCurrentDiv)
-//!+1 because the issue is incoming 
-    if (((tableIssuesForCurrentDiv.length+1)+overviewTableData.length>5)|| overviewTableData.length === 5) {
+    console.log("Current Issues dropdown : ", tableIssuesForCurrentDiv);
+    //!+1 because the issue is incoming
+    if (
+      tableIssuesForCurrentDiv.length + 1 + overviewTableData.length > 5 ||
+      overviewTableData.length === 5
+    ) {
       setSnackbarText("At most 5 Issues can be added ! ");
       setSnackbarSeverity("warning");
       setModalAlertOpen(true);
@@ -2416,7 +2419,39 @@ export default function ApplicationUser({ sendUrllist }) {
         // onClose={(event, reason) => handleCloseDialog(event, reason)}
       >
         <DialogTitle>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div
+              align="center"
+              style={{
+                flex: 1,
+                overflow: "auto",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  flex: 1,
+                }}
+              >
+                Issues Overview
+              </span>
+              <span
+                style={{
+                  color: "#610C9F",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                }}
+              >
+                [{dropdownValue}]{" "}
+              </span>
+            </div>
             <Tooltip title="Close" placement="left-start">
               <IconButton
                 edge="end"
@@ -2438,7 +2473,7 @@ export default function ApplicationUser({ sendUrllist }) {
                     overflowY: "auto",
                   }}
                 >
-                  <div
+                  {/* <div
                     align="center"
                     style={{
                       flex: 1,
@@ -2463,7 +2498,7 @@ export default function ApplicationUser({ sendUrllist }) {
                     >
                       [{dropdownValue}]{" "}
                     </span>
-                  </div>
+                  </div> */}
                   {/* <div
                       style={{
                         display: "flex",
@@ -2578,7 +2613,11 @@ export default function ApplicationUser({ sendUrllist }) {
 
                 <center>
                   {overviewTableData.length === 0 && (
-                    <Chip label="Please select an issue. " variant="outlined" />
+                    <Chip
+                      label="Please Select An Issue"
+                      variant="outlined"
+                      color="info"
+                    />
                   )}
                 </center>
               </div>
@@ -2712,7 +2751,7 @@ export default function ApplicationUser({ sendUrllist }) {
           //   boxShadow: "0px 3px 5px black",
           //   borderRadius: "10px",
           // }}
-          className="mainPage"
+          className="mainPage col-md-12"
         >
           <br></br>
           <center>
@@ -2723,7 +2762,9 @@ export default function ApplicationUser({ sendUrllist }) {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    columnGap: "1rem",
                   }}
+                  className="reportApplicationDropdownMobileView"
                 >
                   <Dropdown
                     id={"project-dropdown"}
@@ -2749,7 +2790,8 @@ export default function ApplicationUser({ sendUrllist }) {
 
                   <div id="app-dropdown-selection">
                     <Dropdown
-                      style={{ minWidth: "200px", marginLeft: "10px" }}
+                      className="mobileViewmarginLeft"
+                      style={{ minWidth: "200px" }}
                       id={"app-dropdown"}
                       list={appDropdown}
                       label={
@@ -2791,13 +2833,14 @@ export default function ApplicationUser({ sendUrllist }) {
               </div>
             )}
             {tabsmoduleNames.length === 0 && isUserUnderSupport && (
-              <div style={{ paddingTop: "10px" }}>
+              <div style={{ paddingTop: "10px", display: "" }}>
                 {" "}
                 <Chip
                   color="success"
                   variant="outlined"
+                  width="200"
                   label={
-                    <div>
+                    <div className="mobileViewWidth">
                       <InfoOutlinedIcon fontSize="small" /> Please select both
                       Project and Application from the above dropdown{" "}
                     </div>
@@ -3157,6 +3200,7 @@ export default function ApplicationUser({ sendUrllist }) {
                   <br />
                   {/* <Paper elevation={24} square> */}
                   <div
+                    className="reportApplicationDropdownMobileView"
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <Chip
@@ -3411,13 +3455,14 @@ export default function ApplicationUser({ sendUrllist }) {
                   <br />
 
                   <center>
-                    <Container maxWidth="md">
+                    <Container maxWidth="md" sx={{ padding: 0 }}>
                       <Paper
                         elevation={2}
                         style={{
                           borderRadius: 2,
                           boxShadow: 1,
-                          maxHeight: "200px",
+                          //padding: 2,
+                          //maxHeight: "200px",
                         }}
                       >
                         <center>
@@ -3451,7 +3496,6 @@ export default function ApplicationUser({ sendUrllist }) {
                               ] :
                             </span>
                           </div>
-                          <br></br>
                         </center>
                         <div className="row">
                           <div className="col-md-12">
@@ -3459,7 +3503,8 @@ export default function ApplicationUser({ sendUrllist }) {
                               className="row"
                               style={{
                                 alignItems: "center",
-                                padding: "0px 12px",
+                                padding: "12px",
+                                rowGap: "0.7rem",
                               }}
                             >
                               <div className="col-md-3">
@@ -3481,11 +3526,6 @@ export default function ApplicationUser({ sendUrllist }) {
                                     style: {
                                       borderRadius: "7px",
                                     },
-                                  }}
-                                  style={{
-                                    flex: "1",
-                                    marginRight: "10px",
-                                    marginBottom: "15px",
                                   }}
                                   value={miscellaneousInput}
                                   onChange={(e) => {
@@ -3517,11 +3557,6 @@ export default function ApplicationUser({ sendUrllist }) {
                                     style: {
                                       borderRadius: "15px",
                                     },
-                                  }}
-                                  style={{
-                                    flex: "1",
-                                    marginRight: "10px",
-                                    marginBottom: "15px",
                                   }}
                                   value={miscellaneousRemarks}
                                   onChange={(e) => {
@@ -3562,12 +3597,12 @@ export default function ApplicationUser({ sendUrllist }) {
                                   id="miscellaneous-add"
                                   variant="contained"
                                   color="primary"
+                                  icon="fa fa-plus"
                                   sx={{
-                                    height: "50px",
+                                    //height: "50px",
                                     width: "80px",
-                                    borderRadius: "10px",
-                                    backgroundImage:
-                                      "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                                    borderRadius: "6px",
+                                    //backgroundImage:"linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
                                   }}
                                   onClick={handleAdditionalMiscellaneous}
                                 >
@@ -3726,6 +3761,7 @@ export default function ApplicationUser({ sendUrllist }) {
             <DialogContent>
               <>
                 <div
+                  className="reportApplicationDropdownMobileView"
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -3843,20 +3879,19 @@ export default function ApplicationUser({ sendUrllist }) {
                     color="primary"
                     variant="contained"
                     sx={{
-                      height: "50px",
+                      height: "40px",
                       padding: "0px 10px",
                       borderRadius: "5px",
-                      backgroundImage:
-                        "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+                      // backgroundImage:
+                      //   "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
                     }}
                     onClick={handleAddUserIssues}
                     //onClick={handleAddClick
-                    startIcon={<AddCircleIcon />}
+                    //startIcon={<AddCircleIcon />}
                   >
                     Add
                   </Button>
                 </div>
-                <br />
 
                 <div>
                   {/* <Container 

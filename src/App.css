@@ -4,7 +4,14 @@
 body{
   /* zoom: 90%; */
 }
-
+.textCenter{
+  display: grid;
+    align-items: center;
+}
+.MuiSkeleton-root {
+  
+  background-color: rgba(0, 0, 0, 0.09) !important;
+}
 .MuiBreadcrumbs-ol{
   padding-left: 0rem !important;
 }

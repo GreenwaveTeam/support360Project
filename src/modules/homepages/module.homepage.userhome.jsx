@@ -28,6 +28,7 @@ import {
   CircularProgress,
   Switch,
   FormControlLabel,
+  Skeleton,
 } from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
 import AlarmIcon from "@mui/icons-material/Alarm";
@@ -646,7 +647,7 @@ function UserHome({ sendUrllist }) {
       },
     ],
     //width: 500,
-    height: 265,
+    height: 310,
   };
 
   const monthwiseticketraised = async () => {
@@ -1105,283 +1106,116 @@ function UserHome({ sendUrllist }) {
       ) : (
       */}
       <div>
-        {isLoading ? (
-          <div className="spinner-container">
-            <CircularProgress size={65} color="info" />
-          </div>
-        ) : (
-          <Box>
-            <Container maxWidth="">
-              {/* <div class="row" style={{ marginBottom: "1rem" }}>
-          <div class="col-md-8">
+        <Box>
+          <Container maxWidth="">
             <div class="row">
-              <div class="col-md-12">
-                <Card>
-                  <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography>User Dashboard</Typography>
-                  </CardContent>
-                </Card>
+              <div
+                class="col-md-12"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "10px",
+                }}
+              >
+                {gracePeriodStarted && gracePeriodExpired && (
+                  <Collapse sx={{ width: "100%" }} in={openHeader}>
+                    <Alert
+                      action={
+                        <IconButton
+                          aria-label="close"
+                          color="inherit"
+                          size="small"
+                          onClick={() => {
+                            setOpenHeader(false);
+                          }}
+                        >
+                          <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                      }
+                      severity="error"
+                      sx={{ width: "100%" }}
+                    >
+                      <Typography
+                        component="h1"
+                        variant="h5"
+                        sx={{ fontWeight: "600", fontSize: "14px" }}
+                        color={"#f74747"}
+                      >
+                        The support subscription for the plant{" "}
+                        {formData.plantName} expired{" "}
+                        {Math.abs(daysDifferenceTillNow)} days ago. Please renew
+                        it to continue receiving support.
+                      </Typography>
+                    </Alert>
+                  </Collapse>
+                )}
+                {gracePeriodStarted && !gracePeriodExpired && (
+                  <Collapse sx={{ width: "100%" }} in={openHeader}>
+                    <Alert
+                      action={
+                        <IconButton
+                          aria-label="close"
+                          color="inherit"
+                          size="small"
+                          onClick={() => {
+                            setOpenHeader(false);
+                          }}
+                        >
+                          <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                      }
+                      severity="error"
+                      sx={{ width: "100%" }}
+                    >
+                      <Typography
+                        component="h1"
+                        variant="h5"
+                        sx={{ fontWeight: "600", fontSize: "14px" }}
+                        color={"#f74747"}
+                      >
+                        The support subscription for plant {formData.plantName}{" "}
+                        expired {Math.abs(daysDifferenceTillNow)} days ago. The
+                        grace period will end in {graceDifferenceTillNow} days.
+                      </Typography>
+                    </Alert>
+                  </Collapse>
+                )}
               </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="col-md-12">
-              <Card>
-                <CardContent sx={{ paddingBottom: "16px !important" }}>
-                  <div className="row"></div>
-                  <div className="row">
-                    <div className="col-md-4">
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={(e) => {
-                          navigate("/user/ReportDevice", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                      >
-                        Device
-                      </Button>
-                    </div>
-                    <div className="col-md-4">
-                      <Button
-                        size="small"
-                        variant="contained"
-                        onClick={(e) => {
-                          navigate("/user/ReportApplication", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                      >
-                        Application
-                      </Button>
-                    </div>
-                    <div className="col-md-4">
-                      <Button
-                        variant="contained"
-                        size="small"
-                        //style={{ width: "7.5rem" }}
-                        onClick={(e) => {
-                          navigate("/user/ReportInfrastructure", {
-                            state: { plantID: formData.plantID },
-                          });
-                        }}
-                      >
-                        Infrastructure
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </div> */}
-              <div class="row">
-                <div
-                  class="col-md-12"
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    padding: "10px",
-                  }}
-                >
-                  {gracePeriodStarted && gracePeriodExpired && (
-                    <Collapse sx={{ width: "100%" }} in={openHeader}>
-                      <Alert
-                        action={
-                          <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={() => {
-                              setOpenHeader(false);
-                            }}
-                          >
-                            <CloseIcon fontSize="inherit" />
-                          </IconButton>
-                        }
-                        severity="error"
-                        sx={{ width: "100%" }}
-                      >
-                        <Typography
-                          component="h1"
-                          variant="h5"
-                          sx={{ fontWeight: "600", fontSize: "14px" }}
-                          color={"#f74747"}
-                        >
-                          The support subscription for the plant{" "}
-                          {formData.plantName} expired{" "}
-                          {Math.abs(daysDifferenceTillNow)} days ago. Please
-                          renew it to continue receiving support.
-                        </Typography>
-                      </Alert>
-                    </Collapse>
-                  )}
-                  {gracePeriodStarted && !gracePeriodExpired && (
-                    <Collapse sx={{ width: "100%" }} in={openHeader}>
-                      <Alert
-                        action={
-                          <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={() => {
-                              setOpenHeader(false);
-                            }}
-                          >
-                            <CloseIcon fontSize="inherit" />
-                          </IconButton>
-                        }
-                        severity="error"
-                        sx={{ width: "100%" }}
-                      >
-                        <Typography
-                          component="h1"
-                          variant="h5"
-                          sx={{ fontWeight: "600", fontSize: "14px" }}
-                          color={"#f74747"}
-                        >
-                          The support subscription for plant{" "}
-                          {formData.plantName} expired{" "}
-                          {Math.abs(daysDifferenceTillNow)} days ago. The grace
-                          period will end in {graceDifferenceTillNow} days.
-                        </Typography>
-                      </Alert>
-                    </Collapse>
-                  )}
-                </div>
-                <div class="col-md-7">
-                  {divIsVisibleList && divIsVisibleList.includes("trend") && (
-                    <>
-                      <div class="row">
-                        <div class="col-md-4 mobileViewMarginbottom ">
-                          <Card
-                            // onClick={(e) => {
-                            //   navigate("/user/ReportDevice", {
-                            //     state: { plantID: formData.plantID },
-                            //   });
-                            // }}
+              <div class="col-md-7">
+                {divIsVisibleList && divIsVisibleList.includes("trend") && (
+                  <>
+                    <div class="row">
+                      <div class="col-md-4 mobileViewMarginbottom ">
+                        <Card
+                          // onClick={(e) => {
+                          //   navigate("/user/ReportDevice", {
+                          //     state: { plantID: formData.plantID },
+                          //   });
+                          // }}
 
-                            onClick={
-                              gracePeriodStarted && gracePeriodExpired
-                                ? navigate("/user/ReportDevice", {
-                                    state: { plantID: formData.plantID },
-                                  })
-                                : null
-                            }
-                            sx={{ borderRadius: 1 }}
-                          >
+                          onClick={
+                            gracePeriodStarted && gracePeriodExpired
+                              ? navigate("/user/ReportDevice", {
+                                  state: { plantID: formData.plantID },
+                                })
+                              : null
+                          }
+                          sx={{ borderRadius: 1 }}
+                        >
+                          {isLoading ? (
+                            <Skeleton
+                              animation="wave"
+                              variant="rectangular"
+                              width="100%"
+                              style={{ height: "7.5rem" }}
+                              //height={200}
+                            />
+                          ) : (
                             <CardContent sx={{ padding: "14px !important" }}>
-                              {/* <div className="row">
-                                <div
-                                  className="col-md-6"
-                                  style={{
-                                    paddingLeft: "2rem",
-                                    display: "grid",
-                                    alignItems: "center",
-                                    justifyItems: "center",
-                                  }}
-                                >
-                                  <div
-                                    className="row"
-                                    style={{
-                                      fontSize: "0.9rem",
-                                      fontWeight: 600,
-                                      opacity: "0.8",
-                                    }}
-                                  >
-                                    Device
-                                  </div>
-                                  <div className="row">
-                                    <Typography
-                                      sx={{
-                                        fontWeight: 600,
-                                        fontSize: "1.7rem",
-                                      }}
-                                    >
-                                      <CounterAnimation
-                                        targetValue={deviceIssuesCurrentMonth}
-                                      />
-                                    </Typography>
-                                  </div>
-                                </div>
-                                <div
-                                  className="col-md-6"
-                                  style={{
-                                    display: "grid",
-                                    justifyItems: "center",
-                                    alignItems: "center",
-                                    rowGap: "0.6rem",
-                                  }}
-                                >
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          columnGap: "0.5rem",
-                                        }}
-                                      >
-                                        <Badge
-                                          value={
-                                            criticalDeviceIssuesCurrentMonth
-                                          }
-                                          severity="warning"
-                                        ></Badge>
-                                        <Badge
-                                          value={
-                                            nonCriticalDeviceIssuesCurrentMonth
-                                          }
-                                          severity="info"
-                                        ></Badge>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <Button
-                                        style={{
-                                          borderRadius: "50%",
-                                          padding: 0,
-                                        }}
-                                        icon={
-                                          catagoryWiseTrend[0]
-                                            .device_difference > 0 ? (
-                                            <TrendingDownIcon />
-                                          ) : (
-                                            <TrendingUpIcon />
-                                          )
-                                        }
-                                        size="small"
-                                        rounded
-                                        text
-                                        severity={
-                                          catagoryWiseTrend[0]
-                                            .device_difference > 0
-                                            ? "danger"
-                                            : "success"
-                                        }
-                                        aria-label="Cancel"
-                                        label="12%"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="row"
-                                    style={{
-                                      fontSize: "0.9rem",
-                                      fontWeight: 600,
-                                      opacity: "0.8",
-                                    }}
-                                  >
-                                    Last 30 days
-                                  </div>
-                                </div>
-                              </div> */}
                               <div className="col-md-12">
                                 <div className="row">
-                                  <div className="col-md-6">
+                                  <div className="col-md-6 textCenter">
                                     <Typography
                                       sx={{
                                         textAlign: "center",
@@ -1415,7 +1249,7 @@ function UserHome({ sendUrllist }) {
                                   </div>
                                 </div>
                                 <div className="row">
-                                  <div className="col-md-6">
+                                  <div className="col-md-6 textCenter">
                                     <Typography
                                       sx={{
                                         fontWeight: 600,
@@ -1489,112 +1323,37 @@ function UserHome({ sendUrllist }) {
                                 </div>
                               </div>
                             </CardContent>
-                          </Card>
-                        </div>
-                        <div class="col-md-4 mobileViewMarginbottom ">
-                          <Card
-                            // onClick={(e) => {
-                            //   navigate("/user/ReportApplication", {
-                            //     state: { plantID: formData.plantID },
-                            //   });
-                            // }}
-                            onClick={
-                              gracePeriodStarted && gracePeriodExpired
-                                ? navigate("/user/ReportApplication", {
-                                    state: { plantID: formData.plantID },
-                                  })
-                                : null
-                            }
-                          >
+                          )}
+                        </Card>
+                      </div>
+                      <div class="col-md-4 mobileViewMarginbottom ">
+                        <Card
+                          // onClick={(e) => {
+                          //   navigate("/user/ReportApplication", {
+                          //     state: { plantID: formData.plantID },
+                          //   });
+                          // }}
+                          onClick={
+                            gracePeriodStarted && gracePeriodExpired
+                              ? navigate("/user/ReportApplication", {
+                                  state: { plantID: formData.plantID },
+                                })
+                              : null
+                          }
+                        >
+                          {isLoading ? (
+                            <Skeleton
+                              animation="wave"
+                              variant="rectangular"
+                              width="100%"
+                              style={{ height: "7.5rem" }}
+                              //height={200}
+                            />
+                          ) : (
                             <CardContent sx={{ padding: "14px !important" }}>
-                              {/* <div className="row">
-                                <div
-                                  className="col-md-6"
-                                  style={{
-                                    paddingLeft: "2rem",
-                                    display: "grid",
-                                    alignItems: "center",
-                                    justifyItems: "center",
-                                  }}
-                                >
-                                  <div className="row">
-                                    <CounterAnimation
-                                      targetValue={
-                                        applicationIssuesCurrentMonth
-                                      }
-                                    />
-                                  </div>
-                                  <div
-                                    className="row"
-                                    style={{
-                                      fontSize: "0.9rem",
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    Application
-                                  </div>
-                                </div>
-                                <div
-                                  className="col-md-6"
-                                  style={{
-                                    display: "grid",
-                                    justifyItems: "center",
-                                    alignItems: "center",
-                                    rowGap: "0.6rem",
-                                  }}
-                                >
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <Button
-                                        style={{ borderRadius: "50%" }}
-                                        icon={
-                                          catagoryWiseTrend[0]
-                                            .application_difference > 0 ? (
-                                            <TrendingDownIcon />
-                                          ) : (
-                                            <TrendingUpIcon />
-                                          )
-                                        }
-                                        rounded
-                                        //outlined
-                                        severity={
-                                          catagoryWiseTrend[0]
-                                            .application_difference > 0
-                                            ? "danger"
-                                            : "success"
-                                        }
-                                        aria-label="Cancel"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          columnGap: "0.5rem",
-                                        }}
-                                      >
-                                        <Badge
-                                          value={
-                                            criticalApplicationIssuesCurrentMonth
-                                          }
-                                          severity="warning"
-                                        ></Badge>
-                                        <Badge
-                                          value={
-                                            nonCriticalApplicationIssuesCurrentMonth
-                                          }
-                                          severity="info"
-                                        ></Badge>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div> */}
                               <div className="col-md-12">
                                 <div className="row">
-                                  <div className="col-md-6">
+                                  <div className="col-md-6 textCenter">
                                     <Typography
                                       sx={{
                                         textAlign: "center",
@@ -1630,7 +1389,7 @@ function UserHome({ sendUrllist }) {
                                   </div>
                                 </div>
                                 <div className="row">
-                                  <div className="col-md-6">
+                                  <div className="col-md-6 textCenter">
                                     <Typography
                                       sx={{
                                         fontWeight: 600,
@@ -1706,125 +1465,37 @@ function UserHome({ sendUrllist }) {
                                 </div>
                               </div>
                             </CardContent>
-                          </Card>
-                        </div>
-                        <div class="col-md-4 mobileViewMarginbottom ">
-                          <Card
-                            // onClick={(e) => {
-                            //   navigate("/user/ReportInfrastructure", {
-                            //     state: { plantID: formData.plantID },
-                            //   });
-                            // }}
-                            onClick={
-                              gracePeriodStarted && gracePeriodExpired
-                                ? navigate("/user/ReportInfrastructure", {
-                                    state: { plantID: formData.plantID },
-                                  })
-                                : null
-                            }
-                          >
+                          )}
+                        </Card>
+                      </div>
+                      <div class="col-md-4 mobileViewMarginbottom ">
+                        <Card
+                          // onClick={(e) => {
+                          //   navigate("/user/ReportInfrastructure", {
+                          //     state: { plantID: formData.plantID },
+                          //   });
+                          // }}
+                          onClick={
+                            gracePeriodStarted && gracePeriodExpired
+                              ? navigate("/user/ReportInfrastructure", {
+                                  state: { plantID: formData.plantID },
+                                })
+                              : null
+                          }
+                        >
+                          {isLoading ? (
+                            <Skeleton
+                              animation="wave"
+                              variant="rectangular"
+                              width="100%"
+                              style={{ height: "7.5rem" }}
+                              //height={200}
+                            />
+                          ) : (
                             <CardContent sx={{ padding: "14px !important" }}>
-                              {/* <div className="row">
-                                <div
-                                  className="col-md-6"
-                                  style={{
-                                    paddingLeft: "2rem",
-                                    display: "grid",
-                                    alignItems: "center",
-                                    justifyItems: "center",
-                                  }}
-                                >
-                                  <div className="row">
-                                    <Typography
-                                      sx={{
-                                        fontWeight: 600,
-                                        fontSize: "1.7rem",
-                                      }}
-                                    >
-                                      <CounterAnimation
-                                        targetValue={
-                                          infrastructureIssuesCurrentMonth
-                                        }
-                                      />
-                                    </Typography>
-                                  </div>
-                                  <div
-                                    className="row"
-                                    style={{
-                                      fontSize: "0.9rem",
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    Infrastructure
-                                  </div>
-                                </div>
-                                <div
-                                  className="col-md-6"
-                                  style={{
-                                    display: "grid",
-                                    justifyItems: "center",
-                                    alignItems: "center",
-                                    rowGap: "0.6rem",
-                                  }}
-                                >
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <Button
-                                        style={{ borderRadius: "50%" }}
-                                        // icon={
-                                        //   catagoryWiseTrend[0]
-                                        //     .infrastructure_difference > 0
-                                        //     ? "pi pi-thumbs-down-fill"
-                                        //     : "pi pi-thumbs-up-fill"
-                                        // }
-                                        icon={
-                                          catagoryWiseTrend[0]
-                                            .infrastructure_difference > 0 ? (
-                                            <TrendingDownIcon />
-                                          ) : (
-                                            <TrendingUpIcon />
-                                          )
-                                        }
-                                        rounded
-                                        //outlined
-                                        severity={
-                                          catagoryWiseTrend[0]
-                                            .infrastructure_difference > 0
-                                            ? "danger"
-                                            : "success"
-                                        }
-                                        aria-label="Cancel"
-                                      />
-                                    </div>
-                                  </div>
-                                  <div className="row">
-                                    <div className="col-md-12">
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          columnGap: "0.5rem",
-                                        }}
-                                      >
-                                        <Badge
-                                          value={
-                                            criticalInfrastructureIssuesCurrentMonth
-                                          }
-                                          severity="warning"
-                                        ></Badge>
-                                        <Badge
-                                          value={
-                                            nonCriticalInfrastructureIssuesCurrentMonth
-                                          }
-                                          severity="info"
-                                        ></Badge>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div> */}
                               <div className="col-md-12">
                                 <div className="row">
-                                  <div className="col-md-6">
+                                  <div className="col-md-6 textCenter">
                                     <Typography
                                       sx={{
                                         textAlign: "center",
@@ -1860,7 +1531,7 @@ function UserHome({ sendUrllist }) {
                                   </div>
                                 </div>
                                 <div className="row">
-                                  <div className="col-md-6">
+                                  <div className="col-md-6 textCenter">
                                     <Typography
                                       sx={{
                                         fontWeight: 600,
@@ -1936,19 +1607,29 @@ function UserHome({ sendUrllist }) {
                                 </div>
                               </div>
                             </CardContent>
-                          </Card>
-                        </div>
+                          )}
+                        </Card>
                       </div>
-                      <div class="row " style={{ marginTop: "1rem" }}>
-                        <div class="col-md-12 ">
-                          {/* <Card>
+                    </div>
+                    <div class="row " style={{ marginTop: "1rem" }}>
+                      <div class="col-md-12 ">
+                        {/* <Card>
                           <CardContent sx={{ paddingBottom: "16px !important" }}>
                             <Typography gutterBottom variant="h5" component="div">
                               Last Ticket Raised
                             </Typography>
                           </CardContent>
                         </Card> */}
-                          <Card>
+                        <Card>
+                          {isLoading ? (
+                            <Skeleton
+                              animation="wave"
+                              variant="rectangular"
+                              width="100%"
+                              style={{ height: "5.5rem" }}
+                              //height={200}
+                            />
+                          ) : (
                             <CardContent
                               sx={{ padding: "12px 8px 2px 8px !important" }}
                             >
@@ -1973,23 +1654,33 @@ function UserHome({ sendUrllist }) {
                                 />
                               </div>
                             </CardContent>
-                          </Card>
-                        </div>
+                          )}
+                        </Card>
                       </div>
-                    </>
-                  )}
-                  {/* <div>
+                    </div>
+                  </>
+                )}
+                {/* <div>
                       <Typography>
                         {Array.isArray([responseTime]) ? 1 : 0},
                         {Array.isArray([resolveTime]) ? 1 : 0},
                         {Array.isArray([closeTime]) ? 1 : 0}
                       </Typography>
                     </div> */}
-                  {divIsVisibleList &&
-                    divIsVisibleList.includes("spark-line") && (
-                      <div class="row" style={{ marginTop: "1rem" }}>
-                        <div class="col-md-4 mobileViewMarginbottom ">
-                          <Card>
+                {divIsVisibleList &&
+                  divIsVisibleList.includes("spark-line") && (
+                    <div class="row" style={{ marginTop: "1rem" }}>
+                      <div class="col-md-4 mobileViewMarginbottom ">
+                        <Card>
+                          {isLoading ? (
+                            <Skeleton
+                              animation="wave"
+                              variant="rectangular"
+                              width="100%"
+                              style={{ height: "6.75rem" }}
+                              //height={200}
+                            />
+                          ) : (
                             <CardContent
                               sx={{
                                 padding: "0px !important",
@@ -2011,10 +1702,20 @@ function UserHome({ sendUrllist }) {
                               />
                               <SparkLineChart data={responseTime} height={60} />
                             </CardContent>
-                          </Card>
-                        </div>
-                        <div class="col-md-4 mobileViewMarginbottom ">
-                          <Card>
+                          )}
+                        </Card>
+                      </div>
+                      <div class="col-md-4 mobileViewMarginbottom ">
+                        <Card>
+                          {isLoading ? (
+                            <Skeleton
+                              animation="wave"
+                              variant="rectangular"
+                              width="100%"
+                              style={{ height: "6.75rem" }}
+                              //height={200}
+                            />
+                          ) : (
                             <CardContent
                               sx={{
                                 padding: "0px !important",
@@ -2037,13 +1738,23 @@ function UserHome({ sendUrllist }) {
 
                               <SparkLineChart data={resolveTime} height={60} />
                             </CardContent>
-                          </Card>
-                        </div>
-                        <div
-                          class="col-md-4 mobileViewMarginbottom 
+                          )}
+                        </Card>
+                      </div>
+                      <div
+                        class="col-md-4 mobileViewMarginbottom 
                         "
-                        >
-                          <Card>
+                      >
+                        <Card>
+                          {isLoading ? (
+                            <Skeleton
+                              animation="wave"
+                              variant="rectangular"
+                              width="100%"
+                              style={{ height: "6.75rem" }}
+                              //height={200}
+                            />
+                          ) : (
                             <CardContent
                               sx={{
                                 padding: "0px !important",
@@ -2065,74 +1776,34 @@ function UserHome({ sendUrllist }) {
                               />
                               <SparkLineChart data={closeTime} height={60} />
                             </CardContent>
-                          </Card>
-                        </div>
+                          )}
+                        </Card>
                       </div>
-                    )}
-                </div>
-                {/* {divIsVisibleList && divIsVisibleList.includes("table") && (
-                  <div class="col-md-5">
-                    <Button
-                      onClick={() => {
-                        handleToggleView();
-                      }}
-                      style={{ width: "100%", borderRadius: "30px" }}
-                    >
-                      {viewMode === "all"
-                        ? "Show Ticket History"
-                        : "Show All Tickets"}
-                    </Button>
-                    {viewMode === "all" ? (
-                      <div className="row">
-                        <div className="col-md-12">
-                          <Card className="dashboard-rightSide-Table">
-                            <CardContent sx={{ padding: "0" }}>
-                              {allTickets && (
-                                <CustomTable
-                                  columns={Columns}
-                                  rows={allTickets}
-                                  isNotDeletable={true}
-                                  setRows={setAllTickets}
-                                  tablename={"All Tickets"}
-                                ></CustomTable>
-                              )}
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="row">
-                        <div className="col-md-12">
-                          <Card className="dashboard-rightSide-Table">
-                            <CardContent sx={{ padding: "0" }}>
-                              {closedTickets && (
-                                <CustomTable
-                                  columns={ClosedTicketColumns}
-                                  rows={closedTickets}
-                                  isNotDeletable={true}
-                                  setRows={setClosedTickets}
-                                  tablename={"Ticket History"}
-                                ></CustomTable>
-                              )}
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )} */}
-                <div class="col-md-5 ">
-                  {divIsVisibleList && divIsVisibleList.includes("chart") && (
-                    <div class="row">
-                      <div class="col-md-12">
-                        {/* <Card>
+                    </div>
+                  )}
+              </div>
+
+              <div class="col-md-5 ">
+                {divIsVisibleList && divIsVisibleList.includes("chart") && (
+                  <div class="row">
+                    <div class="col-md-12">
+                      {/* <Card>
                           <CardContent sx={{ paddingBottom: "16px !important" }}>
                             <Typography gutterBottom variant="h5" component="div">
                               Last Ticket Raised
                             </Typography>
                           </CardContent>
                         </Card> */}
-                        <Card>
+                      <Card>
+                        {isLoading ? (
+                          <Skeleton
+                            animation="wave"
+                            variant="rectangular"
+                            width="100%"
+                            style={{ height: "21.93rem" }}
+                            //height={200}
+                          />
+                        ) : (
                           <CardContent sx={{ padding: "0px !important" }}>
                             {/* <ResponsiveChartContainer> */}
                             <Typography
@@ -2163,17 +1834,18 @@ function UserHome({ sendUrllist }) {
 
                             {/* </ResponsiveChartContainer> */}
                           </CardContent>
-                        </Card>
-                      </div>
+                        )}
+                      </Card>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-              <div class="row  tableForMobile" style={{ marginTop: "1rem" }}>
-                <div class="col-md-12">
-                  {divIsVisibleList && divIsVisibleList.includes("table") && (
-                    <div class="col-md-12">
-                      {/* <Button
+            </div>
+            <div class="row  tableForMobile" style={{ marginTop: "1rem" }}>
+              <div class="col-md-12">
+                {divIsVisibleList && divIsVisibleList.includes("table") && (
+                  <div class="col-md-12">
+                    {/* <Button
                         onClick={() => {
                           handleToggleView();
                         }}
@@ -2183,10 +1855,19 @@ function UserHome({ sendUrllist }) {
                           ? "Show Ticket History"
                           : "Show All Tickets"}
                       </Button> */}
-                      {!isChecked ? (
-                        <div className="row">
-                          <div className="col-md-12">
-                            <Card className="dashboard-rightSide-Table">
+                    {!isChecked ? (
+                      <div className="row">
+                        <div className="col-md-12">
+                          <Card className="dashboard-rightSide-Table">
+                            {isLoading ? (
+                              <Skeleton
+                                animation="wave"
+                                variant="rectangular"
+                                width="100%"
+                                style={{ height: "19rem" }}
+                                //height={200}
+                              />
+                            ) : (
                               <CardContent sx={{ padding: "0" }}>
                                 {allTickets && (
                                   <CustomTable
@@ -2225,62 +1906,62 @@ function UserHome({ sendUrllist }) {
                                   ></CustomTable>
                                 )}
                               </CardContent>
-                            </Card>
-                          </div>
+                            )}
+                          </Card>
                         </div>
-                      ) : (
-                        <div className="row">
-                          <div className="col-md-12">
-                            <Card className="dashboard-rightSide-Table">
-                              <CardContent sx={{ padding: "0" }}>
-                                {closedTickets && (
-                                  <CustomTable
-                                    columns={ClosedTicketColumns}
-                                    rows={closedTickets}
-                                    isNotDeletable={true}
-                                    setRows={setClosedTickets}
-                                    tablename={
-                                      <div>
-                                        {/* All Tickets{" "}
+                      </div>
+                    ) : (
+                      <div className="row">
+                        <div className="col-md-12">
+                          <Card className="dashboard-rightSide-Table">
+                            <CardContent sx={{ padding: "0" }}>
+                              {closedTickets && (
+                                <CustomTable
+                                  columns={ClosedTicketColumns}
+                                  rows={closedTickets}
+                                  isNotDeletable={true}
+                                  setRows={setClosedTickets}
+                                  tablename={
+                                    <div>
+                                      {/* All Tickets{" "}
                                       <Switch
                                         checked={checked}
                                         onChange={(e) => setChecked(e.value)}
                                       /> */}
-                                        <FormControlLabel
-                                          style={{
-                                            flexDirection: "row-reverse",
-                                            marginLeft: "1rem",
-                                          }}
-                                          //label="Ticket History"
-                                          label={
-                                            <>
-                                              {<b> Ticket History </b>}
-                                              <Badge
-                                                value={closedTickets.length}
-                                                severity="success"
-                                              ></Badge>
-                                            </>
-                                          }
-                                          checked={isChecked}
-                                          onChange={handleChange}
-                                          control={<Switch defaultChecked />}
-                                        />
-                                      </div>
-                                    }
-                                  ></CustomTable>
-                                )}
-                              </CardContent>
-                            </Card>
-                          </div>
+                                      <FormControlLabel
+                                        style={{
+                                          flexDirection: "row-reverse",
+                                          marginLeft: "1rem",
+                                        }}
+                                        //label="Ticket History"
+                                        label={
+                                          <>
+                                            {<b> Ticket History </b>}
+                                            <Badge
+                                              value={closedTickets.length}
+                                              severity="success"
+                                            ></Badge>
+                                          </>
+                                        }
+                                        checked={isChecked}
+                                        onChange={handleChange}
+                                        control={<Switch defaultChecked />}
+                                      />
+                                    </div>
+                                  }
+                                ></CustomTable>
+                              )}
+                            </CardContent>
+                          </Card>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-            </Container>
-          </Box>
-        )}
+            </div>
+          </Container>
+        </Box>
       </div>
       {/* )} */}
       <div>

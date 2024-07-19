@@ -2376,6 +2376,31 @@ export default function ApplicationUser({ sendUrllist }) {
   const isOptionInRange = displayedOptions.some(
     (option) => option === userIssue
   );
+
+  const handleSearchChange=(event)=>
+  {
+    // console.log("Event : ", event.target.value);
+      setSearchTabValue(event.target.value);
+      // console.log("All Tab Names : ",saveTabNames)
+      if(event.target.value==='')
+        {
+          setTabsModuleNames(saveTabNames)
+          return;
+        }
+      const searchTextLowerCase = event.target.value.toLowerCase();
+      const filteredTabs = tabsmoduleNames?.filter(
+        (option) =>
+          option.toLowerCase().includes(searchTextLowerCase) ||
+          option.toLowerCase().includes(searchTextLowerCase)
+      );
+     
+      filteredTabs.push(value)
+      const uniqueTabNames=Array.from(new Set(filteredTabs))
+      // console.log("Filtered and Unique Tabs : ", uniqueTabNames);
+      
+      
+      setTabsModuleNames(uniqueTabNames);
+  }
   /*************************************************** Component return ************************************** */
   return (
     <div className="row">
@@ -3069,36 +3094,38 @@ export default function ApplicationUser({ sendUrllist }) {
        </IconField> */}
                <Autocomplete
       id="app-searchTab"
-      options={tabsmoduleNames}
+      options={saveTabNames}
       sx={{ width: 300 }}
       renderInput={(params) => (
         <TextField
           {...params}
           label="Search"
           value={searchTabValue}
-          onChange={(event) => {
-            console.log("Event : ", event.target.value);
-            setSearchTabValue(event.target.value);
-            console.log("All Tab Names : ",saveTabNames)
-            if(event.target.value==='')
-              {
-                setTabsModuleNames(saveTabNames)
-                return;
-              }
-            const searchTextLowerCase = event.target.value.toLowerCase();
-            const filteredTabs = tabsmoduleNames?.filter(
-              (option) =>
-                option.toLowerCase().includes(searchTextLowerCase) ||
-                option.toLowerCase().includes(searchTextLowerCase)
-            );
+          // onChange={(event) => {
+          //   console.log("Event : ", event.target.value);
+          //   setSearchTabValue(event.target.value);
+          //   console.log("All Tab Names : ",saveTabNames)
+          //   if(event.target.value==='')
+          //     {
+          //       setTabsModuleNames(saveTabNames)
+          //       return;
+          //     }
+          //   const searchTextLowerCase = event.target.value.toLowerCase();
+          //   const filteredTabs = tabsmoduleNames?.filter(
+          //     (option) =>
+          //       option.toLowerCase().includes(searchTextLowerCase) ||
+          //       option.toLowerCase().includes(searchTextLowerCase)
+          //   );
            
-            filteredTabs.push(value)
-            const uniqueTabNames=Array.from(new Set(filteredTabs))
-            console.log("Filtered and Unique Tabs : ", uniqueTabNames);
+          //   filteredTabs.push(value)
+          //   const uniqueTabNames=Array.from(new Set(filteredTabs))
+          //   console.log("Filtered and Unique Tabs : ", uniqueTabNames);
             
             
-            setTabsModuleNames(uniqueTabNames);
-          }}
+          //   setTabsModuleNames(uniqueTabNames);
+          // }}
+          onChange={handleSearchChange}
+          onSelect={handleSearchChange}
         />
       )}
       getOptionLabel={(option) => option}

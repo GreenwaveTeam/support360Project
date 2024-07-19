@@ -99,6 +99,7 @@ import CustomDialog from "../../../components/dialog/dialog.component";
 import { IconField } from 'primereact/iconfield';
 import { InputText } from 'primereact/inputtext';
 import { InputIcon } from 'primereact/inputicon';
+import ClearIcon from '@mui/icons-material/Clear';
 
 
 //The main export starts here....
@@ -2391,7 +2392,7 @@ export default function ApplicationUser({ sendUrllist }) {
           return;
         }
       const searchTextLowerCase = event.target.value.toLowerCase();
-      const filteredTabs = tabsmoduleNames?.filter(
+      const filteredTabs = saveTabNames?.filter(
         (option) =>
           option.toLowerCase().includes(searchTextLowerCase) ||
           option.toLowerCase().includes(searchTextLowerCase)
@@ -3139,6 +3140,8 @@ export default function ApplicationUser({ sendUrllist }) {
       id="app-searchTab"
       options={saveTabNames}
       sx={{ width: 300 }}
+      value={searchTabValue}
+      clearIcon={false}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -3169,6 +3172,26 @@ export default function ApplicationUser({ sendUrllist }) {
           // }}
           onChange={handleSearchChange}
           onSelect={handleSearchChange}
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {searchTabValue!=='' && (
+                  <InputAdornment position="end">
+                    <IconButton onClick={()=>
+                      {
+                        setSearchTabValue('')
+                        setTabsModuleNames(saveTabNames)
+                      }
+                    }>
+                      <ClearIcon/>
+                    </IconButton>
+                  </InputAdornment>
+                )}
+                {params.InputProps.endAdornment}
+              </>
+            ),
+          }}
         />
       )}
       getOptionLabel={(option) => option}

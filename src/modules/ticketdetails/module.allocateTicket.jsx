@@ -700,13 +700,14 @@ export default function AllocateTicket({ sendUrllist }) {
 
   return (
     <>
-      <Box sx={{ width: "100%", typography: "body1" }}>
+      <Box sx={{ width: "100%", typography: "body1",border:"1px solid #d0d1d5" }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
               {divIsVisibleList &&
                 divIsVisibleList.includes("Application_Ticket_Tab") && (
                   <Tab
+                  
                     id="Application_Ticket_Tab"
                     label={
                       <>

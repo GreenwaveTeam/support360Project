@@ -399,11 +399,11 @@ export default function RolePageConfiguration({ sendUrllist }) {
           variant="contained"
           type="submit"
           startIcon={<AddCircleIcon />}
-          sx={{
-            backgroundImage:
-              "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+          // sx={{
+          //   backgroundImage:
+          //     "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
             
-          }}
+          // }}
           onClick={handleRoleSubmit}
         >
           Add

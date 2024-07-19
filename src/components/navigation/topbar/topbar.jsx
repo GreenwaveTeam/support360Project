@@ -650,9 +650,10 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
+        <DialogTitle style={{ fontWeight: "600" }} id="alert-dialog-title">
           {"Change Your Password"}
         </DialogTitle>
+        <Divider style={{ opacity: "1" }} />
         <DialogContent style={{ padding: "10px" }}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -809,18 +810,25 @@ const TopbarPage = ({ open, handleDrawerOpen, urllist }) => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setdialogopen(false)} color="primary">
-            Cancel
-          </Button>
+        <DialogActions
+          style={{ justifyContent: "center", marginBottom: "0.8rem" }}
+        >
           <Button
             onClick={() => {
               setNewPassword();
             }}
-            color="error"
+            variant="contained"
+            color="info"
             autoFocus
           >
             Change
+          </Button>
+          <Button
+            onClick={() => setdialogopen(false)}
+            variant="contained"
+            color="primary"
+          >
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

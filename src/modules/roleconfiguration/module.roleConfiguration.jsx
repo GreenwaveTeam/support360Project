@@ -184,10 +184,10 @@ export default function RoleConfiguration({ sendUrllist }) {
             variant="contained"
            // style={{ width: "200px" }}
             startIcon={<AddCircleIcon />}
-            sx={{
-              backgroundImage:
-                "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
-            }}
+            // sx={{
+            //   backgroundImage:
+            //     "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+            // }}
             type="submit"
             disabled={role===null ||role===undefined||role===''}
             onClick={handleRedirect}

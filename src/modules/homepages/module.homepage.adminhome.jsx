@@ -955,7 +955,7 @@ export default function AdminHome({ sendUrllist }) {
                                       sx={{
                                         fontWeight: "bold",
                                         fontSize: "14px",
-                                        width: "2rem",
+                                        width: "10rem",
                                       }}
                                       align="center"
                                     >
@@ -1499,6 +1499,7 @@ export default function AdminHome({ sendUrllist }) {
                                       sx={{
                                         fontWeight: "bold",
                                         fontSize: "14px",
+                                        width: "10rem",
                                       }}
                                       align="center"
                                     >

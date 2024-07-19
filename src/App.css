@@ -8,6 +8,12 @@ body{
   display: grid;
     align-items: center;
 }
+.MuiPaper-root-MuiTableContainer-root{
+  border: none !important;
+}
+.MuiTabPanel-root{
+  padding: 0 !important;
+}
 .MuiSkeleton-root {
   
   background-color: rgba(0, 0, 0, 0.09) !important;

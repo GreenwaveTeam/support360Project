@@ -255,14 +255,14 @@ export default function UserLogin() {
                   alignItems: "center",
                 }}
               >
-                <Avatar
-                  sx={{ width: 50, height: 50 }}
+                <img
+                  style={{ width: 60, height: 60, borderRadius: "50%" }}
                   alt="Greenwave"
                   src={gwlogo}
                 />
 
                 <Typography component="h1" variant="h5">
-                  Login Page
+                  Login
                 </Typography>
                 <form className="fromSection">
                   <Box noValidate sx={{ mt: 3 }}>

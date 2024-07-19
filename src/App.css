@@ -11,6 +11,9 @@ body{
 .MuiTablePagination-displayedRows{
   margin-bottom:  0 !important;
 }
+.marginLeftReportApplication{
+   margin-left:10px  !important;
+}
 
 .App-logo {
   height: 40vmin;
@@ -83,7 +86,7 @@ padding-bottom: 0 !important;
 .MuiTableCell-root{padding: 14px !important;}
 /*Dialog */
 .MuiDialogTitle-root{padding: 10px 14px !important;}
-.MuiDialogContent-root{padding: 15px 15px !important; }
+.MuiDialogContent-root{padding: 10px 10px !important; }
 /* custom scrollbar */
 ::-webkit-scrollbar {
   width: 20px;
@@ -115,5 +118,48 @@ padding-bottom: 0 !important;
   }
   .mobileViewFloatBtn{
     left: 65% !important;
+  }
+  .mobileViewMarginbottom{
+    margin-bottom: 1rem !important;
+  }
+  .mobileViewHide{
+    display: none !important;
+  }
+  .tableForMobile{
+    width: 85vw !important;
+  }
+  .reportApplicationDropdownMobileView{
+    flex-direction: column;
+    row-gap: 0.5rem;
+  }
+  .forMobileView{
+    flex-direction: column !important;
+    height: auto !important;
+  }
+  .mobileViewmarginLeft{
+    margin-left: 20px !important;
+  }
+  .mobileViewWidth{
+    width: 200px;
+    white-space: pre-wrap;
+  }
+  .MuiBreadcrumbs-root{
+    font-size: 12px !important;
+  }
+  .Card-Components{
+    width: 100%;
+  }
+  .mobileViewWidth{
+    min-width: 250px !important ;
+  }
+  .marginBottomMobileView{
+    margin-bottom: 10px;
+  }
+}
+
+/* Normal Desktop View */
+@media screen and (min-width: 480px) {
+  .desktopViewHide{
+    display: none !important;
   }
 }

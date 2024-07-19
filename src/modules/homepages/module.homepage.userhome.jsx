@@ -75,6 +75,8 @@ import DataTableByCatagory from "../ticketdetails/DataTableByCatagory";
 import CustomTable from "../../components/table/table.component";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
+import "primereact/resources/primereact.min.css";
+import "primeflex/primeflex.css";
 
 function UserHome({ sendUrllist }) {
   const [formData, setFormData] = useState({
@@ -1253,7 +1255,7 @@ function UserHome({ sendUrllist }) {
                   {divIsVisibleList && divIsVisibleList.includes("trend") && (
                     <>
                       <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 mobileViewMarginbottom ">
                           <Card
                             // onClick={(e) => {
                             //   navigate("/user/ReportDevice", {
@@ -1489,7 +1491,7 @@ function UserHome({ sendUrllist }) {
                             </CardContent>
                           </Card>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mobileViewMarginbottom ">
                           <Card
                             // onClick={(e) => {
                             //   navigate("/user/ReportApplication", {
@@ -1706,7 +1708,7 @@ function UserHome({ sendUrllist }) {
                             </CardContent>
                           </Card>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mobileViewMarginbottom ">
                           <Card
                             // onClick={(e) => {
                             //   navigate("/user/ReportInfrastructure", {
@@ -1937,15 +1939,15 @@ function UserHome({ sendUrllist }) {
                           </Card>
                         </div>
                       </div>
-                      <div class="row" style={{ marginTop: "1rem" }}>
-                        <div class="col-md-12">
+                      <div class="row " style={{ marginTop: "1rem" }}>
+                        <div class="col-md-12 ">
                           {/* <Card>
-                  <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Last Ticket Raised
-                    </Typography>
-                  </CardContent>
-                </Card> */}
+                          <CardContent sx={{ paddingBottom: "16px !important" }}>
+                            <Typography gutterBottom variant="h5" component="div">
+                              Last Ticket Raised
+                            </Typography>
+                          </CardContent>
+                        </Card> */}
                           <Card>
                             <CardContent
                               sx={{ padding: "12px 8px 2px 8px !important" }}
@@ -1954,10 +1956,20 @@ function UserHome({ sendUrllist }) {
                               <Typography sx={{ marginBottom: "8px" }}>
                                 Last 3 Months
                               </Typography>
-                              <div>
+                              <div className="mobileViewHide">
                                 <MeterGroup
                                   values={matergroupvalues}
                                   max={100}
+                                  //orientation="vertical"
+                                  //labelOrientation="vertical"
+                                />
+                              </div>
+                              <div className="desktopViewHide">
+                                <MeterGroup
+                                  values={matergroupvalues}
+                                  max={100}
+                                  orientation="vertical"
+                                  labelOrientation="vertical"
                                 />
                               </div>
                             </CardContent>
@@ -1967,16 +1979,16 @@ function UserHome({ sendUrllist }) {
                     </>
                   )}
                   {/* <div>
-                <Typography>
-                  {Array.isArray([responseTime]) ? 1 : 0},
-                  {Array.isArray([resolveTime]) ? 1 : 0},
-                  {Array.isArray([closeTime]) ? 1 : 0}
-                </Typography>
-              </div> */}
+                      <Typography>
+                        {Array.isArray([responseTime]) ? 1 : 0},
+                        {Array.isArray([resolveTime]) ? 1 : 0},
+                        {Array.isArray([closeTime]) ? 1 : 0}
+                      </Typography>
+                    </div> */}
                   {divIsVisibleList &&
                     divIsVisibleList.includes("spark-line") && (
                       <div class="row" style={{ marginTop: "1rem" }}>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mobileViewMarginbottom ">
                           <Card>
                             <CardContent
                               sx={{
@@ -2001,7 +2013,7 @@ function UserHome({ sendUrllist }) {
                             </CardContent>
                           </Card>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4 mobileViewMarginbottom ">
                           <Card>
                             <CardContent
                               sx={{
@@ -2027,7 +2039,10 @@ function UserHome({ sendUrllist }) {
                             </CardContent>
                           </Card>
                         </div>
-                        <div class="col-md-4">
+                        <div
+                          class="col-md-4 mobileViewMarginbottom 
+                        "
+                        >
                           <Card>
                             <CardContent
                               sx={{
@@ -2106,17 +2121,17 @@ function UserHome({ sendUrllist }) {
                     )}
                   </div>
                 )} */}
-                <div class="col-md-5">
+                <div class="col-md-5 ">
                   {divIsVisibleList && divIsVisibleList.includes("chart") && (
                     <div class="row">
                       <div class="col-md-12">
                         {/* <Card>
-                  <CardContent sx={{ paddingBottom: "16px !important" }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Last Ticket Raised
-                    </Typography>
-                  </CardContent>
-                </Card> */}
+                          <CardContent sx={{ paddingBottom: "16px !important" }}>
+                            <Typography gutterBottom variant="h5" component="div">
+                              Last Ticket Raised
+                            </Typography>
+                          </CardContent>
+                        </Card> */}
                         <Card>
                           <CardContent sx={{ padding: "0px !important" }}>
                             {/* <ResponsiveChartContainer> */}
@@ -2154,7 +2169,7 @@ function UserHome({ sendUrllist }) {
                   )}
                 </div>
               </div>
-              <div class="row" style={{ marginTop: "1rem" }}>
+              <div class="row  tableForMobile" style={{ marginTop: "1rem" }}>
                 <div class="col-md-12">
                   {divIsVisibleList && divIsVisibleList.includes("table") && (
                     <div class="col-md-12">

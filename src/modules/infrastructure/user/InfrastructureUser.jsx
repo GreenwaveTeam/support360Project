@@ -662,9 +662,10 @@ export default function InfrastructureUser({ sendUrllist }) {
                         {`Report Issue for : ${selectedInfrastructure}`}
                       </DialogTitle>
                       <Divider />
-                      <div style={{ padding: "5px 15px" }}>
+                      <div style={{ padding: "10px 15px" }}>
                         {selectedInfrastructure && (
                           <TableContainer
+                            className="reportApplicationDropdownMobileView"
                             sx={{
                               display: "flex",
                               justifyContent: "center",
@@ -674,7 +675,11 @@ export default function InfrastructureUser({ sendUrllist }) {
                           >
                             <FormControl
                               variant="outlined"
-                              sx={{ width: "200px", verticalAlign: 0 }}
+                              sx={{
+                                width: "200px",
+                                verticalAlign: 0,
+                                marginTop: "0.5rem",
+                              }}
                             >
                               <InputLabel id="issuesDropdownLabel">
                                 Select Issue
@@ -700,20 +705,20 @@ export default function InfrastructureUser({ sendUrllist }) {
                             </FormControl>
 
                             {/* <FormControl
-                        variant="outlined"
-                        sx={{ width: "200px", verticalAlign: 0 }}
-                      >
-                        <InputLabel>Select Priority</InputLabel>
-                        <Select
-                          value={selectedPriority}
-                          onChange={handleSelectPriority}
-                          label="Select Priority"
-                        >
-                          <MenuItem value="Major">Major</MenuItem>
-                          <MenuItem value="Minor">Minor</MenuItem>
-                          <MenuItem value="Critical">Critical</MenuItem>
-                        </Select>
-                      </FormControl> */}
+                              variant="outlined"
+                              sx={{ width: "200px", verticalAlign: 0 }}
+                            >
+                              <InputLabel>Select Priority</InputLabel>
+                              <Select
+                                value={selectedPriority}
+                                onChange={handleSelectPriority}
+                                label="Select Priority"
+                              >
+                                <MenuItem value="Major">Major</MenuItem>
+                                <MenuItem value="Minor">Minor</MenuItem>
+                                <MenuItem value="Critical">Critical</MenuItem>
+                              </Select>
+                            </FormControl> */}
                             <FormControl
                               variant="outlined"
                               sx={{ width: "200px" }}
@@ -742,21 +747,21 @@ export default function InfrastructureUser({ sendUrllist }) {
                               />
                             </FormControl>
                             {/* <IconButton
-                        color="primary"
-                        aria-label="add"
-                        onClick={() => handleAddItem()}
-                      >
-                        <AddIcon />
-                      </IconButton> */}
+                            color="primary"
+                            aria-label="add"
+                              onClick={() => handleAddItem()}
+                            >
+                              <AddIcon />
+                            </IconButton> */}
                           </TableContainer>
                         )}
                         <Button
                           variant="contained"
                           onClick={() => handleAddItem()}
                           style={{
-                            backgroundImage:
-                              "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
-                            width: "30%",
+                            // backgroundImage:
+                            //   "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                            height: "35px",
                             margin: "auto",
                             display: "flex",
                           }}

@@ -24,6 +24,7 @@
   
   .treeViewContainer {
     margin-top: 20px;
+    margin-bottom: 10px;
   }
   
   .treeView {
@@ -61,7 +62,7 @@
  
   .split-screen {
     display: flex;
-    height: 82vh !important;
+    height: 82vh ;
   }
   
   .left-panel {

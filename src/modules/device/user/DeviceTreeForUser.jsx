@@ -1054,7 +1054,7 @@ export default function UserDeviceTree({ sendUrllist }) {
 
             <Card
               borderRadius={2}
-              className="split-screen"
+              className="split-screen forMobileView"
               onClick={handleClickOutsideNode}
             >
               <div className="left-panel">
@@ -1084,36 +1084,37 @@ export default function UserDeviceTree({ sendUrllist }) {
                     style={{ width: "200px" }}
                   ></Dropdown>
                 </div>
-                <br></br>
+
                 {data !== null && (
                   <div className="treeViewContainer">
-                    <Chip
-                      color="info"
-                      //variant="outlined"
-                      size="large"
-                      sx={{
-                        fontSize: "0.9rem",
-                        marginLeft: "5px",
-                        marginBottom: "10px",
-                      }}
-                      label="Asset Tree"
-                    />
-                    <Chip
-                      label={
-                        <div>
-                          {" "}
-                          <InfoOutlinedIcon
-                            fontSize="small"
-                            sx={{ color: "#16FF00", border: "none" }}
-                          />
-                          <span style={{ fontWeight: "bold" }}>
+                    <div style={{ marginBottom: "10px" }}>
+                      <Chip
+                        color="info"
+                        //variant="outlined"
+                        size="large"
+                        sx={{
+                          fontSize: "0.9rem",
+                          marginRight: "0.5rem",
+                        }}
+                        label="Asset Tree"
+                      />
+                      <Chip
+                        label={
+                          <div>
                             {" "}
-                            A maximum of five issues can be included{" "}
-                          </span>
-                        </div>
-                      }
-                      variant="outlined"
-                    ></Chip>
+                            <InfoOutlinedIcon
+                              fontSize="small"
+                              sx={{ color: "#16FF00", border: "none" }}
+                            />
+                            <span style={{ fontWeight: "bold" }}>
+                              {" "}
+                              A maximum of five issues can be included{" "}
+                            </span>
+                          </div>
+                        }
+                        variant="outlined"
+                      ></Chip>
+                    </div>
                     <Divider sx={{ marginBottom: "0.6rem", opacity: 0.8 }} />
                     <TreeView
                       className="treeView"
@@ -1163,6 +1164,7 @@ export default function UserDeviceTree({ sendUrllist }) {
 
                         <div style={{ padding: "5px 15px" }}>
                           <TableContainer
+                            className="reportApplicationDropdownMobileView"
                             sx={{
                               display: "flex",
                               justifyContent: "center",
@@ -1245,6 +1247,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                               sx={{ width: "200px" }}
                             >
                               <TextField
+                                className="marginBottomMobileView"
                                 label="Remarks"
                                 variant="outlined"
                                 value={remarks}
@@ -1274,9 +1277,9 @@ export default function UserDeviceTree({ sendUrllist }) {
                             variant="contained"
                             onClick={() => handleAddItem()}
                             style={{
-                              backgroundImage:
-                                "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
-                              width: "30%",
+                              // backgroundImage:
+                              //   "linear-gradient(to right, #6a11cb 0%, #2575fc 100%)",
+                              height: "40px",
                               margin: "auto",
                               display: "flex",
                             }}
@@ -1348,6 +1351,7 @@ export default function UserDeviceTree({ sendUrllist }) {
                         <div className="dlg">
                           <div className="clicked-node">
                             <Card
+                              className="mobileViewWidth"
                               sx={{
                                 minWidth: 550,
                                 height: "79.2vh",

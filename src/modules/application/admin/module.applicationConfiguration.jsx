@@ -15,7 +15,6 @@ import TextField from "../../../components/textfield/textfield.component";
 
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import Swal from "sweetalert2";
 import NotFound from "../../../components/notfound/notfound.component";
 import { useUserContext } from "../../contexts/UserContext";
 import { extendTokenExpiration } from "../../helper/Support360Api";

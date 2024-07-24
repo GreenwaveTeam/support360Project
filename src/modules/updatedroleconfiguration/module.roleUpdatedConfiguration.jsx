@@ -46,7 +46,7 @@ export default function RoleUpdatedConfiguration({ sendUrllist }) {
   const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
-    { pageName: "Role", pagelink: "/admin/role" },
+    { pageName: "Role", pagelink: "/admin/roleconfigure" },
   ];
 
   const navigate = useNavigate();

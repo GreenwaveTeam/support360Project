@@ -21,9 +21,11 @@ import SearchIcon from "@mui/icons-material/Search";
 import { borderColor, display } from "@mui/system";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function AllocateRole() {
+import { extendTokenExpiration } from "../helper/Support360Api";
+
+export default function AllocateRole({sendUrllist}) {
   //States and variables
   const [value, setValue] = React.useState(0);
   const [data, setData] = React.useState([]);
@@ -35,12 +37,18 @@ export default function AllocateRole() {
 
   const [showReviewDialog, setShowReviewDialog] = React.useState(false);
   const [selectedPage, setSelectedPage] = React.useState("");
-  const [selectedComponent, setSelectedComponent] = React.useState("");
+  const [selectedComponent, setSelectedComponent] = React.useState(null);
   const [showPages, setshowPages] = React.useState(true);
   //Snackbar related states
   const [showSnackbar, setShowSnackbar] = React.useState(false);
   const [snackbarText, setSnackbarText] = React.useState("");
   const [snackbarSeverity, setsnackbarSeverity] = React.useState("error");
+
+  //States to allocate breadcrumbs
+  const urllist = [
+    { pageName: "Admin Home", pagelink: "/admin/home" },
+    { pageName: "Role", pagelink: "/admin/roleconfigure" },
+  ]; 
 
   //Delete related states
   const [deleteObj, setDeleteObj] = React.useState(null);
@@ -50,19 +58,21 @@ export default function AllocateRole() {
   const role = location.state.role;
   const description = location.state.description;
 
+  const navigate=useNavigate()
+
   const columns = [
-    {
-      id: "role",
-      label: "Role",
-      type: "text",
-      canRepeatSameValue: false,
-    },
-    {
-      id: "description",
-      label: "Description",
-      type: "text",
-      canRepeatSameValue: false,
-    },
+    // {
+    //   id: "role",
+    //   label: "Role",
+    //   type: "text",
+    //   canRepeatSameValue: false,
+    // },
+    // {
+    //   id: "description",
+    //   label: "Description",
+    //   type: "text",
+    //   canRepeatSameValue: false,
+    // },
     {
       id: "page_name",
       label: "Page",
@@ -72,6 +82,12 @@ export default function AllocateRole() {
     {
       id: "component",
       label: "Component",
+      type: "text",
+      canRepeatSameValue: false,
+    },
+    {
+      id: "component_description",
+      label: "Description",
       type: "text",
       canRepeatSameValue: false,
     },
@@ -200,7 +216,7 @@ export default function AllocateRole() {
         (obj) =>
           role === obj.role &&
           obj.page_name.trim().toLowerCase() === selectedPage.trim().toLowerCase() &&
-          obj.component.trim().toLowerCase() === selectedComponent.trim().toLowerCase()
+          obj.component.trim().toLowerCase() === selectedComponent.component.trim().toLowerCase()
       )
     ) {
       setsnackbarSeverity("error");
@@ -215,7 +231,8 @@ export default function AllocateRole() {
         role: role,
         description: description,
         page_name: selectedPage,
-        component: selectedComponent,
+        component: selectedComponent.component,
+        component_description:selectedComponent.component_description
       },
     ];
     handleSubmitRole(roles);
@@ -225,7 +242,8 @@ export default function AllocateRole() {
         role: role,
         description: description,
         page_name: selectedPage,
-        component: selectedComponent,
+        component: selectedComponent.component,
+        component_description:selectedComponent.component_description
       },
     ]);
   };
@@ -279,7 +297,17 @@ export default function AllocateRole() {
   }
   //Use effects
   React.useEffect(() => {
-    fetchData();
+    if (
+      localStorage.getItem("token") === null ||
+      localStorage.getItem("token") === ""
+    ) {
+      console.log("Local storage::", localStorage.getItem("token"));
+      navigate("/login");
+    } else {
+      extendTokenExpiration();
+      fetchData();
+      sendUrllist(urllist);
+    }
   }, []);
   React.useEffect(() => {
     console.log("Data:::", roleData);
@@ -302,9 +330,7 @@ export default function AllocateRole() {
         <Chip
           color="info"
           label={
-            <>
-              Current Role <span style={{ color: "red" }}>{role}</span>
-            </>
+            role
           }
         />
 
@@ -319,7 +345,7 @@ export default function AllocateRole() {
             color="success"
             onClick={() => setShowReviewDialog(true)}
           >
-            Review and Submit
+            Review
           </Button>
         )}
       </Paper>
@@ -389,7 +415,7 @@ export default function AllocateRole() {
                         <Box
                           onClick={() => {
                             setOpenConfirmDialog(true);
-                            setSelectedComponent(currentcomp.component);
+                            setSelectedComponent({component:currentcomp.component,component_description:currentcomp.component_description});
                             setOpenConfirmText("Add Component");
                           }}
                           style={{

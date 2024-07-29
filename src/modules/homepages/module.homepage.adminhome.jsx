@@ -605,7 +605,7 @@ export default function AdminHome({ sendUrllist }) {
                           marginRight: "8px",
                         }}
                         onClick={() => {
-                          navigate("/admin/Role");
+                          navigate("/admin/roleconfigure");
                         }}
                       >
                         Role Configure

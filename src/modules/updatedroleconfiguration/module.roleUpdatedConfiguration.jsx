@@ -25,10 +25,13 @@ import DrawerHeader from "../../components/navigation/drawerheader/drawerheader.
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { extendTokenExpiration } from "../helper/Support360Api";
 import SnackbarComponent from "../../components/snackbar/customsnackbar.component";
-import { deleteRole, fetchAllRoleDetails, updateAccessibilityRoleDescription } from "./allocaterole";
+import {
+  deleteRole,
+  fetchAllRoleDetails,
+  updateAccessibilityRoleDescription,
+} from "./allocaterole";
 
 export default function RoleUpdatedConfiguration({ sendUrllist }) {
-
   //States
   const [role, setRole] = useState("");
   const [description, setDescription] = useState("");
@@ -40,9 +43,9 @@ export default function RoleUpdatedConfiguration({ sendUrllist }) {
   const [openPopup, setOpenPopup] = useState(false);
   const [dialogMessage, setDialogMessage] = useState("");
   const [snackbarSeverity, setsnackbarSeverity] = useState(null);
-  
+
   const [open, setOpen] = useState(false);
-  
+
   const DB_IP = process.env.REACT_APP_SERVERIP;
   const urllist = [
     { pageName: "Admin Home", pagelink: "/admin/home" },
@@ -66,7 +69,6 @@ export default function RoleUpdatedConfiguration({ sendUrllist }) {
     },
   ];
 
-
   //Functions
   const handleRedirect = () => {
     if (role.trim() !== "") {
@@ -89,7 +91,7 @@ export default function RoleUpdatedConfiguration({ sendUrllist }) {
     };
     console.log("Delete=>" + JSON.stringify(requestBody));
     try {
-      await deleteRole(requestBody)
+      await deleteRole(requestBody);
       setRows(rows.filter((row) => row !== rowdata));
       console.log("Successfully deleted");
     } catch (error) {
@@ -99,10 +101,10 @@ export default function RoleUpdatedConfiguration({ sendUrllist }) {
       setsnackbarSeverity("error");
     }
   };
-  const editRole=async(selectedRow, updatedRow)=>{
-    try{
-      await updateAccessibilityRoleDescription(updatedRow,selectedRow.role);
-    }catch(error){
+  const editRole = async (selectedRow, updatedRow) => {
+    try {
+      await updateAccessibilityRoleDescription(updatedRow, selectedRow.role);
+    } catch (error) {
       console.error("Error:", error);
       setOpenPopup(true);
       setDialogMessage("Database Error");
@@ -114,7 +116,7 @@ export default function RoleUpdatedConfiguration({ sendUrllist }) {
       state: { role: row.role, description: row.description },
     });
   };
-  
+
   //Useeffects
   useEffect(() => {
     const fetchData = async () => {
@@ -170,21 +172,23 @@ export default function RoleUpdatedConfiguration({ sendUrllist }) {
             onChange={(e) => setDescription(e.target.value)}
           />
           &nbsp;
-          <Button
-            color="primary"
-            variant="contained"
-            // style={{ width: "200px" }}
-            startIcon={<AddCircleIcon />}
-            sx={{
-              backgroundImage:
-                "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
-            }}
-            type="submit"
-            disabled={role === null || role === undefined || role === ""}
-            onClick={handleRedirect}
-          >
-            Add
-          </Button>
+          {role !== null && role !== undefined && role !== "" && (
+            <Button
+              color="primary"
+              variant="contained"
+              // style={{ width: "200px" }}
+              startIcon={<AddCircleIcon />}
+              sx={{
+                backgroundImage:
+                  "linear-gradient(to right, #6a11cb 0%, #2575fc 100%);",
+              }}
+              type="submit"
+              // disabled={role === null || role === undefined || role === ""}
+              onClick={handleRedirect}
+            >
+              Add
+            </Button>
+          )}
         </Box>
         &nbsp;&nbsp;
         <Table
@@ -197,8 +201,8 @@ export default function RoleUpdatedConfiguration({ sendUrllist }) {
           redirectIconActive={true}
           tablename={"Role Configuration"}
           isDeleteDialog={true}
-           savetoDatabse={editRole}   
-          editActive={true} 
+          savetoDatabse={editRole}
+          editActive={true}
           // tablename={"Existing Device Issue Category"}
           // /*style={}*/
         />

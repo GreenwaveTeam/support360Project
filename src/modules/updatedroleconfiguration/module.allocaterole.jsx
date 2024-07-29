@@ -22,6 +22,7 @@ import { borderColor, display } from "@mui/system";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { useLocation, useNavigate } from "react-router-dom";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import { extendTokenExpiration } from "../helper/Support360Api";
 
@@ -37,7 +38,6 @@ export default function AllocateRole({sendUrllist}) {
 
   const [showReviewDialog, setShowReviewDialog] = React.useState(false);
   const [selectedPage, setSelectedPage] = React.useState("");
-  const [selectedComponent, setSelectedComponent] = React.useState(null);
   const [showPages, setshowPages] = React.useState(true);
   //Snackbar related states
   const [showSnackbar, setShowSnackbar] = React.useState(false);
@@ -207,10 +207,9 @@ export default function AllocateRole({sendUrllist}) {
     setSelectedPage(responsedetails.at(0).pagename);
   };
   const handleConfirm = () => {
-    if (deleteObj === null) handleAddComponent();
-    else handleDeleteConfirmed();
+    handleDeleteConfirmed();
   };
-  const handleAddComponent = () => {
+  const handleAddComponent = (selectedComponent) => {
     if (
       roleData.find(
         (obj) =>
@@ -407,17 +406,12 @@ export default function AllocateRole({sendUrllist}) {
                       <Tooltip
                         title={
                           <Typography>
-                            Component Description: {currentcomp.component_description}
+                            {currentcomp.component_description}
                           </Typography>
                         }
                         placement="top-start"
                       >
                         <Box
-                          onClick={() => {
-                            setOpenConfirmDialog(true);
-                            setSelectedComponent({component:currentcomp.component,component_description:currentcomp.component_description});
-                            setOpenConfirmText("Add Component");
-                          }}
                           style={{
                             backgroundColor:
                               roleData.some((row) => {
@@ -448,6 +442,32 @@ export default function AllocateRole({sendUrllist}) {
                             border: "0.5px dashed rgba(0, 0, 0, 0.5)",
                           }}
                         >
+                          {roleData.some((row) => {
+                            // console.log("Current check::",currentcomp.component," , ",row.component," , ",currentrow.pagename," , ",row.page_name, " , ",currentcomp.component===row.component," , ",currentrow.pagename===row.page_name)
+                            return (
+                              currentcomp.component === row.component &&
+                              currentrow.pagename === row.page_name
+                            );
+                          })===false && (
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Tooltip title={"Add Component to the role"}>
+                                <Button
+                                  onClick={()=>{
+                                    //setSelectedComponent({component:currentcomp.component,component_description:currentcomp.component_description});
+                                    handleAddComponent({component:currentcomp.component,component_description:currentcomp.component_description})
+                                  }}
+                                >
+                                  <AddCircleOutlineIcon color="error" />
+                                </Button>
+                              </Tooltip>
+                            </Box>
+                          )}
+
                           {roleData.some((row) => {
                             // console.log("Current check::",currentcomp.component," , ",row.component," , ",currentrow.pagename," , ",row.page_name, " , ",currentcomp.component===row.component," , ",currentrow.pagename===row.page_name)
                             return (
